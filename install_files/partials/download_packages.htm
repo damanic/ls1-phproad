@@ -1,0 +1,44 @@
+<div id="partial_download_packages">
+	<form action="<?php echo Phpr_Installer::get_request_uri() ?>" method="post" id="step_form" class="inline">
+		<input type="hidden" name="step" value="download_packages" />
+		<input type="hidden" name="install_key" value="<?php echo Phpr_Installer::post('install_key') ?>" />
+		
+		<h1>Package Download</h1>
+		<p class="lead"><?=APP_NAME?> will now download the required packages, click Download to proceed. For more information please see <a href="<?php echo URL_DOCS ?>" target="_blank">the documentation</a>.</p>
+
+		<div id="download_progress">
+			<div class="progress">
+				<div class="bar"></div>
+			</div>
+			<small>To begin the download, click Download.</small>
+		</div>
+
+		<p style="display:none" id="next_txt">Click Next to continue.</p>
+
+		<div class="form-actions">
+			<div class="pull-right">
+				<input type="button" class="button" value="Download" id="download_btn" onclick="return Phpr_Downloader.startDownload()" />
+				<input type="button" class="button danger" value="Retry" id="retry_btn" onclick="return Phpr_Downloader.retryDownload()" style="display:none" />
+				<input type="submit" name="form_action" class="button" value="Next" id="next_btn" style="display:none" />
+			</div>
+			<?php if (isset($error)): ?>
+				<div class="pull-right">
+					<div class="alert error"><?php echo Phpr_Installer::h($error->getMessage()) ?></div>
+				</div>
+			<?php endif ?>
+		</div>
+	</form>
+
+	<script type="text/javascript">
+
+		Phpr_Downloader.setRequestInfo('<?php echo Phpr_Installer::get_request_uri() ?>', '<?php echo Phpr_Installer::post('install_key') ?>');
+		Phpr_Downloader.setModules([<?=Phpr_Installer_Manager::get_package_list('module')?>]);
+		Phpr_Downloader.setThemes([<?=Phpr_Installer_Manager::get_package_list('theme')?>]);
+
+		$(document).ready(function(){ 
+			$('#step_form').submit(function() {
+				$('#next_btn').attr('disabled', true);
+			});
+		});
+	</script>
+</div>

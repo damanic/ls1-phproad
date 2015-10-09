@@ -1,0 +1,34 @@
+<div id="partial_complete">
+	<form action="<?php echo Phpr_Installer::get_request_uri() ?>" method="post" id="step_form">
+		<input type="hidden" name="step" value="complete" />
+		<input type="hidden" name="install_key" value="<?php echo Phpr_Installer::post('install_key') ?>" />
+
+		<h1>Congratulations!</h1>
+		<p class="lead">Installation has been successfully completed.</p>
+
+		<fieldset>
+			<legend>Website address</legend>
+			<p>
+				Your website is located here: <br /> 
+				<a target="_blank" href="<?=$base_url?>"><?=$base_url?></a>
+			</p>
+		</fieldset>
+
+		<fieldset>
+			<legend>Administration Area</legend>
+			<p>
+				Use the following link to log into the administration area: <br />
+				<a target="_blank" href="<?=$base_url?>admin"><?=$base_url?>admin</a>
+			</p>
+		</fieldset>
+
+		<?php if (!$files_deleted): ?>
+			<blockquote>
+				<em>Important!</em> The installation files were not deleted. Please delete the <strong>install.php</strong> script and the <strong>install_files</strong> directory manually.
+			</blockquote>
+		<?php endif ?>
+
+		<p>Thank you for choosing <?=APP_NAME?></p>
+
+	</form>
+</div>

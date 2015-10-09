@@ -1,0 +1,4 @@
+Changed made in EditArea to adapt it for PHP Road:
+
+1. Line 34: get_escaped_regexp=function(str){str = new String(str); - added new String(str)
+2. Some changes in CSS styles
