@@ -1807,6 +1807,7 @@
 			$searchFields = isset($field_definition->renderOptions['search_columns']) ? $field_definition->renderOptions['search_columns'] : null;
 			$searchFields = $searchFields ? Phpr_Util::splat($searchFields, true) : $listColumns;
 			$searchPrompt = isset($field_definition->renderOptions['search_prompt']) ? $field_definition->renderOptions['search_prompt'] : 'search';
+			$customPrepareFunc = isset($field_definition->renderOptions['custom_prepare_func']) ? $field_definition->renderOptions['custom_prepare_func'] : 'formPrepareRecordFinderData';
 
 			$this->_controller->list_name = $this->formGetRecordFinderListName($model);
 			$searchModel = $this->formGetRecordFinderModel($model, $field_definition);
@@ -1827,7 +1828,7 @@
 				'list_search_enabled'=>true,
 				'list_render_filters'=>false,
 				'list_name'=>$this->formGetRecordFinderListName($model),
-				'list_custom_prepare_func'=>'formPrepareRecordFinderData',
+				'list_custom_prepare_func'=> $customPrepareFunc,
 				'list_top_partial'=>null,
 				'list_no_js_declarations'=>true,
 				'list_record_onclick'=>'return recordFinderUpdateRecord(%s);'
