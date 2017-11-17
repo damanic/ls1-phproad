@@ -7,6 +7,7 @@
 		private $mode_descriptor = null;
 		private $config_content = null;
 		private $salt;
+		private $salt_cookie;
 		private $key;
 		private $data_cache = array();
 		
@@ -240,6 +241,25 @@
 		public function salted_hash($value, $salt_key = null)
 		{
 			return md5($this->salt($salt_key).$value);
+		}
+
+		public function salted_cookie($salt_key = null)
+		{
+			if ($salt_key)
+				return md5($salt_key);
+
+			if (strlen($this->salt_cookie))
+				return $this->salt_cookie;
+
+			$salt = Phpr::$config->get('COOKIE_SALT');
+
+			if ($salt === null)
+				throw new Phpr_SystemException('Missing configuration value (COOKIE_SALT)');
+
+			if (strlen($salt) < 10)
+				throw new Phpr_SystemException('Invalid configuration value (COOKIE_SALT)');
+
+			return $this->salt_cookie = md5($salt);
 		}
 	}
 

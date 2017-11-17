@@ -4923,3 +4923,5 @@ var Slider = new Class({
 	}
 
 });
+JSON.parse = JSON.decode;
+JSON.stringify = JSON.encode;

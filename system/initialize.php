@@ -110,12 +110,6 @@
 	require PATH_SYSTEM."/system/exceptions.php";
 
 	/*
-	 * Process the resource request
-	 */
-
-	Phpr_Response::processJavaScriptRequest();
-
-	/*
 	 * Initialize the events object
 	 */
 

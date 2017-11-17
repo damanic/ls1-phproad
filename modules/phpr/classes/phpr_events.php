@@ -65,9 +65,11 @@
 			if($this->events_disabled || !isset($this->events[$name]))
 				if($type === 'combine')
 					return array(); // backwards compat
-				else if($type === 'filter')
+				else if($type === 'filter' || $type === 'update_result')
 					return count($params) > 0 ? $params[0] : null;
-			
+				else
+					return null;
+
 			uasort($this->events[$name], array($this, 'sort_by_priority'));
 					
 			if($type === 'combine') {
@@ -79,10 +81,18 @@
 			}
 			else if($type === 'filter') {
 				$result = count($params) > 0 ? $params[0] : null;
-				
 				foreach($this->events[$name] as $event) {
 					$result = callFunction($event['handler'], array($result));
 				}
+			}
+			else if($type === 'update_result') {
+				$result = count($params) > 0 ? $params[0] : null;
+				$args = count($params) > 1 ? $params[1] : array();
+				foreach($this->events[$name] as $event) {
+					$result = callFunction($event['handler'], array($result,$args));
+				}
+			} else {
+				$result = null;
 			}
 			
 			return $result;

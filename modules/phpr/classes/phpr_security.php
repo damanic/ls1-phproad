@@ -391,7 +391,7 @@
 			
 			$expiration = time()+$lifetime;
 
-			$key = hash_hmac('md5', $Id.$expiration, Phpr_SecurityFramework::create()->salt());
+			$key = hash_hmac('md5', $Id.$expiration, Phpr_SecurityFramework::create()->salted_cookie());
 			$hash = hash_hmac('md5', $Id.$expiration, $key);
 			$ticket = base64_encode(base64_encode($Id).'|'.$expiration.'|'.$hash);
 
@@ -421,7 +421,7 @@
 			if ( $expiration < time() )
 				return null;
 
-			$key = hash_hmac( 'md5', $id_decoded.$expiration, Phpr_SecurityFramework::create()->salt() );
+			$key = hash_hmac( 'md5', $id_decoded.$expiration, Phpr_SecurityFramework::create()->salted_cookie() );
 			$hash = hash_hmac( 'md5', $id_decoded.$expiration, $key );
 
 			if ( $hmac != $hash )
