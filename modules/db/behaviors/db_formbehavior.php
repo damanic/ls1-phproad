@@ -1638,6 +1638,7 @@
 			{
 				$result['result'] = 'failed';
 				$result['error'] = $ex->getMessage();
+				header("HTTP/1.1 500 " . $result['error']);
 			}
 			
 			header('Content-type: application/json');
