@@ -228,6 +228,11 @@
 		public $list_columns = array();
 		public $list_options = array();
 
+		/**
+		 * @var boolean Determines whether partials should load from models native controller.
+		 */
+		public $list_ignore_native_controller = false;
+
 		protected $_model_object = null;
 		protected $_total_item_number = null;
 		protected $_list_settings = null;
@@ -343,12 +348,12 @@
 		{
 			return $element.$this->listGetName();
 		}
-		
+
 		public function listRenderPartial($view, $params=array(), $throwNotFound=true)
 		{
 			$model = $this->createModelObject();
-			
-			$this->renderControllerPartial($model->native_controller, $view, $params, false, $throwNotFound);
+			$controller_class = (isset($this->_controller->list_ignore_native_controller) && $this->_controller->list_ignore_native_controller) ? get_class($this->_controller) : $model->native_controller;
+			$this->renderControllerPartial($controller_class, $view, $params, false, $throwNotFound);
 		}
 
 		public function listEvalTotalItemNumber()
