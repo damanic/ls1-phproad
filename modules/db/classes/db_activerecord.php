@@ -382,7 +382,6 @@
 				unset($this->formTabIds[$id]);
 
 			unset($this->validation);
-			unset($this);
 		}
 	
 		protected function initialize()
