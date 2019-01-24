@@ -103,7 +103,10 @@
 			$res = null;
 			try
 			{
-				$res = @unserialize($result);
+				$unserialized = @unserialize($result);
+				if($unserialized !== false){
+					$res = $unserialized;
+				}
 			} catch (Exception $ex){}
 				
 			if (Phpr::$config->get('ENABLE_SECURE_DATA_CACHING', false))
