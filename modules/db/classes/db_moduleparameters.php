@@ -11,7 +11,7 @@
 
 			self::$_parameterCache = array();
 
-			$records = Db_DbHelper::queryArray('select * from moduleparams');
+			$records = Db_DbHelper::queryArray('SELECT * FROM moduleparams');
 			foreach( $records as $param )
 			{
 				$ModuleId = $param['module_id'];
@@ -31,9 +31,11 @@
 
 			self::$_parameterCache[$ModuleId][$Name] = $Value;
 			$bind = array('module_id'=>$ModuleId, 'name'=>$Name, 'value'=>$Value);
-			
-			Db_DbHelper::query('delete from moduleparams where module_id=:module_id and name=:name', $bind);
-			Db_DbHelper::query('insert into moduleparams(module_id, name, value) values (:module_id,:name,:value)', $bind);
+			$sql = 'INSERT INTO moduleparams(`module_id`, `name`, `value`) 
+					VALUES (:module_id,:name,:value)
+					ON DUPLICATE KEY UPDATE `value` = :value';
+
+			Db_DbHelper::query($sql, $bind);
 		}
 
 		public static function get( $ModuleId, $Name, $Default = null )
@@ -56,5 +58,3 @@
 			}
 		}
 	}
-
-?>
