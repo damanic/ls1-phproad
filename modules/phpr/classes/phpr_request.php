@@ -381,6 +381,17 @@
 				
 			return $result;
 		}
+
+		public function get_query_string($include_request_name=false){
+			$params = $this->get_fields;
+			$rpn = Phpr::$config->get('REQUEST_PARAM_NAME', 'q');
+			if(is_array($params)){
+				if(!$include_request_name && isset($params[$rpn])){
+					unset($params[$rpn]);
+				}
+			}
+			return (is_array($params) && count($params)) ? http_build_query($params, '', '&') : null;
+		}
 		
 		public static function array_strip_slashes(&$value)
 		{
