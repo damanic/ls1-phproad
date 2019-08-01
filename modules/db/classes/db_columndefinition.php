@@ -474,7 +474,7 @@
 							return $value ? $value->format($this->_dateTimeFormat) : null;
 					}
 				case db_time:
-					return Phpr_Date::display($value, $this->_timeFormat);
+					return $value;
 				default:
 					return $value;
 			}
