@@ -75,6 +75,10 @@
 			
 			return call_user_func_array(array($this->get_object(), $method), $arguments);
 		}
+
+		public function get_proxied_model_class(){
+			return $this->model_class;
+		}
 		
 		protected function get_object()
 		{
