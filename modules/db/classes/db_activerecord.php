@@ -483,8 +483,14 @@
 		 * @param integer $id Specifies the primary key value.
 		 * @return Db_ActiverecordProxy Returns a model object corresponding to the found record or NULL.
 		 */
-		public function find_proxy($record_id){
-			$this->where('id = ?', $record_id);
+		public function find_proxy($id = null){
+			$this->limit(1);
+			if (is_array($id))
+				$id = array_shift($id);
+
+			if(is_numeric($id)) {
+				$this->where( 'id = ?', $id );
+			}
 			$result = Db_DbHelper::queryArray( $this->build_sql() );
 			if ( $result ) {
 				$data = $result[0];
@@ -574,6 +580,11 @@
 				$data = $row;
 				$result[] = new Db_ActiverecordProxy( $row['id'], get_class($this), $row );
 			}
+
+			if ($result instanceof Db_ActiverecordProxy){
+				$result = new Db_DataCollection(array($result));
+			}
+
 			return $result;
 		}
 
