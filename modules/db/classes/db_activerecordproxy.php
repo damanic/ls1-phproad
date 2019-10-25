@@ -88,6 +88,18 @@
 			return $this->model_class;
 		}
 
+		public static function is_a($obj, $class_name){
+			if(is_a($obj, $class_name)) {
+				return true;
+			}
+			if(is_a($obj, 'Db_ActiveRecordProxy')){
+				if($class_name == $obj->get_proxied_model_class()){
+					return true;
+				}
+			}
+			return false;
+		}
+
 		protected function has_proxiable_method($method){
 			$class = $this->model_class;
 			if(class_exists($class)) {
@@ -103,14 +115,22 @@
 		}
 
 		protected function get_object($light=false) {
+			$model_options = array();
 			if($light && $this->light_obj){
-				return $this->light_obj;
+				if($this->light_obj){
+					return $this->light_obj;
+				}
+				$model_options = array(
+					'no_validation'	 => true,
+					'no_column_init' => true,
+					'no_timestamps' => true,
+				);
 			}
 			if (!$light && $this->heavy_obj){
 				return $this->heavy_obj;
 			}
 
-			$obj = new $this->model_class($this->fields);
+			$obj = new $this->model_class($this->fields, $model_options);
 
 			if($light){
 				return $this->light_obj = $obj;
