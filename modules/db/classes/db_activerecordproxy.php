@@ -115,6 +115,11 @@
 		}
 
 		protected function get_object($light=false) {
+
+			if ($this->heavy_obj){ //no point loading a light object when already loaded heavy
+				return $this->heavy_obj;
+			}
+
 			$model_options = array();
 			if($light && $this->light_obj){
 				if($this->light_obj){
@@ -126,9 +131,7 @@
 					'no_timestamps' => true,
 				);
 			}
-			if (!$light && $this->heavy_obj){
-				return $this->heavy_obj;
-			}
+
 
 			$obj = new $this->model_class($this->fields, $model_options);
 
