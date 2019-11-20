@@ -113,8 +113,14 @@
 		{
 			$cnt = 0;
 
-			if ( array_key_exists( $Format, self::$unwrappedFormats ) )
-				return self::$unwrappedFormats[$Format];
+			if ( array_key_exists( $Format, self::$unwrappedFormats ) ){
+				$result = self::$unwrappedFormats[$Format];
+				if($result !== false) {
+					$cnt = substr_count($result, '%');
+					return $result;
+				}
+				return $Format;
+			}
 
 			$FormatWrapped = $Format;
 
@@ -150,7 +156,11 @@
 				}
 			}
 
-			self::$unwrappedFormats[$FormatWrapped] = $Format;
+			if($FormatWrapped !== $Format){
+				self::$unwrappedFormats[$FormatWrapped] = $Format;
+			} else {
+				self::$unwrappedFormats[$FormatWrapped] = false;
+			}
 
 			return $Format;
 		}
