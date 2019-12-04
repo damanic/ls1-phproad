@@ -6,8 +6,11 @@ header("Cache-Control: no-store, no-cache, must-revalidate");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
 
-if (function_exists('set_magic_quotes_runtime'))
-	@set_magic_quotes_runtime(0);
+if (version_compare(PHP_VERSION, '5.3.0', '<')) {
+	if ( function_exists( 'set_magic_quotes_runtime' ) ) {
+		@set_magic_quotes_runtime( 0 );
+	}
+}
 
 if (!ini_get('safe_mode'))
 	set_time_limit(3600);
