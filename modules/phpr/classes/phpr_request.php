@@ -13,6 +13,7 @@
 	class Phpr_Request
 	{
 		private $_ip = null;
+	    private $_ip_strict = null;
 		private $_language = null;
 		private $_cachedEvendParams = null;
 		private $_cachedUri = null;
@@ -142,35 +143,46 @@
 		}
 
 		/**
-		 * Returns the visitor's IP address.
-		 * @documentable
-		 * @return string Returns the IP address.
+		 * Returns the visitor IP address.
+		 * @param bool $strict Set to true if IP check should use most reliable IP determination
+		 * @return string
 		 */
-		public function getUserIp()
+		public function getUserIp($strict = false)
 		{
-			if ( $this->_ip !== null )
-				return $this->_ip;
 
-			$ipKeys = Phpr::$config->get('REMOTE_IP_HEADERS', array('HTTP_X_FORWARDED_FOR', 'HTTP_CLIENT_IP', 'REMOTE_ADDR'));
-			foreach ( $ipKeys as $ipKey )
-			{
-				if ( isset($_SERVER[$ipKey]) && strlen($_SERVER[$ipKey]) )
-				{
-					$this->_ip = $_SERVER[$ipKey];
+		$cached_ip = $strict ? $this->_ip_strict : $this->_ip;
+
+		if($cached_ip !== null ){
+			return $cached_ip;
+		}
+
+		$ip = null;
+
+		$ip_keys = array('REMOTE_ADDR');
+		if(!$strict){
+			$ip_keys = Phpr::$config->get('REMOTE_IP_HEADERS', array('HTTP_X_FORWARDED_FOR', 'HTTP_CLIENT_IP', 'REMOTE_ADDR'));
+		}
+
+		foreach ($ip_keys as $ip_key) {
+			if (isset($_SERVER[$ip_key]) && strlen($_SERVER[$ip_key])) {
+				$ip = $_SERVER[$ip_key];
 					break;
 				}
 			}
 
-			if ( strlen( strstr($this->_ip, ',') ) )
-			{
-				$ips = explode(',', $this->_ip);
-				$this->_ip = trim(reset($ips));
+		if (strlen(strstr($ip, ','))) {
+			$ips = explode(',', $ip);
+			$ip = trim(reset($ips));
 			}
 				
-			if ($this->_ip == '::1')
-				$this->_ip = '127.0.0.1';
+		if ($ip == '::1')
+			$ip = '127.0.0.1';
 
-			return $this->_ip;
+		$this->_ip = $ip;
+		if($strict){
+			$this->_ip_strict = $ip;
+		}
+		return $ip;
 		}
 
 		/**
