@@ -4,4 +4,5 @@
 #4 Provisional support for db_time form fields
 #5 Adds method Db_ActiverecordProxy::get_proxied_model_class()
 #6 Fixes issue with Phpr_DateTimeFormat
-#6 Fixes issue with magic_quotes
+#7 Fixes issue with magic_quotes
+#8 Adds strict mode for getUserIp()
