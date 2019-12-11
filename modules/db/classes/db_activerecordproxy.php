@@ -36,6 +36,13 @@
 			return $this->get_object()->$field;
 		}
 		
+		/*
+		 * Check if proxy loaded value exists for the given field name
+		 */
+		public function __isset($field) {
+			return array_key_exists($field, $this->fields);
+		}
+
 		public function __call($method, $arguments = array())
 		{
 			/*
@@ -141,4 +148,3 @@
 			return $this->heavy_obj = $obj->find($this->key);
 		}
 	}
-?>
