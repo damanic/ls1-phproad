@@ -97,6 +97,29 @@
 		 * @var Phpr_Session
 		 */
 		public static $events = null;
+
+		/**
+		 * Determine if all PHPR foundation objects have been initialized
+		 * @return bool
+		 */
+		public static function ready(){
+			if(	self::$config
+				&& self::$classLoader
+				&& self::$errorLog
+				&& self::$traceLog
+				&& self::$router
+				&& self::$response
+				&& self::$request
+				&& self::$lang
+				&& self::$security
+				&& self::$frontend_security
+				&& self::$session
+				&& self::$events
+			){
+				return true;
+			}
+			return false;
+		}
 	}
 
 ?>

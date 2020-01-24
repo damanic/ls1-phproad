@@ -1356,29 +1356,29 @@
 			if (isset(self::$describe_cache[$this->table_name])) 
 				return self::$describe_cache[$this->table_name];
 
-			if (self::$cache_describe && Phpr::$config->get('ALLOW_DB_DESCRIBE_CACHE')) 
-			{
-				$cache = Core_CacheBase::create();
-				
-				$descriptions = $cache->get('phpr_table_descriptions');
-				if (!$descriptions || !is_array($descriptions))
-					$descriptions = array();
-
-				try
+				if (self::$cache_describe && Phpr::$config->get('ALLOW_DB_DESCRIBE_CACHE'))
 				{
-					if (is_array($descriptions) && array_key_exists($this->table_name, $descriptions))
-						return self::$describe_cache[$this->table_name] = $descriptions[$this->table_name];
-				} catch (exception $ex)
-				{}
+					$cache = Core_CacheBase::create();
 
-				// DESCRIBE and save cache
-				$describe = $this->describe_table($this->table_name);
-				self::$describe_cache[$this->table_name] = $describe;
+					$descriptions = $cache->get('phpr_table_descriptions');
+					if (!$descriptions || !is_array($descriptions))
+						$descriptions = array();
 
-				$descriptions[$this->table_name] = $describe;
-				$cache->set('phpr_table_descriptions', $descriptions);
-				return $describe;
-			}
+					try
+					{
+						if (is_array($descriptions) && array_key_exists($this->table_name, $descriptions))
+							return self::$describe_cache[$this->table_name] = $descriptions[$this->table_name];
+					} catch (exception $ex)
+					{}
+
+					// DESCRIBE and save cache
+					$describe = $this->describe_table($this->table_name);
+					self::$describe_cache[$this->table_name] = $describe;
+
+					$descriptions[$this->table_name] = $describe;
+					$cache->set('phpr_table_descriptions', $descriptions);
+					return $describe;
+				}
 
 			return $this->fields_cache = self::$describe_cache[$this->table_name] = $this->describe_table($this->table_name);
 		}
@@ -1386,14 +1386,14 @@
 		public static function clear_describe_cache()
 		{
 			Phpr::$session->set('phpr_table_descriptions', array());
-			
+
 			if (Phpr::$config->get('ALLOW_DB_DESCRIBE_CACHE'))
 			{
-				$cache = Core_CacheBase::create();
-				$cache->set('phpr_table_descriptions', false);
+			$cache = Core_CacheBase::create();
+			$cache->set('phpr_table_descriptions', false);
 			}
 		}
-		
+
 		protected function create_footprints(&$new_values)
 		{
 			if ($this->auto_footprints && $this->field('created_user_id'))
@@ -2464,17 +2464,22 @@
 
 		public function __sleep() 
 		{
-			$this->serialized = $this->serialize($this->serialize_associations);
-			return array('serialized');
+			$this->serialized = $this->serialize( $this->serialize_associations );
+			return array( 'serialized' );
 		}
-	
+
 		public function __wakeup()
 		{
-			if (isset($this->serialized))
-			{
+			//This magic method could be called by session_start before Phpr has fully initialized
+			if(!Phpr::ready()) {
+				//load Phpr config required for wakeup
+				Phpr::$config = new Phpr_Config();
+			}
+
+			if ( isset( $this->serialized ) ) {
 				$this->initialize();
-				$this->unserialize($this->serialized);
-				unset($this->serialized);
+				$this->unserialize( $this->serialized );
+				unset( $this->serialized );
 			}
 		}
 
