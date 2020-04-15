@@ -16,42 +16,58 @@
 				$resource = substr($resource, 1);
 
 			$result = Phpr::$request->getSubdirectory().$resource;
-			if ($add_host_name_and_protocol)
-				$result = Phpr::$request->getRootUrl($protocol).$result;
+			$root_url = null;
+
+			if ($add_host_name_and_protocol){
+				$root_url = Phpr::$request->getRootUrl($protocol);
+				if(!$root_url){ //Most likely CLI executed, try config siteUrl
+					$protocol = $protocol ? $protocol."://" : '//';
+					$root_url = self::siteUrl(null, true);
+					$root_url = $root_url ? $protocol.$root_url : null;
+				}
+			}
 				
-			return $result;
+			return $root_url.$result;
 		}
 		
 		/**
 		 * Returns the URL of the website, as specified in the configuration WEBSITE_URL parameter.
-		 * @param string $Resource Optional path to a resource. 
+		 *
+		 * @param string  $resource          Optional path to a resource.
 		 * Use this parameter to obtain the absolute URL of a resource.
 		 * Example: Phpr_Url::siteUrl( 'images/button.gif' ) will return http://www.your-company.com/images/button.gif
-		 * @param boolean $SuppressProtocol Indicates whether the protocol name (http, https) must be suppressed.
+		 * @param boolean $suppress_protocol Indicates whether the protocol name (http, https) must be suppressed.
+		 *
 		 * @return string
 		 */
-		public static function siteUrl( $Resource = null, $SuppressProtocol = false )
+		public static function siteUrl( $resource = null, $suppress_protocol = false )
 		{
-			$URL = Phpr::$config->get('WEBSITE_URL', null);
+			$url = Phpr::$config->get('WEBSITE_URL', null);
 
-			if ( $SuppressProtocol )
-			{
-				$URL = str_replace( 'https://', '', $URL );
-				$URL = str_replace( 'http://', '', $URL );
+			if($url){
+				$parsed_url = parse_url($url);
+				if($parsed_url){
+					if($suppress_protocol && isset($parsed_url['host'])){
+						$url = $parsed_url['host'];
+						if(isset($parsed_url['path'])){
+							$url .= $parsed_url['path'];
+						}
+					}
+				}
+				$url = rtrim($url,"/");
 			}
 
-			if ( $Resource === null || !strlen($Resource) )
-				return $URL;
+			if ( $resource === null || !strlen($resource) )
+				return $url;
 
-			if ( $URL !== null )
-			{
-				if ( $Resource{0} == '/' )
-					$Resource = substr( $Resource, 1 );
+			if ( $url !== null ) {
+				if ( $resource{0} == '/' )
+					$resource = substr( $resource, 1 );
 
-				return $URL.'/'.$Resource;
+				return $url.'/'.$resource;
 			}
 
-			return $Resource;
+			return $resource;
 		}
 		
 		public static function get_params($url) {
