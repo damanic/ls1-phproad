@@ -17,3 +17,4 @@
 #17|@50d6ae6 Added the error details field to the trace log table
 #18 Updated formPrepareRecordFinderList() to allow the 'list_custom_prepare_func' to be passed as a render option.
 #1.8.1 Start community updates (github:damanic). Support IPV6
+#1.8.2 Improve active record binds
