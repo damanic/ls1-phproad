@@ -341,30 +341,29 @@
 		 * @param array $bind Column-value pairs.
 		 * @return int The number of affected rows.
 		 */
-		public function sql_insert($table, $values, $pairs = null) 
+		public function sql_insert( $table, $bind, $pairs = null)
 		{
 			// col names come from the array keys
 			if (is_null($pairs)) 
 			{
-				$cols = array_keys($values);
+				$cols = array_keys($bind);
 				// build the statement
 				$sql = 'INSERT INTO ' . $table
 					. '(' . implode(', ', $cols) . ') '
 					. 'VALUES (:' . implode(', :', $cols) . ')';
 
 				// execute the statement and return the number of affected rows
-				$this->query($this->prepare_tablename($this->prepare($sql, $values), $table));
-			} else 
-			{
-				$cols = $values;
-				$values = array();
+				$this->query($this->prepare_tablename($this->prepare($sql, $bind), $table));
+			} else {
+				$cols = $bind;
+				$bind = array();
 				foreach($pairs as $pair)
-					$values[] = $this->prepare('(?, ?)', $pair[0], $pair[1]);
+					$bind[] = $this->prepare('(?, ?)', $pair[0], $pair[1]);
 
 				// build the statement
 				$sql = 'INSERT INTO ' . $table
 					. '(' . implode(', ', $cols) . ') '
-					. 'VALUES' . implode(',', $values);
+					. 'VALUES' . implode(',', $bind);
 				// execute the statement and return the number of affected rows
 				$this->query($this->prepare_tablename($sql, $table));
 			}
