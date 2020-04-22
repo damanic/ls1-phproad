@@ -13,7 +13,7 @@ class Phpr_Mcrypt {
 	public function __construct(){
 		if(!extension_loaded('mcrypt')){
 			traceLog('USING MCYRPT COMPAT');
-			$native = false;
+			$this->native = false;
 		}
 	}
 
