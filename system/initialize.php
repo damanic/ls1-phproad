@@ -81,18 +81,8 @@
 			Phpr_autoload($name);
 		}
 	}
-	
-	if(function_exists("spl_autoload_register")) 
-	{
-		spl_autoload_register("Phpr_InternalAutoload");
-	} 
-	else 
-	{
-		function __autoload($name) 
-		{
-			Phpr_InternalAutoload($name);
-		}
-	}
+
+	spl_autoload_register("Phpr_InternalAutoload");
 
 	/*
 	 * Add vendor autoload
