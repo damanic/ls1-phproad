@@ -1,0 +1,24 @@
+{
+    "name": "phproad/phproad",
+    "type": "library",
+    "description": "PHP Application Framwork (LS1)",
+    "keywords": [],
+    "homepage": "https://github.com/damanic/ls1-phproad",
+    "license": "MIT",
+    "authors": [],
+    "require": {
+        "php": ">=5.3.3",
+        "phpseclib/phpseclib": "~2.0",
+        "mobiledetect/mobiledetectlib": "~2",
+        "paragonie/random_compat": "~2",
+        "matthiasmullie/minify": "^1.3"
+    },
+    "require-dev": {},
+    "suggest": {
+        "ext-libsodium": "SSH2/SFTP can make use of some algorithms provided by the libsodium-php extension.",
+        "ext-openssl": "Install the OpenSSL extension in order to speed up a wide variety of cryptographic operations.",
+        "ext-mcrypt": "Install the Mcrypt extension in order to speed up a few other cryptographic operations.",
+        "ext-gmp": "Install the GMP (GNU Multiple Precision) extension in order to speed up arbitrary precision integer arithmetic operations."
+    },
+    "autoload": {}
+}

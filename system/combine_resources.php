@@ -3,6 +3,7 @@
 	 * PHP Road
 	 *
 	 * JavaScript/CSS resources combining
+	 * Can be called via direct HTTP request
 	 *
 	 * @package		PHPRoad
 	 * @author		Aleksey Bobkov
@@ -10,30 +11,27 @@
 
 	if (!isset($_GET['file'])) 
 		exit();
-		
-	function phpr_minify_css($css) 
-	{
-		$css = preg_replace( '#\s+#', ' ', $css );
-		$css = preg_replace( '#/\*.*?\*/#s', '', $css );
-		$css = str_replace( '; ', ';', $css );
-		$css = str_replace( ': ', ':', $css );
-		$css = str_replace( ' {', '{', $css );
-		$css = str_replace( '{ ', '{', $css );
-		$css = str_replace( ', ', ',', $css );
-		$css = str_replace( '} ', '}', $css );
-		$css = str_replace( ';}', '}', $css );
 
-		return trim( $css );
-	}
-	
-	function phpr_is_remote_file($path)
-	{
-		return substr($path, 0, 7) === 'http://' || substr($path, 0, 8) === 'https://';
-	}
-
+	//include required environment variables
 	define( "PATH_APP", str_replace("\\", "/", realpath(dirname(dirname(dirname(__FILE__))))));
-		
 	include(PATH_APP . '/config/config.php'); // we need to load the config when it has access to PATH_APP for $allowed_paths
+	require PATH_SYSTEM."/vendor/autoload.php";
+	use MatthiasMullie\Minify;
+
+	function phpr_is_remote_file($path) {
+		if (filter_var($path, FILTER_VALIDATE_URL)) {
+			return true;
+		}
+		return false;
+	}
+
+	function phpr_get_resource_type() {
+		$type = null;
+		if(preg_match('#ls_(.+)_combine#simU', htmlentities($_GET['q'], ENT_COMPAT, 'UTF-8'), $match)) { // htmlentities just incase something malicious (just being safe)
+			$type = $match[1];
+		}
+		return $type;
+	}
 
 	$allowed_types = isset($CONFIG['ALLOWED_RESOURCE_EXTENSIONS']) ? $CONFIG['ALLOWED_RESOURCE_EXTENSIONS'] : array('js', 'css');
 	$allowed_paths = isset($CONFIG['ALLOWED_RESOURCE_PATHS']) ? $CONFIG['ALLOWED_RESOURCE_PATHS'] : array(PATH_APP);
@@ -48,6 +46,7 @@
 	
 	/*
 	 * Prepare the asset list
+	 * @todo these resource alias are outside of framework scope
 	 */
 	
 	$aliases = array(
@@ -123,17 +122,6 @@
 	/*
 	 * Caching
 	 */
-	 
-	function phpr_get_resource_type() {
-		$type = null;
-		
-		if(preg_match('#ls_(.+)_combine#simU', htmlentities($_GET['q'], ENT_COMPAT, 'UTF-8'), $match)) { // htmlentities just incase something malicious (just being safe)
-			$type = $match[1];
-		}
-	
-		return $type;
-	}
-	 
 	$type = phpr_get_resource_type();
 	
 	$mime = 'text/' . ($type == 'js' ? 'javascript' : $type);
@@ -218,13 +206,12 @@
 				$content .= sprintf("\r\n/* Asset Error: asset %s not found. */\r\n", $orig_url);
 		}
 
-		if ($type == 'javascript' && !$src_mode)
-		{
-			require PATH_APP.'/phproad/thirdpart/javascriptpacker/JSMin.php';
-			$content = JSMin::minify($content);
-		} elseif ($type == 'css' && !$src_mode)
-		{
-			$content = phpr_minify_css($content);
+		if ($type == 'javascript' && !$src_mode) {
+			$minifier = new Minify\JS($content);
+			$content = $minifier->minify();
+		} elseif ($type == 'css' && !$src_mode) {
+			$minifier = new Minify\CSS($content);
+			$content = $minifier->minify();
 		}
 
 		if ($supportsGzip)

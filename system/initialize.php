@@ -95,6 +95,11 @@
 	}
 
 	/*
+	 * Add vendor autoload
+	 */
+	 require PATH_SYSTEM."/vendor/autoload.php";
+
+	/*
 	 * Turn off the magic quotes
 	 */
 	if (version_compare(PHP_VERSION, '5.3.0', '<')) {
