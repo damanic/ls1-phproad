@@ -866,7 +866,7 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
 
 			// encrypt
 			if (in_array($property->name, $this->encrypted_columns))
-				$val = base64_encode(Phpr_SecurityFramework::create()->encrypt($val));
+				$val = base64_encode(Phpr_SecurityFramework::create()->tagged_encrypt($val));
 
 			// Set value
 			$record[$property->name] = $val;
@@ -1053,11 +1053,14 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
 			{
 				if (in_array($name, $this->encrypted_columns) && strlen($val))
 				{
-					try
-					{
-						$val = Phpr_SecurityFramework::create()->decrypt(base64_decode($val));
-					} catch (Exception $ex)
-					{
+					$security_framework = Phpr_SecurityFramework::create();
+					try {
+						$val = base64_decode($val);
+						if(!$security_framework->encrypted_string_has_tag($val)){
+							$security_framework->use_legacy_encryption_handler();
+						}
+						$val = $security_framework->decrypt($val);
+					} catch (Exception $ex) {
 						$val = null;
 					}
 				}
@@ -3122,6 +3125,7 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
 	{
 		return $this->find_all();
 	}
+
 
 	/*
 	 * Event descriptions
