@@ -108,15 +108,15 @@ class Phpr_SecurityFramework {
 		$regex = '#<\s*?handler\b[^>]*>(.*?)</handler\b[^>]*>#s';
 		$matches = array();
 		preg_match($regex, $data, $matches);
-		$handler_tag = ($matches[1]) ? $matches[1] :false;
+		$handler_tag = (isset($matches[1]) && $matches[1]) ? $matches[1] : false;
 		if($handler_tag){
 			$data = str_replace('<handler>'.$handler_tag.'</handler>','',$data);
 			if(class_exists($handler_tag) && (get_class($this->encryption_handler)) !== $handler_tag){
 				$this->encryption_handler = new $handler_tag();
 			}
-		} else {
-			throw new Phpr_ApplicationException('Encryption string is missing the handler tag');
 		}
+		$data = str_replace('<handler>','',$data);
+		$data = str_replace('</handler>','',$data);
 		return $this->decrypt($data, $key, $salt);
 	}
 
