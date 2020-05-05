@@ -21,9 +21,15 @@
 			if ($add_host_name_and_protocol){
 				$root_url = Phpr::$request->getRootUrl($protocol);
 				if(!$root_url){ //Most likely CLI executed, try config siteUrl
+					if(!$protocol){
+						//check if protocol can be extracted from siteurl config
+						$site_url = self::siteUrl(null, false);
+						$site_protocol = parse_url($site_url, PHP_URL_SCHEME);
+						$protocol =  $site_protocol ? $site_protocol : null;
+					}
 					$protocol = $protocol ? $protocol."://" : '//';
-					$root_url = self::siteUrl(null, true);
-					$root_url = $root_url ? $protocol.$root_url : null;
+					$site_url = self::siteUrl(null, true);
+					$root_url =  $site_url ? $protocol.$site_url : null;
 				}
 			}
 				
