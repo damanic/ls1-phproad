@@ -15,6 +15,7 @@
 	//include required environment variables
 	define( "PATH_APP", str_replace("\\", "/", realpath(dirname(dirname(dirname(__FILE__))))));
 	include(PATH_APP . '/config/config.php'); // we need to load the config when it has access to PATH_APP for $allowed_paths
+	define( "PATH_SYSTEM", str_replace("\\", "/", realpath(dirname(__FILE__)."/..") ) );
 	require PATH_SYSTEM."/vendor/autoload.php";
 	use MatthiasMullie\Minify;
 
