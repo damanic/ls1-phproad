@@ -2,4 +2,4 @@
 /*
  * Boot PHPR
  */
-include '/system/initialize.php';
+include 'system/initialize.php';
