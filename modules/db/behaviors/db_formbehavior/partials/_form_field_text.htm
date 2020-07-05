@@ -2,12 +2,12 @@
 	$columnDefinition = $form_field->getColDefinition();
 	$columnInfo = $columnDefinition->getColumnInfo();
 	$maxLength = $columnInfo->length !== null ? 'maxlength="'.$columnInfo->length.'"' : null;
-    $currency = isset($columnInfo->currency) && $columnInfo->currency;
+	$currency_enabled =   isset($columnDefinition->currency) && $columnDefinition->currency;
 ?>
 
 <input autocomplete="off" <? if ($form_field->disabled) echo 'disabled="disabled"' ?> <?= $maxLength ?>
 	   value="<?= h($form_model->displayField($form_field->dbName)) ?>"
-	   class="<?= $columnDefinition->type ?> <?= $currency ? 'currency' : null ?>"
+	   class="<?= $columnDefinition->type ?> <?= $currency_enabled ? 'currency' : null ?>"
 	   type="text" id="<?= $this->formGetElementId($form_model_class.'_'.$form_field->dbName) ?>"
 	   name="<?= $form_model_class ?>[<?= $form_field->dbName ?>]"
 	   placeholder="<?= h($form_field->getPlaceholder()) ?>"/>

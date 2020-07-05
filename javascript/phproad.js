@@ -4,13 +4,16 @@
 
 function ls_root_url(url)
 {
-	if (!lemonstand_root_dir)
+	var root_dir = (typeof phpr_root_dir !== 'undefined') ? phpr_root_dir : false
+	root_dir = (typeof lemonstand_root_dir !== 'undefined') ? lemonstand_root_dir : root_dir;
+
+	if (!root_dir)
 		return url;
 		
 	if (url.substr(0,1) == '/')
 		url = url.substr(1);
 	
-	return lemonstand_root_dir + url;
+	return root_dir + url;
 }
 
 /*
