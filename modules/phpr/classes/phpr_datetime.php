@@ -449,7 +449,8 @@
 		}
 
 		/**
-		 * Returns a Phpr_DateTime object representing the date/and time value in GMT.
+		 * Returns a Phpr_DateTime object representing the date/and time value in GMT (UTC)
+		 * GMT is UTC+00:00
 		 * @return Phpr_DateTime
 		 */
 		public function gmt()
@@ -457,22 +458,22 @@
 			$Result = new Phpr_DateTime( null, $this->timeZone );
 			$Result->setInteger( $this->intValue );
 			$Result->setTimeZone( new DateTimeZone("GMT") );
-
 			return $Result;
 		}
 
 		/**
-		 * Returns the Phpr_DateTime object corresponding the current GMT date and time.
-		 * @param DateTimeZone $TimeZone Optional, specifies the time zone to assign to the instance.
+		 * Returns the Phpr_DateTime object corresponding the current GMT (UTC) date and time.
+		 * GMT is UTC+00:00
 		 * @return Phpr_DateTime
 		 */
-		public static function gmtNow( DateTimeZone $TimeZone = null )
+		public static function gmtNow()
 		{
+			$TimeZone = new DateTimeZone("GMT");
 			$Result = new Phpr_DateTime( null, $TimeZone );
 			$Result->setInteger( time()*(Phpr_DateTime::intInSecond) + Phpr_DateTime::timestampOffset );
-
 			return $Result;
 		}
+
 
 		/**
 		 * Returns the instance of the Phpr_DateTime class representing the current local date and time.
