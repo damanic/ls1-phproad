@@ -653,6 +653,10 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
 		return $this->load_relation($relation, $params);
 	}
 
+	public function find_related_proxy($relation, $params = null){
+		return $this->load_relation_proxy($relation, $params);
+	}
+
 	/**
 	 * Returns a list of {@link http://lemonstand.com/docs/creating_data_relations/ relation} objects, taking into account deferred relations.
 	 * Use this method to obtain a list of relation records, before the record is saved to the database.
@@ -1966,6 +1970,27 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
 		if (in_array($type, array('has_one', 'belongs_to')))
 			return $object->find();
 
+		$data = $object->find_all_internal();
+
+		$data->relation = $name;
+		$data->parent = $this;
+		return $data;
+	}
+
+	protected function load_relation_proxy($name, $params = null){
+		$object = $this->prepare_relation_object($name, $params);
+		if (!$object)
+			return null;
+
+		$type = $this->has_models[$name];
+		if (in_array($type, array('has_one', 'belongs_to')))
+			return $object->find_proxy();
+
+		$this->model_options = array(
+			'no_validation'	 => true,
+			'no_column_init' => true,
+			'no_timestamps' => true,
+		);
 		$data = $object->find_all_internal();
 
 		$data->relation = $name;
