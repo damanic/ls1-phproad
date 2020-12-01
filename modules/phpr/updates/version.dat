@@ -7,3 +7,4 @@
 #7 Fixes issue with magic_quotes
 #8 Adds strict mode for getUserIp()
 #9 Improved root_url determination
+#10 Adobe Flash EOL
