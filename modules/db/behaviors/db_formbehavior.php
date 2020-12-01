@@ -1888,31 +1888,37 @@
 		{
 			if (Phpr::$request->isRemoteEvent())
 				return;
-			
+
+			//FORM STYLES
 			$this->_controller->addCss('/phproad/modules/db/behaviors/db_formbehavior/resources/css/forms.css?'.module_build('core'));
+
+			//DATEPICKER
 			$this->_controller->addJavaScript('/phproad/modules/db/behaviors/db_formbehavior/resources/javascript/datepicker.js?'.module_build('core'));
 			$this->_controller->addCss('/phproad/resources/css/datepicker.css?'.module_build('core'));
 
-			$this->_controller->addJavaScript('/phproad/modules/db/behaviors/db_formbehavior/resources/javascript/Fx.ProgressBar.js?'.module_build('core'));
-			$this->_controller->addJavaScript('/phproad/modules/db/behaviors/db_formbehavior/resources/javascript/Swiff.Uploader.js?'.module_build('core'));
-			$this->_controller->addJavaScript('/phproad/modules/db/behaviors/db_formbehavior/resources/javascript/FancyUpload2.js?'.module_build('core'));
-			$this->_controller->addJavaScript('/phproad/modules/db/behaviors/db_formbehavior/resources/javascript/fileuploader.js?'.module_build('core'));
 
+			//ACE
 			if (!$this->_controller->form_disable_ace)
 			{
 				$this->_controller->addJavaScript('/phproad/thirdpart/ace/ace.js?'.module_build('core'));
 				$this->_controller->addJavaScript('/phproad/modules/db/behaviors/db_formbehavior/resources/javascript/ace_wrapper.js?'.module_build('core'));
 			}
 
+			//GRID CONTROL WIDGET
 			$this->_controller->addJavaScript('/phproad/modules/db/behaviors/db_formbehavior/resources/javascript/grid_control.js?'.module_build('core'));
-			$this->_controller->addJavaScript('/phproad/modules/db/behaviors/db_formbehavior/resources/javascript/fileuploader.js?'.module_build('core'));
 
-			$tiny_mce_src = Phpr::$config->get('DEV_MODE') ? 
-				'/phproad/thirdpart/tiny_mce/tiny_mce_src.js?'.module_build('core') : 
-				'/phproad/thirdpart/tiny_mce/tiny_mce.js?'.module_build('core');
+			//TINYMCE
+			$tiny_mce_src = Phpr::$config->get('DEV_MODE') ?  '/phproad/thirdpart/tiny_mce/tiny_mce_src.js?'.module_build('core') : '/phproad/thirdpart/tiny_mce/tiny_mce.js?'.module_build('core');
+			$tiny_mce_version = Phpr::$config->get('TINY_MCE_VERSION');
+			$tiny_mce_src = $tiny_mce_version ?  '/phproad/thirdpart/tinymce'.$tiny_mce_version.'/tinymce.min.js?'.module_build('core') : $tiny_mce_src;
 			$this->_controller->addJavaScript($tiny_mce_src);
-			
+
+			//AUTOCOMPLETE
 			$this->_controller->addJavaScript('/phproad/thirdpart/autocompleter/autocompleter.js?'.module_build('core'));
+
+			//FILEUPLOADER
+			$this->_controller->addJavaScript('/phproad/modules/db/behaviors/db_formbehavior/resources/javascript/fileupload/jquery.fileupload.js?'.module_build('core'));
+			$this->_controller->addJavaScript('/phproad/modules/db/behaviors/db_formbehavior/resources/javascript/fileupload/jquery.iframe-transport.js?'.module_build('core'));
 		}
 		
 		public function formInitWidget($db_name, $model = null)
