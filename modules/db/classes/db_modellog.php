@@ -37,6 +37,14 @@ class Db_ModelLog extends Phpr_Extension
 		$this->_model->addEvent( 'onAfterLoad', $this, 'modelLogOnModelLoaded' );
 	}
 
+	/**
+	 * Logs field values for newly created model record
+	 *
+	 * If the model supports auto footprints the ID and NAME of the
+	 * user creating the record will be logged
+	 *
+	 * @return void
+	 */
 	public function modelLogOnModelCreated()
 	{
 		if ($this->_disabled)
@@ -68,10 +76,27 @@ class Db_ModelLog extends Phpr_Extension
 			$fieldNode->appendChild($new);
 		}
 
-		$this->createLogRecord(self::typeCreate, $dom->saveXML());
+		$user= null;
+		if($this->_model->auto_footprints){ //use footprints if available
+			$user = (object) array(
+				'id' => $this->_model->created_user_id,
+				'name' => $this->_model->created_user_name,
+			);
+		}
+		$this->createLogRecord(self::typeCreate, $dom->saveXML(), $user);
 	}
 
-	public function modelLogOnModelUpdated()
+	/**
+	 * Logs any field values that have changed when a model record is updated
+	 *
+	 * User footprints on the record are not logged because they are not
+	 * always progressed on this event (eg. backend processes do not update footprints).
+	 *
+	 * @param bool $log_active_user  If set to false, lookup of active user will not be performed
+	 *
+	 * @return void
+	 */
+	public function modelLogOnModelUpdated($log_active_user = true)
 	{
 		if ($this->_disabled)
 			return;
@@ -123,42 +148,96 @@ class Db_ModelLog extends Phpr_Extension
 			}
 		}
 
-		if ($fieldsAdded)
-			$this->createLogRecord(self::typeUpdate, $dom->saveXML());
+		if ($fieldsAdded) {
+			$user = null;
+			if ($log_active_user ) {
+				$user = Phpr::$security->getUser();
+			}
+			$this->createLogRecord( self::typeUpdate, $dom->saveXML(), $user );
+		}
 	}
 
-	public function modelLogOnModelDeleted()
-	{
-		if ($this->_disabled)
+	/**
+	 * Logs the ID of the deleted models record
+	 *
+	 * This will log the active user if one is found.
+	 *
+	 * @param bool $log_active_user  If set to false, lookup of active user will not be performed
+	 *
+	 * @return Db_ActiveRecord The model deleted
+	 */
+	public function modelLogOnModelDeleted($log_active_user = true) {
+		if ( $this->_disabled ) {
 			return;
+		}
 
-		$this->createLogRecord(self::typeDelete, null);
+		$user = null;
+
+		if ($log_active_user ) {
+			$user = Phpr::$security->getUser();
+		}
+
+		$this->createLogRecord(self::typeDelete, null, $user);
 		return $this->_model;
 	}
 
+	/**
+	 * Copies the models values when a model is loaded so that
+	 * they can be compared against created/updated values to
+	 * identify changed fields.
+	 *
+	 * @return Db_ActiveRecord The model under consideration
+	 */
 	public function modelLogOnModelLoaded()
 	{
 		$this->_loadedData = $this->getDisplayValues();
 		return $this->_model;
 	}
 
-	public function modelLogCustom($name, $params=array())
+	/**
+	 * Create custom model logs for other events
+	 *
+	 *
+	 * @param string $name  Name of the custom event
+	 * @param array $params A simple array of key=>values to store in the log
+	 * @param null  $user  Optional , a user to associate the log with
+	 *
+	 * @return mixed
+	 */
+	public function modelLogCustom($name, $params=array(), $user=null)
 	{
+		$fieldsAdded = 0;
 		$params['message'] = $name;
-		$param_data = Phpr_Xml::from_plain_array($params, 'record', true);
-		$this->createLogRecord(self::typeCustom, $param_data);
+
+		$dom = new DOMDocument('1.0', 'utf-8');
+		$record = new DOMElement('record');
+		$dom->appendChild($record);
+
+		foreach($params as $param_key => $param_value){
+			$fieldNode = new DOMElement($param_key, $param_value);
+			$record->appendChild($fieldNode);
+			$fieldsAdded++;
+		}
+
+		if ($fieldsAdded)
+			$this->createLogRecord(self::typeCustom, $dom->saveXML(), $user);
+
+		return $this->_model;
+	}
+
+	/**
+	 * Use this to disable all logging on this model
+	 * @return mixed
+	 */
+	public function modelLogDisable()
+	{
+		$this->_disabled = true;
 		return $this->_model;
 	}
 
 	public function modelLogCleanup( $number_to_keep = null)
 	{
 		$this->deleteOldRecords($number_to_keep);
-		return $this->_model;
-	}
-
-	public function modelLogDisable()
-	{
-		$this->_disabled = true;
 		return $this->_model;
 	}
 
@@ -176,11 +255,11 @@ class Db_ModelLog extends Phpr_Extension
 		return $records;
 	}
 
+
 	// Internals
 	//
 
-
-	private function createLogRecord($type, $content)
+	private function createLogRecord($type, $content, $user=null)
 	{
 		$primaryKey = $this->_model->primary_key;
 		$record = new Db_ModelLogRecord();
@@ -188,6 +267,10 @@ class Db_ModelLog extends Phpr_Extension
 		$record->master_object_id = $this->_model->$primaryKey;
 		$record->param_data = $content;
 		$record->type = $type;
+		if($user){
+			$record->user_id = $user->id;
+			$record->user_name = $user->name;
+		}
 		$record->save();
 	}
 
@@ -211,7 +294,6 @@ class Db_ModelLog extends Phpr_Extension
 
 		Db_Helper::query('delete from db_model_logs where '.$where.' order by record_datetime limit '.$offset, $bind);
 	}
-
 
 	private function getDisplayValues($model = null)
 	{
