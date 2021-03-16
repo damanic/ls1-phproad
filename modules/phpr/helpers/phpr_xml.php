@@ -118,7 +118,7 @@ class Phpr_Xml
 
 	public static function to_array($xml_data) 
 	{
-		$array = (array)simplexml_load_string($xml_data);
+		$array = (array)simplexml_load_string($xml_data, 'SimpleXMLElement', LIBXML_NOCDATA);
 		$array = json_decode(json_encode($array),1);
 		return $array;
 	}
