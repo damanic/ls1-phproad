@@ -40,17 +40,17 @@ class Db_ModelLogRecord extends Db_ActiveRecord
 	{
 		switch ($this->type)
 		{
-			case Db_ModelLog::type_create: return $this->model_log_create_name; break;
-			case Db_ModelLog::type_update: return $this->model_log_update_name; break;
-			case Db_ModelLog::type_delete: return $this->model_log_delete_name; break;
-			case Db_ModelLog::type_custom: return $this->get_param_data_field('message', $this->model_log_custom_name); break;
+			case Db_ModelLog::typeCreate: return $this->model_log_create_name; break;
+			case Db_ModelLog::typeUpdate: return $this->model_log_update_name; break;
+			case Db_ModelLog::typeDelete: return $this->model_log_delete_name; break;
+			case Db_ModelLog::typeCustom: return $this->get_param_data_field('message', $this->model_log_custom_name); break;
 		}
 		return "";
 	}
 
 	public function is_custom()
 	{
-		return ($this->type == Db_ModelLog::type_custom);
+		return ($this->type == Db_ModelLog::typeCustom);
 	}
 
 
@@ -62,6 +62,7 @@ class Db_ModelLogRecord extends Db_ActiveRecord
 	{
 		$changed_fields_array = array();
 		$field_data_array = $this->get_param_data_field('field');
+
 
 		if ($field_data_array) {
 				$changed_fields = isset($field_data_array['@attributes']) ? array($field_data_array) : $field_data_array;
