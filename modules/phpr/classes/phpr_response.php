@@ -119,7 +119,18 @@
 			}
 			else
 			{
+				$event_output = '
+					if ( typeof window.CustomEvent === "function" ){
+						var event = new CustomEvent("on_phpr_response_redirect", { 
+							"detail": {
+								"Uri" : "'.$Uri.'"
+							} 
+						});
+						window.dispatchEvent(event);
+					}
+				';
 				$output = "<script type='text/javascript'>";
+				$output .= $event_output;
 				$output .= "(function(){window.location='".$Uri."';}).delay(100)";
 				$output .= "</script>";
 				echo $output;
