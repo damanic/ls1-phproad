@@ -27,10 +27,9 @@
 			else 
 			{
 				if(!self::$get_matches) {
-					self::$get_matches = create_function(
-						'$matches',
-						'return \':__table_name__.\' . $matches[0];'
-					);
+					self::$get_matches = function($matches){
+						return ':__table_name__.' . $matches[0];
+					};
 				}
 			
 				$cond = preg_replace_callback('/^([a-z_0-9`]+)[\s|=]+/i',

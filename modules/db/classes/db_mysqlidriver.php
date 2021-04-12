@@ -54,7 +54,7 @@ class Db_MySQLiDriver extends Db_Driver
 			$err = 0;
 
 			if ((Db::$connection == null) || (Db::$connection === false) || ($err = mysqli_errno(Db::$connection) != 0)) {
-				throw new Phpr_DatabaseException('MySQL connection error: ' . @mysql_error());
+				throw new Phpr_DatabaseException('MySQL connection error: ' . @mysqli_error());
 			}
 
 			// Set charset
