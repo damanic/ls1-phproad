@@ -1575,7 +1575,7 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
 		$obj->objectId = 'ac_obj_'.self::$object_counter;
 
 		$obj->init_columns_info(null, true);
-		$obj->applyCalculatedColumns();
+		$obj->applyCalculatedColumns(); //why?
 
 		if (count($obj->parts['from']) == 0)
 			$obj->from($obj->table_name);
