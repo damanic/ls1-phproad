@@ -32,6 +32,7 @@
 		 * @var Phpr_Flash
 		 */
 		public $flash = null;
+		protected $close_session_locks = null;
 
 		/**
 		* Begins a session.
@@ -55,8 +56,17 @@
 				$secure = (empty($_SERVER["HTTPS"]) || ($_SERVER["HTTPS"] === 'off')) ? false : true;
 				
 			session_set_cookie_params ( ini_get('session.cookie_lifetime') , $path, ini_get('session.cookie_domain'),  $secure);
-			
-			if ( $result = session_start() )
+
+			if ( version_compare( PHP_VERSION, '7.0.0' ) >= 0 ) {
+				$this->close_session_locks = true;
+			}
+
+			if ( $this->close_session_locks ) {
+				$result = $this->session_read();
+			} else {
+				$result = $this->session_open();
+			}
+			if ( $result  )
 			{
 				$this->flash = new Phpr_Flash();
 				if ($this->flash)
@@ -87,9 +97,7 @@
 		 */
 		public function destroy()
 		{
-			if ( !session_id() )
-				session_start();
-
+			$this->session_open();
 			$_SESSION = array();
 			session_destroy();
 		}
@@ -120,15 +128,26 @@
 
 		/**
 		* Writes a value to the session.
+		* If close session locks is supported, a session lock will be opened and closed to set the session variable.
+		* The opening and closing of a session lock will not occur if a session has been left open outside of this class
 		* @param string $Name Specifies a value name
 		* @param mixed $Value Specifies a value to write.
 		*/
-		public function set( $Name, $Value = null )
-		{
+		public function set( $Name, $Value = null ) {
+
+			$opened_session_lock = null;
+			if ( $this->close_session_locks ) {
+				$opened_session_lock = $this->session_open();
+			}
+
 			if ( $Value === null )
 				unset($_SESSION[$Name]);
 			else
 				$_SESSION[$Name] = $Value;
+
+			if ( $this->close_session_locks && $opened_session_lock ) {
+				session_write_close();
+			}
 		}
 
 		/**
@@ -150,7 +169,7 @@
 		public function reset()
 		{
 			foreach ($_SESSION as $name=>$value)
-				unset($_SESSION[$name]);
+				$this->set( $name, null );
 				
 			$this->resetDbSessions();
 		}
@@ -176,7 +195,7 @@
 		
 		function offsetUnset($offset)
 		{
-			unset( $_SESSION[$offset] );
+			$this->set($offset, null);
 		}
 		
 		function getIterator()
@@ -185,7 +204,7 @@
 		}
 
 		/**
-		* Returns a number of flash items
+		* Returns the number of session keys set
 		* @return integer
 		*/
 		public function count()
@@ -238,6 +257,37 @@
 					}
 				} catch (Exception $ex) {}
 			}
+		}
+
+		/**
+		 * Opens a session if not already open
+		 * @return boolean true if session open, false if could not be started, null if it was already started
+		 */
+		protected function session_open(){
+			$session_opened = null;
+			if ( version_compare( PHP_VERSION, '5.4.0' ) >= 0 ) {
+				if ( session_status() === PHP_SESSION_NONE ) {
+					$session_opened = session_start();
+				}
+			} else {
+				if ( !session_id() )
+					$session_opened = session_start();
+			}
+			return $session_opened;
+		}
+
+		/**
+		 * Opens a session to populate $_SESSION variables and closes the session lock
+		 * @return boolean true if read successful, false if could not be read
+		 */
+		protected function session_read(){
+			if ( version_compare( PHP_VERSION, '7.0.0' ) >= 0 ) {
+				$session_read = session_start( array( 'read_and_close' => true ) );
+			} else {
+				$session_read = $this->session_open();
+				session_write_close();
+			}
+			return $session_read;
 		}
 	}
 

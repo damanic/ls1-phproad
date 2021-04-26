@@ -35,7 +35,7 @@
 		public function get_data()
 		{
 			$data_id = $this->get_session_data_id();
-			return isset($_SESSION[$data_id]) ? $_SESSION[$data_id] : array();
+			return Phpr::$session->get($data_id, array()); 
 		}
 		
 		public static function dispose_session_data($session_key)
@@ -73,7 +73,7 @@
 		public function get_data_page($pagination, $page_index, $search_term = null, $search_include_records = null)
 		{
 			$data_id = $this->get_session_data_id();
-			$data = isset($_SESSION[$data_id]) ? $_SESSION[$data_id] : array();
+			$data = Phpr::$session->get($data_id, array()); 
 			
 			if (strlen($search_term))
 				$this->apply_search($search_term, $data, $search_include_records);
@@ -96,13 +96,13 @@
 		public function get_record_count()
 		{
 			$data_id = $this->get_session_data_id();
-			return isset($_SESSION[$data_id]) ? count($_SESSION[$data_id]) : 0;
+			return count(Phpr::$session->get($data_id, array()));
 		}
 		
 		public function commit(&$new_data)
 		{
 			$data_id = $this->get_session_data_id();
-			$data = isset($_SESSION[$data_id]) ? $_SESSION[$data_id] : array();
+			$data = Phpr::$session->get($data_id, array()); 
 
 			foreach ($new_data as $record_id=>$row)
 			{
@@ -129,7 +129,7 @@
 		public function append_row($columns, $data_key)
 		{
 			$data_id = $this->get_session_data_id();
-			$data = isset($_SESSION[$data_id]) ? $_SESSION[$data_id] : array();
+			$data = Phpr::$session->get($data_id, array()); 
 
 			$new_row = array();
 			foreach ($columns as $key=>$column)
@@ -142,7 +142,7 @@
 		public function delete_row($data_key)
 		{
 			$data_id = $this->get_session_data_id();
-			$data = isset($_SESSION[$data_id]) ? $_SESSION[$data_id] : array();
+			$data = Phpr::$session->get($data_id, array()); 
 			
 			if (array_key_exists($data_key, $data))
 				unset($data[$data_key]);
