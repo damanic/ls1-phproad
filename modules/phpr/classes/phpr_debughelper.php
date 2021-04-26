@@ -25,7 +25,7 @@
 			if ($reset_timer)
 				self::start_timing($name);
 
-			Phpr::$traceLog->write('['.$time.'] '.$message, self::$listener);
+			self::timing_trace_log($time, $message);
 		}
 		
 		public static function increment($name)
@@ -42,8 +42,7 @@
 		{
 			$message = $message ? $message : $name;
 			$time = self::$incremental[$name];
-
-			Phpr::$traceLog->write('['.$time.'] '.$message, self::$listener);
+			self::timing_trace_log($time, $message);
 		}
 		
 		public static function backtrace()
@@ -60,8 +59,14 @@
 
 			Phpr::$traceLog->write(implode("\n", $data), self::$listener);
 		}
+
+		protected static function timing_trace_log($microtime, $msg){
+			$hours = (int)($microtime/60/60);
+			$minutes = (int)($microtime/60)-$hours*60;
+			$seconds = $microtime-$hours*60*60-$minutes*60;
+			$seconds = number_format((float)$seconds, 3, '.', '');
+			Phpr::$traceLog->write('[microtime: '.$microtime.'][seconds: '.$seconds.'] '.$msg, self::$listener);
+		}
 	}
-	
-	Phpr_DebugHelper::start_timing('Application');
 
 ?>
