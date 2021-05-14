@@ -339,7 +339,7 @@
 				return null;
 
 			$Field = $this->errorFields[0];
-			if ( isset($this->_fields[$Field]) && !$this->_fields[$Field]->focusable )
+			if ( !isset($this->_fields[$Field])  || !$this->_fields[$Field]->focusable )
 				return null;
 
 			$result = null;
