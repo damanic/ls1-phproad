@@ -37,7 +37,8 @@ function phpr_is_remote_file( $path ) {
 
 function phpr_get_resource_type() {
 	$type = null;
-	if ( preg_match( '#ls_(.+)_combine#simU', htmlentities( $_GET['q'], ENT_COMPAT, 'UTF-8' ), $match ) ) { // htmlentities just incase something malicious (just being safe)
+	$request_param_name = Phpr::$config->get('REQUEST_PARAM_NAME', 'q');
+	if ( preg_match( '#ls_(.+)_combine#simU', htmlentities( $_GET[$request_param_name], ENT_COMPAT, 'UTF-8' ), $match ) ) { // htmlentities just incase something malicious (just being safe)
 		$type = $match[1];
 	}
 
