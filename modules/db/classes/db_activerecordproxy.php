@@ -19,13 +19,7 @@
 		
 		public function __set($field, $value)
 		{
-			if (array_key_exists($field, $this->fields))
-			{
-				$this->fields[$field] = $value;
-				return;
-			}
-			
-			$this->get_object()->$field = $value;
+            $this->fields[$field] = $value;
 		}
 		
 		public function __get($field)
@@ -40,7 +34,7 @@
 		 * Check if proxy loaded value exists for the given field name
 		 */
 		public function __isset($field) {
-			return array_key_exists($field, $this->fields);
+			return isset($this->fields[$field]);
 		}
 
 		public function __call($method, $arguments = array())
@@ -139,9 +133,7 @@
 				);
 			}
 
-
 			$obj = new $this->model_class($this->fields, $model_options);
-
 			if($light){
 				return $this->light_obj = $obj;
 			}
