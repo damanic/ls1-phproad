@@ -207,7 +207,7 @@
 					$record_data['act_as_tree_parent_key'] = $parentKey;
 					$record_data['act_as_tree_sql_filter'] = $model->act_as_tree_sql_filter;
 
-					$record = new Db_ActiverecordProxy($record_data['id'], $this->_model_class, $record_data);
+					$record = new Db_ActiverecordProxy($record_data['id'], $this->_model_class, $record_data, $this->_model->strict);
 					$record->extend_with('Db_Act_As_Tree', false, $this->_model_class);
 
 					$parent_id = $record->$parentKey != null ? $record->$parentKey : -1;

@@ -494,7 +494,7 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
 		$result = Db_DbHelper::queryArray( $this->build_sql() );
 		if ( $result ) {
 			$data = $result[0];
-			return new Db_ActiverecordProxy( $data['id'], get_class($this), $data );
+			return new Db_ActiverecordProxy( $data['id'], get_class($this), $data, $this->strict );
 		}
 		return null;
 	}
@@ -578,7 +578,7 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
 		$result->parent = $this;
 		foreach($data as $row) {
 			$data = $row;
-			$result[] = new Db_ActiverecordProxy( $row['id'], get_class($this), $row );
+			$result[] = new Db_ActiverecordProxy( $row['id'], get_class($this), $row, $this->strict );
 		}
 
 		if ($result instanceof Db_ActiverecordProxy){
