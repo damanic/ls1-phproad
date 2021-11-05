@@ -137,20 +137,63 @@
 			return $this->exclude(array($value), $key);
 		}
 
+        /**
+         * Find a single record by ID
+         * @param        $value
+         * @param string $field
+         *
+         * @return mixed|null
+         */
 		function find($value, $field = 'id')
 		{
-			foreach($this->objectArray as $object)
-				if ($object->{$field} == $value) return $object;
-
-			return null;
+			return $this->find_by($field, $value);
 		}
 
-		function find_by($field = 'id', $value) 
-		{
-			return $this->find($value, $field);
-		}
 
-		/**
+        /**
+         * Finds first in collection that has with field equal to the given value
+         *
+         * @param $field
+         * @param $value
+         *
+         * @return mixed|null
+         */
+        function find_by($field, $value, $strict=false)
+        {
+            foreach($this->objectArray as $object){
+                if ($strict) {
+                    if($object->{$field} === $value){return $object;}
+                } else {
+                    if($object->{$field} == $value) {return $object;}
+                }
+            }
+            return null;
+        }
+
+        /**
+         * Finds all records in collection where field equals given value
+         * @param mixed  $value The value to match
+         * @param string $field The field to evaluate
+         * @param bool $strict  Strict comparison off/on
+         *
+         * @return array
+         */
+        function find_all_by($field, $value, $strict=false)
+        {
+            $results = array();
+            foreach($this->objectArray as $object){
+                if ($strict) {
+                    if($object->{$field} === $value){$results[]=$object;}
+                } else {
+                    if($object->{$field} == $value) {$results[]=$object;}
+                }
+            }
+            return $results;
+        }
+
+
+
+        /**
 		 * Convert the collection to an array.
 		 * This method can return a list of model objects or their fields, depending on the parameter values.
 		 * If the <em>$field</em> parameter is NULL, the method returns an array of model objects.
@@ -259,7 +302,7 @@
 			}
 			return $result;
 		}
-	
+
 		function exclude($values, $key = 'id') 
 		{
 			$result = array();
