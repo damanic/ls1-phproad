@@ -1047,16 +1047,15 @@
 			if ( !strlen($Value) && $Params[0] )
 				return true;
 
-//			$result = preg_match("/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/", mb_strtolower($Value)) ? true : false;
-			$result = preg_match("/^[_a-z0-9-\.\=\+]+@[_a-z0-9-\.\=\+]+$/", mb_strtolower($Value)) ? true : false;
+            $is_valid_email = filter_var($Value, FILTER_VALIDATE_EMAIL) !== false;
 
-			if ( !$result )
+			if ( !$is_valid_email )
 			{
 				$Message = strlen($CustomMessage) ? $CustomMessage : sprintf(Phpr::$lang->mod( 'phpr', 'email', 'validation'), $this->fieldName);
 				$this->validation->setError( $Message, $Name );
 			}
 
-			return $result;
+			return $is_valid_email;
 		}
 		
 		/*
