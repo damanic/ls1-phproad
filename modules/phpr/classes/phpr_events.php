@@ -29,7 +29,7 @@
 			extract($options);
 			
 			$args = func_get_args();
-			$handler = extractFunctionArg($args, 1);
+            $handler = $this->extract_function_arg($args, 1);
 			
 			if(count($args) > 0)
 				$priority = (int)$args[0];
@@ -76,20 +76,20 @@
 				$result = array();
 				
 				foreach($this->events[$name] as $event) {
-					$result[] = callFunction($event['handler'], $params);
+                    $result[] = call_user_func_array($event['handler'], $params);
 				}
 			}
 			else if($type === 'filter') {
 				$result = count($params) > 0 ? $params[0] : null;
 				foreach($this->events[$name] as $event) {
-					$result = callFunction($event['handler'], array($result));
+                    $result = call_user_func_array($event['handler'], array($result));
 				}
 			}
 			else if($type === 'update_result') {
 				$result = count($params) > 0 ? $params[0] : null;
 				$args = count($params) > 1 ? $params[1] : array();
 				foreach($this->events[$name] as $event) {
-					$result = callFunction($event['handler'], array($result,$args));
+					$result = call_user_func_array($event['handler'], array($result,$args));
 				}
 			} else {
 				$result = null;
@@ -132,6 +132,41 @@
 			
 			return ($a['priority'] < $b['priority']) ? 1 : -1;
 		}
+
+
+        private function extract_function_arg(&$args, $offset = 0)
+        {
+            $count = count($args) - $offset;
+
+            if ($count == 0)
+                return null;
+
+            if (is_string($args[$offset]) ||
+                is_array($args[$offset]) ||
+                (is_object($args[$offset]) && $args[$offset] instanceof Phpr_Closure))
+            {
+                for ($i = 0; $i <= $offset; $i++) {
+                    $last_obj = array_shift($args);
+                }
+
+                return $last_obj;
+            }
+
+            if ($count > 1 && is_object($args[$offset]) && is_string($args[$offset+1])) {
+                $last_obj = array($args[$offset], $args[$offset+1]);
+
+                $new_args = array();
+
+                for ($i = $offset+2; $i < count($args); $i++) {
+                    $new_args[] = $args[$i];
+                }
+
+                $args = $new_args;
+                return $last_obj;
+            }
+
+            return null;
+        }
 		
 		/**
 		 * @deprecated
