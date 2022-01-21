@@ -2252,7 +2252,7 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
 
                 // If the relation has already been assigned to the model as a property it is effectively cached,
                 // unset the property to force any subsequent __get() calls to reload and return the updated relation
-                if(isset($this->$name)) {
+                if(isset($this->$name) && array_key_exists($name, $this->has_models)) {
                     unset($this->$name);
                 }
 
