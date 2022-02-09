@@ -44,7 +44,13 @@
 			$security = Phpr_SecurityFramework::create();
 			list($key_1, $key_2) = Phpr::$config->get('ADDITIONAL_ENCRYPTION_KEYS', array('jd$5ka#1', '9ao@!d4k'));
 		
-			return json_decode($security->decrypt(base64_decode($value), $key_1, $key_2));
+			$error_details = json_decode($security->decrypt(base64_decode($value), $key_1, $key_2));
+
+			//Force lines to array
+			if(isset($error_details->code_highlight->lines) && is_object($error_details->code_highlight->lines)){
+				$error_details->code_highlight->lines = (array) $error_details->code_highlight->lines;
+			}
+			return $error_details;
 		}
 		
 		public static function get_exception_details($exception) {
@@ -59,9 +65,9 @@
 				'line' => $exception instanceof Cms_ExecutionException ? $exception->code_line : $exception->getLine(),
 				'class_name' => get_class($exception),
 				'code_highlight' => (object) array(
-				'brush' => $exception instanceof Cms_ExecutionException ? 'php' : 'php',
-				'lines' => array()
-			  ),
+					'brush' => $exception instanceof Cms_ExecutionException ? 'php' : 'php',
+					'lines' => array()
+				  ),
 			  'call_stack' => array()
 			);
 
