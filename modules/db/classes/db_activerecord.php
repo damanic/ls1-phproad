@@ -1511,7 +1511,13 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
 
 	public function get_primary_key_value()
 	{
-		return $this->{$this->primary_key};
+        if($this->primary_key){
+            if(isset($this->{$this->primary_key})){
+               return $this->{$this->primary_key};
+            }
+            return null;
+        }
+        throw new Phpr_SystemException('A primary key field has not been set for : '.get_class($this));
 	}
 
 	public function is_new_record()
