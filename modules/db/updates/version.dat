@@ -20,4 +20,5 @@
 #1.8.2 Improve active record binds
 #1.8.3 Support model logs
 #1.8.4 Record active user in model logs
-#1.8.5 Improvements to Db_ActiverecordProxy
+#1.8.5 Improvements to Db_ActiveRecordProxy
+#1.8.6 Improvements to Db_ActiveRecord
