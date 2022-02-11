@@ -1,11 +1,14 @@
 <?
 	
 	class Net_Response {
+
+        public $request;
+        public $headers;
 		public $data;
-		public $request;
 		public $info;
 		public $status_code;
-		public $headers;
+        public $error_code;
+        public $error_info;
 	
 		public function __construct() {
 			$this->data = '';

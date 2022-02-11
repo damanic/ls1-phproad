@@ -1,11 +1,18 @@
 <?
 	
 	class Net_Service {
+
+        protected $settings;
+        protected $mc;
+        protected $connections;
+        protected $jobs;
+        protected $last_request;
+        protected $last_response;
+
 		public function __construct($options = array('active' => true, 'max_connections' => 30)) {
 			$this->settings = $options;
 			$this->connections = array();
 			$this->jobs = array();
-	
 			$this->mc = curl_multi_init();
 		}
 		
@@ -37,7 +44,9 @@
 				$r->request = $request;
 				$r->info = curl_getinfo($c);
 				$r->status_code = $r->info['http_code'];
-	
+                $r->error_info = curl_error($c);
+                $r->error_code = curl_errno($c);
+
 				curl_close($c);
 	
 				return $r;
@@ -100,19 +109,21 @@
 	
 				unset($this->connections[$handle]);
 	
-				$response = new Net_Response();
-				$response->request = $connection['request'];
-				$response->data = $data;
-				$response->info = $info;
-				$response->status_code = curl_getinfo($handle, CURLINFO_HTTP_CODE);
+				$r = new Net_Response();
+				$r->request = $connection['request'];
+				$r->data = $data;
+                $r->info = curl_getinfo($handle);
+                $r->status_code = $r->info['http_code'];
+                $r->error_info = curl_error($handle);
+                $r->error_code = curl_errno($handle);
 	
-				$this->last_response = $response;
+				$this->last_response = $r;
 	
 				if($connection['callback'] != null)
 					if(phpversion() >= 5.3)
-						$connection['callback']($response);
+						$connection['callback']($r);
 					else
-						call_user_func_array($connection['callback'], array($response));
+						call_user_func_array($connection['callback'], array($r));
 			}
 		}
 	
@@ -151,11 +162,5 @@
 		public function get() {
 			return $this->mc;
 		}
-	
-		protected $settings;
-		protected $mc;
-		protected $connections;
-		protected $jobs;
-		protected $last_request;
-		protected $last_response;
+
 	}
