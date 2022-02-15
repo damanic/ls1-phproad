@@ -82,11 +82,7 @@ class Net_Service
             // check if the domain is bad and will block multicurl
             if (!$this->is_host_active($host)) {
                 if ($job['callback'] != null) {
-                    if (phpversion() >= 5.3) {
-                        $job['callback'](null);
-                    } else {
-                        call_user_func_array($job['callback'], array(null));
-                    }
+                    call_user_func_array($job['callback'], array(null));
                 }
 
                 continue;
@@ -135,11 +131,7 @@ class Net_Service
             $this->last_response = $r;
 
             if ($connection['callback'] != null) {
-                if (phpversion() >= 5.3) {
-                    $connection['callback']($r);
-                } else {
-                    call_user_func_array($connection['callback'], array($r));
-                }
+                call_user_func_array($connection['callback'], array($r));
             }
         }
     }
