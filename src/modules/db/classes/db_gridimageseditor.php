@@ -1,4 +1,4 @@
-<?
+<?php
 
 class Db_GridImagesEditor extends Db_GridEditor
 {
@@ -8,7 +8,8 @@ class Db_GridImagesEditor extends Db_GridEditor
             throw new Phpr_SystemException(
                 sprintf(
                     'Model %s should implement the Db_MemoryCacheable interface in order to be used with Db_GridImages editor'
-                ), get_class($model)
+                ),
+                get_class($model)
             );
         }
 
@@ -120,5 +121,3 @@ class Db_GridImagesEditor extends Db_GridEditor
         );
     }
 }
-
-?>

@@ -340,5 +340,3 @@ class Phpr_Controller extends Phpr_ControllerBase
         return Phpr::$router->action . '_' . $eventName;
     }
 }
-
-?>

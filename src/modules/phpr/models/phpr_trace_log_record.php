@@ -1,4 +1,4 @@
-<?
+<?php
 
 /**
  * PHP Road trace log record model class.

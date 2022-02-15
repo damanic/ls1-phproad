@@ -1,4 +1,4 @@
-<?
+<?php
 
 class Db_Where extends Db_WhereBase
 {
@@ -12,5 +12,3 @@ class Db_Where extends Db_WhereBase
         return $this->build_where();
     }
 }
-
-?>

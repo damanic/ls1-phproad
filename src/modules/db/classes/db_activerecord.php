@@ -1,4 +1,4 @@
-<?
+<?php
 
 define('db_varchar', 'varchar');
 define('db_number', 'number');
@@ -162,13 +162,13 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
     public $custom_columns = array();
 
     /*
-	 * A list of columns to encrypt
-	 */
+     * A list of columns to encrypt
+     */
     public $encrypted_columns = array();
 
     /*
-	 * Caching
-	 */
+     * Caching
+     */
 
     /**
      * Enable cross-instance simple caching by the identifier
@@ -343,8 +343,8 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
     public $model_options = array();
 
     /*
-	 * Specifies a class name of a controller responsible for rendering forms and lists of models of this class.
-	 */
+     * Specifies a class name of a controller responsible for rendering forms and lists of models of this class.
+     */
     public $native_controller = null;
 
     public function __construct($values = null, $options = array())
@@ -372,7 +372,7 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
         }
 
         $this->modelState = self::stateCreated;
-//			$this->define_columns();
+        //			$this->define_columns();
     }
 
     public function __destruct()
@@ -472,7 +472,7 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
     {
         //if (!Cms_Controller::get_instance())
         $this->init_columns_info($form_context);
-//			$this->column_definition_context = $form_context;
+        //			$this->column_definition_context = $form_context;
 
         $this->limit(1);
         $this->calc_rows = false;
@@ -511,7 +511,7 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
     {
         //if (!Cms_Controller::get_instance())
         $this->init_columns_info($form_context);
-//			$this->column_definition_context = $form_context;
+        //			$this->column_definition_context = $form_context;
 
         $cachingCase = false;
 
@@ -1076,7 +1076,7 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
     {
         //if (!Cms_Controller::get_instance())
         $this->init_columns_info($form_context);
-//			$this->column_definition_context = $form_context;
+        //			$this->column_definition_context = $form_context;
 
         if ($row === null) {
             return;
@@ -1118,7 +1118,7 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
 
             // typecasting
             $val = $this->type_cast_field($name, $val);
-//				if (!is_null($val))
+            //				if (!is_null($val))
             $this->{$name} = $val;
         }
 
@@ -1163,9 +1163,9 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
         $field_info = $this->field($field);
         if (!isset($field_info['type'])) {
             if (array_key_exists(
-                    $field,
-                    $this->calculated_columns
-                ) && isset($this->calculated_columns[$field]['type'])) {
+                $field,
+                $this->calculated_columns
+            ) && isset($this->calculated_columns[$field]['type'])) {
                 $field_info = array('type' => $this->calculated_columns[$field]['type']);
             }
         }
@@ -1219,9 +1219,9 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
             }
 
             /*
-			 * Do not convert dates to object during saving for validatable fields. The Validation object
-			 * will process dates instead of model.
-			 */
+             * Do not convert dates to object during saving for validatable fields. The Validation object
+             * will process dates instead of model.
+             */
             if ($this->modelState == self::stateSaving && $this->validation->hasRuleFor($field)) {
                 return $value;
             }
@@ -1657,7 +1657,7 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
      * @return Db_ActiveRecordIterator
      * @internal For internal use only
      */
-    function getIterator()
+    public function getIterator()
     {
         return new Db_ActiveRecordIterator($this);
     }
@@ -1671,10 +1671,10 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
      * @param mixed $parameters
      */
 
-    function __call($method_name, $parameters = null)
+    public function __call($method_name, $parameters = null)
     {
-        if (method_exists($this, $method_name)) // If the method exists, just call it
-        {
+        if (method_exists($this, $method_name)) { // If the method exists, just call it
+
             return call_user_func_array(array($this, $method_name), $parameters);
         }
 
@@ -1696,11 +1696,11 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
         } else {
             // check for the find_all_by_* magic functions
             if (strlen($method_name) > 11 && substr(
-                    $method_name,
-                    0,
-                    11
-                ) == "find_all_by") //$result = $this->find_all_by(substr($method_name, 12), $parameters);
-            {
+                $method_name,
+                0,
+                11
+            ) == "find_all_by") { //$result = $this->find_all_by(substr($method_name, 12), $parameters);
+
                 return call_user_func_array(
                     array($this, 'find_all_by'),
                     array_merge(array(substr($method_name, 12)), $parameters)
@@ -1709,11 +1709,11 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
 
             // check for the find_by_* magic functions
             if (strlen($method_name) > 7 && substr(
-                    $method_name,
-                    0,
-                    7
-                ) == "find_by") //$result = $this->find_by(substr($method_name, 8), $parameters);
-            {
+                $method_name,
+                0,
+                7
+            ) == "find_by") { //$result = $this->find_by(substr($method_name, 8), $parameters);
+
                 return call_user_func_array(
                     array($this, 'find_by'),
                     array_merge(array(substr($method_name, 8)), $parameters)
@@ -1725,7 +1725,7 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
         return parent::__call($method_name, $parameters);
     }
 
-    function __get($name)
+    public function __get($name)
     {
         if (isset($this->$name)) {
             return $this->$name;
@@ -1755,11 +1755,11 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
 
         return $this->$name;
         /*
-		if (!isset($this->$name))
-			return null;
-		else
-			return $this->$name;
-		*/
+        if (!isset($this->$name))
+            return null;
+        else
+            return $this->$name;
+        */
     }
 
     public function __lock()
@@ -1776,7 +1776,7 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
         }
     }
 
-    function __set($name, $value)
+    public function __set($name, $value)
     {
         if (!$name) {
             return;
@@ -1857,24 +1857,24 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
         }
 
         /*
-		$reflection = new ReflectionObject($this);
+        $reflection = new ReflectionObject($this);
 
-		foreach($reflection->getProperties() as $prop)
-		{
-			// ignore private properties so we don't need to parse every single variable
-			if ($prop->isPublic() || $prop->isProtected())
-			{
-				if (preg_match("/^(has_many|has_one|belongs_to|has_and_belongs_to_many)_(.+)/", $prop->name, $found))
-				{
-					$relationship = $found[1];
-					$model = $found[2];
-					$params = (array) $prop->getValue($this);
+        foreach($reflection->getProperties() as $prop)
+        {
+            // ignore private properties so we don't need to parse every single variable
+            if ($prop->isPublic() || $prop->isProtected())
+            {
+                if (preg_match("/^(has_many|has_one|belongs_to|has_and_belongs_to_many)_(.+)/", $prop->name, $found))
+                {
+                    $relationship = $found[1];
+                    $model = $found[2];
+                    $params = (array) $prop->getValue($this);
 
-					$this->{$relationship}[$model] = $params;
-				}
-			}
-		}
-		*/
+                    $this->{$relationship}[$model] = $params;
+                }
+            }
+        }
+        */
 
         // merge models
         // and add itself to the list of models
@@ -1917,8 +1917,8 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
         $relation = $this->{$relation_type}[$relation];
 
         $class_name = (is_array(
-                $relation
-            ) && isset($relation['class_name'])) ? $relation['class_name'] : Phpr_Inflector::classify($relation);
+            $relation
+        ) && isset($relation['class_name'])) ? $relation['class_name'] : Phpr_Inflector::classify($relation);
         return $class_name;
     }
 
@@ -2755,8 +2755,8 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
     }
 
     /*
-	 * Validation
-	 */
+     * Validation
+     */
 
     public function valid($deferred_session_key = null)
     {
@@ -2890,7 +2890,7 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
         }
 
         $this->columns_loaded = true;
-//			$context = $context ? $context : $this->column_definition_context;
+        //			$context = $context ? $context : $this->column_definition_context;
 
         $this->define_columns($context);
         $this->fireEvent('onDefineColumns');
@@ -3361,8 +3361,8 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
 
 
     /*
-	 * Event descriptions
-	 */
+     * Event descriptions
+     */
 
     /**
      * Triggered before a SQL query is sent to the database.
@@ -3452,5 +3452,3 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
     {
     }
 }
-
-?>

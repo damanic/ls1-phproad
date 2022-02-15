@@ -1,4 +1,4 @@
-<?
+<?php
 
 class Db_DataFilter
 {
@@ -33,5 +33,3 @@ class Db_DataFilter
         return null;
     }
 }
-
-?>

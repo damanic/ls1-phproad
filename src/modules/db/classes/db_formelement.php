@@ -101,5 +101,3 @@ class Db_FormElement
         return $this;
     }
 }
-
-?>

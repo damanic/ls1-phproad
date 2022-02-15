@@ -181,5 +181,3 @@ class Phpr_ControllerBehavior extends Phpr_Extension
         }
     }
 }
-
-?>

@@ -1,4 +1,4 @@
-<?
+<?php
 
 class Db_Sql extends Db_SqlBase
 {
@@ -12,5 +12,3 @@ class Db_Sql extends Db_SqlBase
         return $this->build_sql();
     }
 }
-
-?>

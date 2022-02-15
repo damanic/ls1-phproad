@@ -39,5 +39,3 @@ class Phpr_Validatable extends Phpr_Extensible
         return $this->$Method($Name, $Value);
     }
 }
-
-?>

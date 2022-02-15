@@ -1,4 +1,4 @@
-<?
+<?php
 
 class Net_Request
 {
@@ -355,5 +355,4 @@ class Net_Request
         $this->options[CURLOPT_HEADER] = true;
         $this->options[CURLOPT_HTTPHEADER] = $data;
     }
-
 }

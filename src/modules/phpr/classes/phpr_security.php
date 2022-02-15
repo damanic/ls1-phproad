@@ -519,5 +519,3 @@ class Phpr_Security
         Db_DbHelper::query('delete from db_saved_tickets where ticket_id=:ticket_id', array('ticket_id' => $ticket_id));
     }
 }
-
-?>

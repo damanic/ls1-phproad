@@ -96,12 +96,12 @@ class Db_UpdateManager
     public static function moduleVersionExists($module_id, $version_str)
     {
         return Db_DbHelper::scalar(
-                'select count(*) from core_update_history where moduleId=:module_id and version_str=:version_str',
-                array(
+            'select count(*) from core_update_history where moduleId=:module_id and version_str=:version_str',
+            array(
                     'module_id' => $module_id,
                     'version_str' => $version_str
                 )
-            ) > 0;
+        ) > 0;
     }
 
     /**
@@ -128,10 +128,10 @@ class Db_UpdateManager
         foreach ($dat_versions as $index => $update_info) {
             if ($update_info['type'] == 'update-reference') {
                 $db_update_result = self::applyDbUpdate(
-                        $base_path,
-                        $module_id,
-                        $update_info['reference']
-                    ) || $db_update_result;
+                    $base_path,
+                    $module_id,
+                    $update_info['reference']
+                ) || $db_update_result;
             } elseif ($update_info['type'] == 'version-update') {
                 /*
                  * Apply updates from references specified in the version string
@@ -147,16 +147,16 @@ class Db_UpdateManager
                 if ($index > $last_db_version_index && $last_db_version_index !== -2) {
                     if (strlen($update_info['build'])) {
                         $db_update_result = self::applyDbUpdate(
-                                $base_path,
-                                $module_id,
-                                $update_info['build']
-                            ) || $db_update_result;
+                            $base_path,
+                            $module_id,
+                            $update_info['build']
+                        ) || $db_update_result;
                     } else {
                         $db_update_result = self::applyDbUpdate(
-                                $base_path,
-                                $module_id,
-                                $update_info['version']
-                            ) || $db_update_result;
+                            $base_path,
+                            $module_id,
+                            $update_info['version']
+                        ) || $db_update_result;
                     }
                 }
             }
@@ -287,7 +287,8 @@ class Db_UpdateManager
          * Update the module version number
          */
 
-        Db_DbHelper::query('
+        Db_DbHelper::query(
+            '
 				update 
 					core_versions 
 				set 
@@ -585,11 +586,11 @@ class Db_UpdateManager
 
         $parts = explode('|', $version);
         if (count($parts) == 2) {
-//				$result['build'] = $parts[0];
+            //				$result['build'] = $parts[0];
             $result['version'] = $parts[1];
         } else {
             if (strpos($parts[0], '.') === false) {
-//					$result['build'] = $parts[0];
+                //					$result['build'] = $parts[0];
                 $result['version'] = '1.0.' . $parts[0];
             } else {
                 $result['version'] = $parts[0];
@@ -598,12 +599,10 @@ class Db_UpdateManager
                 if (count($version_parts) != 3) {
                     throw new Phpr_SystemException('Invalid version number specifier: ' . $parts[0]);
                 }
-//					$result['build'] = $version_parts[0]*10000000 + $version_parts[1]*1000 + $version_parts[2];
+                //					$result['build'] = $version_parts[0]*10000000 + $version_parts[1]*1000 + $version_parts[2];
             }
         }
 
         return (object)$result;
     }
 }
-
-?>

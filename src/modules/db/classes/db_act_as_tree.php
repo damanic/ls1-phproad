@@ -280,9 +280,9 @@ class Db_Act_As_Tree extends Phpr_Extension
     {
         $cache_key = $this->get_cache_key($order_by);
         return array_key_exists($this->_model_class, self::$_object_cache) && array_key_exists(
-                $cache_key,
-                self::$_object_cache[$this->_model_class]
-            );
+            $cache_key,
+            self::$_object_cache[$this->_model_class]
+        );
     }
 
     private function cache_key_match($order_by)
@@ -294,5 +294,3 @@ class Db_Act_As_Tree extends Phpr_Extension
         return self::$_cache_sort_column[$this->_model_class] == $order_by;
     }
 }
-
-?>

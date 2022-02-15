@@ -469,5 +469,3 @@ class Phpr_Html
         return join(' ', $b);
     }
 }
-
-?>

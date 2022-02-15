@@ -1,4 +1,4 @@
-<?
+<?php
 
 /*
  * Interface for models which cache records in the memory
@@ -15,5 +15,3 @@ interface Db_MemoryCacheable
      */
     public function get_record_cached($record_id);
 }
-
-?>

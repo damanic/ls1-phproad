@@ -1,4 +1,4 @@
-<?
+<?php
 
 class Db_GridWidget extends Db_FormWidget
 {
@@ -441,8 +441,8 @@ class Db_GridWidget extends Db_FormWidget
             }
 
             $url = root_url(
-                    Phpr::$router->getControllerRootUrl()
-                ) . '/form_widget_request/on_get_csv_file/' . $this->column_name . '/' . $key . '/?widget_model_class=' . urlencode(
+                Phpr::$router->getControllerRootUrl()
+            ) . '/form_widget_request/on_get_csv_file/' . $this->column_name . '/' . $key . '/?widget_model_class=' . urlencode(
                     $widget_model_class
                 );
             Phpr::$response->redirect($url);
@@ -503,7 +503,7 @@ class Db_GridWidget extends Db_FormWidget
             @unlink($path);
             die();
         } catch (exception $ex) {
-            die ($ex->getMessage());
+            die($ex->getMessage());
         }
     }
 
@@ -724,5 +724,3 @@ class Db_GridWidget extends Db_FormWidget
         $this->render_partial('message');
     }
 }
-
-?>

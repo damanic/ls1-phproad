@@ -1,4 +1,4 @@
-<?
+<?php
 
 class Db_Base extends Phpr_Validatable
 {
@@ -52,8 +52,8 @@ class Db_Base extends Phpr_Validatable
             return implode(', ', $value);
         }
 
-//			if ($value == '*') 
-//				return $value;
+        //			if ($value == '*')
+        //				return $value;
 
         if ($value instanceof Phpr_DateTime) {
             $value = $value->toSqlDateTime();
@@ -67,7 +67,4 @@ class Db_Base extends Phpr_Validatable
         $result = str_replace("'", "\'", $result);
         return "'" . $result . "'";
     }
-
 }
-
-?>

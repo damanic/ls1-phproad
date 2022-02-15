@@ -47,7 +47,7 @@ class Phpr_Files
 
         foreach ($Row as $cell) {
             $cell = str_replace($quot, $quot . $quot, $cell);
-//				if (strchr($cell, $fd) !== false || strchr($cell, $quot) !== false || strchr($cell, "\n") !== false) 
+            //				if (strchr($cell, $fd) !== false || strchr($cell, $quot) !== false || strchr($cell, "\n") !== false)
             $str .= $quot . $cell . $quot . $fd;
             // else
             // 	$str .= $cell.$fd;
@@ -118,7 +118,7 @@ class Phpr_Files
     public static function validateUploadedFile($fileInfo)
     {
         switch ($fileInfo['error']) {
-            case UPLOAD_ERR_INI_SIZE :
+            case UPLOAD_ERR_INI_SIZE:
             {
                 $MaxSizeAllowed = self::fileSize(self::maxUploadSize());
 
@@ -127,16 +127,16 @@ class Phpr_Files
                 );
             }
 
-            case UPLOAD_ERR_PARTIAL :
+            case UPLOAD_ERR_PARTIAL:
                 throw new Phpr_ApplicationException("Error uploading file. Only a part of the file was uploaded.");
 
-            case UPLOAD_ERR_NO_FILE :
+            case UPLOAD_ERR_NO_FILE:
                 throw new Phpr_ApplicationException("Error uploading file.");
 
-            case UPLOAD_ERR_NO_TMP_DIR :
+            case UPLOAD_ERR_NO_TMP_DIR:
                 throw new Phpr_ApplicationException("PHP temporary file directory does not exist.");
 
-            case UPLOAD_ERR_CANT_WRITE :
+            case UPLOAD_ERR_CANT_WRITE:
                 throw new Phpr_ApplicationException("Error writing file to disk.");
         }
     }
@@ -388,5 +388,3 @@ class Phpr_Files
         return $result;
     }
 }
-
-?>

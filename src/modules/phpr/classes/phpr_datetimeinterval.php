@@ -336,5 +336,3 @@ class Phpr_DateTimeInterval
         return $res;
     }
 }
-
-?>

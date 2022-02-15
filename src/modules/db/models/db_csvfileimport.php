@@ -1,4 +1,4 @@
-<?
+<?php
 
 class Db_CsvFileImport extends Db_ActiveRecord
 {
@@ -25,7 +25,4 @@ class Db_CsvFileImport extends Db_ActiveRecord
             'single_file'
         )->addDocumentLabel('Upload a file')->fileDownloadBaseUrl(url('ls_backend/files/get/'))->noAttachmentsLabel('');
     }
-
 }
-
-?>

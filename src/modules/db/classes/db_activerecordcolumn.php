@@ -1,4 +1,4 @@
-<?
+<?php
 
 class Db_ActiveRecordColumn
 {
@@ -57,7 +57,4 @@ class Db_ActiveRecordColumn
                 break;
         }
     }
-
 }
-
-?>

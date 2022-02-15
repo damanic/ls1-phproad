@@ -319,9 +319,9 @@ class Db_ModelLog extends Phpr_Extension
         foreach ($fields as $dbName => $definition) {
             if (!$definition->log) {
                 if ($definition->isCalculated || $definition->isCustom || in_array(
-                        $dbName,
-                        $skipFields
-                    ) || $definition->noLog) {
+                    $dbName,
+                    $skipFields
+                ) || $definition->noLog) {
                     continue;
                 }
             }
@@ -363,8 +363,4 @@ class Db_ModelLog extends Phpr_Extension
         $primaryKey = $newModel->primary_key;
         return $newModel->find($this->_model->$primaryKey);
     }
-
-
 }
-
-?>

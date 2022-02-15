@@ -1,6 +1,6 @@
 <?php
 /**
- * Class Minify_CSS_UriRewriter  
+ * Class Minify_CSS_UriRewriter
  * @package Minify
  */
 
@@ -10,7 +10,8 @@
  * @package Minify
  * @author Stephen Clay <steve@mrclay.org>
  */
-class Minify_CSS_UriRewriter {
+class Minify_CSS_UriRewriter
+{
 
     
     /**
@@ -22,27 +23,27 @@ class Minify_CSS_UriRewriter {
     
     /**
      * In CSS content, rewrite file relative URIs as root relative
-     * 
+     *
      * @param string $css
-     * 
+     *
      * @param string $currentDir The directory of the current CSS file.
-     * 
-     * @param string $docRoot The document root of the web site in which 
+     *
+     * @param string $docRoot The document root of the web site in which
      * the CSS file resides (default = $_SERVER['DOCUMENT_ROOT']).
-     * 
-     * @param array $symlinks (default = array()) If the CSS file is stored in 
+     *
+     * @param array $symlinks (default = array()) If the CSS file is stored in
      * a symlink-ed directory, provide an array of link paths to
-     * target paths, where the link paths are within the document root. Because 
-     * paths need to be normalized for this to work, use "//" to substitute 
+     * target paths, where the link paths are within the document root. Because
+     * paths need to be normalized for this to work, use "//" to substitute
      * the doc root in the link paths (the array keys). E.g.:
      * <code>
      * array('//symlink' => '/real/target/path') // unix
      * array('//static' => 'D:\\staticStorage')  // Windows
      * </code>
-     * 
+     *
      * @return string
      */
-    public static function rewrite($css, $currentDir, $docRoot = null, $symlinks = array()) 
+    public static function rewrite($css, $currentDir, $docRoot = null, $symlinks = array())
     {
         self::$_docRoot = self::_realpath(
             $docRoot ? $docRoot : $_SERVER['DOCUMENT_ROOT']
@@ -84,11 +85,11 @@ class Minify_CSS_UriRewriter {
     
     /**
      * In CSS content, prepend a path to relative URIs
-     * 
+     *
      * @param string $css
-     * 
+     *
      * @param string $path The path to prepend.
-     * 
+     *
      * @return string
      */
     public static function prepend($css, $path)
@@ -122,7 +123,7 @@ class Minify_CSS_UriRewriter {
      *     , '/home/user/www'      // doc root
      * );
      * // returns '/img/hello.gif'
-     * 
+     *
      * // example where static files are stored in a symlinked directory
      * Minify_CSS_UriRewriter::rewriteRelative(
      *       'hello.gif'
@@ -132,22 +133,22 @@ class Minify_CSS_UriRewriter {
      * );
      * // returns '/static/theme/hello.gif'
      * </code>
-     * 
+     *
      * @param string $uri file relative URI
-     * 
+     *
      * @param string $realCurrentDir realpath of the current file's directory.
-     * 
+     *
      * @param string $realDocRoot realpath of the site document root.
-     * 
-     * @param array $symlinks (default = array()) If the file is stored in 
+     *
+     * @param array $symlinks (default = array()) If the file is stored in
      * a symlink-ed directory, provide an array of link paths to
-     * real target paths, where the link paths "appear" to be within the document 
+     * real target paths, where the link paths "appear" to be within the document
      * root. E.g.:
      * <code>
      * array('/home/foo/www/not/real/path' => '/real/target/path') // unix
      * array('C:\\htdocs\\not\\real' => 'D:\\real\\target\\path')  // Windows
      * </code>
-     * 
+     *
      * @return string
      */
     public static function rewriteRelative($uri, $realCurrentDir, $realDocRoot, $symlinks = array())
@@ -214,9 +215,9 @@ class Minify_CSS_UriRewriter {
     /**
      * Get realpath with any trailing slash removed. If realpath() fails,
      * just remove the trailing slash.
-     * 
+     *
      * @param string $path
-     * 
+     *
      * @return mixed path with no trailing slash
      */
     protected static function _realpath($path)
@@ -339,7 +340,7 @@ class Minify_CSS_UriRewriter {
         $pattern = '~\b((?:clip-path|mask|-webkit-mask)\s*\:\s*)url(\(\s*#\w+\s*\))~';
 
         return preg_replace($pattern, '$1owl$2', $css);
-}
+    }
 
     /**
      * Undo work of _owlify

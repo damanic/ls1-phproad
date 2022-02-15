@@ -1,4 +1,4 @@
-<?
+<?php
 
 class Phpr_SecurityFramework
 {
@@ -227,7 +227,7 @@ class Phpr_SecurityFramework
             Phpr::$config->get('CONFIG_KEY2', '#0qw4-3dk')
         );
 
-//			@chmod($file_path, Phpr::$config->get('FILE_FOLDER_PERMISSIONS'));
+        //			@chmod($file_path, Phpr::$config->get('FILE_FOLDER_PERMISSIONS'));
         file_put_contents($file_path, $data);
     }
 
@@ -305,5 +305,3 @@ class Phpr_SecurityFramework
         return $this->salt_cookie = md5($salt);
     }
 }
-
-?>

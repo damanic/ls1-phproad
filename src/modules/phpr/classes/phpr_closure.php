@@ -21,5 +21,3 @@ class Phpr_Closure
         call_user_func_array($this->_function, $methodParams);
     }
 }
-
-?>

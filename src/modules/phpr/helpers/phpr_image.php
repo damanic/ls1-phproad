@@ -152,12 +152,12 @@ class Phpr_Image
     private static function create_image($extension, $srcPath)
     {
         switch ($extension) {
-            case 'jpeg' :
-            case 'jpg' :
+            case 'jpeg':
+            case 'jpg':
                 return @imagecreatefromjpeg($srcPath);
-            case 'png' :
+            case 'png':
                 return @imagecreatefrompng($srcPath);
-            case 'gif' :
+            case 'gif':
                 return @imagecreatefromgif($srcPath);
         }
 
@@ -277,8 +277,8 @@ class Phpr_Image
     public static function createThumbnailName($path, $width, $height, $mode = 'keep_ratio')
     {
         return md5(dirname($path)) . basename($path) . '_' . filemtime(
-                PATH_APP . $path
-            ) . '_' . $width . 'x' . $height . '_' . $mode . '.jpg';
+            PATH_APP . $path
+        ) . '_' . $width . 'x' . $height . '_' . $mode . '.jpg';
     }
 
     /**
@@ -298,5 +298,3 @@ class Phpr_Image
         }
     }
 }
-
-?>

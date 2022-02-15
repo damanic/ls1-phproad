@@ -122,5 +122,3 @@ class Phpr_User extends Db_ActiveRecord
         return $this->firstName . ' ' . $this->lastName;
     }
 }
-
-?>

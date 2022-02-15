@@ -293,15 +293,15 @@ class Phpr_Language
         }
 
         switch ($finalFormat) {
-            case 0 :
+            case 0:
                 return '(' . $numAndCs . ')';
-            case 1 :
+            case 1:
                 return $sign . $numAndCs;
-            case 2 :
+            case 2:
                 return $numAndCs . $sign;
-            case 3 :
+            case 3:
                 return $numAndCs;
-            case 4 :
+            case 4:
                 return $numAndCs;
         }
     }
@@ -449,9 +449,9 @@ class Phpr_LocalizationManager
         }
 
         if (!array_key_exists($Category, $this->_stringCache) || !array_key_exists(
-                $Language,
-                $this->_stringCache[$Category]
-            )) {
+            $Language,
+            $this->_stringCache[$Category]
+        )) {
             $this->preloadLanguageKeys($Language, $Category);
         }
 
@@ -525,5 +525,3 @@ class Phpr_LocalizationManager
         $this->_stringCache[$Category][$Language] = $fileStrings;
     }
 }
-
-?>

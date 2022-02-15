@@ -1,4 +1,4 @@
-<?
+<?php
 
 /**
  * PHP Road Error Log Class
@@ -137,8 +137,8 @@ class Phpr_ErrorLog
 
             foreach ($trace_info as $index => $event) {
                 $functionName = (isset($event['class']) && strlen(
-                        $event['class']
-                    )) ? $event['class'] . $event['type'] . $event['function'] : $event['function'];
+                    $event['class']
+                )) ? $event['class'] . $event['type'] . $event['function'] : $event['function'];
 
                 if ($functionName == 'Phpr_SysErrorHandler' || $functionName == 'Phpr_SysExceptionHandler') {
                     continue;
@@ -229,8 +229,8 @@ class Phpr_ErrorLog
         }
 
         if ((Phpr::$config->get(
-                    'LOG_TO_DB'
-                ) || $this->_logFileName == null) && Db::$connection && !self::$disable_db_logging && $log_to_db) {
+            'LOG_TO_DB'
+        ) || $this->_logFileName == null) && Db::$connection && !self::$disable_db_logging && $log_to_db) {
             if (!class_exists('Phpr_Trace_Log_Record') && !Phpr::$class_loader->load('Phpr_Trace_Log_Record')) {
                 return;
             }

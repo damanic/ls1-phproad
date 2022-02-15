@@ -1,4 +1,4 @@
-<?
+<?php
 
 class Phpr_Inflector
 {
@@ -261,8 +261,8 @@ class Phpr_Inflector
         $separate_class_name_and_id_with_underscore = true
     ) {
         return self::underscore(
-                self::singularize($class_name)
-            ) . (($separate_class_name_and_id_with_underscore ? '_' : '') . $primary_key);
+            self::singularize($class_name)
+        ) . (($separate_class_name_and_id_with_underscore ? '_' : '') . $primary_key);
     }
 
     /**
@@ -364,5 +364,3 @@ class Phpr_Inflector
         return self::$cache[$function][$argument] = $value;
     }
 }
-
-?>

@@ -337,5 +337,3 @@ class Phpr_Component extends Phpr_ControllerBase
         }
     }
 }
-
-?>

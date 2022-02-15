@@ -149,5 +149,3 @@ class Phpr_Date
         return $dateObj->format("%Y-%m-%dT%H:%M:%S+00:00");
     }
 }
-
-?>

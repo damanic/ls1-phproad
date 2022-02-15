@@ -1,4 +1,4 @@
-<?
+<?php
 
 /**
  * PHP Road
@@ -38,7 +38,8 @@ class Phpr_Form
         $result = "<form ";
         $result .= Phpr_Html::formatAttributes(
             $attributes,
-            array("action" => $DefUrl, "method" => "post", "id" => "FormElement", "onsubmit" => "return false;"));
+            array("action" => $DefUrl, "method" => "post", "id" => "FormElement", "onsubmit" => "return false;")
+        );
         $result .= ">\n";
 
         return $result;

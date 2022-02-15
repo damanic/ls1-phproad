@@ -57,5 +57,3 @@ class Db_Sortable extends Phpr_Extension
         }
     }
 }
-
-?>

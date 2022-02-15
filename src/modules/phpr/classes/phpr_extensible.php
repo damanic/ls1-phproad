@@ -1,4 +1,4 @@
-<?
+<?php
 
 /*
  * Extensible object model
@@ -92,8 +92,8 @@ class Phpr_Extensible extends Phpr_Extension
     {
         foreach (get_class_methods($extension) as $symbol) {
             if ($symbol === '__construct' || $this->extensible_data['extensions'][$extension]->extMethodIsHidden(
-                    $symbol
-                )) {
+                $symbol
+            )) {
                 continue;
             }
 
@@ -214,9 +214,9 @@ class Phpr_Extensible extends Phpr_Extension
         // loop until we finding a method to match the name
         foreach ($method_names as $method_name) {
             if (method_exists(
-                    $this,
-                    $method_name
-                ) || isset($this->extensible_data['methods'][$method_name]) || isset($this->extensible_data['dynamic_methods'][$method_name])) {
+                $this,
+                $method_name
+            ) || isset($this->extensible_data['methods'][$method_name]) || isset($this->extensible_data['dynamic_methods'][$method_name])) {
                 return true;
             }
         }

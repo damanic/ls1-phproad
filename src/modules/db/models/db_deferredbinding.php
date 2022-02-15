@@ -171,5 +171,3 @@ class Db_DeferredBinding extends Db_ActiveRecord
         );
     }
 }
-
-?>

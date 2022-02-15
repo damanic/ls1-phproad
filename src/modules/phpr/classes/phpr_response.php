@@ -117,10 +117,10 @@ class Phpr_Response
             }
 
             switch (Phpr::$config->get("REDIRECT", 'location')) {
-                case 'refresh' :
+                case 'refresh':
                     header("Refresh:0;url=" . $Uri);
                     break;
-                default :
+                default:
                     header("location:" . $Uri);
                     break;
             }
@@ -285,5 +285,3 @@ class Phpr_Response
         throw new Phpr_SystemException('Phpr_Response::processJavaScriptRequest() is depreciated.');
     }
 }
-
-?>

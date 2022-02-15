@@ -38,5 +38,3 @@ class Phpr_Group extends Db_ActiveRecord
      */
     public $name = '';
 }
-
-?>

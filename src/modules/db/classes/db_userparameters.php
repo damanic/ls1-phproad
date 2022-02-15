@@ -77,5 +77,3 @@ class Db_UserParameters
         return unserialize(self::$_parameterCache[$UserId][$Name]);
     }
 }
-
-?>

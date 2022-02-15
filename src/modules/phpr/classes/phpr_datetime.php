@@ -822,5 +822,3 @@ class Phpr_DateTime
         return Phpr_DateTimeInterval::convertTimeVal($Hour, $Minute, $Second);
     }
 }
-
-?>

@@ -34,5 +34,3 @@ class Phpr_Extension
         return in_array($fieldName, $this->_hiddenExtensionFields);
     }
 }
-
-?>

@@ -1,4 +1,4 @@
-<?
+<?php
 
 class Db_SecureSettings
 {
@@ -24,5 +24,3 @@ class Db_SecureSettings
         $framework->set_config_content($config_content);
     }
 }
-
-?>

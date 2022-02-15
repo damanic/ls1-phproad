@@ -6,7 +6,6 @@
  */
 class Db_MySQLiDriver extends Db_Driver
 {
-
     private static $locale_set = false;
 
     public static function create()
@@ -61,8 +60,8 @@ class Db_MySQLiDriver extends Db_Driver
             $err = 0;
 
             if ((Db::$connection == null) || (Db::$connection === false) || ($err = mysqli_errno(
-                        Db::$connection
-                    ) != 0)) {
+                Db::$connection
+            ) != 0)) {
                 throw new Phpr_DatabaseException('MySQL connection error: ' . @mysqli_error());
             }
 
@@ -282,5 +281,3 @@ class Db_MySQLiDriver extends Db_Driver
         return mysqli_insert_id(Db::$connection);
     }
 }
-
-?>

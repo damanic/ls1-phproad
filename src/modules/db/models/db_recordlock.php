@@ -132,5 +132,3 @@ class Db_RecordLock extends Db_ActiveRecord
         }
     }
 }
-
-?>

@@ -1,4 +1,4 @@
-<?
+<?php
 
 class Phpr_Strings
 {
@@ -18,5 +18,3 @@ class Phpr_Strings
         return $add_number ? $n . ' ' . $word : $word;
     }
 }
-
-?>

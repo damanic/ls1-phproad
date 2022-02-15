@@ -79,12 +79,12 @@ class Phpr_Flash implements ArrayAccess, IteratorAggregate, Countable
      * Iterator implementation
      */
 
-    function offsetExists($offset)
+    public function offsetExists($offset)
     {
         return isset($this->flash[$offset]);
     }
 
-    function offsetGet($offset)
+    public function offsetGet($offset)
     {
         if ($this->offsetExists($offset)) {
             return $this->flash[$offset];
@@ -93,7 +93,7 @@ class Phpr_Flash implements ArrayAccess, IteratorAggregate, Countable
         }
     }
 
-    function offsetSet($offset, $value)
+    public function offsetSet($offset, $value)
     {
         if ($offset) {
             $this->flash[$offset] = $value;
@@ -103,13 +103,13 @@ class Phpr_Flash implements ArrayAccess, IteratorAggregate, Countable
         $this->store();
     }
 
-    function offsetUnset($offset)
+    public function offsetUnset($offset)
     {
         unset($this->flash[$offset]);
         $this->store();
     }
 
-    function getIterator()
+    public function getIterator()
     {
         return new ArrayIterator($this->flash);
     }
@@ -123,5 +123,3 @@ class Phpr_Flash implements ArrayAccess, IteratorAggregate, Countable
         return count($this->flash);
     }
 }
-
-?>

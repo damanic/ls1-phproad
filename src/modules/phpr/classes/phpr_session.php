@@ -181,27 +181,27 @@ class Phpr_Session implements ArrayAccess, IteratorAggregate, Countable
      * Iterator implementation
      */
 
-    function offsetExists($offset)
+    public function offsetExists($offset)
     {
         return isset($_SESSION[$offset]);
     }
 
-    function offsetGet($offset)
+    public function offsetGet($offset)
     {
         return $this->get($offset, null);
     }
 
-    function offsetSet($offset, $value)
+    public function offsetSet($offset, $value)
     {
         $this->set($offset, $value);
     }
 
-    function offsetUnset($offset)
+    public function offsetUnset($offset)
     {
         $this->set($offset, null);
     }
 
-    function getIterator()
+    public function getIterator()
     {
         return new ArrayIterator($_SESSION);
     }
@@ -310,5 +310,3 @@ class Phpr_Session implements ArrayAccess, IteratorAggregate, Countable
         return $session_read;
     }
 }
-
-?>

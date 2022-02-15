@@ -36,5 +36,3 @@ class Db_FormSection extends Db_FormElement
         $this->html_id = $html_id;
     }
 }
-
-?>

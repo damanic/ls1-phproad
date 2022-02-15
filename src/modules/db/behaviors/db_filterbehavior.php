@@ -319,11 +319,11 @@ class Db_FilterBehavior extends Phpr_ControllerBehavior
             $filterColumns = Phpr_Util::splat($filterObj->list_columns);
 
             $modelObj = $this->createModelObj($filterObj);
-//				$records = $modelObj->find_all();
+            //				$records = $modelObj->find_all();
             $recordNum = $modelObj->requestRowCount();
 
-//				if (!$modelObj->isExtendedWith('Db_Act_As_Tree'))
-//					$recordNum = $records->count;
+            //				if (!$modelObj->isExtendedWith('Db_Act_As_Tree'))
+            //					$recordNum = $records->count;
             // else
             // {
             // 	$recordNum = 0;
@@ -460,5 +460,3 @@ class Db_FilterBehavior extends Phpr_ControllerBehavior
         return get_class($this->_controller) . '_filterlist_' . get_class($model);
     }
 }
-
-?>

@@ -1,4 +1,4 @@
-<?
+<?php
 
 /*
  * This class represents a memory persistent data source for
@@ -214,5 +214,3 @@ class Db_GridWidgetDataSource
         }
     }
 }
-
-?>

@@ -297,7 +297,7 @@ class Phpr_Router
                         $Rule->converts
                     )
                 );
-                // return ucfirst( strtolower( $Segments[$RuleParams[$TargetName]] ) );
+            // return ucfirst( strtolower( $Segments[$RuleParams[$TargetName]] ) );
             } else {
                 $Value = $this->evaluateParameterValue($TargetName, $TargetName, $Segments, $Rule->defaults);
                 return strtolower(
@@ -562,5 +562,3 @@ class Phpr_RouterRule
         return $this;
     }
 }
-
-?>

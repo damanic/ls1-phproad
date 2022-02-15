@@ -324,5 +324,3 @@ abstract class Phpr_ControllerBase extends Phpr_Validatable
      */
     abstract public function getViewsDirPath();
 }
-
-?>

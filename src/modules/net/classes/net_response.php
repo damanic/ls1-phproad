@@ -1,8 +1,7 @@
-<?
+<?php
 
 class Net_Response
 {
-
     public $request;
     public $headers;
     public $data;

@@ -1,8 +1,7 @@
-<?
+<?php
 
 class Net_Service
 {
-
     protected $settings;
     protected $mc;
     protected $connections;
@@ -190,5 +189,4 @@ class Net_Service
     {
         return $this->mc;
     }
-
 }

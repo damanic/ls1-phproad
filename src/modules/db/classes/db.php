@@ -1,4 +1,4 @@
-<?
+<?php
 
 class Db
 {
@@ -26,5 +26,3 @@ class Db
 
     public static $describeCache = array();
 }
-
-?>

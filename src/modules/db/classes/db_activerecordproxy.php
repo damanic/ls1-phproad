@@ -1,4 +1,4 @@
-<?
+<?php
 
 class Db_ActiverecordProxy extends Phpr_Extensible
 {

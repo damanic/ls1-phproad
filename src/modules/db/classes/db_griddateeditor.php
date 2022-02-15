@@ -1,4 +1,4 @@
-<?
+<?php
 
 class Db_GridDateEditor extends Db_GridEditor
 {
@@ -34,5 +34,3 @@ class Db_GridDateEditor extends Db_GridEditor
         }
     }
 }
-
-?>

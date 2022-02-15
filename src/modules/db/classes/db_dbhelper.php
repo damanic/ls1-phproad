@@ -259,5 +259,3 @@ class Db_DbHelper
         return self::driver()->escape($str);
     }
 }
-
-?>

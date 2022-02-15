@@ -51,12 +51,10 @@ class Phpr_LogHelper
         fclose($fp);
 
         try {
-//				@chmod( $FilePath, 0644 );
+            //				@chmod( $FilePath, 0644 );
         } catch (Exception $e) {
         }
 
         return true;
     }
 }
-
-?>

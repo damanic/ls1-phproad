@@ -115,5 +115,3 @@ class Phpr_Util
         return $result;
     }
 }
-
-?>

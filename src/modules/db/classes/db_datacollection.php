@@ -1,4 +1,4 @@
-<?
+<?php
 
 /**
  * Represents a collection of ActiveRecord objects.
@@ -37,7 +37,7 @@ class Db_DataCollection implements ArrayAccess, IteratorAggregate, Countable
      * These are the required iterator functions
      */
 
-    function offsetExists($offset)
+    public function offsetExists($offset)
     {
         if (isset($this->objectArray[$offset])) {
             return true;
@@ -46,7 +46,7 @@ class Db_DataCollection implements ArrayAccess, IteratorAggregate, Countable
         }
     }
 
-    function offsetGet($offset)
+    public function offsetGet($offset)
     {
         if ($this->offsetExists($offset)) {
             return $this->objectArray[$offset];
@@ -55,7 +55,7 @@ class Db_DataCollection implements ArrayAccess, IteratorAggregate, Countable
         }
     }
 
-    function offsetSet($offset, $value)
+    public function offsetSet($offset, $value)
     {
         if (!is_null($this->parent) && ($this->parent instanceof Db_ActiveRecord)) {
             $this->parent->bind($this->relation, $value);
@@ -68,12 +68,12 @@ class Db_DataCollection implements ArrayAccess, IteratorAggregate, Countable
         }
     }
 
-    function offsetUnset($offset)
+    public function offsetUnset($offset)
     {
         unset($this->objectArray[$offset]);
     }
 
-    function getIterator()
+    public function getIterator()
     {
         return new ArrayIterator($this->objectArray);
     }
@@ -87,7 +87,7 @@ class Db_DataCollection implements ArrayAccess, IteratorAggregate, Countable
      * @documentable
      * @return Db_ActiveRecord Returns the model object or NULL.
      */
-    function first()
+    public function first()
     {
         if (count($this->objectArray) > 0) {
             return $this->objectArray[0];
@@ -101,17 +101,17 @@ class Db_DataCollection implements ArrayAccess, IteratorAggregate, Countable
      * @documentable
      * @return integer
      */
-    function count()
+    public function count()
     {
         return count($this->objectArray);
     }
 
-    function position(&$object)
+    public function position(&$object)
     {
         return array_search($object, $this->objectArray);
     }
 
-    function limit($count)
+    public function limit($count)
     {
         $limit = 0;
         $limited = array();
@@ -125,7 +125,7 @@ class Db_DataCollection implements ArrayAccess, IteratorAggregate, Countable
         return new Db_DataCollection($limited);
     }
 
-    function skip($count)
+    public function skip($count)
     {
         $skipped = array();
         foreach ($this->objectArray as $item) {
@@ -139,7 +139,7 @@ class Db_DataCollection implements ArrayAccess, IteratorAggregate, Countable
         return new Db_DataCollection($skipped);
     }
 
-    function except($value, $key = 'id')
+    public function except($value, $key = 'id')
     {
         return $this->exclude(array($value), $key);
     }
@@ -151,7 +151,7 @@ class Db_DataCollection implements ArrayAccess, IteratorAggregate, Countable
      *
      * @return mixed|null
      */
-    function find($value, $field = 'id')
+    public function find($value, $field = 'id')
     {
         return $this->find_by($field, $value);
     }
@@ -165,7 +165,7 @@ class Db_DataCollection implements ArrayAccess, IteratorAggregate, Countable
      *
      * @return mixed|null
      */
-    function find_by($field, $value, $strict = false)
+    public function find_by($field, $value, $strict = false)
     {
         foreach ($this->objectArray as $object) {
             if ($strict) {
@@ -189,7 +189,7 @@ class Db_DataCollection implements ArrayAccess, IteratorAggregate, Countable
      *
      * @return array
      */
-    function find_all_by($field, $value, $strict = false)
+    public function find_all_by($field, $value, $strict = false)
     {
         $results = array();
         foreach ($this->objectArray as $object) {
@@ -226,7 +226,7 @@ class Db_DataCollection implements ArrayAccess, IteratorAggregate, Countable
      * @param string $key_field Specifies a of the field which values should be used as array element keys.
      * @return array Returns an array of model objects or scalar values.
      */
-    function as_array($field = null, $key_field = null)
+    public function as_array($field = null, $key_field = null)
     {
         if ($field === null && $key_field === null) {
             return $this->objectArray;
@@ -247,7 +247,7 @@ class Db_DataCollection implements ArrayAccess, IteratorAggregate, Countable
      * Returns an array with keys matching records primary keys
      * @return mixed[]
      */
-    function as_mapped_array()
+    public function as_mapped_array()
     {
         if (!count($this->objectArray)) {
             return $this->objectArray;
@@ -275,7 +275,7 @@ class Db_DataCollection implements ArrayAccess, IteratorAggregate, Countable
      * @param string $subkey optional
      * @return mixed[]
      */
-    function as_dict($field = '', $key = '', $subkey = '')
+    public function as_dict($field = '', $key = '', $subkey = '')
     {
         if ($field == '') {
             return $this->objectArray;
@@ -320,7 +320,7 @@ class Db_DataCollection implements ArrayAccess, IteratorAggregate, Countable
         return $result;
     }
 
-    function exclude($values, $key = 'id')
+    public function exclude($values, $key = 'id')
     {
         $result = array();
         foreach ($this->objectArray as $item) {
@@ -333,7 +333,7 @@ class Db_DataCollection implements ArrayAccess, IteratorAggregate, Countable
         return $this;
     }
 
-    function has($value, $field)
+    public function has($value, $field)
     {
         $items = $this->as_array($field);
         return in_array($value, $items);
@@ -345,7 +345,7 @@ class Db_DataCollection implements ArrayAccess, IteratorAggregate, Countable
      * @param string $key
      * @return mixed
      */
-    function __get($key)
+    public function __get($key)
     {
         switch ($key) {
             case "first":
@@ -368,7 +368,7 @@ class Db_DataCollection implements ArrayAccess, IteratorAggregate, Countable
      * @param mixed[] $arguments
      * @return mixed
      */
-    function __call($name, $arguments)
+    public function __call($name, $arguments)
     {
         if (count($this->objectArray) > 0) {
             return call_user_func_array(array(&$this->objectArray[0], $name), $arguments);
@@ -452,10 +452,8 @@ class Db_DataCollection implements ArrayAccess, IteratorAggregate, Countable
         return $this->_total;
     }
 
-    function sql_count()
+    public function sql_count()
     {
         return (!is_null($this->parent) ? $this->parent->count() : 0);
     }
 }
-
-?>

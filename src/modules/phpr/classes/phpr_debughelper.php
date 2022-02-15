@@ -1,4 +1,4 @@
-<?
+<?php
 
 class Phpr_DebugHelper
 {
@@ -55,8 +55,8 @@ class Phpr_DebugHelper
         foreach ($trace as $trace_step) {
             if (isset($trace_step['file'])) {
                 $data[] = basename(
-                        $trace_step['file']
-                    ) . ' #' . $trace_step['line'] . ' ' . $trace_step['function'] . '()';
+                    $trace_step['file']
+                ) . ' #' . $trace_step['line'] . ' ' . $trace_step['function'] . '()';
             } else {
                 $data[] = $trace_step['function'] . '()';
             }
@@ -74,5 +74,3 @@ class Phpr_DebugHelper
         Phpr::$traceLog->write('[microtime: ' . $microtime . '][seconds: ' . $seconds . '] ' . $msg, self::$listener);
     }
 }
-
-?>

@@ -91,5 +91,3 @@ class Db_AutoFootprints extends Phpr_Extension
         }
     }
 }
-
-?>

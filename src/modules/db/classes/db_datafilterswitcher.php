@@ -1,4 +1,4 @@
-<?
+<?php
 
 class Db_DataFilterSwitcher
 {
@@ -12,5 +12,3 @@ class Db_DataFilterSwitcher
         return null;
     }
 }
-
-?>

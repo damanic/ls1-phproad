@@ -1,4 +1,4 @@
-<?
+<?php
 
 abstract class Db_GridEditor
 {
@@ -30,5 +30,3 @@ abstract class Db_GridEditor
         $this->$event($field_name, $model, $column_info, $controller, $column_name);
     }
 }
-
-?>

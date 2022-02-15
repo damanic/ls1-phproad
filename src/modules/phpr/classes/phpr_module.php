@@ -39,5 +39,3 @@ class Phpr_Module
         return null;
     }
 }
-
-?>

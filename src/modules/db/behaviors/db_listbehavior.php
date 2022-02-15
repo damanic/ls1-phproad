@@ -928,8 +928,8 @@ class Db_ListBehavior extends Phpr_ControllerBehavior
     {
         $search_string = trim(post('search_string'));
         if ($this->_controller->list_min_search_query_length > 0 && mb_strlen(
-                $search_string
-            ) < $this->_controller->list_min_search_query_length) {
+            $search_string
+        ) < $this->_controller->list_min_search_query_length) {
             throw new Phpr_ApplicationException(
                 sprintf(
                     'The entered search query is too short. Please enter at least %s symbols',
@@ -1005,9 +1005,9 @@ class Db_ListBehavior extends Phpr_ControllerBehavior
              */
             foreach ($definitions as $columnName => $definition) {
                 if (!in_array($columnName, $columnList) && (!in_array(
-                            $columnName,
-                            $listSettings['invisible_list']
-                        ) || !$onlyVisible) && $definition->visible
+                    $columnName,
+                    $listSettings['invisible_list']
+                ) || !$onlyVisible) && $definition->visible
                     && (($onlyVisible && $definitions[$columnName]->defaultVisible) || !$onlyVisible)) {
                     $columnList[] = $columnName;
                 }
@@ -1071,9 +1071,9 @@ class Db_ListBehavior extends Phpr_ControllerBehavior
         $definitions = $model->get_column_definitions();
 
         if (strlen($listSettings['sorting']->field) && array_key_exists(
-                $listSettings['sorting']->field,
-                $definitions
-            )) {
+            $listSettings['sorting']->field,
+            $definitions
+        )) {
             return $listSettings['sorting'];
         }
 
@@ -1372,10 +1372,10 @@ class Db_ListBehavior extends Phpr_ControllerBehavior
 
                             if ($field_name == 'id' || $field_name == '@id') {
                                 $field_queries[] = '(' . sprintf(
-                                        implode(' and ', $word_queries_int),
-                                        $field,
-                                        '%'
-                                    ) . ')';
+                                    implode(' and ', $word_queries_int),
+                                    $field,
+                                    '%'
+                                ) . ')';
                             } else {
                                 $field_queries[] = '(' . sprintf(implode(' and ', $word_queries), $field, '%') . ')';
                             }
@@ -1446,5 +1446,3 @@ class Db_ListBehavior extends Phpr_ControllerBehavior
     {
     }
 }
-
-?>

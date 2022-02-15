@@ -473,7 +473,7 @@ class Phpr_Request
     {
         if (!preg_match("/^[0-9a-z:_\/-\{\}|]+$/i", $Key)) {
             return null;
-//				throw new Phpr_SystemException( "Invalid characters in the input data key: $Key" );
+            //				throw new Phpr_SystemException( "Invalid characters in the input data key: $Key" );
         }
 
         return get_magic_quotes_gpc() ? $Key : addslashes($Key);
@@ -669,5 +669,3 @@ class Phpr_Request
         return substr($s1, 0, strpos($s1, $s2));
     }
 }
-
-?>

@@ -31,5 +31,3 @@ class Db_FormCustomArea extends Db_FormElement
         $this->location = $location;
     }
 }
-
-?>

@@ -219,7 +219,7 @@ class Phpr_Validation
                 $RuleObj = $Rule[Phpr_ValidationRules::objName];
 
                 switch ($Rule[Phpr_ValidationRules::ruleType]) {
-                    case Phpr_ValidationRules::typeInternal :
+                    case Phpr_ValidationRules::typeInternal:
                         $RuleResult = $RuleSet->evalInternal(
                             $RuleObj,
                             $ParamName,
@@ -231,7 +231,7 @@ class Phpr_Validation
                         );
                         break;
 
-                    case Phpr_ValidationRules::typeFunction :
+                    case Phpr_ValidationRules::typeFunction:
                         if (!function_exists($RuleObj)) {
                             throw new Phpr_SystemException("Unknown validation function: $RuleObj");
                         }
@@ -239,7 +239,7 @@ class Phpr_Validation
                         $RuleResult = $RuleObj($FieldValue);
                         break;
 
-                    case Phpr_ValidationRules::typeMethod :
+                    case Phpr_ValidationRules::typeMethod:
                         if ($this->_owner === null) {
                             throw new Phpr_SystemException(
                                 "Can not execute the method-type rule $RuleObj without an owner object"
@@ -1415,5 +1415,3 @@ class Phpr_ValidationRules
         return $result;
     }
 }
-
-?>

@@ -6,7 +6,6 @@
 
 class Phpr_Mcrypt
 {
-
     protected $initialised = null;
     protected $mode_descriptor = null;
     protected $key_size = 256;
@@ -122,5 +121,4 @@ class Phpr_Mcrypt
         $rijndael->disablePadding();
         return substr($rijndael->decrypt($data), $this->iv_size);
     }
-
 }

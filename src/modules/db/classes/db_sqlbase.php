@@ -1,4 +1,4 @@
-<?
+<?php
 
 class Db_SqlBase extends Db_WhereBase
 {
@@ -59,9 +59,9 @@ class Db_SqlBase extends Db_WhereBase
         $this->set_part('from', $table);
 
         if ((strpos($columns, ',') === false) && (strpos($columns, '.') === false) && (strpos(
-                    $columns,
-                    '('
-                ) === false)) {
+            $columns,
+            '('
+        ) === false)) {
             $columns = $table . '.' . $columns;
         }
 

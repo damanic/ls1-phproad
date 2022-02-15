@@ -468,6 +468,7 @@ class Db_ColumnDefinition
                 } else {
                     return $value;
                 }
+                // no break
             case db_date:
                 if (gettype($value) == 'string' && strlen($value)) {
                     $value = new Phpr_Datetime($value . ' 00:00:00');
@@ -497,6 +498,7 @@ class Db_ColumnDefinition
                         return $value ? $value->format($this->_dateTimeFormat) : null;
                     }
                 }
+                // no break
             case db_time:
                 return $value;
             default:
@@ -563,7 +565,7 @@ class Db_ColumnDefinition
 
             if (!$joinExists) {
                 switch ($relationType) {
-                    case 'has_one' :
+                    case 'has_one':
                         if (!$has_foreign_key) {
                             $options['foreign_key'] = Phpr_Inflector::foreign_key(
                                 $this->_model->table_name,
@@ -575,7 +577,7 @@ class Db_ColumnDefinition
                         $condition = "{$objectTableName}.{$options['foreign_key']} = {$this->_model->table_name}.{$options['primary_key']}";
                         $colDefinition['join'] = array("{$object->table_name} as {$objectTableName}" => $condition);
                         break;
-                    case 'belongs_to' :
+                    case 'belongs_to':
                         $condition = "{$objectTableName}.{$options['primary_key']} = {$this->_model->table_name}.{$options['foreign_key']}";
                         $this->referenceForeignKey = $options['foreign_key'];
                         $colDefinition['join'] = array("{$object->table_name} as {$objectTableName}" => $condition);
@@ -590,7 +592,7 @@ class Db_ColumnDefinition
             $this->referenceForeignKey = $this->relationName;
 
             switch ($relationType) {
-                case 'has_many' :
+                case 'has_many':
                     $valueExpr = str_replace('@', $object->table_name . '.', $this->referenceValueExpr);
                     $colDefinition['sql'] = "select group_concat($valueExpr ORDER BY 1 SEPARATOR ', ') from {$object->table_name} where
 							{$object->table_name}.{$options['foreign_key']} = {$this->_model->table_name}.{$options['primary_key']}";
@@ -645,5 +647,3 @@ class Db_ColumnDefinition
         return $this;
     }
 }
-
-?>

@@ -1,4 +1,4 @@
-<?
+<?php
 
 /**
  * PHP Road
@@ -59,8 +59,7 @@ class Phpr_DateTimeFormat
     private static $parsedFormats = array();
     private static $unwrappedFormats = array();
 
-    private static $formatSpecifiers = array
-    (
+    private static $formatSpecifiers = array(
         'a' => array(
             self::spType => self::spTypeString,
             self::spDomain => 'a_weekday_',
@@ -354,16 +353,16 @@ class Phpr_DateTimeFormat
                     // Evaluate custom method values
                     //
                     switch ($MatchSpecifier) {
-                        case 'p' :
+                        case 'p':
                             $hours = $DateTime->getHour();
                             $methodValue = ($hours < 12) ? 'am' : 'pm';
 
                             break;
-                        case 'C' :
+                        case 'C':
                             $methodValue = floor($DateTime->getYear() / 100);
 
                             break;
-                        case 'I' :
+                        case 'I':
                             $hours = $DateTime->getHour();
                             if ($hours == 0) {
                                 $hours = 12;
@@ -371,7 +370,7 @@ class Phpr_DateTimeFormat
                             $methodValue = ($hours <= 12) ? $hours : $hours % 12;
 
                             break;
-                        case 'i' :
+                        case 'i':
                             $hours = $DateTime->getHour();
                             if ($hours == 0) {
                                 $hours = 12;
@@ -379,7 +378,7 @@ class Phpr_DateTimeFormat
                             $methodValue = ($hours <= 12) ? $hours : $hours % 12;
 
                             break;
-                        case 'w' :
+                        case 'w':
                             $weekDay = $DateTime->getDayOfWeek();
                             if ($weekDay == 7) {
                                 $weekDay = 0;
@@ -387,7 +386,7 @@ class Phpr_DateTimeFormat
                             $methodValue = $weekDay;
 
                             break;
-                        case 'y' :
+                        case 'y':
                             $methodValue = $DateTime->getYear() % 100;
 
                             break;
@@ -591,11 +590,11 @@ class Phpr_DateTimeFormat
                 $dateElements[$meaning] = $value;
             } else {
                 switch ($specifier) {
-                    case 'p' :
+                    case 'p':
                         $ampm = $value;
 
                         break;
-                    case 'y' :
+                    case 'y':
                         if (!$ValidationOnly) {
                             $century = floor($Now->getYear() / 100);
                             $dateElements[self::spPrMnYear] = $century * 100 + $value;
@@ -661,5 +660,3 @@ class Phpr_DateTimeFormat
         return Phpr::$lang->mod('phpr', 'A_weekday_' . $DayNumber, self::localizationPrefix);
     }
 }
-
-?>

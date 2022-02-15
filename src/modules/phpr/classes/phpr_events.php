@@ -1,4 +1,4 @@
-<?
+<?php
 
 /*
  * Events extension
@@ -116,9 +116,9 @@ class Phpr_Events extends Phpr_Extension
             $event_handlers = array();
             foreach ($handlers as $handler_data) {
                 if (!isset($handler_data['handler'][1]) || strpos(
-                        $handler_data['handler'][1],
-                        $handler_substring
-                    ) === false) {
+                    $handler_data['handler'][1],
+                    $handler_substring
+                ) === false) {
                     $event_handlers[] = $handler_data;
                 }
             }

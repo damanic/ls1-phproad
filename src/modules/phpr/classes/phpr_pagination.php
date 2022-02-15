@@ -248,5 +248,3 @@ class Phpr_Pagination
         return $this->_pageCount;
     }
 }
-
-?>

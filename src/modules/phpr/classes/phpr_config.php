@@ -128,5 +128,3 @@ class Phpr_Config implements ArrayAccess
     {
     }
 }
-
-?>

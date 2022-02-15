@@ -1,4 +1,4 @@
-<?
+<?php
 
 class Db_WhereBase extends Db_Base
 {
@@ -101,5 +101,3 @@ class Db_WhereBase extends Db_Base
         $this->where = array();
     }
 }
-
-?>

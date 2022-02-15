@@ -242,7 +242,7 @@ class Db_FormBehavior extends Phpr_ControllerBehavior
     public function form_widget_request($method, $db_name, $param_1 = null, $param_2 = null)
     {
         if (substr($method, 0, 2) != 'on') {
-            die ('Invalid widget method name: ' . $method);
+            die('Invalid widget method name: ' . $method);
         }
 
         try {
@@ -251,7 +251,7 @@ class Db_FormBehavior extends Phpr_ControllerBehavior
             $widget = $this->formInitWidget($db_name, $data_model);
             $widget->$method($param_1, $param_2);
         } catch (exception $ex) {
-            die ($ex->getMessage());
+            die($ex->getMessage());
         }
     }
 
@@ -461,9 +461,9 @@ class Db_FormBehavior extends Phpr_ControllerBehavior
         if ($field_definition->renderMode === null) {
             if ($columnDefinition->isReference) {
                 switch ($columnDefinition->referenceType) {
-                    case 'belongs_to' :
+                    case 'belongs_to':
                         return frm_dropdown;
-                    case 'has_and_belongs_to_many' :
+                    case 'has_and_belongs_to_many':
                         return frm_checkboxlist;
                 }
             }
@@ -1121,7 +1121,8 @@ class Db_FormBehavior extends Phpr_ControllerBehavior
 
             if ($this->_controller->form_edit_save_flash) {
                 Phpr::$session->flash['success'] = $this->_controller->form_edit_save_flash;
-                $flash_set = true;;
+                $flash_set = true;
+                ;
             }
 
             if (post('redirect', 1)) {
@@ -1918,7 +1919,7 @@ class Db_FormBehavior extends Phpr_ControllerBehavior
             }
         }
 
-//			$model = $model ? $model : $this->formCreateModelObject();
+        //			$model = $model ? $model : $this->formCreateModelObject();
 
         $db_name = post('db_name');
         $field_definition = $field_definition ? $field_definition : $model->find_form_field($db_name);
@@ -2044,12 +2045,12 @@ class Db_FormBehavior extends Phpr_ControllerBehavior
 
         //TINYMCE
         $tiny_mce_src = Phpr::$config->get('DEV_MODE') ? '/phproad/thirdpart/tiny_mce/tiny_mce_src.js?' . module_build(
-                'core'
-            ) : '/phproad/thirdpart/tiny_mce/tiny_mce.js?' . module_build('core');
+            'core'
+        ) : '/phproad/thirdpart/tiny_mce/tiny_mce.js?' . module_build('core');
         $tiny_mce_version = Phpr::$config->get('TINY_MCE_VERSION');
         $tiny_mce_src = $tiny_mce_version ? '/phproad/thirdpart/tinymce' . $tiny_mce_version . '/tinymce.min.js?' . module_build(
-                'core'
-            ) : $tiny_mce_src;
+            'core'
+        ) : $tiny_mce_src;
         $this->_controller->addJavaScript($tiny_mce_src);
 
         //AUTOCOMPLETE
@@ -2240,5 +2241,3 @@ class Db_FormBehavior extends Phpr_ControllerBehavior
     {
     }
 }
-
-?>

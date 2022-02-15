@@ -1,4 +1,4 @@
-<?
+<?php
 
 class Db_Driver
 {
@@ -110,5 +110,3 @@ class Db_Driver
         return null;
     }
 }
-
-?>

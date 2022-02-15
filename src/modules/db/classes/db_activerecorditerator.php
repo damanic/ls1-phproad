@@ -1,4 +1,4 @@
-<?
+<?php
 
 class Db_ActiveRecordIterator implements Iterator
 {
@@ -14,31 +14,28 @@ class Db_ActiveRecordIterator implements Iterator
         unset($this->members['errors']);
     }
 
-    function current()
+    public function current()
     {
         return current($this->members);
     }
 
-    function key()
+    public function key()
     {
         return key($this->members);
     }
 
-    function next()
+    public function next()
     {
         return next($this->members);
     }
 
-    function rewind()
+    public function rewind()
     {
         reset($this->members);
     }
 
-    function valid()
+    public function valid()
     {
         return ($this->current() !== false);
     }
-
 }
-
-?>

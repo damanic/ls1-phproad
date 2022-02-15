@@ -406,9 +406,9 @@ class Db_FormFieldDefinition extends Db_FormElement
         $this->_columnDefinition = $column_definitions[$dbName];
 
         if ($this->_columnDefinition->isReference && !in_array(
-                $this->_columnDefinition->referenceType,
-                array('belongs_to', 'has_many', 'has_and_belongs_to_many')
-            )) {
+            $this->_columnDefinition->referenceType,
+            array('belongs_to', 'has_many', 'has_and_belongs_to_many')
+        )) {
             throw new Phpr_SystemException(
                 "Error adding form field $dbName. Form fields can only be defined for the belongs_to, has_and_belongs_to_many and has_many relations. {$this->_columnDefinition->referenceType} associations are not supported."
             );
@@ -1288,5 +1288,3 @@ class Db_FormFieldDefinition extends Db_FormElement
         }
     }
 }
-
-?>

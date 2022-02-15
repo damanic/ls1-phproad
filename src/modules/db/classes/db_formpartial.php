@@ -21,5 +21,3 @@ class Db_FormPartial extends Db_FormElement
         $this->path = $path;
     }
 }
-
-?>

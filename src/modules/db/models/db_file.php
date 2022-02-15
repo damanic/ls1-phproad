@@ -295,7 +295,7 @@ class Db_File extends Db_ActiveRecord
         header('Cache-Control: pre-check=0, post-check=0, max-age=0');
         header('Accept-Ranges: bytes');
         header('Content-Length: ' . $this->size);
-//			header("Connection: close");
+        //			header("Connection: close");
 
         Phpr_Files::readFile($path);
     }
@@ -536,5 +536,3 @@ class Db_File extends Db_ActiveRecord
     {
     }
 }
-
-?>

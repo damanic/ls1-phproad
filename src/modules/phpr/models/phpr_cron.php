@@ -8,7 +8,6 @@
 
 class Phpr_Cron
 {
-
     public static function update_interval($code)
     {
         $bind = array(

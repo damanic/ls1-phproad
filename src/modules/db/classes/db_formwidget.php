@@ -1,4 +1,4 @@
-<?
+<?php
 
 /**
  * Base class for form widgets. Form widgets can render custom form controls,
@@ -19,8 +19,8 @@ class Db_FormWidget
     {
         $ref_object = new ReflectionObject($this);
         $widget_root_dir = str_replace("\\", "/", dirname($ref_object->getFileName())) . '/' . strtolower(
-                get_class($this)
-            );
+            get_class($this)
+        );
         $this->view_path = $widget_root_dir . '/partials';
 
         $this->resources_path = $widget_root_dir . '/resources';
@@ -124,5 +124,3 @@ class Db_FormWidget
     {
     }
 }
-
-?>

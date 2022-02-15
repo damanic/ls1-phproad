@@ -1,8 +1,7 @@
-<?
+<?php
 
 class Db_MySQLDriver extends Db_Driver
 {
-
     private static $locale_set = false;
 
     public static function create()
@@ -59,15 +58,15 @@ class Db_MySQLDriver extends Db_Driver
             $err = 0;
 
             if ((Db::$connection == null) || (Db::$connection === false) || ($err = @mysql_errno(
-                        Db::$connection
-                    ) != 0)) {
+                Db::$connection
+            ) != 0)) {
                 throw new Phpr_DatabaseException('MySQL connection error: ' . @mysql_error());
             }
 
             if (!$external_connection_found) {
                 if ((@mysql_select_db($this->config['database'], Db::$connection) === false) || ($err = @mysql_errno(
-                            Db::$connection
-                        ) != 0)) {
+                    Db::$connection
+                ) != 0)) {
                     throw new Phpr_DatabaseException(
                         'MySQL error selecting database ' . $this->config['database'] . ': ' . @mysql_error()
                     );
@@ -140,7 +139,7 @@ class Db_MySQLDriver extends Db_Driver
                 } else {
                     $keys = array_keys($row);
                     $col = array_key_exists($col, $keys) ? $keys[$col] : $keys[0];
-//						$col = array_shift($keys);
+                    //						$col = array_shift($keys);
 
                     return isset($row[$col]) ? $row[$col] : false;
                 }
@@ -287,5 +286,3 @@ class Db_MySQLDriver extends Db_Driver
         return mysql_insert_id();
     }
 }
-
-?>
