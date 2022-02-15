@@ -10,7 +10,6 @@ php_value session.name AHOYSESSID
 php_flag short_open_tag on
 php_flag asp_tags on
 
-php_flag magic_quotes_gpc off
 php_value date.timezone GMT
 
 php_value post_max_size 100M
