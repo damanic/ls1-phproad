@@ -1,2 +1,2 @@
-LS V1 - PHPROAD FRAMEWORK
+PHP Application Framework for Lemonstand v1
 =======
