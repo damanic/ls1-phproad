@@ -91,15 +91,6 @@
      require PATH_SYSTEM."/modules/phpr/vendor/autoload.php";
 
     /*
-     * Turn off the magic quotes
-     */
-    if (version_compare(PHP_VERSION, '5.3.0', '<')) {
-        if (function_exists('set_magic_quotes_runtime')) {
-            @set_magic_quotes_runtime(0);
-        }
-    }
-
-    /*
      * Initialize the error handling engine
      */
 
