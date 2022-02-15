@@ -3443,7 +3443,7 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
      * should return MySQL connection resource - a result of <em>mysql_pconnect()</em> or <em>mysql_connect()</em> functions.
      * @event core:onBeforeDatabaseConnect
      * @triggered /phproad/modules/db/classes/db_mysqldriver.php
-     * @param Db_MySQLDriver $driver Specifies MySQL driver object.
+     * @param Db_MySQLiDriver $driver Specifies MySQL driver object.
      * @return mixed Returns the MySQL connection resource.
      * @package core.events
      * @author LemonStand eCommerce Inc.
