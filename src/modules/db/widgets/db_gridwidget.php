@@ -443,8 +443,8 @@ class Db_GridWidget extends Db_FormWidget
             $url = root_url(
                 Phpr::$router->getControllerRootUrl()
             ) . '/form_widget_request/on_get_csv_file/' . $this->column_name . '/' . $key . '/?widget_model_class=' . urlencode(
-                    $widget_model_class
-                );
+                $widget_model_class
+            );
             Phpr::$response->redirect($url);
         } catch (Exception $ex) {
             Phpr::$response->ajaxReportException($ex, true, true);
