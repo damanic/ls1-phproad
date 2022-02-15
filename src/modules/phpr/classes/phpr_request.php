@@ -368,14 +368,6 @@ class Phpr_Request
         $this->unsetGlobals($_POST);
         $this->unsetGlobals($_COOKIE);
 
-        // Remove magic quotes
-        //
-        if (ini_get('magic_quotes_gpc') || Phpr::$config->get('REMOVE_GPC_SLASHES')) {
-            array_walk_recursive($_GET, array('Phpr_Request', 'array_strip_slashes'));
-            array_walk_recursive($_POST, array('Phpr_Request', 'array_strip_slashes'));
-            array_walk_recursive($_COOKIE, array('Phpr_Request', 'array_strip_slashes'));
-        }
-
         // Clear the _GET array
         //
         $_GET = array();
@@ -476,7 +468,7 @@ class Phpr_Request
             //				throw new Phpr_SystemException( "Invalid characters in the input data key: $Key" );
         }
 
-        return get_magic_quotes_gpc() ? $Key : addslashes($Key);
+        return addslashes($Key);
     }
 
     /**

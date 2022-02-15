@@ -649,7 +649,7 @@ class Db_SqlBase extends Db_WhereBase
             if (isset(Phpr::$config['driver'])) {
                 $driver = Phpr::$config['driver'] . 'Driver';
             } else {
-                $driver = 'Db_MySQLDriver';
+                $driver = 'Db_MySQLiDriver';
             }
 
             $this->_driver = new $driver();
