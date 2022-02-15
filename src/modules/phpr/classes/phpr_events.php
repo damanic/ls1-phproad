@@ -1,190 +1,209 @@
 <?
 
-	/*
-	 * Events extension
-	 * 
-	 * Firing: $this->fireEvent('onEventName', $Param1);
-	 * Handling: 
-	 * Function handler: $Tester->addEvent('OnAfterShow', 'handlerFunction');
-	 * Function handler with extra params: $Tester->addEvent('OnAfterShow', pass('handlerFunctionExt', '3.14'));
-	 * Class method handler: $Tester->addEvent('OnAfterShow', $Reciever, 'onShowMessage');
-	 * Class method handler with extra params: $Tester->addEvent('OnAfterShow', pass($Reciever, 'onShowMessageExt', '3.14'));
-	 */
-	class Phpr_Events extends Phpr_Extension {
-		public $events = array();
-		public $events_disabled = false;
-		
-		public function add_event($options = array()) {
-			if(is_string($options)) { // backwards compat with addEvent's first param being the event name
-				$options = array(
-					'name' => $options
-				);
-			}
-			else {
-				$options = array_merge(array(
-					'name' => null
-				), $options);
-			}
-			
-			extract($options);
-			
-			$args = func_get_args();
-            $handler = $this->extract_function_arg($args, 1);
-			
-			if(count($args) > 0)
-				$priority = (int)$args[0];
-			else
-				$priority = 500;
+/*
+ * Events extension
+ *
+ * Firing: $this->fireEvent('onEventName', $Param1);
+ * Handling:
+ * Function handler: $Tester->addEvent('OnAfterShow', 'handlerFunction');
+ * Function handler with extra params: $Tester->addEvent('OnAfterShow', pass('handlerFunctionExt', '3.14'));
+ * Class method handler: $Tester->addEvent('OnAfterShow', $Reciever, 'onShowMessage');
+ * Class method handler with extra params: $Tester->addEvent('OnAfterShow', pass($Reciever, 'onShowMessageExt', '3.14'));
+ */
 
-			if(!isset($this->events[$name]))
-				$this->events[$name] = array();
+class Phpr_Events extends Phpr_Extension
+{
+    public $events = array();
+    public $events_disabled = false;
 
-			$this->events[$name][] = array('handler' => $handler, 'priority' => $priority);
-		}
+    public function add_event($options = array())
+    {
+        if (is_string($options)) { // backwards compat with addEvent's first param being the event name
+            $options = array(
+                'name' => $options
+            );
+        } else {
+            $options = array_merge(array(
+                'name' => null
+            ), $options);
+        }
 
-		public function fire_event($options = array()) {
-			if(is_string($options)) { // backwards compat with addEvent's first param being the event name
-				$options = array(
-					'name' => $options, 
-					'type' => 'combine'
-				);
-			}
-			else {
-				$options = array_merge(array(
-					'name' => null, 
-					'type' => 'combine'
-				), $options);
-			}
-		
-			extract($options);
+        extract($options);
 
-			$params = func_get_args();
-			
-			array_shift($params);
-			
-			if($this->events_disabled || !isset($this->events[$name]))
-				if($type === 'combine')
-					return array(); // backwards compat
-				else if($type === 'filter' || $type === 'update_result')
-					return count($params) > 0 ? $params[0] : null;
-				else
-					return null;
+        $args = func_get_args();
+        $handler = $this->extract_function_arg($args, 1);
 
-			uasort($this->events[$name], array($this, 'sort_by_priority'));
-					
-			if($type === 'combine') {
-				$result = array();
-				
-				foreach($this->events[$name] as $event) {
-                    $result[] = call_user_func_array($event['handler'], $params);
-				}
-			}
-			else if($type === 'filter') {
-				$result = count($params) > 0 ? $params[0] : null;
-				foreach($this->events[$name] as $event) {
+        if (count($args) > 0) {
+            $priority = (int)$args[0];
+        } else {
+            $priority = 500;
+        }
+
+        if (!isset($this->events[$name])) {
+            $this->events[$name] = array();
+        }
+
+        $this->events[$name][] = array('handler' => $handler, 'priority' => $priority);
+    }
+
+    public function fire_event($options = array())
+    {
+        if (is_string($options)) { // backwards compat with addEvent's first param being the event name
+            $options = array(
+                'name' => $options,
+                'type' => 'combine'
+            );
+        } else {
+            $options = array_merge(array(
+                'name' => null,
+                'type' => 'combine'
+            ), $options);
+        }
+
+        extract($options);
+
+        $params = func_get_args();
+
+        array_shift($params);
+
+        if ($this->events_disabled || !isset($this->events[$name])) {
+            if ($type === 'combine') {
+                return array();
+            } // backwards compat
+            else {
+                if ($type === 'filter' || $type === 'update_result') {
+                    return count($params) > 0 ? $params[0] : null;
+                } else {
+                    return null;
+                }
+            }
+        }
+
+        uasort($this->events[$name], array($this, 'sort_by_priority'));
+
+        if ($type === 'combine') {
+            $result = array();
+
+            foreach ($this->events[$name] as $event) {
+                $result[] = call_user_func_array($event['handler'], $params);
+            }
+        } else {
+            if ($type === 'filter') {
+                $result = count($params) > 0 ? $params[0] : null;
+                foreach ($this->events[$name] as $event) {
                     $result = call_user_func_array($event['handler'], array($result));
-				}
-			}
-			else if($type === 'update_result') {
-				$result = count($params) > 0 ? $params[0] : null;
-				$args = count($params) > 1 ? $params[1] : array();
-				foreach($this->events[$name] as $event) {
-					$result = call_user_func_array($event['handler'], array($result,$args));
-				}
-			} else {
-				$result = null;
-			}
-			
-			return $result;
-		}
-		
-		public function remove_event_by_handler_substring($handler_substring)
-		{
-			$events = array();
-			foreach ($this->events as $event_name=>$handlers)
-			{
-				$event_handlers = array();
-				foreach ($handlers as $handler_data)
-				{
-					if (!isset($handler_data['handler'][1]) || strpos($handler_data['handler'][1], $handler_substring) === false)
-						$event_handlers[] = $handler_data;
-				}
-				
-				$events[$event_name] = $event_handlers;
-			}
-			
-			$this->events = $events;
-		}
-		
-		public function listeners_exist() {
-			$listeners = func_get_args();
-			foreach ($listeners as $name)
-				if (array_key_exists($name, $this->events))
-					return true;
-					
-			return false;
-		}
-		
-		private function sort_by_priority($a, $b) {
-			if($a['priority'] == $b['priority']) {
- 				return 0;
-			}
-			
-			return ($a['priority'] < $b['priority']) ? 1 : -1;
-		}
-
-
-        private function extract_function_arg(&$args, $offset = 0)
-        {
-            $count = count($args) - $offset;
-
-            if ($count == 0)
-                return null;
-
-            if (is_string($args[$offset]) ||
-                is_array($args[$offset]) ||
-                (is_object($args[$offset]) && $args[$offset] instanceof Phpr_Closure))
-            {
-                for ($i = 0; $i <= $offset; $i++) {
-                    $last_obj = array_shift($args);
                 }
+            } else {
+                if ($type === 'update_result') {
+                    $result = count($params) > 0 ? $params[0] : null;
+                    $args = count($params) > 1 ? $params[1] : array();
+                    foreach ($this->events[$name] as $event) {
+                        $result = call_user_func_array($event['handler'], array($result, $args));
+                    }
+                } else {
+                    $result = null;
+                }
+            }
+        }
 
-                return $last_obj;
+        return $result;
+    }
+
+    public function remove_event_by_handler_substring($handler_substring)
+    {
+        $events = array();
+        foreach ($this->events as $event_name => $handlers) {
+            $event_handlers = array();
+            foreach ($handlers as $handler_data) {
+                if (!isset($handler_data['handler'][1]) || strpos(
+                        $handler_data['handler'][1],
+                        $handler_substring
+                    ) === false) {
+                    $event_handlers[] = $handler_data;
+                }
             }
 
-            if ($count > 1 && is_object($args[$offset]) && is_string($args[$offset+1])) {
-                $last_obj = array($args[$offset], $args[$offset+1]);
+            $events[$event_name] = $event_handlers;
+        }
 
-                $new_args = array();
+        $this->events = $events;
+    }
 
-                for ($i = $offset+2; $i < count($args); $i++) {
-                    $new_args[] = $args[$i];
-                }
-
-                $args = $new_args;
-                return $last_obj;
+    public function listeners_exist()
+    {
+        $listeners = func_get_args();
+        foreach ($listeners as $name) {
+            if (array_key_exists($name, $this->events)) {
+                return true;
             }
+        }
 
+        return false;
+    }
+
+    private function sort_by_priority($a, $b)
+    {
+        if ($a['priority'] == $b['priority']) {
+            return 0;
+        }
+
+        return ($a['priority'] < $b['priority']) ? 1 : -1;
+    }
+
+
+    private function extract_function_arg(&$args, $offset = 0)
+    {
+        $count = count($args) - $offset;
+
+        if ($count == 0) {
             return null;
         }
-		
-		/**
-		 * @deprecated
-		 */
-		public function addEvent($name) {
-			$params = func_get_args();
-			$params[0] = array('name' => $name);
-			
-			return callFunction(array($this, 'add_event'), $params);
-		}
-		
-		/**
-		 * @deprecated
-		 */
-		public function fireEvent($name) {
-			$params = func_get_args();
-			$params[0] = array('name' => $name);
-			
-			return callFunction(array($this, 'fire_event'), $params);
-		}
-	}
+
+        if (is_string($args[$offset]) ||
+            is_array($args[$offset]) ||
+            (is_object($args[$offset]) && $args[$offset] instanceof Phpr_Closure)) {
+            for ($i = 0; $i <= $offset; $i++) {
+                $last_obj = array_shift($args);
+            }
+
+            return $last_obj;
+        }
+
+        if ($count > 1 && is_object($args[$offset]) && is_string($args[$offset + 1])) {
+            $last_obj = array($args[$offset], $args[$offset + 1]);
+
+            $new_args = array();
+
+            for ($i = $offset + 2; $i < count($args); $i++) {
+                $new_args[] = $args[$i];
+            }
+
+            $args = $new_args;
+            return $last_obj;
+        }
+
+        return null;
+    }
+
+    /**
+     * @deprecated
+     */
+    public function addEvent($name)
+    {
+        $params = func_get_args();
+        $params[0] = array('name' => $name);
+
+        return callFunction(array($this, 'add_event'), $params);
+    }
+
+    /**
+     * @deprecated
+     */
+    public function fireEvent($name)
+    {
+        $params = func_get_args();
+        $params[0] = array('name' => $name);
+
+        return callFunction(array($this, 'fire_event'), $params);
+    }
+}

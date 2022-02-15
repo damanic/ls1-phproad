@@ -1,278 +1,291 @@
 <?
 
-	class Db_MySQLDriver extends Db_Driver 
-	{
+class Db_MySQLDriver extends Db_Driver
+{
 
-		private static $locale_set = false;
+    private static $locale_set = false;
 
-		public static function create() 
-		{
-			return new self();
-		}
+    public static function create()
+    {
+        return new self();
+    }
 
-		public function connect() 
-		{
-			if (Db::$connection) 
-				return;
+    public function connect()
+    {
+        if (Db::$connection) {
+            return;
+        }
 
-			try
-			{
-				Phpr_ErrorLog::$disable_db_logging = true;
+        try {
+            Phpr_ErrorLog::$disable_db_logging = true;
 
-				// Load the configuration
-				parent::connect();
-				
-				// Execute custom connection handlers
-				$external_connection = Backend::$events->fireEvent('core:onBeforeDatabaseConnect', $this);
-				$external_connection_found = false;
-				foreach ($external_connection as $connection) 
-				{
-					if ($connection)
-					{
-						Db::$connection = $connection;
-						$external_connection_found = true;
-						break;
-					}
-				}
-				
-				if (!Db::$connection)
-				{
-					// Connect
-					try
-					{
-						if (Phpr::$config->get('MYSQL_PERSISTENT', true))
-						{
-							Db::$connection = @mysql_pconnect($this->config['host'],
-								$this->config['username'],
-								$this->config['password'],
-								isset($this->config['flags']) ? $this->config['flags'] : 0);
-						} else
-						{
-							Db::$connection = @mysql_connect($this->config['host'],
-								$this->config['username'],
-								$this->config['password'],
-								isset($this->config['flags']) ? $this->config['flags'] : 0);
-						}
-					} catch (Exception $ex)
-					{
-						throw new Phpr_DatabaseException('Error connecting to the database.');
-					}
-				}
-			
-				$err = 0;
+            // Load the configuration
+            parent::connect();
 
-				if ((Db::$connection == null) || (Db::$connection === false) || ($err = @mysql_errno(Db::$connection) != 0))
-					throw new Phpr_DatabaseException('MySQL connection error: '.@mysql_error());
+            // Execute custom connection handlers
+            $external_connection = Backend::$events->fireEvent('core:onBeforeDatabaseConnect', $this);
+            $external_connection_found = false;
+            foreach ($external_connection as $connection) {
+                if ($connection) {
+                    Db::$connection = $connection;
+                    $external_connection_found = true;
+                    break;
+                }
+            }
 
-				if (!$external_connection_found)
-				{
-					if ((@mysql_select_db($this->config['database'], Db::$connection) === false) || ($err = @mysql_errno(Db::$connection) != 0))
-						throw new Phpr_DatabaseException('MySQL error selecting database '.$this->config['database'].': '.@mysql_error());
-				}
+            if (!Db::$connection) {
+                // Connect
+                try {
+                    if (Phpr::$config->get('MYSQL_PERSISTENT', true)) {
+                        Db::$connection = @mysql_pconnect(
+                            $this->config['host'],
+                            $this->config['username'],
+                            $this->config['password'],
+                            isset($this->config['flags']) ? $this->config['flags'] : 0
+                        );
+                    } else {
+                        Db::$connection = @mysql_connect(
+                            $this->config['host'],
+                            $this->config['username'],
+                            $this->config['password'],
+                            isset($this->config['flags']) ? $this->config['flags'] : 0
+                        );
+                    }
+                } catch (Exception $ex) {
+                    throw new Phpr_DatabaseException('Error connecting to the database.');
+                }
+            }
 
-				// Set charset
-				if (isset($this->config['locale']) && (trim($this->config['locale']) != ''))
-				{
-					@mysql_query("SET NAMES '" . $this->config['locale'] . "'", Db::$connection);
-					if ($err = @mysql_errno(Db::$connection) != 0)
-						throw new Phpr_DatabaseException('MySQL error setting character set: '.@mysql_error(Db::$connection));
-				}
-		
-				// Set SQL Mode
-				@mysql_query('SET sql_mode=""');
-				
-				Phpr_ErrorLog::$disable_db_logging = false;
-			} catch (Exception $ex)
-			{
-				$exception = new Phpr_DatabaseException($ex->getMessage());
-				$exception->hint_message = 'This problem could be caused by the LemonStand MySQL connection configuration errors. Please log into the LemonStand Configuration Tool and update the database connection parameters. Also please make sure that MySQL server is running.';
-				throw $exception;
-			}
-		}
+            $err = 0;
 
-		public function reconnect()
-		{
-			if (Db::$connection) 
-			{
-				@mysql_close(Db::$connection);
-				Db::$connection = null;
-			}
-			
-			$this->connect();
-		}
+            if ((Db::$connection == null) || (Db::$connection === false) || ($err = @mysql_errno(
+                        Db::$connection
+                    ) != 0)) {
+                throw new Phpr_DatabaseException('MySQL connection error: ' . @mysql_error());
+            }
 
-		public function execute($sql) 
-		{
-			parent::execute($sql);
-			$this->connect();
+            if (!$external_connection_found) {
+                if ((@mysql_select_db($this->config['database'], Db::$connection) === false) || ($err = @mysql_errno(
+                            Db::$connection
+                        ) != 0)) {
+                    throw new Phpr_DatabaseException(
+                        'MySQL error selecting database ' . $this->config['database'] . ': ' . @mysql_error()
+                    );
+                }
+            }
 
-			// execute the statement
-			$handle = @mysql_query($sql, Db::$connection);
+            // Set charset
+            if (isset($this->config['locale']) && (trim($this->config['locale']) != '')) {
+                @mysql_query("SET NAMES '" . $this->config['locale'] . "'", Db::$connection);
+                if ($err = @mysql_errno(Db::$connection) != 0) {
+                    throw new Phpr_DatabaseException(
+                        'MySQL error setting character set: ' . @mysql_error(Db::$connection)
+                    );
+                }
+            }
 
-			// If error, generate exception
-			if ($err = @mysql_errno(Db::$connection) != 0) {
-				$exception = new Phpr_DatabaseException('MySQL error executing query: '.@mysql_error(Db::$connection));
-				$exception->hint_message = 'This problem could be caused by the LemonStand MySQL connection configuration errors. Please log into the LemonStand Configuration Tool and update the database connection parameters. Also please make sure that MySQL server is running.';
-				throw $exception;
-			}
+            // Set SQL Mode
+            @mysql_query('SET sql_mode=""');
 
-			return $handle;
-		}
+            Phpr_ErrorLog::$disable_db_logging = false;
+        } catch (Exception $ex) {
+            $exception = new Phpr_DatabaseException($ex->getMessage());
+            $exception->hint_message = 'This problem could be caused by the LemonStand MySQL connection configuration errors. Please log into the LemonStand Configuration Tool and update the database connection parameters. Also please make sure that MySQL server is running.';
+            throw $exception;
+        }
+    }
 
-		/* Fetch methods */
+    public function reconnect()
+    {
+        if (Db::$connection) {
+            @mysql_close(Db::$connection);
+            Db::$connection = null;
+        }
 
-		public function fetch($result, $col = null) 
-		{
-			parent::fetch($result, $col);
+        $this->connect();
+    }
 
-			if ($row = @mysql_fetch_assoc($result)) {
-				if ($err = @mysql_errno(Db::$connection) != 0)
-					throw new Phpr_DatabaseException('MySQL error fetching data: '.@mysql_error(Db::$connection));
+    public function execute($sql)
+    {
+        parent::execute($sql);
+        $this->connect();
 
-				if ($col !== null) {
-					if (is_string($col))
-						return isset($row[$col]) ? $row[$col] : false;
-					else {
-						$keys = array_keys($row);
-						$col = array_key_exists($col, $keys) ? $keys[$col] : $keys[0];
+        // execute the statement
+        $handle = @mysql_query($sql, Db::$connection);
+
+        // If error, generate exception
+        if ($err = @mysql_errno(Db::$connection) != 0) {
+            $exception = new Phpr_DatabaseException('MySQL error executing query: ' . @mysql_error(Db::$connection));
+            $exception->hint_message = 'This problem could be caused by the LemonStand MySQL connection configuration errors. Please log into the LemonStand Configuration Tool and update the database connection parameters. Also please make sure that MySQL server is running.';
+            throw $exception;
+        }
+
+        return $handle;
+    }
+
+    /* Fetch methods */
+
+    public function fetch($result, $col = null)
+    {
+        parent::fetch($result, $col);
+
+        if ($row = @mysql_fetch_assoc($result)) {
+            if ($err = @mysql_errno(Db::$connection) != 0) {
+                throw new Phpr_DatabaseException('MySQL error fetching data: ' . @mysql_error(Db::$connection));
+            }
+
+            if ($col !== null) {
+                if (is_string($col)) {
+                    return isset($row[$col]) ? $row[$col] : false;
+                } else {
+                    $keys = array_keys($row);
+                    $col = array_key_exists($col, $keys) ? $keys[$col] : $keys[0];
 //						$col = array_shift($keys);
 
-						return isset($row[$col]) ? $row[$col] : false;
-					}
-				} else
-					return $row;
-			}
-			return false;
-		}
-		
-		public function free_query_result($resource)
-		{
-			if ($resource)
-				mysql_free_result($resource);
-		}
+                    return isset($row[$col]) ? $row[$col] : false;
+                }
+            } else {
+                return $row;
+            }
+        }
+        return false;
+    }
 
-		/* Utility routines */
+    public function free_query_result($resource)
+    {
+        if ($resource) {
+            mysql_free_result($resource);
+        }
+    }
 
-		public function row_count() 
-		{
-			if (!Db::$connection)
-				throw new Phpr_DatabaseException('MySQL count error - no connection');
+    /* Utility routines */
 
-			return @mysql_affected_rows(Db::$connection);
-		}
+    public function row_count()
+    {
+        if (!Db::$connection) {
+            throw new Phpr_DatabaseException('MySQL count error - no connection');
+        }
 
-		public function last_insert_id($tableName = null, $primaryKey = null) 
-		{
-			if (!Db::$connection)
-				throw new Phpr_DatabaseException('MySQL error last_insert_id - no connection');
+        return @mysql_affected_rows(Db::$connection);
+    }
 
-			return @mysql_insert_id(Db::$connection);
-		}
+    public function last_insert_id($tableName = null, $primaryKey = null)
+    {
+        if (!Db::$connection) {
+            throw new Phpr_DatabaseException('MySQL error last_insert_id - no connection');
+        }
 
-		public function limit($offset, $count = null)
-		{
-			if (is_null($count))
-				return 'LIMIT ' . $offset;
-			else
-				return 'LIMIT ' . $offset . ', ' . $count;
-		}
+        return @mysql_insert_id(Db::$connection);
+    }
 
-		/**
-		 * Returns the column descriptions for a table.
-		 *
-		 * @return array
-		 */
-		public function describe_table($table) 
-		{
-			if (isset(Db::$describeCache[$table]))
-				return Db::$describeCache[$table];
-			else 
-			{
-				$sql = 'DESCRIBE ' . $table;
-				Phpr::$traceLog->write($sql, 'SQL');
-				$result = $this->fetchAll($sql);
-				$descr = array();
-				foreach ($result as $key => $val) 
-				{
-					$descr[$val['Field']] = array(
-						'name'      => $val['Field'],
-						'sql_type'  => $val['Type'],
-						'type'      => $this->simplified_type($val['Type']),
-						'notnull'   => (bool) ($val['Null'] != 'YES'), // not null is NO or empty, null is YES
-					'default'   => $val['Default'],
-						'primary'   => (strtolower($val['Key']) == 'pri'),
-						);
-				}
+    public function limit($offset, $count = null)
+    {
+        if (is_null($count)) {
+            return 'LIMIT ' . $offset;
+        } else {
+            return 'LIMIT ' . $offset . ', ' . $count;
+        }
+    }
 
-				Db::$describeCache[$table] = $descr;
-				return $descr;
-			}
-		}
+    /**
+     * Returns the column descriptions for a table.
+     *
+     * @return array
+     */
+    public function describe_table($table)
+    {
+        if (isset(Db::$describeCache[$table])) {
+            return Db::$describeCache[$table];
+        } else {
+            $sql = 'DESCRIBE ' . $table;
+            Phpr::$traceLog->write($sql, 'SQL');
+            $result = $this->fetchAll($sql);
+            $descr = array();
+            foreach ($result as $key => $val) {
+                $descr[$val['Field']] = array(
+                    'name' => $val['Field'],
+                    'sql_type' => $val['Type'],
+                    'type' => $this->simplified_type($val['Type']),
+                    'notnull' => (bool)($val['Null'] != 'YES'), // not null is NO or empty, null is YES
+                    'default' => $val['Default'],
+                    'primary' => (strtolower($val['Key']) == 'pri'),
+                );
+            }
 
-		/* Service routines */
+            Db::$describeCache[$table] = $descr;
+            return $descr;
+        }
+    }
 
-		protected function fetchAll($sql) 
-		{
-			$data = array();
-			$handle = $this->execute($sql);
-			while ($row = $this->fetch($handle))
-				$data[] = $row;
+    /* Service routines */
 
-			return $data;
-		}
+    protected function fetchAll($sql)
+    {
+        $data = array();
+        $handle = $this->execute($sql);
+        while ($row = $this->fetch($handle)) {
+            $data[] = $row;
+        }
 
-		protected function simplified_type($sql_type) 
-		{
-			if (preg_match('/([\w]+)(\(\d\))*/i', $sql_type, $matches))
-				return strtolower($matches[1]);
+        return $data;
+    }
 
-			return strtolower($sql_type);
-		}
-		
-		public function quote_metadata_object_name($name)
-		{
-			$name = trim($name);
-			if (strpos('`', $name) === 0)
-				$name = substr($name, 0);
+    protected function simplified_type($sql_type)
+    {
+        if (preg_match('/([\w]+)(\(\d\))*/i', $sql_type, $matches)) {
+            return strtolower($matches[1]);
+        }
 
-			if (substr($name, -1) == '`')
-				$name = substr($name, 0, -1);
-				
-			if (strpos($name, '`') !== false)
-				throw new Phpr_SystemException('Invalid database object name: '.$name);
-				
-			return '`'.$name.'`';
-		}
+        return strtolower($sql_type);
+    }
 
-		public function escape($escape) 
-		{
-			return mysql_real_escape_string($escape);
-		}
+    public function quote_metadata_object_name($name)
+    {
+        $name = trim($name);
+        if (strpos('`', $name) === 0) {
+            $name = substr($name, 0);
+        }
 
-		public function create_connection($host, $user, $password)
-		{
-			return @mysql_connect($host, $user, $password);
-		}
+        if (substr($name, -1) == '`') {
+            $name = substr($name, 0, -1);
+        }
 
-		public function select_db($connection, $db)
-		{
-			return @mysql_select_db($db);
-		}
+        if (strpos($name, '`') !== false) {
+            throw new Phpr_SystemException('Invalid database object name: ' . $name);
+        }
 
-		public function get_last_error_string()
-		{
-			return mysql_error();
-		}
+        return '`' . $name . '`';
+    }
 
-		public function close_connection($connection)
-		{
-			return @mysql_close($connection);
-		}
+    public function escape($escape)
+    {
+        return mysql_real_escape_string($escape);
+    }
 
-		public function get_last_insert_id()
-		{
-			return mysql_insert_id();
-		}
-	}
+    public function create_connection($host, $user, $password)
+    {
+        return @mysql_connect($host, $user, $password);
+    }
+
+    public function select_db($connection, $db)
+    {
+        return @mysql_select_db($db);
+    }
+
+    public function get_last_error_string()
+    {
+        return mysql_error();
+    }
+
+    public function close_connection($connection)
+    {
+        return @mysql_close($connection);
+    }
+
+    public function get_last_insert_id()
+    {
+        return mysql_insert_id();
+    }
+}
 
 ?>
