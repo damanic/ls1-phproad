@@ -461,9 +461,12 @@ class Db_ColumnDefinition
             case db_float:
                 if ($media != 'form') {
                     if ($this->currency) {
-                        return format_currency($value);
+                        if (method_exists($this->_model, 'format_currency')) {
+                            return $this->_model->format_currency($value);
+                        } else {
+                            return Phpr::$lang->currency($value);
+                        }
                     }
-
                     return Phpr::$lang->num($value, $this->_precision);
                 } else {
                     return $value;
