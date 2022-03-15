@@ -190,7 +190,7 @@ class Db_MySQLiDriver extends Db_Driver
         if (isset(Db::$describeCache[$table])) {
             return Db::$describeCache[$table];
         } else {
-            $sql = 'DESCRIBE ' . $table;
+            $sql = "DESCRIBE `$table`";
             Phpr::$traceLog->write($sql, 'SQL');
             $result = $this->fetchAll($sql);
             $descr = array();
