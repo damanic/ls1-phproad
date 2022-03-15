@@ -261,7 +261,7 @@ class Phpr_Files
 
         if ($dh = opendir($dir)) {
             while (($file = readdir($dh)) !== false) {
-                if (is_dir($dir . $file) && $file{0} != '.') {
+                if (is_dir($dir . $file) && $file[0] != '.') {
                     $result[] = $dir . $file;
                 }
             }

@@ -312,20 +312,20 @@ class Phpr_Request
                 $URI = substr($URI, 0, $pos);
             }
 
-            if ($URI{0} == '/') {
+            if ($URI[0] == '/') {
                 $URI = substr($URI, 1);
             }
 
             $len = strlen($bootstrapPathBase);
             if (substr($URI, 0, $len) == $bootstrapPathBase) {
                 $URI = substr($URI, $len);
-                if ($URI{0} == '/') {
+                if ($URI[0] == '/') {
                     $URI = substr($URI, 1);
                 }
             }
 
             $len = strlen($URI);
-            if ($len > 0 && $URI{$len - 1} == '/') {
+            if ($len > 0 && $URI[$len - 1] == '/') {
                 $URI = substr($URI, 0, $len - 1);
             }
         }

@@ -139,7 +139,7 @@ abstract class Phpr_ControllerBase extends Phpr_Validatable
     {
         foreach ($Parts as $Element => $Part) {
             echo ">>$Element<<";
-            if (strlen($Part) && $Part{0} == '@') {
+            if (strlen($Part) && $Part[0] == '@') {
                 $this->renderPartial(substr($Part, 1), null, false);
             } else {
                 echo $Part;

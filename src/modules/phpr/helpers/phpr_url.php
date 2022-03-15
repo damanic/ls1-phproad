@@ -69,7 +69,7 @@ class Phpr_Url
         }
 
         if ($url !== null) {
-            if ($resource{0} == '/') {
+            if ($resource[0] == '/') {
                 $resource = substr($resource, 1);
             }
 

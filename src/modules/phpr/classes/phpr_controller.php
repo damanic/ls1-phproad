@@ -272,7 +272,7 @@ class Phpr_Controller extends Phpr_ControllerBase
 
             if (strpos($Part, '@@') === 0) {
                 $this->renderLayout(substr($Part, 2));
-            } elseif (strlen($Part) && $Part{0} == '@') {
+            } elseif (strlen($Part) && $Part[0] == '@') {
                 $this->renderPartial(substr($Part, 1), null, false);
             } else {
                 echo $Part;

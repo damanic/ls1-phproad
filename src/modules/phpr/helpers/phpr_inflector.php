@@ -187,7 +187,7 @@ class Phpr_Inflector
         }
 
         $result = str_replace(' ', '', ucwords(preg_replace('/[^A-Z^a-z^0-9^:]+/', ' ', $word)));
-        $result{0} = strtolower($result{0});
+        $result[0] = strtolower($result[0]);
 
         return self::add_cache('camelize', $word, $result);
     }

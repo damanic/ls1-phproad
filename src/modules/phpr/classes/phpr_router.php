@@ -63,7 +63,7 @@ class Phpr_Router
         $Action = null;
         $Parameters = array();
 
-        if ($URI{0} == '/') {
+        if ($URI[0] == '/') {
             $URI = substr($URI, 1);
         }
 
