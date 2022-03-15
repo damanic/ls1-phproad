@@ -4,7 +4,7 @@
  * Mcrypt helper to help resolve compatibility issues when upgrading older PHP installs
  */
 
-class Phpr_Mcrypt
+class Phpr_Mcrypt implements Phpr_Encryption
 {
     protected $initialised = null;
     protected $mode_descriptor = null;
