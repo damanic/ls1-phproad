@@ -30,16 +30,13 @@ class Phpr_Response
 
         Phpr::$router->route($URI, $Controller, $Action, $Parameters, $Folder);
 
-        if ($Action == self::actionOn404Action || $Action == self::actionOnException) {
-            $this->open404();
-        }
-
         if (!strlen($Controller)) {
-            $this->open404();
+            $ControllerObj = Phpr::$classLoader->loadController(self::controllerApplication);
+        } else {
+            $ControllerObj = Phpr::$classLoader->loadController($Controller, $Folder);
         }
 
-        $Obj = Phpr::$classLoader->loadController($Controller, $Folder);
-        if (!$Obj) {
+        if (!$ControllerObj) {
             $this->open404();
         }
 
@@ -47,11 +44,15 @@ class Phpr_Response
             $Action = 'Index';
         }
 
-        if (!$Obj->_actionExists($Action)) {
+        if (!$ControllerObj->_actionExists($Action)) {
+            if ($Controller->_actionExists(self::actionOn404Action)) {
+                $Controller->_run(self::actionOn404Action, array());
+                exit;
+            }
             $this->open404();
         }
 
-        $Obj->_run($Action, $Parameters);
+        $ControllerObj->_run($Action, $Parameters);
     }
 
     /**
@@ -61,14 +62,6 @@ class Phpr_Response
      */
     public function open404()
     {
-        // Try to execute the application controller On404 action.
-        //
-        $Controller = Phpr::$classLoader->loadController(self::controllerApplication);
-        if ($Controller != null && $Controller->_actionExists(self::actionOn404Action)) {
-            $Controller->_run(self::actionOn404Action, array());
-            exit;
-        }
-
         // Output the default 404 message.
         //
         include PATH_SYSTEM . "/errorpages/404.htm";
@@ -90,8 +83,7 @@ class Phpr_Response
         $application = Phpr::$classLoader->loadController(self::controllerApplication);
 
         if ($application != null && $application->_actionExists(self::actionOnException)) {
-            $application->_run(self::actionOnException, array($exception));
-
+            $application->executeAction(self::actionOnException, array($exception));
             exit;
         }
 
@@ -275,13 +267,4 @@ class Phpr_Response
         die();
     }
 
-    /**
-     * @ignore
-     * This method is used by the PHP Road internally.
-     * Outputs the requested Java Script resource.
-     */
-    public static function processJavaScriptRequest()
-    {
-        throw new Phpr_SystemException('Phpr_Response::processJavaScriptRequest() is depreciated.');
-    }
 }
