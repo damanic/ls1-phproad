@@ -45,8 +45,8 @@ class Phpr_Response
         }
 
         if (!$ControllerObj->_actionExists($Action)) {
-            if ($Controller->_actionExists(self::actionOn404Action)) {
-                $Controller->_run(self::actionOn404Action, array());
+            if ($ControllerObj->_actionExists(self::actionOn404Action)) {
+                $ControllerObj->_run(self::actionOn404Action, array());
                 exit;
             }
             $this->open404();
