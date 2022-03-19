@@ -21,24 +21,6 @@
      * @author		Aleksey Bobkov
      */
 
-    /*
-     * Init the constants
-     */
-
-    /**
-     * Determines the PHP Road library version.
-     */
-    define("PHPR_VERSION", "1.0.0");
-
-    /**
-     * Determines the extension of the PHP files.
-     */
-    define("PHPR_EXT", "php");
-
-    /**
-     * Determines the path to the PHP Road system directory.
-     */
-    define("PATH_SYSTEM", str_replace("\\", "/", realpath(dirname(__FILE__)."/..")));
 
     if (!strlen(trim($applicationRoot))) {
         $applicationRoot = dirname($bootstrapPath);
@@ -55,10 +37,6 @@
         include $configScript;
     }
 
-    /**
-     * Determines the path to the Application root directory.
-     */
-    define("PATH_APP", $path_app);
 
     require PATH_SYSTEM."/system/phpr.php";
 
@@ -68,7 +46,7 @@
 
     require PATH_SYSTEM."/system/classloader.php";
 
-    Phpr::$classLoader = new Phpr_ClassLoader();
+    Phpr::$classLoader = new Phpr\ClassLoader();
     
     /**
      * Loads a class with the specified name.
@@ -135,7 +113,7 @@
     }
 
     Phpr::$config = new Phpr_Config();
-    
+
     Phpr::$request = new Phpr_Request();
 
     include PATH_SYSTEM."/system/class_functions.php";

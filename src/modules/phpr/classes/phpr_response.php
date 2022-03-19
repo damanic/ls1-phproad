@@ -31,9 +31,9 @@ class Phpr_Response
         Phpr::$router->route($URI, $Controller, $Action, $Parameters, $Folder);
 
         if (!strlen($Controller)) {
-            $ControllerObj = Phpr::$classLoader->loadController(self::controllerApplication);
+            $ControllerObj = Phpr::$classLoader->load_controller(self::controllerApplication);
         } else {
-            $ControllerObj = Phpr::$classLoader->loadController($Controller, $Folder);
+            $ControllerObj = Phpr::$classLoader->load_controller($Controller, $Folder);
         }
 
         if (!$ControllerObj) {
@@ -80,7 +80,7 @@ class Phpr_Response
         }
 
         // try to execute the application controller On404 action.
-        $application = Phpr::$classLoader->loadController(self::controllerApplication);
+        $application = Phpr::$classLoader->load_controller(self::controllerApplication);
 
         if ($application != null && $application->_actionExists(self::actionOnException)) {
             $application->executeAction(self::actionOnException, array($exception));

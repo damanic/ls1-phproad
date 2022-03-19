@@ -192,8 +192,8 @@ abstract class Phpr_ControllerBase extends Phpr_Validatable
         $Parameters = null;
         $Folder = null;
 
-        Phpr::$Router->route($URI, $Controller, $Action, $Parameters, $Folder);
-        $Obj = Phpr::$ClassLoader->loadController($Controller, $Folder);
+        Phpr::$router->route($URI, $Controller, $Action, $Parameters, $Folder);
+        $Obj = Phpr::$classLoader->load_controller($Controller, $Folder);
         if (!$Obj) {
             throw new Phpr_SystemException("Controller $Controller is not found");
         }
