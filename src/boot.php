@@ -71,7 +71,7 @@ $modules_name = 'modules';
  * PHPR_MODULES- Modules folder (eg: modules)
  */
 
-define('PHPR_VERSION', '2.0.0');
+define('PHPR_VERSION', '1.0.0');
 defined('DS') ? null : define('DS', DIRECTORY_SEPARATOR);
 defined('PATH_BOOT') ? null : define('PATH_BOOT', dirname(__FILE__));
 defined('PATH_APP') ? null : define('PATH_APP', realpath(dirname(PATH_BOOT)) . DS . $app_folder);
