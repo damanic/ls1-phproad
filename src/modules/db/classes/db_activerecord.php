@@ -1,13 +1,29 @@
 <?php
 
-define('db_varchar', 'varchar');
-define('db_number', 'number');
-define('db_float', 'float');
-define('db_bool', 'bool');
-define('db_datetime', 'datetime');
-define('db_date', 'date');
-define('db_time', 'time');
-define('db_text', 'text');
+if (!defined('db_varchar')) {
+    define('db_varchar', 'varchar');
+}
+if (!defined('db_number')) {
+    define('db_number', 'number');
+}
+if (!defined('db_float')) {
+    define('db_float', 'float');
+}
+if (!defined('db_bool')) {
+    define('db_bool', 'bool');
+}
+if (!defined('db_datetime')) {
+    define('db_datetime', 'datetime');
+}
+if (!defined('db_date')) {
+    define('db_date', 'date');
+}
+if (!defined('db_time')) {
+    define('db_time', 'time');
+}
+if (!defined('db_text')) {
+    define('db_text', 'text');
+}
 
 $activerecord_no_columns_info = false;
 
@@ -717,20 +733,20 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
 
         $foreignKey = $options['foreign_key'];
 
-        $deffered_where = "(exists 
-				(select * from db_deferred_bindings where 
-					detail_key_value={$object->table_name}.{$object->primary_key} 
-					and master_relation_name=:relation_name and master_class_name='{$this->className}' 
+        $deffered_where = "(exists
+				(select * from db_deferred_bindings where
+					detail_key_value={$object->table_name}.{$object->primary_key}
+					and master_relation_name=:relation_name and master_class_name='{$this->className}'
 					and is_bind=1 and session_key=:session_key))";
 
-        $deffered_deletion_where = "(exists 
-					(select * from db_deferred_bindings where 
-						detail_key_value={$object->table_name}.{$object->primary_key} 
-						and master_relation_name=:relation_name and master_class_name='{$this->className}' 
+        $deffered_deletion_where = "(exists
+					(select * from db_deferred_bindings where
+						detail_key_value={$object->table_name}.{$object->primary_key}
+						and master_relation_name=:relation_name and master_class_name='{$this->className}'
 						and is_bind=0 and session_key=:session_key
-						and id > ifnull((select max(id) from db_deferred_bindings where 
-							detail_key_value={$object->table_name}.{$object->primary_key} 
-							and master_relation_name=:relation_name and master_class_name='{$this->className}' 
+						and id > ifnull((select max(id) from db_deferred_bindings where
+							detail_key_value={$object->table_name}.{$object->primary_key}
+							and master_relation_name=:relation_name and master_class_name='{$this->className}'
 							and is_bind=1 and session_key=:session_key), 0)
 						))";
 
@@ -2342,9 +2358,9 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
                             $bind['model_id'] = $this->{$this->primary_key};
                             $bind['bind_ids'] = $info['values'];
 
-                            $bound_sql = "SELECT " . $options['foreign_key'] . " 
-											  FROM " . $options['join_table'] . " 
-											  WHERE " . $options['foreign_key'] . " IN(:bind_ids) 
+                            $bound_sql = "SELECT " . $options['foreign_key'] . "
+											  FROM " . $options['join_table'] . "
+											  WHERE " . $options['foreign_key'] . " IN(:bind_ids)
 											  AND " . $options['primary_key'] . " = :model_id";
                             $bound_ids = Db_DbHelper::scalarArray($bound_sql, $bind);
 
