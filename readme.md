@@ -1,5 +1,4 @@
 # PHP Application Framework for LS v1+
-=======
 
 This branch includes the entire framework structure required to host LSV1 modules.
 

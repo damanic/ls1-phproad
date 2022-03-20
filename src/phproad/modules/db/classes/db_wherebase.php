@@ -11,7 +11,7 @@ class Db_WhereBase extends Db_Base
         $this->where = array();
     }
 
-    protected function _where($operator = 'AND', $cond)
+    protected function _where($operator, $cond)
     {
         if (is_null($cond)) {
             return $this;
