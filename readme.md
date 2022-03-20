@@ -1,6 +1,51 @@
-PHP Application Framework for Lemonstand v1
+# PHP Application Framework for LS v1+
 =======
 
-Requirements:
-PHP >= 5.6
+This branch includes the entire framework structure required to host LSV1 modules.
+
+## Status 
+- PRE-ALPHA !
+- Contributions welcome
+
+## Considerations
+- Progress should be backwards compatible with Lemonstand v1 modules and DB schema
+
+
+
+## Roadmap :rocket:
+- PHP7.4+ compatible
+- Namespaced
+- Make use of interfaces, traits
+- Drop deprecated methods and features (looking at you Mcrypt :eyes:)
+- Backwards compatible with LSv1 modules and DB schema
+- DB migrate schema (preferred over incremental sql files)
+- Ditch mootools
+- Update/replace tinyMCE
+- Installer
+  - configure DB connection 
+  - generate a unique install ID
+  - pull in application modules from GitHub
+  - update db schema
+  - demo theme, and products
+- Docker container
+
+### Requirements
+
+- PHP >= 7.4
+
+## DEV Helpers
+
+#### Install required composer packages
+`composer update --with-all-dependencies`
+
+#### Code Style and Compatibility (PHPCS)
+
+To check code style is inline with Worpress standard and compatible between currently supported PHP versions run:
+`composer cs-check`
+
+PHP supported versions: 5.6-7.4
+
+
+#### Code Analysis (PSALM)
+`composer psalm-check`
 

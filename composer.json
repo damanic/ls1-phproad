@@ -1,33 +1,33 @@
 {
     "name": "phproad-ls/framework",
     "type": "library",
-    "description": "PHP Application Framework for Lemonstand v1",
+    "description": "PHP Application Framework for LS v1",
     "keywords": [],
     "homepage": "https://github.com/damanic/ls1-phproad",
     "license": "MIT",
     "authors": [],
     "require": {
-        "php": ">=5.6",
+        "php": ">=7.4",
         "ext-curl": "*",
         "ext-json": "*"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "~2",
-        "squizlabs/php_codesniffer": "~3",
-        "phpcompatibility/php-compatibility" : "~9"
+        "dealerdirect/phpcodesniffer-composer-installer" : "^0",
+        "phpcompatibility/php-compatibility": "*",
+        "wp-coding-standards/wpcs" :  "^2.0",
+        "vimeo/psalm": "^4.8",
+        "phpunit/phpunit": "^9.5"
     },
+    "prefer-stable" : true,
     "scripts": {
-        "cs-check": [ "vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --allow-risky=no --using-cache=no --verbose --dry-run" ],
-        "cs-fix": [ "vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --allow-risky=no --using-cache=no" ],
-        "post-install-cmd": "\"vendor/bin/phpcs\" --config-set installed_paths vendor/phpcompatibility/php-compatibility",
-        "post-update-cmd" : "\"vendor/bin/phpcs\" --config-set installed_paths vendor/phpcompatibility/php-compatibility",
-        "check-php-compat" : "\"vendor/bin/phpcs\" -p . --extensions=php --ignore=*/vendor/* --standard=PHPCompatibility --runtime-set testVersion 5.6 src > check-php-compat.txt"
+        "cs-check": [ "vendor/bin/phpcs -p --extensions=php --error-severity=1 --warning-severity=6  --report-file=_report--cs-check.txt --no-cache --runtime-set testVersion 7.4 src/" ],
+        "cs-fix": [ "vendor/bin/phpcbf -p --extensions=php --error-severity=1 --runtime-set testVersion 7.4 src/" ],
+        "php-check": [ "vendor/bin/phpcs -p --extensions=php --report-file=_report--php-check.txt --no-cache --standard=PHPCompatibility --runtime-set testVersion 7.4 src/" ],
+        "psalm-check": [ "vendor/bin/psalm --php-version=7.4 --no-cache --output-format=text > _report--psalm-check.txt" ]
     },
-    "autoload": {},
     "config": {
-        "platform": {
-            "php": "5.6"
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
         }
     }
-
 }

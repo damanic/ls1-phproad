@@ -1,8 +1,8 @@
 <?php
 
 $finder = PhpCsFixer\Finder::create()
-    ->exclude('vendor')
-    ->in(__DIR__ . '/src')
+    ->exclude(['vendor', 'thirdpart'])
+    ->in([__DIR__ . '/src', __DIR__ . '/src/phproad'])
     ->name('*.php');
 
 $config = new PhpCsFixer\Config();
