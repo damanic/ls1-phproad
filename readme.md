@@ -42,7 +42,7 @@ This branch includes the entire framework structure required to host LSV1 module
 To check code style is inline with Worpress standard and compatible between currently supported PHP versions run:
 `composer cs-check`
 
-PHP supported versions: 5.6-7.4
+PHP supported versions: 7.4+
 
 
 #### Code Analysis (PSALM)
