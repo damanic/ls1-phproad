@@ -379,7 +379,11 @@ function Phpr_SysErrorHandler( $errno, $errstr, $errfile, $errline )
  */
 function Phpr_SysExceptionHandler( $Exception )
 {
-    Phpr::$response->openErrorPage($Exception);
+    if(isset(Phpr::$response)) {
+        Phpr::$response->openErrorPage($Exception);
+        return;
+    }
+    throw $Exception;
 }
 
 /**
