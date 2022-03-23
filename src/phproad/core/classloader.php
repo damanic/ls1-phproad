@@ -3,10 +3,7 @@
 namespace Phpr;
 
 use ReflectionClass;
-
 use Phpr;
-
-// $this->module_paths = array('widgets', 'classes', 'helpers', 'models', 'behaviors', 'controllers', 'shipping_types', 'payment_types');
 
 /**
  * Class loader
@@ -20,68 +17,70 @@ class ClassLoader
     private $auto_init = null;
     private $cache;
     private $reservedClassAliases = array(
-    'cms\object',
-    'core\string',
+        'cms\object',
+        'core\string',
     );
 
     public function __construct()
     {
         global $CONFIG;
 
+        $paths =  array(
+            PATH_APP,
+            PATH_SYSTEM,
+        );
+
         $this->cache = array();
         $this->paths = array(
-        'application' => isset($CONFIG['APPLICATION_PATHS']) ? $CONFIG['APPLICATION_PATHS'] : array(
-        PATH_APP,
-        PATH_SYSTEM,
-        ),
-        'library'     => array( 'controllers', 'classes', 'models' ),
-        'module'      => array(
-        'widgets',
-        'classes',
-        'helpers',
-        'models',
-        'behaviors',
-        'controllers',
-        'shipping_types',
-        'payment_types',
-        ),
+            'application' => $CONFIG['APPLICATION_PATHS'] ?? $paths,
+            'library' => array('controllers', 'classes', 'models'),
+            'module' => array(
+                'widgets',
+                'classes',
+                'helpers',
+                'models',
+                'behaviors',
+                'controllers',
+                'shipping_types',
+                'payment_types',
+            ),
         );
     }
 
     /**
      * Loads a class
      *
-     * @param  string $class Class name
+     * @param string $class Class name
      * @return bool If it loaded the class
      */
-    public function load( $class, $force_disabled = false )
+    public function load($class, $force_disabled = false)
     {
         $loaded = false;
 
-        if (! $this->auto_init ) {
+        if (!$this->auto_init) {
             $this->auto_init = $class;
         }
 
         // Class already exists, no need to reload
-        if (class_exists($class) ) {
+        if (class_exists($class)) {
             $this->init_class($class);
             $loaded = true;
         }
 
-        if (! $loaded ) {
+        if (!$loaded) {
             $loaded = $this->load_local($class);
         }
 
-        if (! $loaded ) {
+        if (!$loaded) {
             $loaded = $this->load_module($class, $force_disabled);
         }
 
-        if (! $loaded ) {
+        if (!$loaded) {
             $loaded = $this->load_module_classic($class, $force_disabled);
         }
 
         // Prevents a failed init from breaking workflow
-        if ($this->auto_init == $class ) {
+        if ($this->auto_init == $class) {
             $this->auto_init = null;
         }
 
@@ -91,28 +90,28 @@ class ClassLoader
     /**
      * Look for a class locally
      *
-     * @param  string $class Class name
+     * @param string $class Class name
      * @return bool If the class is found
      */
-    private function load_local( $class )
+    private function load_local($class)
     {
         // Local cannot use namespaces
-        if (strpos($class, '\\') !== false ) {
+        if (strpos($class, '\\') !== false) {
             return false;
         }
 
         $file_name = strtolower($class) . '.' . PHPR_EXT;
 
-        foreach ( $this->paths['library'] as $path ) {
+        foreach ($this->paths['library'] as $path) {
             $full_path = $path . DS . $file_name;
 
-            if (! $this->file_exists($full_path) ) {
+            if (!$this->file_exists($full_path)) {
                 continue;
             }
 
             include $full_path;
 
-            if (class_exists($class) ) {
+            if (class_exists($class)) {
                 $this->init_class($class);
                 return true;
             }
@@ -124,69 +123,69 @@ class ClassLoader
     /**
      * Looks for a class located within a module
      *
-     * @param  string $class Class name
+     * @param string $class Class name
      * @return bool If the class is found
      */
-    private function load_module( $class, $force_disabled = false )
+    private function load_module($class, $force_disabled = false)
     {
         global $CONFIG;
 
         $disabled_modules = isset($CONFIG['DISABLE_MODULES']) ? $CONFIG['DISABLE_MODULES'] : array();
 
-        $class_alias   = null;
+        $class_alias = null;
         $namespace_pos = strpos($class, '\\');
 
         //
         // Requested class contains no namespace, so spoof one
         // Phpr_Class_Name -> Phpr\Class_Name
         //
-        if ($namespace_pos === false ) {
-            $class_alias   = $class;
-            $class         = preg_replace('/\\_/', '\\', $class, 1);
+        if ($namespace_pos === false) {
+            $class_alias = $class;
+            $class = preg_replace('/\\_/', '\\', $class, 1);
             $namespace_pos = strpos($class, '\\');
+
+            //
+            // If we are calling an alias, check the spoofed class
+            // hasn't already been loaded
+            //
+            if (class_exists($class) && !class_exists($class_alias)) {
+                class_alias($class, $class_alias);
+                return true;
+            }
         }
 
-        //
-        // If we are calling an alias, check the spoofed class
-        // hasn't already been loaded
-        //
-
-        if (class_exists($class) || ( $class_alias !== null && class_exists($class_alias) ) ) {
+        if (class_exists($class)) {
             return true;
         }
+
 
         //
         // Proceed with loading
         //
 
-        $file_name   = strtolower(substr($class, $namespace_pos + 1)) . '.' . PHPR_EXT;
+        $file_name = strtolower(substr($class, $namespace_pos + 1)) . '.' . PHPR_EXT;
         $module_name = strtolower(substr($class, 0, $namespace_pos));
 
         // Is disabled?
-        if (in_array($module_name, $disabled_modules) && ! $force_disabled ) {
+        if (in_array($module_name, $disabled_modules) && !$force_disabled) {
             return false;
         }
 
-        foreach ( $this->paths['application'] as $module_path ) {
-            foreach ( $this->paths['module'] as $path ) {
+        foreach ($this->paths['application'] as $module_path) {
+            foreach ($this->paths['module'] as $path) {
                 $full_path = $module_path . DS
-                . PHPR_MODULES . DS
-                . $module_name . DS
-                . $path . DS
-                . $file_name;
+                    . PHPR_MODULES . DS
+                    . $module_name . DS
+                    . $path . DS
+                    . $file_name;
 
-                if (! $this->file_exists($full_path) ) {
+                if (!$this->file_exists($full_path)) {
                     continue;
                 }
 
                 include_once $full_path;
 
-                if (class_exists($class) ) {
-                    // Create a class alias for cleaner naming
-                    if ($class_alias !== null && ! class_exists($class_alias) ) {
-                        class_alias($class, $class_alias);
-                    }
-
+                if (class_exists($class)) {
                     $this->init_class($class);
                     return true;
                 }
@@ -199,46 +198,46 @@ class ClassLoader
     /**
      * Looks for a class located within a module
      *
-     * @param  string $class Class name
+     * @param string $class Class name
      * @return bool If the class is found
      */
-    private function load_module_classic( $class, $force_disabled = false )
+    private function load_module_classic($class, $force_disabled = false)
     {
         global $CONFIG;
         $disabled_modules = isset($CONFIG['DISABLE_MODULES']) ? $CONFIG['DISABLE_MODULES'] : array();
 
         $classic_class_name = str_replace('\\', '_', $class);
-        $file_name          = strtolower($classic_class_name) . '.' . PHPR_EXT;
-        $underscore_pos     = strpos($classic_class_name, '_');
-        $module_name        = strtolower(
-            ( $underscore_pos )
-            ? substr($classic_class_name, 0, $underscore_pos)
-            : $class
+        $file_name = strtolower($classic_class_name) . '.' . PHPR_EXT;
+        $underscore_pos = strpos($classic_class_name, '_');
+        $module_name = strtolower(
+            ($underscore_pos)
+                ? substr($classic_class_name, 0, $underscore_pos)
+                : $class
         );
 
         // Is disabled?
-        if (in_array($module_name, $disabled_modules) && ! $force_disabled ) {
+        if (in_array($module_name, $disabled_modules) && !$force_disabled) {
             return false;
         }
 
-        foreach ( $this->paths['application'] as $module_path ) {
-            foreach ( $this->paths['module'] as $path ) {
+        foreach ($this->paths['application'] as $module_path) {
+            foreach ($this->paths['module'] as $path) {
                 $full_path = $module_path . DS
-                . PHPR_MODULES . DS
-                . $module_name . DS
-                . $path . DS
-                . $file_name;
+                    . PHPR_MODULES . DS
+                    . $module_name . DS
+                    . $path . DS
+                    . $file_name;
 
-                if (! $this->file_exists($full_path) ) {
+                if (!$this->file_exists($full_path)) {
                     continue;
                 }
 
                 include_once $full_path;
 
-                if (class_exists($classic_class_name) ) {
+                if (class_exists($classic_class_name)) {
                     // Create a class alias for namespace compatibility
-                    if (! class_exists($class) ) {
-                        if (! in_array(strtolower($class), $this->reservedClassAliases) ) {
+                    if (!class_exists($class)) {
+                        if (!in_array(strtolower($class), $this->reservedClassAliases)) {
                             class_alias($classic_class_name, $class);
                         }
                     }
@@ -255,24 +254,24 @@ class ClassLoader
     /**
      * Loads an application controller by the class name and returns the controller instance.
      *
-     * @param  string $class_name      Specifies a name of the controller to load.
-     * @param  string $controller_path Specifies a path to the controller directory.
+     * @param string $class_name Specifies a name of the controller to load.
+     * @param string $controller_path Specifies a path to the controller directory.
      * @return Phpr\Controller The controller instance or null.
      */
-    public function load_controller( $class_name, $controller_directory = null )
+    public function load_controller($class_name, $controller_directory = null)
     {
-        foreach ( $this->paths['application'] as $path ) {
-            $controller_path = ( $controller_directory != null ) ? $path . DS . $controller_directory : $path . DS . 'controllers';
+        foreach ($this->paths['application'] as $path) {
+            $controller_path = ($controller_directory != null) ? $path . DS . $controller_directory : $path . DS . 'controllers';
             $controller_path = realpath($controller_path . DS . strtolower($class_name) . '.' . PHPR_EXT);
 
-            if (! strlen($controller_path) ) {
+            if (!strlen($controller_path)) {
                 continue;
             }
 
-            if (! class_exists($class_name) ) {
+            if (!class_exists($class_name)) {
                 include_once $controller_path;
 
-                if (! class_exists($class_name) ) {
+                if (!class_exists($class_name)) {
                     continue;
                 }
 
@@ -288,7 +287,7 @@ class ClassLoader
 
             // Make sure the class requested is in the application controllers directory
             $class_info = new ReflectionClass($class_name);
-            if ($class_info->getFileName() !== $controller_path ) {
+            if ($class_info->getFileName() !== $controller_path) {
                 continue;
             }
 
@@ -309,7 +308,7 @@ class ClassLoader
      *
      * @param string $path Specifies a full path to the directory. No trailing slash.
      */
-    public function add_library_directory( $path )
+    public function add_library_directory($path)
     {
         array_unshift($this->paths['library'], $path);
     }
@@ -320,7 +319,7 @@ class ClassLoader
      *
      * @param string $path Specifies a full path to the directory. No trailing slash.
      */
-    public function add_application_directory( $path )
+    public function add_application_directory($path)
     {
         array_unshift($this->paths['application'], $path);
     }
@@ -331,7 +330,7 @@ class ClassLoader
      *
      * @param string $path Specifies a full path to the directory. No trailing slash.
      */
-    public function add_module_directory( $path )
+    public function add_module_directory($path)
     {
         array_unshift($this->paths['module'], $path);
     }
@@ -354,20 +353,20 @@ class ClassLoader
     /**
      * Looks up a specific file path located in an application directory
      *
-     * @param   string $path File to locate
+     * @param string $path File to locate
      * @return  string
      * @example 1
      * Look up file init.php
      * $path = Phpr::$class_loader->find_path('init/init.php');
      */
-    public function find_path( $path )
+    public function find_path($path)
     {
         global $CONFIG;
 
-        foreach ( $this->paths['application'] as $application_path ) {
+        foreach ($this->paths['application'] as $application_path) {
             $real_path = realpath($application_path . DS . $path);
 
-            if ($real_path && file_exists($real_path) ) {
+            if ($real_path && file_exists($real_path)) {
                 return $real_path;
             }
         }
@@ -376,22 +375,22 @@ class ClassLoader
     /**
      * Returns all application paths for a given folder
      *
-     * @param   string $path Folder name
+     * @param string $path Folder name
      * @return  array
      * @example 1
      * Find all module directories
      * $dirs = Phpr::$class_loader->find_paths('modules');
      */
-    public function find_paths( $path )
+    public function find_paths($path)
     {
         global $CONFIG;
 
         $paths = array();
 
-        foreach ( $this->paths['application'] as $application_path ) {
+        foreach ($this->paths['application'] as $application_path) {
             $real_path = realpath($application_path . DS . $path);
 
-            if ($real_path && file_exists($real_path) ) {
+            if ($real_path && file_exists($real_path)) {
                 $paths[] = $real_path;
             }
         }
@@ -402,26 +401,26 @@ class ClassLoader
     /**
      * Check the existence of a file, whilst caching directories
      *
-     * @param  string $path Absolute path to file
+     * @param string $path Absolute path to file
      * @return bool If file exists
      */
-    private function file_exists( $path )
+    private function file_exists($path)
     {
         try {
-            $dir  = dirname($path);
+            $dir = dirname($path);
             $base = basename($path);
 
-            if (! isset($this->cache[ $dir ]) ) {
-                $this->cache[ $dir ] = ( is_dir($dir) )
-                 ? scandir($dir)
-                 : array();
+            if (!isset($this->cache[$dir])) {
+                $this->cache[$dir] = (is_dir($dir))
+                    ? scandir($dir)
+                    : array();
             }
-        } catch ( exception $ex ) {
+        } catch (exception $ex) {
             // Debug
             echo $path . ' ' . $ex->getMessage();
         }
 
-        return in_array($base, $this->cache[ $dir ]);
+        return in_array($base, $this->cache[$dir]);
     }
 
     /**
@@ -430,12 +429,12 @@ class ClassLoader
      *
      * @param string class name
      */
-    protected function init_class( $class )
+    protected function init_class($class)
     {
-        if ($this->auto_init === $class ) {
+        if ($this->auto_init === $class) {
             $this->auto_init = null;
 
-            if (method_exists($class, 'init') && is_callable($class . '::init') ) {
+            if (method_exists($class, 'init') && is_callable($class . '::init')) {
                 call_user_func($class . '::init');
             }
         }
@@ -444,7 +443,7 @@ class ClassLoader
     /**
      * @deprecated
      */
-    public function addDirectory( $path )
+    public function addDirectory($path)
     {
         return $this->add_library_directory($path);
     }
@@ -452,7 +451,7 @@ class ClassLoader
     /**
      * @deprecated
      */
-    public function loadController( $class_name, $controller_path = null )
+    public function loadController($class_name, $controller_path = null)
     {
         return $this->load_controller($class_name, $controller_path);
     }
