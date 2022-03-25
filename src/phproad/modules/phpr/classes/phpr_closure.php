@@ -2,8 +2,8 @@
 
 class Phpr_Closure
 {
-    private $_function;
-    private $_params;
+    private $function;
+    private $params;
 
     public function __construct($function, $params)
     {
@@ -14,10 +14,10 @@ class Phpr_Closure
     public function call($params)
     {
         $methodParams = $params;
-        foreach ($this->_params as $param) {
+        foreach ($this->params as $param) {
             array_push($methodParams, $param);
         }
 
-        call_user_func_array($this->_function, $methodParams);
+        call_user_func_array($this->function, $methodParams);
     }
 }
