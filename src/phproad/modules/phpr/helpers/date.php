@@ -1,10 +1,19 @@
 <?php
+namespace Phpr;
+
+use DateTimeZone;
+
+use Phpr;
+use Phpr\TimeZone;
+use Phpr\DateTime as PhprDateTime;
+use Phpr\DateTimeInterval;
+use Phpr\SystemException;
 
 /*
  * Date and time helper
  */
 
-class Phpr_Date
+class Date
 {
     protected static $user_time_zone = null;
 
@@ -14,7 +23,7 @@ class Phpr_Date
         $Month = $Date->getMonth();
 
         $DaysInMonth = $Date->daysInMonth($Year, $Month);
-        $Result = new Phpr_DateTime();
+        $Result = new PhprDateTime();
         $Result->setDate($Year, $Month, $DaysInMonth);
 
         return $Result;
@@ -25,7 +34,7 @@ class Phpr_Date
         $Year = $Date->getYear();
         $Month = $Date->getMonth();
 
-        $Result = new Phpr_DateTime();
+        $Result = new PhprDateTime();
         $Result->setDate($Year, $Month, 1);
 
         return $Result;
@@ -35,7 +44,7 @@ class Phpr_Date
     {
         $Year = $Date->getYear();
 
-        $Result = new Phpr_DateTime();
+        $Result = new PhprDateTime();
         $Result->setDate($Year, 1, 1);
 
         return $Result;
@@ -44,7 +53,7 @@ class Phpr_Date
     public static function firstWeekDate($Date)
     {
         $Days = $Date->getDayOfWeek() - 1;
-        $Interval = new Phpr_DateTimeInterval($Days);
+        $Interval = new DateTimeInterval($Days);
         return $Date->substractInterval($Interval);
     }
 
@@ -52,19 +61,19 @@ class Phpr_Date
     public static function lastWeekDate($Date)
     {
         $Days = 7 - $Date->getDayOfWeek();
-        $Interval = new Phpr_DateTimeInterval($Days);
+        $Interval = new DateTimeInterval($Days);
         return $Date->addInterval($Interval);
     }
 
     public static function firstDateOfPrevMonth($Date)
     {
-        $OneDayInterval = new Phpr_DateTimeInterval(1);
+        $OneDayInterval = new DateTimeInterval(1);
         return self::firstMonthDate($Date->substractInterval($OneDayInterval));
     }
 
     public static function firstDateOfNextMonth($Date)
     {
-        $OneDayInterval = new Phpr_DateTimeInterval(1);
+        $OneDayInterval = new DateTimeInterval(1);
 
         $Result = self::lastMonthDate($Date);
         return $Result->addInterval($OneDayInterval);
@@ -113,7 +122,7 @@ class Phpr_Date
         try {
             return self::$user_time_zone = new DateTimeZone($timeZone);
         } catch (Exception $Ex) {
-            throw new Phpr_SystemException(
+            throw new SystemException(
                 'Invalid time zone specified in config.php: ' . $timeZone . '. Please refer this document for the list of correct time zones: http://docs.php.net/timezones.'
             );
         }
@@ -122,11 +131,11 @@ class Phpr_Date
     /**
      * Returns true if the $dateObj represents today date
      *
-     * @param Phpr_DateTime $dateObj Specifies a date object in GMT timezone
+     * @param Phpr\DateTime $dateObj Specifies a date object in GMT timezone
      */
     public static function isToday($dateObj)
     {
-        $nowMn = Phpr_DateTime::now()->getDate();
+        $nowMn = PhprDateTime::now()->getDate();
         $dateMn = $dateObj->getDate();
         $interval = $dateMn->substractDateTime($nowMn);
         return $interval->getDays() == 0;
@@ -135,11 +144,11 @@ class Phpr_Date
     /**
      * Returns true if the $dateObj represents yesterday date
      *
-     * @param Phpr_DateTime $dateObj Specifies a date object in GMT timezone
+     * @param Phpr\DateTime $dateObj Specifies a date object in GMT timezone
      */
     public static function isYesterday($dateObj)
     {
-        $nowMn = Phpr_DateTime::now()->getDate();
+        $nowMn = PhprDateTime::now()->getDate();
         $dateMn = $dateObj->getDate();
         $interval = $dateMn->substractDateTime($nowMn);
 
