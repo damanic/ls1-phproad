@@ -1,16 +1,26 @@
 <?php
+namespace Phpr;
+
+use DateTime as PhpNativeDateTime;
+use DateTimeZone;
+use Phpr\DateTime as PhprDateTime;
+use Phpr\DateTimeFormat;
+use Phpr\DateTimeInterval;
+use Phpr\Strings;
+use Phpr\ApplicationException;
+
 
 /**
  * Represents a date and time value.
  * Usually you don't need to create instances of this class manually. Some fields of LemonStand objects
- * are instances of Phpr_DateTime class, for example the {@link Shop_Order::order_datetime $order_datetime}
+ * are instances of Phpr\DateTime class, for example the {@link Shop_Order::order_datetime $order_datetime}
  * field of the {@link Shop_Order} class. The class has methods for returning formatted date and time value as string.
  *
  * @documentable
  * @author       LemonStand eCommerce Inc.
  * @package      core.classes
  */
-class Phpr_DateTime
+class DateTime
 {
     protected $intValue = 0;
     protected $timeZone = null;
@@ -64,12 +74,11 @@ class Phpr_DateTime
      * Creates a new class instance and sets its value to GMT date and time by default.
      *
      * @documentable
-     * @param        string       $date_time Specifies the date and time in format '2006-01-01 10:00:00' to assign to the object.
+     * @param string $date_time Specifies the date and time in format '2006-01-01 10:00:00' to assign to the object.
      *                                       If this parameter is omitted, the current GMT time is used.
-
-     * @param  DateTimeZone $time_zone Specifies the time zone to assign to the object.
+     * @param DateTimeZone $time_zone Specifies the time zone to assign to the object.
      *                                 If this parameter is omitted, the GMT time zone is used.
-     * @return Phpr_DateTime Returns new date/time object.
+     * @return Phpr\DateTime Returns new date/time object.
      */
     public function __construct($DateTime = null, $TimeZone = null)
     {
@@ -78,9 +87,9 @@ class Phpr_DateTime
         if ($DateTime === null) {
             $this->intValue = self::getCurrentDateTime();
         } else {
-            $Obj = Phpr_DateTimeFormat::parseDateTime($DateTime, self::universalDateTimeFormat, $TimeZone);
+            $Obj = DateTimeFormat::parseDateTime($DateTime, self::universalDateTimeFormat, $TimeZone);
             if ($Obj === false) {
-                throw new Phpr_ApplicationException("Can not parse date/time string: $DateTime");
+                throw new ApplicationException("Can not parse date/time string: $DateTime");
             }
 
             $this->intValue = $Obj->getInteger();
@@ -109,9 +118,9 @@ class Phpr_DateTime
      */
     public function setTimeZone(DateTimeZone $TimeZone)
     {
-        $diff = Phpr_DateTime::getZonesOffset($this->timeZone, $TimeZone);
+        $diff = PhprDateTime::getZonesOffset($this->timeZone, $TimeZone);
 
-        $this->intValue -= $diff * Phpr_DateTime::mlSecondsInSecond * 10000;
+        $this->intValue -= $diff * PhprDateTime::mlSecondsInSecond * 10000;
         $this->timeZone = $TimeZone;
     }
 
@@ -177,7 +186,7 @@ class Phpr_DateTime
      */
     public function getHour()
     {
-        return floor(($this->intValue / Phpr_DateTime::intInHour) % 24);
+        return floor(($this->intValue / PhprDateTime::intInHour) % 24);
     }
 
     /**
@@ -188,7 +197,7 @@ class Phpr_DateTime
      */
     public function getMinute()
     {
-        return floor(($this->intValue / Phpr_DateTime::intInMinute) % 60);
+        return floor(($this->intValue / PhprDateTime::intInMinute) % 60);
     }
 
     /**
@@ -199,7 +208,7 @@ class Phpr_DateTime
      */
     public function getSecond()
     {
-        return floor($this->modulus($this->intValue / Phpr_DateTime::intInSecond, 60));
+        return floor($this->modulus($this->intValue / PhprDateTime::intInSecond, 60));
     }
 
     /**
@@ -210,7 +219,7 @@ class Phpr_DateTime
      */
     public function getYear()
     {
-        return floor($this->convertToDateElement(Phpr_DateTime::elementYear));
+        return floor($this->convertToDateElement(PhprDateTime::elementYear));
     }
 
     /**
@@ -221,7 +230,7 @@ class Phpr_DateTime
      */
     public function getMonth()
     {
-        return floor($this->convertToDateElement(Phpr_DateTime::elementMonth));
+        return floor($this->convertToDateElement(PhprDateTime::elementMonth));
     }
 
     /**
@@ -232,7 +241,7 @@ class Phpr_DateTime
      */
     public function getDay()
     {
-        return $this->convertToDateElement(Phpr_DateTime::elementDay);
+        return $this->convertToDateElement(PhprDateTime::elementDay);
     }
 
     /**
@@ -240,7 +249,7 @@ class Phpr_DateTime
      *
      * @documentable
      * @param        integer $years Specifies the number of years to add.
-     * @return       Phpr_DateTime Returns the object object.
+     * @return       Phpr\DateTime Returns the object object.
      */
     public function addYears($Years)
     {
@@ -252,17 +261,17 @@ class Phpr_DateTime
      *
      * @documentable
      * @param        integer $years Specifies the number of months to add.
-     * @return       Phpr_DateTime Returns the object object.
+     * @return       Phpr\DateTime Returns the object object.
      */
     public function addMonths($Months)
     {
         if ($Months < -120000 || $Months > 120000) {
-            throw new Phpr_ApplicationException("Month is out of range");
+            throw new ApplicationException("Month is out of range");
         }
 
-        $Year = $this->convertToDateElement(Phpr_DateTime::elementYear);
-        $Month = $this->convertToDateElement(Phpr_DateTime::elementMonth);
-        $Day = $this->convertToDateElement(Phpr_DateTime::elementDay);
+        $Year = $this->convertToDateElement(PhprDateTime::elementYear);
+        $Month = $this->convertToDateElement(PhprDateTime::elementMonth);
+        $Day = $this->convertToDateElement(PhprDateTime::elementDay);
 
         $monthSum = $Month + $Months - 1;
 
@@ -274,15 +283,15 @@ class Phpr_DateTime
             $Year += floor(($monthSum - 11) / 12);
         }
 
-        $daysInMonth = Phpr_DateTime::daysInMonth($Year, $Month);
+        $daysInMonth = PhprDateTime::daysInMonth($Year, $Month);
 
         if ($Day > $daysInMonth) {
             $Day = $daysInMonth;
         }
 
-        $Result = new Phpr_DateTime();
+        $Result = new PhprDateTime();
 
-        $incValue = $this->modulus($this->intValue, Phpr_DateTime::intInDay);
+        $incValue = $this->modulus($this->intValue, PhprDateTime::intInDay);
 
         $Result->setInteger($this->convertDateVal($Year, $Month, $Day) + $incValue);
 
@@ -290,14 +299,14 @@ class Phpr_DateTime
     }
 
     /**
-     * Adds an interval to a current value and returns a new Phpr_DateTime object.
+     * Adds an interval to a current value and returns a new Phpr\DateTime object.
      *
      * @param  Phrp_DateTimeInterval $Interval Specifies an interval to add.
-     * @return Phpr_DateTime
+     * @return Phpr\DateTime
      */
-    public function addInterval(Phpr_DateTimeInterval $Interval)
+    public function addInterval(DateTimeInterval $Interval)
     {
-        $Result = new Phpr_DateTime(null, $this->timeZone);
+        $Result = new PhprDateTime(null, $this->timeZone);
         $Result->setInteger($this->intValue + $Interval->getInteger());
 
         return $Result;
@@ -308,11 +317,11 @@ class Phpr_DateTime
      *
      * @documentable
      * @param        integer $years Specifies the number of days to add.
-     * @return       Phpr_DateTime Returns the object object.
+     * @return       Phpr\DateTime Returns the object object.
      */
     public function addDays($Value)
     {
-        return $this->addIntervalInternal($Value, Phpr_DateTime::mlSecondsInDay);
+        return $this->addIntervalInternal($Value, PhprDateTime::mlSecondsInDay);
     }
 
     /**
@@ -320,11 +329,11 @@ class Phpr_DateTime
      *
      * @documentable
      * @param        integer $years Specifies the number of hours to add.
-     * @return       Phpr_DateTime Returns the object object.
+     * @return       Phpr\DateTime Returns the object object.
      */
     public function addHours($Hours)
     {
-        return $this->addIntervalInternal($Hours, Phpr_DateTime::mlSecondsInHour);
+        return $this->addIntervalInternal($Hours, PhprDateTime::mlSecondsInHour);
     }
 
     /**
@@ -332,11 +341,11 @@ class Phpr_DateTime
      *
      * @documentable
      * @param        integer $years Specifies the number of minutes to add.
-     * @return       Phpr_DateTime Returns the object object.
+     * @return       Phpr\DateTime Returns the object object.
      */
     public function addMinutes($Minutes)
     {
-        return $this->addIntervalInternal($Minutes, Phpr_DateTime::mlSecondsInMinute);
+        return $this->addIntervalInternal($Minutes, PhprDateTime::mlSecondsInMinute);
     }
 
     /**
@@ -344,24 +353,24 @@ class Phpr_DateTime
      *
      * @documentable
      * @param        integer $years Specifies the number of seconds to add.
-     * @return       Phpr_DateTime Returns the object object.
+     * @return       Phpr\DateTime Returns the object object.
      */
     public function addSeconds($Seconds)
     {
-        return $this->addIntervalInternal($Seconds, Phpr_DateTime::mlSecondsInSecond);
+        return $this->addIntervalInternal($Seconds, PhprDateTime::mlSecondsInSecond);
     }
 
     /**
-     * Compares this object with another Phpr_DateTime object,
+     * Compares this object with another Phpr\DateTime object,
      * Returns 1 if this object value is more than a specified value,
      * 0 if values are equal and
      * -1 if this object value is less than a specified value.
      * This method takes into account the time zones of the date time objects.
      *
-     * @param  Phpr_DateTime $Value Specifies the Phpr_DateTime object to compare with.
+     * @param  Phpr\DateTime $Value Specifies the Phpr\DateTime object to compare with.
      * @return integer
      */
-    public function compare(Phpr_DateTime $Value)
+    public function compare(PhprDateTime $Value)
     {
         if ($this->intValue > $Value->getInteger()) {
             return 1;
@@ -386,7 +395,7 @@ class Phpr_DateTime
      * @param        DateTime $value_2 Specifies the second value to compare.
      * @return       integer Returns the comparison result.
      */
-    public static function compareDates(Phpr_DateTime $Value1, Phpr_DateTime $Value2)
+    public static function compareDates(PhprDateTime $Value1, PhprDateTime $Value2)
     {
         if ($Value1->getInteger() > $Value2->getInteger()) {
             return 1;
@@ -400,14 +409,14 @@ class Phpr_DateTime
     }
 
     /**
-     * Determines whether a value of this object matches a value of another Phpr_DateTime object.
+     * Determines whether a value of this object matches a value of another Phpr\DateTime object.
      * This method takes into account the time zones of the date/time objects.
      *
      * @documentable
-     * @param        Phpr_DateTime $value Specifies a value to compare with.
+     * @param        Phpr\DateTime $value Specifies a value to compare with.
      * @return       boolean Returns TRUE if the values match. Returns FALSE otherwise.
      */
-    public function equals(Phpr_DateTime $Value)
+    public function equals(PhprDateTime $Value)
     {
         return $this->intValue == $Value->getInteger();
     }
@@ -416,12 +425,12 @@ class Phpr_DateTime
      * Returns the date component of a date and time value represented by the object.
      *
      * @documentable
-     * @return       Phpr_DateTime Returns the date/time object with the time component truncated.
+     * @return       Phpr\DateTime Returns the date/time object with the time component truncated.
      */
     public function getDate()
     {
-        $Result = new Phpr_DateTime();
-        $Result->setInteger($this->intValue - $this->modulus($this->intValue, Phpr_DateTime::intInDay));
+        $Result = new PhprDateTime();
+        $Result->setInteger($this->intValue - $this->modulus($this->intValue, PhprDateTime::intInDay));
 
         return $Result;
     }
@@ -434,7 +443,7 @@ class Phpr_DateTime
      */
     public function getDayOfWeek()
     {
-        $result = (($this->intValue / Phpr_DateTime::intInDay) + 1) % 7;
+        $result = (($this->intValue / PhprDateTime::intInDay) + 1) % 7;
 
         if ($result == 0) {
             $result = 7;
@@ -451,7 +460,7 @@ class Phpr_DateTime
      */
     public function getDayOfYear()
     {
-        return $this->convertToDateElement(Phpr_DateTime::elementDayOfYear) - 1;
+        return $this->convertToDateElement(PhprDateTime::elementDayOfYear) - 1;
     }
 
     /**
@@ -464,7 +473,7 @@ class Phpr_DateTime
     public function daysInMonth($Year, $Month)
     {
         if ($Month < 1 || $Month > 12) {
-            throw new Phpr_ApplicationException("The Month argument is ouf range");
+            throw new ApplicationException("The Month argument is ouf range");
         }
 
         $DaysNum = $this->yearIsLeap($Year) ? $this->daysToMonthLeap : $this->daysToMonthReg;
@@ -492,70 +501,70 @@ class Phpr_DateTime
     }
 
     /**
-     * Returns a Phpr_DateTime object representing the date/and time value in GMT (UTC)
+     * Returns a Phpr\DateTime object representing the date/and time value in GMT (UTC)
      * GMT is UTC+00:00
      *
-     * @return Phpr_DateTime
+     * @return Phpr\DateTime
      */
     public function gmt()
     {
-        $Result = new Phpr_DateTime(null, $this->timeZone);
+        $Result = new PhprDateTime(null, $this->timeZone);
         $Result->setInteger($this->intValue);
         $Result->setTimeZone(new DateTimeZone("GMT"));
         return $Result;
     }
 
     /**
-     * Returns the Phpr_DateTime object corresponding the current GMT (UTC) date and time.
+     * Returns the Phpr\DateTime object corresponding the current GMT (UTC) date and time.
      * GMT is UTC+00:00
      *
-     * @return Phpr_DateTime
+     * @return Phpr\DateTime
      */
     public static function gmtNow()
     {
         $TimeZone = new DateTimeZone("GMT");
-        $Result = new Phpr_DateTime(null, $TimeZone);
-        $Result->setInteger(time() * (Phpr_DateTime::intInSecond) + Phpr_DateTime::timestampOffset);
+        $Result = new PhprDateTime(null, $TimeZone);
+        $Result->setInteger(time() * (PhprDateTime::intInSecond) + PhprDateTime::timestampOffset);
         return $Result;
     }
 
 
     /**
-     * Returns the instance of the Phpr_DateTime class representing the current local date and time.
+     * Returns the instance of the Phpr\DateTime class representing the current local date and time.
      *
-     * @return Phpr_DateTime
+     * @return Phpr\DateTime
      */
     public static function now()
     {
-        return new Phpr_DateTime();
+        return new PhprDateTime();
     }
 
     /**
-     * Substructs a specified Phpr_DateTime object from this object value
+     * Substructs a specified Phpr\DateTime object from this object value
      * and returns the date and time interval.
      * This method takes into account the time zones of the date time objects.
      *
-     * @param  Phpr_DateTime $Value Specifies the value to substract
-     * @return Phpr_DateTimeInterval
+     * @param  Phpr\DateTime $Value Specifies the value to substract
+     * @return Phpr\DateTimeInterval
      */
-    public function substractDateTime(Phpr_DateTime $Value)
+    public function substractDateTime(PhprDateTime $Value)
     {
-        $Result = new Phpr_DateTimeInterval();
+        $Result = new DateTimeInterval();
         $Result->setInteger($this->intValue - $Value->getInteger());
 
         return $Result;
     }
 
     /**
-     * Substructs a specified Phpr_DateTimeInterval object from this
-     * object value and returns a new Phpr_DateTime instance.
+     * Substructs a specified DateTimeInterval object from this
+     * object value and returns a new Phpr\DateTime instance.
      *
-     * @param  Phpr_DateTimeInterval $Value Specifies an interval to substract
-     * @return Phpr_DateTime
+     * @param  DateTimeInterval $Value Specifies an interval to substract
+     * @return Phpr\DateTime
      */
-    public function substractInterval(Phpr_DateTimeInterval $Value)
+    public function substractInterval(DateTimeInterval $Value)
     {
-        $Result = new Phpr_DateTime();
+        $Result = new PhprDateTime();
         $Result->setInteger($this->intValue - $Value->getInteger());
 
         return $Result;
@@ -584,14 +593,14 @@ class Phpr_DateTime
     }
 
     /**
-     * Returns the Phpr_DateTimeInterval object representing the interval elapsed since midnight.
+     * Returns the DateTimeInterval object representing the interval elapsed since midnight.
      *
-     * @return Phpr_DateTimeInterval
+     * @return DateTimeInterval
      */
     public function getTimeInterval()
     {
-        $Result = new Phpr_DateTimeInterval();
-        $Result->setInteger($this->modulus($this->intValue, Phpr_DateTime::intInDay));
+        $Result = new DateTimeInterval();
+        $Result->setInteger($this->modulus($this->intValue, PhprDateTime::intInDay));
 
         return $Result;
     }
@@ -606,7 +615,7 @@ class Phpr_DateTime
      * To convert date/time values to a time zone specified in the configuration file and display this value, use the following code:
      * <pre>
      * // Display the date and time when a product was added to the database
-     * echo Phpr_Date::display($product->created_at, '%x %X');
+     * echo Phpr\Date::display($product->created_at, '%x %X');
      * </pre>
      *
      * @documentable
@@ -615,11 +624,11 @@ class Phpr_DateTime
      */
     public function format($Format)
     {
-        return Phpr_DateTimeFormat::formatDateTime($this, $Format);
+        return DateTimeFormat::formatDateTime($this, $Format);
     }
 
     /**
-     * Converts the Phpr_DateTime value to a string, according the full date format (%F format specifier).
+     * Converts the Phpr\DateTime value to a string, according the full date format (%F format specifier).
      *
      * @return string
      */
@@ -629,7 +638,7 @@ class Phpr_DateTime
     }
 
     /**
-     * Converts the Phpr_DateTime value to a string, according the full date format (%F format specifier).
+     * Converts the Phpr\DateTime value to a string, according the full date format (%F format specifier).
      *
      * @return string
      */
@@ -639,7 +648,7 @@ class Phpr_DateTime
     }
 
     /**
-     * Converts the Phpr_DateTime value to a string, according the time format (%X format specifier).
+     * Converts the Phpr\DateTime value to a string, according the time format (%X format specifier).
      *
      * @return string
      */
@@ -649,14 +658,14 @@ class Phpr_DateTime
     }
 
     /**
-     * Converts a string to a Phpr_DateTime object.
+     * Converts a string to a Phpr\DateTime object.
      * If the specified string can not be converted to a date/time value, returns boolean FALSE.
      *
      * @documentable
      * @param        string       $string    Specifies the string to parse. For example: %x %X.
      * @param        string       $format    Specifies the date/time format, compatible with PHP {http://php.net/manual/en/function.strftime.php strftime()} function format.
      * @param        DateTimeZone $time_zone Optional. Specifies a time zone to assign to the new object.
-     * @return       mixed Returns Phpr_DateTime object if the string was successfully parsed. Returns FALSE otherwise.
+     * @return       mixed Returns Phpr\DateTime object if the string was successfully parsed. Returns FALSE otherwise.
      */
     public static function parse($Str, $Format = null, DateTimeZone $TimeZone = null)
     {
@@ -664,7 +673,7 @@ class Phpr_DateTime
             $Format = self::universalDateTimeFormat;
         }
 
-        return Phpr_DateTimeFormat::parseDateTime($Str, $Format, $TimeZone);
+        return DateTimeFormat::parseDateTime($Str, $Format, $TimeZone);
     }
 
     /**
@@ -676,7 +685,7 @@ class Phpr_DateTime
      */
     public static function getZonesOffset(DateTimeZone $Zone1, DateTimeZone $Zone2)
     {
-        $temp = new DateTime();
+        $temp = new PhpNativeDateTime();
         return $Zone1->getOffset($temp) - $Zone2->getOffset($temp);
     }
 
@@ -725,7 +734,7 @@ class Phpr_DateTime
      */
     protected function getCurrentDateTime()
     {
-        return ($this->timeZone->getOffset(new DateTime()) + time()) * (Phpr_DateTime::intInSecond) + Phpr_DateTime::timestampOffset;
+        return ($this->timeZone->getOffset(new PhpNativeDateTime()) + time()) * (PhprDateTime::intInSecond) + PhprDateTime::timestampOffset;
     }
 
     /**
@@ -736,19 +745,19 @@ class Phpr_DateTime
      */
     protected function convertToDateElement($Element)
     {
-        $Days = floor($this->intValue / (Phpr_DateTime::intInDay));
+        $Days = floor($this->intValue / (PhprDateTime::intInDay));
 
-        $Years400 = floor($Days / Phpr_DateTime::daysIn400Years);
-        $Days -= $Years400 * Phpr_DateTime::daysIn400Years;
+        $Years400 = floor($Days / PhprDateTime::daysIn400Years);
+        $Days -= $Years400 * PhprDateTime::daysIn400Years;
 
-        $Years100 = floor($Days / Phpr_DateTime::daysIn100Years);
+        $Years100 = floor($Days / PhprDateTime::daysIn100Years);
         if ($Years100 == 4) {
             $Years100 = 3;
         }
-        $Days -= $Years100 * Phpr_DateTime::daysIn100Years;
+        $Days -= $Years100 * PhprDateTime::daysIn100Years;
 
-        $Years4 = floor($Days / Phpr_DateTime::daysIn4Years);
-        $Days -= $Years4 * Phpr_DateTime::daysIn4Years;
+        $Years4 = floor($Days / PhprDateTime::daysIn4Years);
+        $Days -= $Years4 * PhprDateTime::daysIn4Years;
 
         $Years = floor($Days / 365);
 
@@ -756,13 +765,13 @@ class Phpr_DateTime
             $Years = 3;
         }
 
-        if ($Element == Phpr_DateTime::elementYear) {
+        if ($Element == PhprDateTime::elementYear) {
             return $Years400 * 400 + $Years100 * 100 + $Years4 * 4 + $Years + 1;
         }
 
         $Days -= $Years * 365;
 
-        if ($Element == Phpr_DateTime::elementDayOfYear) {
+        if ($Element == PhprDateTime::elementDayOfYear) {
             return $Days + 1;
         }
 
@@ -774,7 +783,7 @@ class Phpr_DateTime
             $shifted++;
         }
 
-        if ($Element == Phpr_DateTime::elementMonth) {
+        if ($Element == PhprDateTime::elementMonth) {
             return $shifted;
         }
 
@@ -786,17 +795,17 @@ class Phpr_DateTime
      *
      * @param  Double  $Value       Specifies a value to add.
      * @param  integer $ScaleFactor Specifies a scale factor.
-     * @return Phpr_DateTime
+     * @return Phpr\DateTime
      */
     protected function addIntervalInternal($Value, $ScaleFactor)
     {
         $Value = $Value * $ScaleFactor;
 
-        if ($Value <= Phpr_DateTime::minMlSeconds || $Value >= Phpr_DateTime::maxMlSeconds) {
-            throw new Phpr_ApplicationException("AddInervalInternal: argument is out of range");
+        if ($Value <= PhprDateTime::minMlSeconds || $Value >= PhprDateTime::maxMlSeconds) {
+            throw new ApplicationException("AddInervalInternal: argument is out of range");
         }
 
-        $Result = new Phpr_DateTime(null, $this->timeZone);
+        $Result = new PhprDateTime(null, $this->timeZone);
         $Result->setInteger($this->intValue + $Value * 10000);
 
         return $Result;
@@ -825,11 +834,11 @@ class Phpr_DateTime
     protected function convertDateVal($Year, $Month, $Day)
     {
         if ($Year < 1 || $Year > 9999) {
-            throw new Phpr_ApplicationException("Year is out of range");
+            throw new ApplicationException("Year is out of range");
         }
 
         if ($Month < 1 || $Month > 12) {
-            throw new Phpr_ApplicationException("Month is out of range");
+            throw new ApplicationException("Month is out of range");
         }
 
         $dtm = !$this->yearIsLeap($Year) ? $this->daysToMonthReg : $this->daysToMonthLeap;
@@ -837,7 +846,7 @@ class Phpr_DateTime
         $diff = $dtm[$Month] - $dtm[$Month - 1];
 
         if ($Day < 1 || $Day > $diff) {
-            throw new Phpr_ApplicationException("Day is out of range");
+            throw new ApplicationException("Day is out of range");
         }
 
         $Year--;
@@ -845,7 +854,7 @@ class Phpr_DateTime
             $Year * 365 + floor($Year / 4) - floor($Year / 100) + floor($Year / 400) + $dtm[$Month - 1] + $Day - 1
         );
 
-        return $days * Phpr_DateTime::intInDay;
+        return $days * PhprDateTime::intInDay;
     }
 
     /**
@@ -859,17 +868,17 @@ class Phpr_DateTime
     protected function convertTimeVal($Hour, $Minute, $Second)
     {
         if ($Hour < 0 || $Hour >= 24) {
-            throw new Phpr_ApplicationException("Hour is out of range");
+            throw new ApplicationException("Hour is out of range");
         }
 
         if ($Minute < 0 || $Minute >= 60) {
-            throw new Phpr_ApplicationException("Minute is out of range");
+            throw new ApplicationException("Minute is out of range");
         }
 
         if ($Minute < 0 || $Minute >= 60) {
-            throw new Phpr_ApplicationException("Second is out of range");
+            throw new ApplicationException("Second is out of range");
         }
 
-        return Phpr_DateTimeInterval::convertTimeVal($Hour, $Minute, $Second);
+        return DateTimeInterval::convertTimeVal($Hour, $Minute, $Second);
     }
 }
