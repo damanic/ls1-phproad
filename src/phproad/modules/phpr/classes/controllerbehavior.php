@@ -1,9 +1,14 @@
 <?php
+namespace Phpr;
+
+use Phpr\Controller;
+use Phpr\Extension;
+use ReflectionObject;
 
 /**
  * Controller behaviors base class
  */
-class Phpr_ControllerBehavior extends Phpr_Extension
+class ControllerBehavior extends Extension
 {
     protected $_controller;
     protected $_viewPath;
@@ -33,7 +38,7 @@ class Phpr_ControllerBehavior extends Phpr_Extension
      */
     protected function hideAction($methodName)
     {
-        $methods = Phpr_Util::splat($methodName, ',');
+        $methods = Util::splat($methodName, ',');
         foreach ($methods as $method) {
             $this->_controller->_internalMethods[] = trim($method);
         }
@@ -138,9 +143,9 @@ class Phpr_ControllerBehavior extends Phpr_Extension
         if (array_key_exists($controllerClass, $this->_controllerCache)) {
             $controller = $this->_controllerCache[$controllerClass];
         } else {
-            Phpr_Controller::$no_permissions_check = true;
+            Controller::$no_permissions_check = true;
             $controller = $this->_controllerCache[$controllerClass] = new $controllerClass();
-            Phpr_Controller::$no_permissions_check = false;
+            Controller::$no_permissions_check = false;
         }
 
         $this->renderPartialFile(
