@@ -1,5 +1,11 @@
 <?php
 
+namespace Phpr;
+
+use Phpr;
+use Phpr\SystemException;
+use ReflectionMethod;
+
 /**
  * PHP Road
  *
@@ -14,12 +20,12 @@
 /**
  * PHP Road Controller Base Class
  *
- * Phpr_Controller is a base class for the application controllers.
+ * Phpr\Controller is a base class for the application controllers.
  *
  * @package  PHPRoad
  * @category PHPRoad
  */
-class Phpr_Controller extends Phpr_ControllerBase
+class Controller extends ControllerBase
 {
     /**
      * Contains a reference to a currently executing controller.
@@ -104,17 +110,17 @@ class Phpr_Controller extends Phpr_ControllerBase
         // If there is no layout provided, just render the view
         //
         if ($this->layout == '' || $SuppressLayout) {
-            Phpr_ControllerBase::loadView($View);
+            ControllerBase::loadView($View);
             return;
         }
 
         // Catch the layout blocks
         //
-        Phpr_View::beginBlock("OutsideBlock");
+        View::beginBlock("OutsideBlock");
         parent::loadView($View);
-        Phpr_View::endBlock();
+        View::endBlock();
 
-        Phpr_View::appendBlock('view', Phpr_View::getBlock('OutsideBlock'));
+        View::appendBlock('view', View::getBlock('OutsideBlock'));
 
         // Render the layout
         //
@@ -198,7 +204,7 @@ class Phpr_Controller extends Phpr_ControllerBase
      * @param  array  $Parameters A list of the action parameters.
      * @return mixed
      */
-    public function executeEnternalAction($MethodName, $Parameters)
+    public function executeInternalAction($MethodName, $Parameters)
     {
         $Result = $this->$MethodName($Parameters);
 
@@ -338,7 +344,7 @@ class Phpr_Controller extends Phpr_ControllerBase
         }
 
         if (!file_exists($LayoutPath)) {
-            throw new Phpr_SystemException("The layout file \"$LayoutPath\" does not exist");
+            throw new SystemException("The layout file \"$LayoutPath\" does not exist");
         }
 
         include $LayoutPath;
