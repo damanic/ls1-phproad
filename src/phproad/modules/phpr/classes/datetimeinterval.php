@@ -1,4 +1,10 @@
 <?php
+namespace Phpr;
+
+use Phpr;
+use Phpr\DateTime as PhprDateTime;
+use Phpr\Strings;
+use Phpr\SystemException;
 
 /**
  * PHP Road
@@ -14,13 +20,13 @@
 /**
  * PHP Road DateTimeInterval Class
  *
- * Phpr_DateTimeInterval class represents a period, or interval of time.
+ * Phpr\DateTimeInterval class represents a period, or interval of time.
  *
  * @package  PHPRoad
  * @category PHPRoad
  * @author   Aleksey Bobkov
  */
-class Phpr_DateTimeInterval
+class DateTimeInterval
 {
     protected $intValue = 0;
 
@@ -28,7 +34,7 @@ class Phpr_DateTimeInterval
     const maxSecondsValue = 922337203685;
 
     /**
-     * Creates a new Phpr_DateTimeInterval instance.
+     * Creates a new Phpr\DateTimeInterval instance.
      *
      * @param integer $Days    Specifies a number of days
      * @param integer $Hours   Specifies a the number of hours
@@ -53,11 +59,11 @@ class Phpr_DateTimeInterval
     {
         $Seconds = $Hour * 3600 + $Minute * 60 + $Second;
 
-        if ($Seconds > Phpr_DateTimeInterval::maxSecondsValue || $Seconds < Phpr_DateTimeInterval::minSecondsValue) {
-            throw new Phpr_SystemException("Datetime interval is out of range");
+        if ($Seconds > DateTimeInterval::maxSecondsValue || $Seconds < DateTimeInterval::minSecondsValue) {
+            throw new SystemException("Datetime interval is out of range");
         }
 
-        return $Seconds * Phpr_DateTime::intInSecond;
+        return $Seconds * PhprDateTime::intInSecond;
     }
 
     /**
@@ -89,7 +95,7 @@ class Phpr_DateTimeInterval
      */
     public function getDays()
     {
-        return $this->floor($this->intValue / Phpr_DateTime::intInDay);
+        return $this->floor($this->intValue / PhprDateTime::intInDay);
     }
 
     /**
@@ -99,7 +105,7 @@ class Phpr_DateTimeInterval
      */
     public function getHours()
     {
-        return $this->floor(($this->intValue / Phpr_DateTime::intInHour) % 24);
+        return $this->floor(($this->intValue / PhprDateTime::intInHour) % 24);
     }
 
     /**
@@ -109,7 +115,7 @@ class Phpr_DateTimeInterval
      */
     public function getMinutes()
     {
-        return $this->floor(($this->intValue / Phpr_DateTime::intInMinute) % 60);
+        return $this->floor(($this->intValue / PhprDateTime::intInMinute) % 60);
     }
 
     /**
@@ -119,7 +125,7 @@ class Phpr_DateTimeInterval
      */
     public function getSeconds()
     {
-        return $this->floor($this->modulus($this->intValue / Phpr_DateTime::intInSecond, 60));
+        return $this->floor($this->modulus($this->intValue / PhprDateTime::intInSecond, 60));
     }
 
     /**
@@ -129,7 +135,7 @@ class Phpr_DateTimeInterval
      */
     public function getDaysTotal()
     {
-        return $this->intValue / Phpr_DateTime::intInDay;
+        return $this->intValue / PhprDateTime::intInDay;
     }
 
     /**
@@ -139,7 +145,7 @@ class Phpr_DateTimeInterval
      */
     public function getSecondsTotal()
     {
-        return $this->intValue / Phpr_DateTime::intInSecond;
+        return $this->intValue / PhprDateTime::intInSecond;
     }
 
     /**
@@ -149,7 +155,7 @@ class Phpr_DateTimeInterval
      */
     public function getMinutesTotal()
     {
-        return $this->intValue / Phpr_DateTime::intInMinute;
+        return $this->intValue / PhprDateTime::intInMinute;
     }
 
     /**
@@ -159,17 +165,17 @@ class Phpr_DateTimeInterval
      */
     public function getHoursTotal()
     {
-        return $this->intValue / Phpr_DateTime::intInHour;
+        return $this->intValue / PhprDateTime::intInHour;
     }
 
     /**
      * Returns a positive length of the interval.
      *
-     * @return Phpr_DateTimeInterval
+     * @return Phpr\DateTimeInterval
      */
     public function length()
     {
-        $Result = new Phpr_DateTimeInterval;
+        $Result = new DateTimeInterval();
 
         if ($this->intValue < 0) {
             $Result->setInteger($this->intValue * (-1));
@@ -181,16 +187,16 @@ class Phpr_DateTimeInterval
     }
 
     /**
-     * Compares this object with another Phpr_DateTimeInterval object,
+     * Compares this object with another Phpr\DateTimeInterval object,
      * Returns:
      * 1 if this object value is more than the value specified,
      * 0 if values are equal,
      * -1 if this object value is less than the value specified.
      *
-     * @param  Phpr_DateTimeInterval $Value Value to compare with
+     * @param  Phpr\DateTimeInterval $Value Value to compare with
      * @return integer
      */
-    public function compare(Phpr_DateTimeInterval $Value)
+    public function compare(DateTimeInterval $Value)
     {
         if ($this->intValue > $Value->getInteger()) {
             return 1;
@@ -209,11 +215,11 @@ class Phpr_DateTimeInterval
      * 0 if values are equal,
      * -1 if the first value is less than the second value.
      *
-     * @param  Phpr_DateTimeInterval $Value1 Specifies the first interval
-     * @param  Phpr_DateTimeInterval $Value2 Specifies the second interval
+     * @param  Phpr\DateTimeInterval $Value1 Specifies the first interval
+     * @param  Phpr\DateTimeInterval $Value2 Specifies the second interval
      * @return integer
      */
-    public static function compareIntervals(Phpr_DateTimeInterval $Value1, Phpr_DateTimeInterval $Value2)
+    public static function compareIntervals(DateTimeInterval $Value1, DateTimeInterval $Value2)
     {
         if ($Value1->getInteger() > $Value2->getInteger()) {
             return 1;
@@ -227,25 +233,25 @@ class Phpr_DateTimeInterval
     }
 
     /**
-     * Determines whether a value of this object matches a value of the Phpr_DateTimeInterval object specified.
+     * Determines whether a value of this object matches a value of the Phpr\DateTimeInterval object specified.
      *
-     * @param  Phpr_DateTimeInterval $Value Specifies a value to compare with
+     * @param  Phpr\DateTimeInterval $Value Specifies a value to compare with
      * @return boolean
      */
-    public function equals(Phpr_DateTimeInterval $Value)
+    public function equals(DateTimeInterval $Value)
     {
         return $this->intValue == $Value->getInteger();
     }
 
     /**
-     * Determines whether the value of this object matches the value of the Phpr_DateTimeInterval object specified.
+     * Determines whether the value of this object matches the value of the Phpr\DateTimeInterval object specified.
      *
-     * @param  Phpr_DateTimeInterval $Value Value to compare with
+     * @param  Phpr\DateTimeInterval $Value Value to compare with
      * @return boolean
      */
-    public function add(Phpr_DateTimeInterval $Value)
+    public function add(DateTimeInterval $Value)
     {
-        $Result = new Phpr_DateTimeInterval();
+        $Result = new DateTimeInterval();
 
         $Result->setInteger($this->intValue + $Value->getInteger());
 
@@ -253,15 +259,15 @@ class Phpr_DateTimeInterval
     }
 
     /**
-     * Substructs the specified Phpr_DateTimeInterval object from this object value
-     * and returns a new Phpr_DateTimeInterval instance.
+     * Substructs the specified Phpr\DateTimeInterval object from this object value
+     * and returns a new Phpr\DateTimeInterval instance.
      *
-     * @param  Phpr_DateTimeInterval $Value Specifies the interval to substract
-     * @return Phpr_DateTimeInterval
+     * @param  Phpr\DateTimeInterval $Value Specifies the interval to substract
+     * @return Phpr\DateTimeInterval
      */
-    public function substract(Phpr_DateTimeInterval $Value)
+    public function substract(DateTimeInterval $Value)
     {
-        $Result = new Phpr_DateTimeInterval();
+        $Result = new DateTimeInterval();
 
         $Result->setInteger($this->intValue - $Value->getInteger());
 
@@ -290,7 +296,7 @@ class Phpr_DateTimeInterval
      */
     public function setAsDaysAndTime($Days, $Hours, $Minutes, $Seconds)
     {
-        $this->intValue = $Days * (Phpr_DateTime::intInDay) + $this->convertTimeVal($Hours, $Minutes, $Seconds);
+        $this->intValue = $Days * (PhprDateTime::intInDay) + $this->convertTimeVal($Hours, $Minutes, $Seconds);
     }
 
     /**
@@ -305,16 +311,16 @@ class Phpr_DateTimeInterval
         }
 
         if ($mins < 60) {
-            return 'about ' . Phpr_Strings::word_form($mins, 'minute', true);
+            return 'about ' . Strings::word_form($mins, 'minute', true);
         }
 
         $hours = floor($this->getHoursTotal());
         if ($hours < 24) {
-            return 'about ' . Phpr_Strings::word_form($hours, 'hour', true);
+            return 'about ' . Strings::word_form($hours, 'hour', true);
         }
 
         $days = floor($this->getDaysTotal());
-        return Phpr_Strings::word_form($days, 'day', true);
+        return Strings::word_form($days, 'day', true);
     }
 
     /**
