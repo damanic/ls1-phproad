@@ -11,15 +11,12 @@ This branch includes the entire framework structure required to host LSV1 module
 
 
 
-## Roadmap :rocket:
+## Roadmap
 - PHP7.4+ compatible
 - Namespaced
-- Make use of interfaces, traits
 - Drop deprecated methods and features (looking at you Mcrypt :eyes:)
 - Backwards compatible with LSv1 modules and DB schema
 - DB migrate schema (preferred over incremental sql files)
-- Ditch mootools
-- Update/replace tinyMCE
 - Installer
   - configure DB connection 
   - generate a unique install ID
@@ -39,7 +36,7 @@ This branch includes the entire framework structure required to host LSV1 module
 
 #### Code Style and Compatibility (PHPCS)
 
-To check code style is inline with Worpress standard and compatible between currently supported PHP versions run:
+To check code style is inline with PSR2 standard and compatible between currently supported PHP versions run:
 `composer cs-check`
 
 PHP supported versions: 7.4+
