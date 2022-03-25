@@ -418,6 +418,60 @@ class ValidationException extends ApplicationException
     }
 }
 
+/**
+ * Execution exception class.
+ * Thrown when trying to locate/parse a document
+ * Eg. CMS content uses eval() to parse PHP code, and fails.
+ *
+ * Phpr\ExecutionException represents a document execution error
+ */
+class ExecutionException extends SystemException
+{
+    public $call_stack;
+    public $code_line;
+    public $location_desc;
+
+    public function __construct($message, $call_stack, $line, $load_line_from_stack = false)
+    {
+        $call_stack = array_reverse($call_stack);
+        $this->call_stack = $call_stack;
+        $this->code_line = $line;
+        $this->location_desc = '"'.$this->document_name().'" ('.$this->document_type().')';
+
+        if ($load_line_from_stack)
+        {
+            $trace = $this->getTrace();
+            $count = count($trace);
+            if ($count)
+            {
+                $this->code_line = $trace[0]['line'];
+            }
+        }
+
+        parent::__construct($message);
+    }
+
+    public function stack_top()
+    {
+        return $this->call_stack[0];
+    }
+
+    public function document_type()
+    {
+        return $this->stack_top()->type;
+    }
+
+    public function document_name()
+    {
+        return $this->stack_top()->name;
+    }
+
+    public function document_code()
+    {
+        return $this->stack_top()->code;
+    }
+}
+
 
 /**
  * PHP Road system error handler.
