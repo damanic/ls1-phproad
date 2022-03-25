@@ -1,7 +1,8 @@
 <?php
-
 class Db
 {
+    public static $connections = array();
+    public static $describeCache = array();
     public static $connection = 0;
 
     public static function sql()
@@ -24,5 +25,12 @@ class Db
         return call_user_func_array(array(&$where, 'where'), $args);
     }
 
-    public static $describeCache = array();
+    public static function setActiveConnection($connection, $id='default'){
+        self::$connections[$id] = $connection;
+    }
+
+    public static function getActiveConnection($id='default'){
+        return isset(self::$connections[$id]) ? self::$connections[$id] : null;
+    }
+
 }
