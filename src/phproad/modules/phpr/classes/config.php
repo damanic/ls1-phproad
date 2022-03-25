@@ -1,4 +1,7 @@
 <?php
+namespace Phpr;
+
+use ArrayAccess;
 
 /**
  * PHP Road
@@ -12,19 +15,15 @@
  */
 
 /**
- * PHP Road configuration base class
+ * PHPR configuration base class
  *
  * Loads the configuration from the application configuration files.
  *
  * The instance of this class is available in the Phpr global object: Phpr::$Config.
  *
  * @see Phpr
- *
- * @package  PHPRoad
- * @category PHPRoad
- * @author   Aleksey Bobkov
  */
-class Phpr_Config implements ArrayAccess
+class Config implements ArrayAccess
 {
     protected $_configuration = array();
 
