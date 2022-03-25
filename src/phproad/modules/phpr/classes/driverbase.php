@@ -1,7 +1,9 @@
 <?php
+
 namespace Phpr;
 
 use FileSystem\Path;
+use Phpr\Extension;
 
 /**
  * PHPR module driver base class
@@ -60,4 +62,29 @@ class DriverBase extends Extension
         $local_path = $class_path . '/' . strtolower($class_name) . '/assets/' . $partial_name;
         return Path::getPublicPath($local_path);
     }
+
+    /**
+     * Get driver info
+     *
+     * @return array
+     */
+    public function getInfo()
+    {
+        return [
+            'code' => 'unknown',
+            'name' => 'Unknown',
+            'description' => 'Unknown driver provider'
+        ];
+    }
+
+    /**
+     * Get driver info
+     *
+     * @return string
+     */
+    public function getCode()
+    {
+        return $this->getInfo()['code'];
+    }
+
 }
