@@ -1,6 +1,7 @@
 <?php
+namespace Net;
 
-class Net_Request
+class Request
 {
     protected $options;
     protected $headers;
@@ -55,7 +56,7 @@ class Net_Request
      */
     public function send()
     {
-        return Net_Service::create()->run($this);
+        return Service::create()->run($this);
     }
 
     /**

@@ -1,6 +1,7 @@
 <?php
+namespace Net;
 
-class Net_Response
+class Response
 {
     public $request;
     public $headers;

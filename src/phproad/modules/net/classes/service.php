@@ -1,6 +1,7 @@
 <?php
+namespace Net;
 
-class Net_Service
+class Service
 {
     protected $settings;
     protected $mc;
@@ -22,37 +23,81 @@ class Net_Service
         return new self($options);
     }
 
-    public function run($request, $callback = null)
+    private function get_data_and_headers_from_response($response_data)
     {
-        $c = curl_init();
+        $headers = array();
 
-        foreach ($request->get_options() as $key => $value) {
-            curl_setopt($c, $key, $value);
+        $blocks = explode("\r\n\r\n", $response_data);
+        $total_blocks = count($blocks);
+
+        if ($total_blocks > 1) {
+            // Use the last header block, ignoring redirects and such
+            $header_data = $blocks[$total_blocks - 2];
+
+            // The last block is the data
+            $body_data = $blocks[$total_blocks - 1];
+        } else {
+            // Exception handling
+            $header_data = '';
+            $body_data = $response_data;
         }
 
-        // we've got a callback so let's go asynchronous
+        foreach (explode("\r\n", $header_data) as $header_data_item) {
+            $items = explode(": ", $header_data_item);
+
+            // Except for the first line, not sure why this header doesn't have a key and value
+            if (count($items) < 2) {
+                continue;
+            }
+
+            $key = $items[0];
+            array_shift($items);
+
+            $headers[$key] = implode(": ", $items);
+        }
+
+        return array($body_data, $headers);
+    }
+
+    public function run($request, $callback = null)
+    {
+        $curl = curl_init();
+        $request_options = $request->get_options();
+
+        foreach ($request_options as $key => $value) {
+            curl_setopt($curl, $key, $value);
+        }
+
+        // Attempt async
         if ($callback) {
-            $this->jobs[] = array('request' => $request, 'handle' => $c, 'callback' => $callback);
+            $this->jobs[] = array('request' => $request, 'handle' => $curl, 'callback' => $callback);
         } // nope, no asio for us today
         else {
-            $r = new Net_Response();
+            $response = new Response();
 
             $headers = array();
 
             ob_start();
-            $r->data = curl_exec($c);
+            $response_data = curl_exec($curl);
             ob_end_clean();
 
-            $r->headers = $headers;
-            $r->request = $request;
-            $r->info = curl_getinfo($c);
-            $r->status_code = $r->info['http_code'];
-            $r->error_info = curl_error($c);
-            $r->error_code = curl_errno($c);
+            if ($request_options[CURLOPT_HEADER]) {
+                list($data, $headers) = $this->get_data_and_headers_from_response($response_data);
+            } else {
+                list($data, $headers) = array($response_data, null);
+            }
 
-            curl_close($c);
+            $response->data = $data;
+            $response->headers = $headers;
+            $response->request = $request;
+            $response->info = curl_getinfo($curl);
+            $response->status_code = $response->info['http_code'];
+            $response->error_info = curl_error($curl);
+            $response->error_code = curl_errno($curl);
 
-            return $r;
+            curl_close($curl);
+
+            return $response;
         }
 
         $this->last_request = $request;
@@ -79,10 +124,10 @@ class Net_Service
 
             $host = parse_url($job['request']->get_option(CURLOPT_URL), PHP_URL_HOST);
 
-            // check if the domain is bad and will block multicurl
+            // Checks if the domain is bad and will block multicurl
             if (!$this->is_host_active($host)) {
                 if ($job['callback'] != null) {
-                    call_user_func_array($job['callback'], array(null));
+                    $job['callback'](null);
                 }
 
                 continue;
@@ -106,7 +151,8 @@ class Net_Service
         }
 
         while ($item = curl_multi_info_read($this->mc)) {
-            usleep(20000); // dont tie up the cpu
+            // Don't hog CPU
+            usleep(20000);
 
             $handle = $item['handle'];
 
@@ -114,24 +160,27 @@ class Net_Service
 
             $info = curl_getinfo($handle);
 
-            $data = curl_multi_getcontent($handle);
+            $response_data = curl_multi_getcontent($handle);
 
             curl_multi_remove_handle($this->mc, $handle);
 
             unset($this->connections[$handle]);
 
-            $r = new Net_Response();
-            $r->request = $connection['request'];
-            $r->data = $data;
-            $r->info = curl_getinfo($handle);
-            $r->status_code = $r->info['http_code'];
-            $r->error_info = curl_error($handle);
-            $r->error_code = curl_errno($handle);
+            list($data, $headers) = $this->get_data_and_headers_from_response($response_data);
 
-            $this->last_response = $r;
+            $response = new Response();
+            $response->request = $connection['request'];
+            $response->headers = $headers;
+            $response->data = $data;
+            $response->info = curl_getinfo($handle);
+            $response->status_code = $response->info['http_code'];
+            $response->error_info = curl_error($handle);
+            $response->error_code = curl_errno($handle);
+
+            $this->last_response = $response;
 
             if ($connection['callback'] != null) {
-                call_user_func_array($connection['callback'], array($r));
+                $connection['callback']($response);
             }
         }
     }
@@ -142,12 +191,12 @@ class Net_Service
             return false;
         }
 
-        // if this isn't linux don't check it
+        // If this isn't linux don't check it
         if (!stristr(PHP_OS, 'linux')) {
             return true;
         }
 
-        // if this is an IP don't check it
+        // If this is an IP don't check it
         if (long2ip(ip2long($host)) == $host) {
             return true;
         }
