@@ -11,7 +11,7 @@ use Phpr\DeprecateException;
  */
 class Deprecate
 {
-    public function set_class($class_name, $replacement = null)
+    public function setClass($class_name, $replacement = null)
     {
         if ($replacement) {
             $message = 'Class ' . $class_name . ' is a deprecated. Please use class ' . $replacement . ' instead';
@@ -22,11 +22,11 @@ class Deprecate
         try {
             throw new DeprecateException($message);
         } catch (DeprecateException $ex) {
-            Phpr::$errorLog->log_exception($ex);
+            Phpr::$errorLog->logException($ex);
         }
     }
 
-    public function set_function($func_name, $replacement = null)
+    public function setFunction($func_name, $replacement = null)
     {
         if ($replacement) {
             $message = 'Function ' . $func_name . ' is deprecated. Please use ' . $replacement . ' instead';
@@ -37,11 +37,11 @@ class Deprecate
         try {
             throw new DeprecateException($message);
         } catch (DeprecateException $ex) {
-            Phpr::$errorLog->log_exception($ex);
+            Phpr::$errorLog->logException($ex);
         }
     }
 
-    public function set_argument($func_name, $arg_name, $replacement = null)
+    public function setArgument($func_name, $arg_name, $replacement = null)
     {
         if ($replacement) {
             $message = 'Function ' . $func_name . ' was called with an argument that is deprecated: ' . $arg_name . '. Please use ' . $replacement . ' instead';
@@ -52,7 +52,7 @@ class Deprecate
         try {
             throw new DeprecateException($message);
         } catch (DeprecateException $ex) {
-            Phpr::$errorLog->log_exception($ex);
+            Phpr::$errorLog->logException($ex);
         }
     }
 }
