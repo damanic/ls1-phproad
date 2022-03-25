@@ -1,15 +1,19 @@
 <?php
+namespace Phpr;
+
+use Phpr;
+use Phpr\Html;
 
 /**
  * PHP Road Exception base class
  *
- * Phpr_Exception is a base class for all PHP Road exceptions.
- * Phpr_Exception automatically adds a record to the error log.
+ * Phpr\Exception is a base class for all PHP Road exceptions.
+ * Phpr\Exception automatically adds a record to the error log.
  * Use this class as a base class for your application exceptions hierarchy
  * if you want to achieve the automatic logging. Do not forget to call
  * the parent constructor in the inherited exceptions.
  */
-class Phpr_Exception extends Exception
+class Exception extends \Exception
 {
 
     public $hint_message;
@@ -17,7 +21,7 @@ class Phpr_Exception extends Exception
     public $log_status;
 
     /**
-     * Creates a new Phpr_Exception instance.
+     * Creates a new Phpr\Exception instance.
      *
      * @param string $Message Message of exception.
      * @param int    $Code    Code of exception.
@@ -70,7 +74,7 @@ class Phpr_Exception extends Exception
 
             // Do not include the handlers to the trace
             //
-            if ($functionName == 'Phpr_SysErrorHandler' || $functionName == 'Phpr_SysExceptionHandler' ) {
+            if ($functionName == 'Phpr\SysErrorHandler' || $functionName == 'Phpr\SysExceptionHandler' ) {
                 continue;
             }
 
@@ -130,7 +134,7 @@ class Phpr_Exception extends Exception
                     } elseif (is_integer($argument) ) {
                         $value = $v;
                     } else {
-                        $value = "'" . ( $Html ? Phpr_Html::encode($v) : $v ) . "'";
+                        $value = "'" . ( $Html ? Html::encode($v) : $v ) . "'";
                     }
 
                     $items[] = $k . ' => ' . $value;
@@ -148,7 +152,7 @@ class Phpr_Exception extends Exception
             } elseif (is_integer($argument) ) {
                 $arg = $argument;
             } else {
-                $arg = "'" . ( $Html ? Phpr_Html::encode($argument) : $argument ) . "'";
+                $arg = "'" . ( $Html ? Html::encode($argument) : $argument ) . "'";
             }
 
             if ($Html ) {
@@ -165,9 +169,9 @@ class Phpr_Exception extends Exception
 /**
  * PHP Road System Exception base class
  *
- * Phpr_SystemException is a base class for system exceptions.
+ * Phpr\SystemException is a base class for system exceptions.
  */
-class Phpr_SystemException extends Phpr_Exception
+class SystemException extends Exception
 {
 
 }
@@ -175,29 +179,60 @@ class Phpr_SystemException extends Phpr_Exception
 /**
  * PHP Road Application Exception base class
  *
- * Phpr_ApplicationException is a base class for application exceptions.
+ * Phpr\ApplicationException is a base class for application exceptions.
  */
-class Phpr_ApplicationException extends Phpr_Exception
+class ApplicationException extends Exception
+{
+
+}
+
+
+/**
+ * PHP Road Database Exception base class
+ *
+ * Phpr\DatabaseException is a base class for database exceptions.
+ */
+class DatabaseException extends Exception
 {
 
 }
 
 /**
- * PHP Road Database Exception base class
+ * PHPR Deprecate Exception base class
  *
- * Phpr_DatabaseException is a base class for database exceptions.
+ * Phpr\DeprecateException is a base class for database exceptions.
  */
-class Phpr_DatabaseException extends Phpr_Exception
+class DeprecateException extends Exception
 {
+    public $prev_trace;
+    public $class_name;
+    public $code_line;
+    public $code_file;
 
+    public function __construct($message = null, $code = 0)
+    {
+        $trace = $this->getTrace();
+
+        if (!isset($trace[1])) {
+            return;
+        }
+
+        $this->prev_trace = $prev_trace = (object)$trace[1];
+        $this->class_name = isset($prev_trace->class) ? $prev_trace->class : null;
+        $this->code_file = isset($prev_trace->file) ? $prev_trace->file : null;
+        $this->code_line = isset($prev_trace->line) ? $prev_trace->line : null;
+
+        parent::__construct($message, $code);
+    }
 }
+
 
 /**
  * PHP Road Database Exception base class
  *
- * Phpr_DatabaseException is a base class for HTTP exceptions.
+ * Phpr\DatabaseException is a base class for HTTP exceptions.
  */
-class Phpr_HttpException extends Phpr_ApplicationException
+class HttpException extends ApplicationException
 {
 
     public $http_code;
@@ -246,7 +281,7 @@ class Phpr_HttpException extends Phpr_ApplicationException
     );
 
     /**
-     * Creates a new Phpr_Exception instance.
+     * Creates a new Phpr\Exception instance.
      *
      * @param int    $http_code HTTP code.
      * @param string $message   message of the exception.
@@ -301,15 +336,15 @@ class Phpr_HttpException extends Phpr_ApplicationException
 /**
  * PHP Road PHP Exception class
  *
- * Phpr_PhpException represents the PHP Error.
+ * Phpr\PhpException represents the PHP Error.
  * PHP Road automatically converts all errors to exceptions of this class.
  * Use the getCode() method to obtain the PHP error number (E_WARNING, E_NOTICE and others).
  */
-class Phpr_PhpException extends Phpr_SystemException
+class PhpException extends SystemException
 {
 
     /**
-     * Creates a new Phpr_Exception instance.
+     * Creates a new Phpr\Exception instance.
      *
      * @param string $Message Message of exception.
      * @param int    $Type    Type of the PHP error.
@@ -348,10 +383,47 @@ class Phpr_PhpException extends Phpr_SystemException
 }
 
 /**
- * PHP Road system error handler.
- * PHP Road automatically converts all errors to exceptions of class Phpr_PhpException.
+ * Validation exception class.
+ *
+ * Phpr\ValidationException represents a data validation error.
  */
-function Phpr_SysErrorHandler( $errno, $errstr, $errfile, $errline )
+class ValidationException extends ApplicationException
+{
+    public $validation;
+
+    /**
+     * Creates a new Phpr\ValidationException instance
+     * @param Phpr\Validation $validation Validation object that caused the exception.
+     */
+    public function __construct(Validation $validation)
+    {
+        parent::__construct();
+        $this->message = null;
+
+        $this->validation = $validation;
+
+        if ($validation->error_message !== null) {
+            $this->message = $validation->error_message;
+        }
+
+        if (count($validation->field_errors)) {
+            $keys = array_keys($validation->field_errors);
+
+            if (strlen($this->message)) {
+                $this->message .= PHP_EOL;
+            }
+
+            $this->message .= $validation->field_errors[$keys[0]];
+        }
+    }
+}
+
+
+/**
+ * PHP Road system error handler.
+ * PHP Road automatically converts all errors to exceptions of class Phpr\PhpException.
+ */
+function SysErrorHandler($errno, $errstr, $errfile, $errline)
 {
     // Throw the PHP Exception if it is listed in the ERROR_REPORTING configuration value
     //
@@ -361,12 +433,12 @@ function Phpr_SysErrorHandler( $errno, $errstr, $errfile, $errline )
         E_ALL
     ) & $errno ) && ( error_reporting() & $errno ) 
     ) {
-        throw new Phpr_PhpException($errstr, $errno, $errfile, $errline);
+        throw new PhpException($errstr, $errno, $errfile, $errline);
     } else {
         // Otherwise throw and catch the exception to log it
         //
         try {
-            throw new Phpr_PhpException($errstr, $errno, $errfile, $errline);
+            throw new PhpException($errstr, $errno, $errfile, $errline);
         } catch ( Exception $e ) {
             // Do nothing
         }
@@ -377,17 +449,18 @@ function Phpr_SysErrorHandler( $errno, $errstr, $errfile, $errline )
  * PHP Road system exception handler.
  * PHP Road uses this function to catch the unhandled exceptions and display the error page.
  */
-function Phpr_SysExceptionHandler( $Exception )
+function SysExceptionHandler($exception)
 {
-    if(isset(Phpr::$response)) {
-        Phpr::$response->openErrorPage($Exception);
-        return;
+    try {
+        Phpr::$response->openErrorPage($exception);
+    } catch (\Exception $e) {
+        print get_class($e) . " thrown within the exception handler. Message: " . $e->getMessage(
+            ) . " on line " . $e->getLine() . " of " . $e->getFile();
     }
-    throw $Exception;
 }
 
 /**
  * Set the error and exception handlers
  */
-set_error_handler('Phpr_SysErrorHandler');
-set_exception_handler('Phpr_SysExceptionHandler');
+set_error_handler('Phpr\SysErrorHandler');
+set_exception_handler('Phpr\SysExceptionHandler');

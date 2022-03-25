@@ -138,7 +138,7 @@ class Phpr_ErrorLog
                     $event['class']
                 )) ? $event['class'] . $event['type'] . $event['function'] : $event['function'];
 
-                if ($functionName == 'Phpr_SysErrorHandler' || $functionName == 'Phpr_SysExceptionHandler') {
+                if ($functionName == 'Phpr\SysErrorHandler' || $functionName == 'Phpr\SysExceptionHandler') {
                     continue;
                 }
 
