@@ -1,4 +1,9 @@
 <?php
+namespace Phpr;
+
+use Phpr;
+use Phpr\SystemException;
+use Phpr\Validatable;
 
 /**
  * PHP Road
@@ -14,13 +19,13 @@
 /**
  * PHP Road Controller Base Class
  *
- * Phpr_ControllerBase is a base class for the application and component controllers.
+ * Phpr\ControllerBase is a base class for the application and component controllers.
  *
  * @package  PHPRoad
  * @category PHPRoad
  * @author   Aleksey Bobkov
  */
-abstract class Phpr_ControllerBase extends Phpr_Validatable
+abstract class ControllerBase extends Validatable
 {
     protected $_suppressView = false;
     protected $_eventPostPrefix = 'ev';
@@ -35,7 +40,7 @@ abstract class Phpr_ControllerBase extends Phpr_Validatable
         'remoteEventHandler',
         'getViewsDirPath',
         'executeAction',
-        'executeEnternalAction'
+        'executeInternalAction'
     );
 
     /**
@@ -48,7 +53,7 @@ abstract class Phpr_ControllerBase extends Phpr_Validatable
     /**
      * The Validation object. Use it to validate a form data.
      *
-     * @var Phpr_Validation
+     * @var Phpr\Validation
      */
     public $validation;
 
@@ -57,7 +62,7 @@ abstract class Phpr_ControllerBase extends Phpr_Validatable
      */
     public function __construct()
     {
-        $this->validation = new Phpr_Validation($this);
+        $this->validation = new Validation($this);
 
         parent::__construct();
     }
@@ -130,7 +135,7 @@ abstract class Phpr_ControllerBase extends Phpr_Validatable
         if (file_exists($ViewFile)) {
             include $ViewFile;
         } elseif ($PartialMode) {
-            throw new Phpr_SystemException('Partial file not found: ' . $ViewFile);
+            throw new SystemException('Partial file not found: ' . $ViewFile);
         }
     }
 
@@ -155,7 +160,7 @@ abstract class Phpr_ControllerBase extends Phpr_Validatable
 
     /**
      * Returns the event handler information for using with the
-     * control helpers like Phpr_Form::Button or Phpr_Form::Anchor.
+     * control helpers like Phpr\Form::Button or Phpr\Form::Anchor.
      *
      * @param  string $EventName Specifies the event name.
      *                           The event name must be a name of the controller method.
@@ -168,7 +173,7 @@ abstract class Phpr_ControllerBase extends Phpr_Validatable
 
     /**
      * Returns the remote event handler information for using with the
-     * control helpers like Phpr_Form::Button or Phpr_Form::Anchor.
+     * control helpers like Phpr\Form::Button or Phpr\Form::Anchor.
      * Remote events are called using the AJAX.
      *
      * @param  string $EventName Specifies the event name.
@@ -204,18 +209,18 @@ abstract class Phpr_ControllerBase extends Phpr_Validatable
         Phpr::$router->route($URI, $Controller, $Action, $Parameters, $Folder);
         $Obj = Phpr::$classLoader->load_controller($Controller, $Folder);
         if (!$Obj) {
-            throw new Phpr_SystemException("Controller $Controller is not found");
+            throw new SystemException("Controller $Controller is not found");
         }
 
         if (!$Obj->_actionExists($Action, true)) {
-            throw new Phpr_SystemException("Action $Action is not found in the controller $Controller");
+            throw new SystemException("Action $Action is not found in the controller $Controller");
         }
 
         if ($Params !== null) {
             $Parameters = $Params;
         }
 
-        return $Obj->executeEnternalAction($Action, $Parameters);
+        return $Obj->executeInternalAction($Action, $Parameters);
     }
 
     /**
@@ -249,7 +254,7 @@ abstract class Phpr_ControllerBase extends Phpr_Validatable
     public function _execEventHandler($MethodName, $Parameters = array(), $Action = null)
     {
         if (!$this->methodExists($MethodName)) {
-            throw new Phpr_SystemException("The event handler $MethodName does not exist in the controller.");
+            throw new SystemException("The event handler $MethodName does not exist in the controller.");
         }
 
         foreach ($Parameters as &$Param) {
