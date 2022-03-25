@@ -149,7 +149,7 @@ class ErrorLog
 
                 $args = null;
                 if (isset($event['args']) && count($event['args'])) {
-                    $args = Phpr_Exception::_formatTraceArguments($event['args'], false);
+                    $args = Exception::_formatTraceArguments($event['args'], false);
                 }
 
                 $error->call_stack[] = (object)array(
