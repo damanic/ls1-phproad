@@ -1,4 +1,8 @@
 <?php
+namespace Phpr;
+
+use Phpr;
+use Phpr\DateTime as PhprDateTime;
 
 /**
  * PHP Road
@@ -23,7 +27,7 @@
  * @category PHPRoad
  * @author   Aleksey Bobkov
  */
-class Phpr_DateTimeFormat
+class DateTimeFormat
 {
     const spType = 'spt';
     const spTypeString = 'string';
@@ -312,7 +316,7 @@ class Phpr_DateTimeFormat
      * @param  string   $Format   Specifies the format string
      * @return string
      */
-    public static function formatDateTime(Phpr_DateTime $DateTime, $Format)
+    public static function formatDateTime(PhprDateTime $DateTime, $Format)
     {
         self::init();
 
@@ -508,7 +512,7 @@ class Phpr_DateTimeFormat
         );
 
         if (!$ValidationOnly) {
-            $Now = Phpr_DateTime::now();
+            $Now = PhprDateTime::now();
         }
 
         $ampm = null;
@@ -636,7 +640,7 @@ class Phpr_DateTimeFormat
             }
         }
 
-        $Result = new Phpr_DateTime(null, $TimeZone);
+        $Result = new PhprDateTime(null, $TimeZone);
         $Result->setDateTime($year, $month, $day, $hour, $minute, $second);
 
         return $Result;
