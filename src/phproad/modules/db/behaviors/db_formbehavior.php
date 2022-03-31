@@ -316,7 +316,8 @@ class Db_FormBehavior extends Phpr_ControllerBehavior
         $renderMode = $this->formGetFieldRenderMode($form_field->dbName);
         $partialName = !$this->_controller->form_preview_mode ? 'form_field_' . $renderMode : 'form_field_preview_' . $renderMode;
         $this->formRenderPartial(
-            $partialName, array(
+            $partialName,
+            array(
             'form_field' => $form_field,
             'form_model_class' => get_class($form_model)
             )
@@ -335,7 +336,8 @@ class Db_FormBehavior extends Phpr_ControllerBehavior
         $partialName = 'form_field_' . $renderMode;
 
         $this->formRenderPartial(
-            $partialName, array(
+            $partialName,
+            array(
             'form_field' => $field_definition,
             'form_model_class' => get_class($model)
             )
@@ -465,30 +467,30 @@ class Db_FormBehavior extends Phpr_ControllerBehavior
         if ($field_definition->renderMode === null) {
             if ($columnDefinition->isReference) {
                 switch ($columnDefinition->referenceType) {
-                case 'belongs_to':
-                    return frm_dropdown;
-                case 'has_and_belongs_to_many':
-                    return frm_checkboxlist;
+                    case 'belongs_to':
+                        return frm_dropdown;
+                    case 'has_and_belongs_to_many':
+                        return frm_checkboxlist;
                 }
             }
 
             switch ($columnDefinition->type) {
-            case db_float:
-            case db_number:
-            case db_varchar:
-                return frm_text;
-            case db_bool:
-                return frm_checkbox;
-            case db_text:
-                return frm_textarea;
-            case db_datetime:
-                return frm_datetime;
-            case db_date:
-                return frm_date;
-            case db_time:
-                return frm_time;
-            default:
-                throw new Phpr_SystemException("Render mode is unknown for $dbName field.");
+                case db_float:
+                case db_number:
+                case db_varchar:
+                    return frm_text;
+                case db_bool:
+                    return frm_checkbox;
+                case db_text:
+                    return frm_textarea;
+                case db_datetime:
+                    return frm_datetime;
+                case db_date:
+                    return frm_date;
+                case db_time:
+                    return frm_time;
+                default:
+                    throw new Phpr_SystemException("Render mode is unknown for $dbName field.");
             }
         }
 
@@ -516,7 +518,8 @@ class Db_FormBehavior extends Phpr_ControllerBehavior
         $fileList = $model->list_related_records_deferred($dbName, $this->formGetEditSessionKey());
 
         $this->renderPartial(
-            'form_attached_file_list', array(
+            'form_attached_file_list',
+            array(
             'form_file_list' => $fileList,
             'dbName' => $dbName,
             'render_mode' => $field_definition->renderFilesAs,
@@ -603,7 +606,8 @@ class Db_FormBehavior extends Phpr_ControllerBehavior
 
         $this->_controller->preparePartialRender($table_container_id);
         $this->formRenderPartial(
-            'form_grid_table', array(
+            'form_grid_table',
+            array(
             'form_field' => $form_field,
             'form_model_class' => $form_model_class,
             'form_model' => $model,
@@ -945,6 +949,21 @@ class Db_FormBehavior extends Phpr_ControllerBehavior
     }
 
     /**
+     * Called before an uploaded file is saved/accepted.
+     * This method can be overridden in the controller to accept
+     * or reject a file upload.
+     *
+     * @documentable
+     * @param Db_ActiveRecord $model Specifies the model object.
+     * @param $dbName string The model column/field definition name
+     * @param $dbFile Db_File The file object to be accepted
+     * @param $sessionKey
+     */
+    public function formBeforeFileUploadSave($model, $dbName, $dbFile, $sessionKey)
+    {
+    }
+
+    /**
      * Finds a model object for the Edit page.
      * This method can be overridden in the controller class if a special
      * actions should be performed in order to load a model from the database. By default
@@ -1138,7 +1157,8 @@ class Db_FormBehavior extends Phpr_ControllerBehavior
 
             if ($this->_controller->form_edit_save_flash) {
                 Phpr::$session->flash['success'] = $this->_controller->form_edit_save_flash;
-                $flash_set = true;;
+                $flash_set = true;
+                ;
             }
 
             if (post('redirect', 1)) {
@@ -1627,7 +1647,8 @@ class Db_FormBehavior extends Phpr_ControllerBehavior
                 $table_container_id = $fieldId . 'table_container';
                 $this->_controller->preparePartialRender($table_container_id);
                 $this->formRenderPartial(
-                    'form_grid_table', array(
+                    'form_grid_table',
+                    array(
                     'form_field' => $form_field,
                     'form_model_class' => $form_model_class,
                     'form_model' => $data_model,
@@ -1740,20 +1761,20 @@ class Db_FormBehavior extends Phpr_ControllerBehavior
             }
 
             $file = Db_File::create();
-            $file->is_public = $field_definition->renderFilesAs == 'single_image' || $field_definition->renderFilesAs == 'image_list';
-
+            $file->is_public = $field_definition->fileIsPublic;
             $file->fromPost($_FILES['file']);
             $file->master_object_class = get_class($model);
             $file->field = $dbName;
+
+            $this->_controller->formBeforeFileUploadSave($model, $dbName, $file, $sessionKey);
             $file->save();
 
-            if ($field_definition->renderFilesAs == 'single_image' || $field_definition->renderFilesAs == 'single_file') {
+            if (in_array($field_definition->renderFilesAs, array('single_image', 'single_file'))) {
                 $files = $model->list_related_records_deferred($dbName, $this->formGetEditSessionKey());
                 foreach ($files as $existing_file) {
                     $model->{$dbName}->delete($existing_file, $sessionKey);
                 }
             }
-
             $model->{$dbName}->add($file, $sessionKey);
 
             $result['result'] = 'success';

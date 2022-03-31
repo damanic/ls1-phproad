@@ -48,6 +48,8 @@
  */
 class Db_File extends Db_ActiveRecord
 {
+    public $implement = 'Db_AutoFootprints';
+
     public $table_name = 'db_files';
     public $simpleCaching = true;
 
@@ -89,8 +91,6 @@ class Db_File extends Db_ActiveRecord
      * @documentable
      */
     public $id = 0;
-
-    public $implement = 'Db_AutoFootprints';
 
     protected $autoMimeTypes =
         array(

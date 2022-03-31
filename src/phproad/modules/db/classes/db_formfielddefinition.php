@@ -254,6 +254,12 @@ class Db_FormFieldDefinition extends Db_FormElement
     public $fileDownloadBaseUrl = null;
 
     /**
+     * @var          null|bool Used to store file in public or private location
+     * @documentable
+     */
+    public $fileIsPublic = null;
+
+    /**
      * @var          string Specifies a list of TinyMCE plugins for a HTML field.
      * @documentable
      */
@@ -914,6 +920,9 @@ class Db_FormFieldDefinition extends Db_FormElement
     public function renderFilesAs($renderMode)
     {
         $this->renderFilesAs = $renderMode;
+        if (($renderMode == 'single_image' || $renderMode == 'image_list') && $this->fileIsPublic === null) {
+            $this->fileIsPublic = true; // backwards compatibility
+        }
         return $this;
     }
 
@@ -1116,6 +1125,22 @@ class Db_FormFieldDefinition extends Db_FormElement
     public function fileDownloadBaseUrl($url)
     {
         $this->fileDownloadBaseUrl = $url;
+        return $this;
+    }
+
+
+    /**
+     * Sets a base URL for file links for a file attachments field.
+     * Usual value for this method is <em>url('ls_backend/files/get/')</em>.
+     *
+     * @documentable
+     * @param        bool $bool True if file should be considered publicly accessible
+     * @return       Db_FormFieldDefinition Returns the updated form field definition object.
+     * @see          Db_File
+     */
+    public function fileIsPublic($bool)
+    {
+        $this->fileIsPublic = (bool)$bool;
         return $this;
     }
 
