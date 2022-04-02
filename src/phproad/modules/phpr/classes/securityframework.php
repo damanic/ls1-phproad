@@ -1,21 +1,27 @@
 <?php
+namespace Phpr;
 
-class Phpr_SecurityFramework
+use Phpr;
+use Phpr\SystemException;
+use Phpr\ApplicationException;
+use Phpr\Mcrypt;
+
+class SecurityFramework
 {
     private static $instance;
 
-    private $mode_descriptor = null;
-    private $config_content = null;
+    private $modeDescriptor = null;
+    private $configContent = null;
     private $salt;
-    private $salt_cookie;
+    private $saltCookie;
     private $key;
-    private $data_cache = array();
-    private $encryption_handler = null;
+    private $dataCache = array();
+    private $encryptionHandler = null;
     public $debug = false;
 
     protected function __construct()
     {
-        $this->encryption_handler = new Phpr_Mcrypt();
+        $this->encryptionHandler = new Mcrypt();
     }
 
     public static function create()
@@ -28,8 +34,8 @@ class Phpr_SecurityFramework
 
     public function reset_instance()
     {
-        $this->mode_descriptor = null;
-        $this->config_content = null;
+        $this->modeDescriptor = null;
+        $this->configContent = null;
         $this->salt = null;
         return self::$instance = new self();
     }
@@ -50,8 +56,8 @@ class Phpr_SecurityFramework
             $salt = $this->salt($key);
         }
 
-        $strong_key = substr(md5($salt . $key), 0, $this->encryption_handler->get_key_size());
-        $result = $this->encryption_handler->encrypt($data, $strong_key);
+        $strong_key = substr(md5($salt . $key), 0, $this->encryptionHandler->get_key_size());
+        $result = $this->encryptionHandler->encrypt($data, $strong_key);
 
         return self::obfuscate_data($result, $strong_key);
     }
@@ -71,8 +77,8 @@ class Phpr_SecurityFramework
         }
 
         $data_key = 'sf-' . md5($data . '^|^' . $key . '^|^' . $salt);
-        if (array_key_exists($data_key, $this->data_cache)) {
-            return $this->data_cache[$data_key];
+        if (array_key_exists($data_key, $this->dataCache)) {
+            return $this->dataCache[$data_key];
         }
 
         if (Phpr::$config->get('ENABLE_SECURE_DATA_CACHING', false)) {
@@ -83,9 +89,9 @@ class Phpr_SecurityFramework
             }
         }
 
-        $strong_key = substr(md5($salt . $key), 0, $this->encryption_handler->get_key_size());
+        $strong_key = substr(md5($salt . $key), 0, $this->encryptionHandler->get_key_size());
         $data = self::deobfuscate_data($data, $strong_key);
-        $result = $this->encryption_handler->decrypt($data, $strong_key);
+        $result = $this->encryptionHandler->decrypt($data, $strong_key);
         $res = null;
         try {
             $unserialized = @unserialize($result);
@@ -108,7 +114,7 @@ class Phpr_SecurityFramework
      */
     public function tagged_encrypt($data, $key = null, $salt = null)
     {
-        return "<handler>" . get_class($this->encryption_handler) . "</handler>" . $this->encrypt($data, $key, $salt);
+        return "<handler>" . get_class($this->encryptionHandler) . "</handler>" . $this->encrypt($data, $key, $salt);
     }
 
     protected function tagged_decrypt($data, $key = null, $salt = null)
@@ -119,8 +125,8 @@ class Phpr_SecurityFramework
         $handler_tag = (isset($matches[1]) && $matches[1]) ? $matches[1] : false;
         if ($handler_tag) {
             $data = str_replace('<handler>' . $handler_tag . '</handler>', '', $data);
-            if (class_exists($handler_tag) && (get_class($this->encryption_handler)) !== $handler_tag) {
-                $this->encryption_handler = new $handler_tag();
+            if (class_exists($handler_tag) && (get_class($this->encryptionHandler)) !== $handler_tag) {
+                $this->encryptionHandler = new $handler_tag();
             }
         }
         $data = str_replace('<handler>', '', $data);
@@ -135,7 +141,7 @@ class Phpr_SecurityFramework
 
     public function use_legacy_encryption_handler()
     {
-        $this->encryption_handler = new Phpr_Mcrypt();
+        $this->encryptionHandler = new Mcrypt();
     }
 
 
@@ -147,7 +153,7 @@ class Phpr_SecurityFramework
 
         $config_data = $this->get_config_content();
         if (!array_key_exists('config_key', $config_data)) {
-            throw new Phpr_SystemException('Invalid configuration file.');
+            throw new SystemException('Invalid configuration file.');
         }
 
         return $this->key = $config_data['config_key'];
@@ -210,14 +216,14 @@ class Phpr_SecurityFramework
      */
     protected function get_mode_descriptor()
     {
-        if (method_exists($this->encryption_handler, 'get_mode_descriptor')) {
-            return $this->encryption_handler->get_mode_descriptor();
+        if (method_exists($this->encryptionHandler, 'get_mode_descriptor')) {
+            return $this->encryptionHandler->get_mode_descriptor();
         }
     }
 
     public function set_config_content($content)
     {
-        $this->config_content = $content;
+        $this->configContent = $content;
 
         $file_path = Phpr::$config->get('SECURE_CONFIG_PATH', PATH_APP . '/config/config.dat');
 
@@ -233,13 +239,13 @@ class Phpr_SecurityFramework
 
     public function get_config_content()
     {
-        if ($this->config_content) {
-            return $this->config_content;
+        if ($this->configContent) {
+            return $this->configContent;
         }
 
         $file_path = Phpr::$config->get('SECURE_CONFIG_PATH', PATH_APP . '/config/config.dat');
         if (!file_exists($file_path)) {
-            throw new Phpr_ApplicationException('Secure configuration file is not found.');
+            throw new ApplicationException('Secure configuration file is not found.');
         }
 
         try {
@@ -249,14 +255,14 @@ class Phpr_SecurityFramework
                 Phpr::$config->get('CONFIG_KEY2', '#0qw4-3dk')
             );
         } catch (Exception $ex) {
-            throw new Phpr_SystemException('Error loading configuration file.');
+            throw new SystemException('Error loading configuration file.');
         }
 
         if (!is_array($data)) {
             return array();
         }
 
-        return $this->config_content = $data;
+        return $this->configContent = $data;
     }
 
     public function salt($salt_key = null)
@@ -271,7 +277,7 @@ class Phpr_SecurityFramework
 
         $config_data = $this->get_config_content();
         if (!array_key_exists('config_key', $config_data)) {
-            throw new Phpr_SystemException('Invalid configuration file.');
+            throw new SystemException('Invalid configuration file.');
         }
 
         return $this->salt = md5($config_data['config_key']);
@@ -288,20 +294,20 @@ class Phpr_SecurityFramework
             return md5($salt_key);
         }
 
-        if (strlen($this->salt_cookie)) {
-            return $this->salt_cookie;
+        if (strlen($this->saltCookie)) {
+            return $this->saltCookie;
         }
 
         $salt = Phpr::$config->get('COOKIE_SALT');
 
         if ($salt === null) {
-            throw new Phpr_SystemException('Missing configuration value (COOKIE_SALT)');
+            throw new SystemException('Missing configuration value (COOKIE_SALT)');
         }
 
         if (strlen($salt) < 10) {
-            throw new Phpr_SystemException('Invalid configuration value (COOKIE_SALT)');
+            throw new SystemException('Invalid configuration value (COOKIE_SALT)');
         }
 
-        return $this->salt_cookie = md5($salt);
+        return $this->saltCookie = md5($salt);
     }
 }

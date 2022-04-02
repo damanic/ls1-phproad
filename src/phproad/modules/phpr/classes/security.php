@@ -1,4 +1,7 @@
 <?php
+namespace Phpr;
+
+use Phpr;
 
 /**
  * PHP Road
@@ -24,15 +27,15 @@
  * @category PHPRoad
  * @author   Aleksey Bobkov
  */
-class Phpr_Security
+class Security
 {
     /**
      * The name of the user class.
-     * Change this name if you want to use a user class other than the Phpr_User.
+     * Change this name if you want to use a user class other than the Phpr\User.
      *
      * @var string
      */
-    public $userClassName = "Phpr_User";
+    public $userClassName = "Phpr\User";
 
     /**
      * The authentication cookie name.
@@ -103,8 +106,8 @@ class Phpr_Security
     /**
      * Returns a currently signed in user. If there is no signed user returns null.
      *
-     * @return Phpr_User The class of a returning object depends on configuration settings.
-     * You may extend the Phpr_User and specify it in the application init.php file:
+     * @return Phpr\User The class of a returning object depends on configuration settings.
+     * You may extend the Phpr\User and specify it in the application init.php file:
      * Phpr::$security->userClassName = "NewUserClass";
      */
     public function getUser()
@@ -151,7 +154,7 @@ class Phpr_Security
     /**
      * Validates user login name and password and logs user in.
      *
-     * @param Phpr_Validation $Validation Optional validation object to report errors.
+     * @param Phpr\Validation $Validation Optional validation object to report errors.
      * @param string          $Redirect   Optional URL to redirect the user browser in case of successful login.
      *
      * @param string          $Login      Specifies the user login name.
@@ -166,7 +169,7 @@ class Phpr_Security
      *
      * @return boolean
      */
-    public function login(Phpr_Validation $Validation = null, $Redirect = null, $Login = null, $Password = null)
+    public function login(Phpr\Validation $Validation = null, $Redirect = null, $Login = null, $Password = null)
     {
         /*
          * Load the login form data
@@ -339,7 +342,7 @@ class Phpr_Security
         $CookieName = Phpr::$config->get('LOGIN_COOKIE_NAME', $this->loginCookieName);
         $Result = Phpr::$request->cookie($CookieName);
 
-        return $Html ? Phpr_Html::encode($Result) : $Result;
+        return $Html ? Html::encode($Result) : $Result;
     }
 
     /**
@@ -416,7 +419,7 @@ class Phpr_Security
 
         $expiration = time() + $lifetime;
 
-        $key = hash_hmac('md5', $Id . $expiration, Phpr_SecurityFramework::create()->salted_cookie());
+        $key = hash_hmac('md5', $Id . $expiration, SecurityFramework::create()->salted_cookie());
         $hash = hash_hmac('md5', $Id . $expiration, $key);
         $ticket = base64_encode(base64_encode($Id) . '|' . $expiration . '|' . $hash);
 
@@ -450,7 +453,7 @@ class Phpr_Security
             return null;
         }
 
-        $key = hash_hmac('md5', $id_decoded . $expiration, Phpr_SecurityFramework::create()->salted_cookie());
+        $key = hash_hmac('md5', $id_decoded . $expiration, SecurityFramework::create()->salted_cookie());
         $hash = hash_hmac('md5', $id_decoded . $expiration, $key);
 
         if ($hmac != $hash) {
