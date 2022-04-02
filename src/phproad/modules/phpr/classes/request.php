@@ -1,30 +1,32 @@
 <?php
+namespace Phpr;
+
+use Phpr;
+use Phpr\Strings;
 
 /**
- * Incapsulates information about the HTTP request.
- * An instance of this class is always available through the <em>$Phpr</em> class and you never need to create it manually:
+ * Encapsulates information about the HTTP request.
+ * An instance of this class is always available through the <em>$Phpr</em>
+ * class and you never need to create it manually:
  * <pre>$ip = Phpr::$request->getUserIp();</pre>
- * Use this class for reading GET or POST values from the request, loading cookie information, obtaining the visitor's IP address, etc.
+ * Use this class for reading GET or POST values from the request, loading cookie information,
+ * obtaining the visitor's IP address, etc.
  *
- * @documentable
- * @see          Phpr_Response
- * @author       LemonStand eCommerce Inc.
- * @package      core.classes
  */
-class Phpr_Request
+class Request
 {
-    private $_ip = null;
-    private $_ip_strict = null;
-    private $_language = null;
-    private $_cachedEvendParams = null;
-    private $_cachedUri = null;
-    private $_subdirectory = null;
-    private $_cachedRootUrl = null;
+    private $ip = null;
+    private $ip_strict = null;
+    private $language = null;
+    private $cachedEvendParams = null;
+    private $cachedUri = null;
+    private $subdirectory = null;
+    private $cachedRootUrl = null;
 
-    protected $_remoteEventIndicator = 'HTTP_PHPR_REMOTE_EVENT';
-    protected $_postbackIndicator = 'HTTP_PHPR_POSTBACK';
+    protected $remoteEventIndicator = 'HTTP_PHPR_REMOTE_EVENT';
+    protected $postbackIndicator = 'HTTP_PHPR_POSTBACK';
 
-    public $get_fields = null;
+    public $getFields = null;
 
     /**
      * Creates a new Phpr_Request instance.
@@ -35,6 +37,54 @@ class Phpr_Request
     public function __construct()
     {
         $this->preprocessGlobals();
+    }
+
+
+    /**
+     * Returns a cookie value by the cookie name.
+     * If a cookie with the specified name does not exist, returns NULL.
+     *
+     * @documentable
+     * @param        string $name Specifies the cookie name.
+     * @return       mixed Returns either cookie value or NULL.
+     */
+    public function cookie($Name)
+    {
+        if (!isset($_COOKIE[$Name])) {
+            return null;
+        }
+
+        return $_COOKIE[$Name];
+    }
+
+    /**
+     * Returns a value of the SERVER variable.
+     * @param string $name Specifies a variable name.
+     * @param string $default Default value if specified name does not exist.
+     * @return mixed
+     */
+    public function server($name = null, $default = null)
+    {
+        if ($name === null) {
+            return $_SERVER;
+        }
+
+        return (!isset($_SERVER[$name])) ? $_SERVER[$name] : $default;
+    }
+
+    /**
+     * Returns a value of the ENV variable.
+     * @param string $name Specifies a variable name.
+     * @param string $default Default value if specified name does not exist.
+     * @return mixed
+     */
+    public function env($name = null, $default = null)
+    {
+        if ($name === null) {
+            return $_ENV;
+        }
+
+        return (!isset($_ENV[$name])) ? $_ENV[$name] : $default;
     }
 
     /**
@@ -48,7 +98,7 @@ class Phpr_Request
      * @return       mixed Returns the POST parameter value, NULL or default value.
      * @see          post() post() function
      */
-    public function post($Name, $Default = null)
+    public function postField($Name, $Default = null)
     {
         if (array_key_exists($Name . '_x', $_POST) && array_key_exists($Name . '_y', $_POST)) {
             return true;
@@ -72,16 +122,16 @@ class Phpr_Request
      * <input type="text" name="customer_form[last_name]">
      * </pre>
      * you can extract the first name field value with the following code:
-     * <pre>$first_name = Phpr::$request->post_array_item('customer_form', 'first_name')</pre>
+     * <pre>$first_name = Phpr::$request->postArray('customer_form', 'first_name')</pre>
      *
      * @documentable
      * @param        string $array_name specifies the array element name in the POST data.
      * @param        string $name       specifies the array element key in the first array.
      * @param        mixed  $default    specifies a default value.
      * @return       mixed returns the found array element value or the default value.
-     * @see          post_array_item() post_array_item() function
+     * @see          postArray() postArray function
      */
-    public function post_array_item($ArrayName, $Name, $Default = null)
+    public function postArray($ArrayName, $Name, $Default = null)
     {
         if (!array_key_exists($ArrayName, $_POST)) {
             return $Default;
@@ -95,20 +145,14 @@ class Phpr_Request
     }
 
     /**
-     * Returns a cookie value by the cookie name.
-     * If a cookie with the specified name does not exist, returns NULL.
-     *
-     * @documentable
-     * @param        string $name Specifies the cookie name.
-     * @return       mixed Returns either cookie value or NULL.
+     * Returns if the HTTP request was an AJAX request.
+     * @return boolean
      */
-    public function cookie($Name)
+    public function isAjax()
     {
-        if (!isset($_COOKIE[$Name])) {
-            return null;
-        }
-
-        return $_COOKIE[$Name];
+        return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower(
+                $_SERVER['HTTP_X_REQUESTED_WITH']
+            ) == 'xmlhttprequest';
     }
 
     /**
@@ -130,7 +174,7 @@ class Phpr_Request
      */
     public function isRemoteEvent()
     {
-        return isset($_SERVER[$this->_remoteEventIndicator]);
+        return isset($_SERVER[$this->remoteEventIndicator]);
     }
 
     /**
@@ -154,7 +198,23 @@ class Phpr_Request
      */
     public function isPostBack()
     {
-        return isset($_SERVER[$this->_postbackIndicator]);
+        return isset($_SERVER[$this->postbackIndicator]);
+    }
+
+
+    /**
+     * Returns true if the request is from the admin area.
+     * @return boolean
+     */
+    public function isAdmin()
+    {
+        $request_param_name = Phpr::$config->get('REQUEST_PARAM_NAME', 'q');
+        $admin_url = '/' . Strings::normalize_uri(Phpr::$config->get('ADMIN_URL', 'admin'));
+        $current_url = '/' . Strings::normalize_uri(
+                isset($_REQUEST[$request_param_name]) ? $_REQUEST[$request_param_name] : ''
+            );
+
+        return (stristr($current_url, $admin_url) !== false);
     }
 
     /**
@@ -165,7 +225,7 @@ class Phpr_Request
      */
     public function getUserIp($strict = false)
     {
-        $cached_ip = $strict ? $this->_ip_strict : $this->_ip;
+        $cached_ip = $strict ? $this->ip_strict : $this->ip;
 
         if ($cached_ip !== null) {
             return $cached_ip;
@@ -197,9 +257,9 @@ class Phpr_Request
             $ip = '127.0.0.1';
         }
 
-        $this->_ip = $ip;
+        $this->ip = $ip;
         if ($strict) {
-            $this->_ip_strict = $ip;
+            $this->ip_strict = $ip;
         }
         return $ip;
     }
@@ -211,8 +271,8 @@ class Phpr_Request
      */
     public function gerUserLanguage()
     {
-        if ($this->_language !== null) {
-            return $this->_language;
+        if ($this->language !== null) {
+            return $this->language;
         }
 
         if (!array_key_exists('HTTP_ACCEPT_language', $_SERVER)) {
@@ -226,7 +286,7 @@ class Phpr_Request
             $language = substr($language, 0, $pos);
         }
 
-        return $this->_language = str_replace("-", "_", $language);
+        return $this->language = str_replace("-", "_", $language);
     }
 
     /**
@@ -237,8 +297,8 @@ class Phpr_Request
      */
     public function getSubdirectory()
     {
-        if ($this->_subdirectory !== null) {
-            return $this->_subdirectory;
+        if ($this->subdirectory !== null) {
+            return $this->subdirectory;
         }
 
         $request_param_name = Phpr::$config->get('REQUEST_PARAM_NAME', 'q');
@@ -272,7 +332,7 @@ class Phpr_Request
             $subdir = '/';
         }
 
-        return $this->_subdirectory = $subdir;
+        return $this->subdirectory = $subdir;
     }
 
     /**
@@ -309,8 +369,8 @@ class Phpr_Request
     {
         global $bootstrapPath;
 
-        if (!$Routing && $this->_cachedUri !== null) {
-            return $this->_cachedUri;
+        if (!$Routing && $this->cachedUri !== null) {
+            return $this->cachedUri;
         }
 
         $request_param_name = Phpr::$config->get('REQUEST_PARAM_NAME', 'q');
@@ -360,7 +420,7 @@ class Phpr_Request
             //
             // $URI = str_replace('test/', '', $URI);
         } else {
-            $this->_cachedUri = $URI;
+            $this->cachedUri = $URI;
         }
 
         return $URI;
@@ -374,7 +434,7 @@ class Phpr_Request
     {
         // Unset the global variables
         //
-        $this->get_fields = $_GET;
+        $this->getFields = $_GET;
 
         $this->unsetGlobals($_GET);
         $this->unsetGlobals($_POST);
@@ -390,10 +450,10 @@ class Phpr_Request
         $this->cleanupArray($_COOKIE);
     }
 
-    public function get_value_array($name, $default = array())
+    public function getValueArray($name, $default = array())
     {
-        if (array_key_exists($name, $this->get_fields)) {
-            return $this->get_fields[$name];
+        if (array_key_exists($name, $this->getFields)) {
+            return $this->getFields[$name];
         }
 
         if (!isset($_SERVER['QUERY_STRING'])) {
@@ -421,9 +481,9 @@ class Phpr_Request
         return $result;
     }
 
-    public function get_query_string($include_request_name = false)
+    public function getQueryString($include_request_name = false)
     {
-        $params = $this->get_fields;
+        $params = $this->getFields;
         $rpn = Phpr::$config->get('REQUEST_PARAM_NAME', 'q');
         if (is_array($params)) {
             if (!$include_request_name && isset($params[$rpn])) {
@@ -433,9 +493,161 @@ class Phpr_Request
         return (is_array($params) && count($params)) ? http_build_query($params, '', '&') : null;
     }
 
-    public static function array_strip_slashes(&$value)
+
+    /**
+     * @param  string $Name Optional name of parameter to return.
+     * @return mixed
+     * @ignore
+     * Returns a list of the event parameters, or a specified parameter value.
+     * This method is used by the PHP Road internally.
+     */
+    public function getEventParams($Name = null)
     {
-        $value = stripslashes($value);
+        if ($this->cachedEvendParams == null) {
+            $this->cachedEvendParams = array();
+
+            if (isset($_POST['phpr_handler_params'])) {
+                $pairs = explode('&', $_POST['phpr_handler_params']);
+                foreach ($pairs as $pair) {
+                    $parts = explode("=", urldecode($pair));
+                    $this->cachedEvendParams[$parts[0]] = $parts[1];
+                }
+            }
+        }
+
+        if ($Name === null) {
+            return $this->cachedEvendParams;
+        }
+
+        if (isset($this->cachedEvendParams[$Name])) {
+            return $this->cachedEvendParams[$Name];
+        }
+
+        return null;
+    }
+
+    public function getReferer($Detault = null)
+    {
+        if (isset($_SERVER['HTTP_REFERER'])) {
+            return $_SERVER['HTTP_REFERER'];
+        }
+
+        return $Detault;
+    }
+
+    /**
+     * Returns the current request method name - <em>POST</em>, <em>GET</em>, <em>HEAD</em> or <em>PUT</em>.
+     *
+     * @documentable
+     * @return       string Returns the request method name.
+     */
+    public function getRequestMethod()
+    {
+        if (isset($_SERVER['REQUEST_METHOD'])) {
+            return strtoupper($_SERVER['REQUEST_METHOD']);
+        }
+
+        return null;
+    }
+
+    public function getCurrentUrl()
+    {
+        $protocol = $this->getProtocol();
+        $port = ($_SERVER["SERVER_PORT"] == "80") ? ""
+            : (":" . $_SERVER["SERVER_PORT"]);
+
+        return $protocol . "://" . $_SERVER['SERVER_NAME'] . $port . $_SERVER['REQUEST_URI'];
+    }
+
+    public function getHostname()
+    {
+        $server_name = isset($_SERVER["SERVER_NAME"]) ? $_SERVER["SERVER_NAME"] : null;
+        $host_name = isset($_SERVER["HTTP_HOST"]) ? $_SERVER["HTTP_HOST"] : null;
+        return $server_name ? $server_name : $host_name;
+    }
+
+    /**
+     * Returns HTTP protocol name - <em>http</em> or <em>https</em>.
+     *
+     * @documentable
+     * @return       string Returns HTTP protocol name.
+     */
+    public function getProtocol()
+    {
+        if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) == 'https') {
+            $s = 's';
+        } else {
+            $s = (empty($_SERVER["HTTPS"]) || ($_SERVER["HTTPS"] === 'off')) ? '' : 's';
+        }
+
+        return $this->strleft(strtolower($_SERVER["SERVER_PROTOCOL"]), "/") . $s;
+    }
+
+    /**
+     * Returns HTTP port number.
+     * If <em>STANDARD_HTTP_PORTS</em> parameter is set to TRUE in {@link http://lemonstand.com/docs/lemonstand_configuration_options/ config.php file},
+     * the method returns NULL.
+     *
+     * @documentable
+     * @return       integer Returns HTTP port number.
+     */
+    public function getPort()
+    {
+        if (Phpr::$config->get('STANDARD_HTTP_PORTS')) {
+            return null;
+        }
+
+        if (array_key_exists('HTTP_HOST', $_SERVER)) {
+            $matches = array();
+            if (preg_match('/:([0-9]+)/', $_SERVER['HTTP_HOST'], $matches)) {
+                return $matches[1];
+            }
+        }
+
+        return isset($_SERVER["SERVER_PORT"]) ? $_SERVER["SERVER_PORT"] : null;
+    }
+
+    public function getRootUrl($protocol = null)
+    {
+        if (!isset($_SERVER['SERVER_NAME'])) {
+            return null;
+        }
+
+        $protocol_specified = strlen($protocol);
+        if (!$protocol_specified && $this->cachedRootUrl !== null) {
+            return $this->cachedRootUrl;
+        }
+
+        if ($protocol === null) {
+            $protocol = $this->getProtocol();
+        }
+
+        $port = $this->getPort();
+
+        $current_protocol = $this->getProtocol();
+        if ($protocol_specified && strtolower($protocol) != $current_protocol) {
+            $port = '';
+        }
+
+        $https = strtolower($protocol) == 'https';
+
+        if (!$https && $port == 80) {
+            $port = '';
+        }
+
+        if ($https && $port == 443) {
+            $port = '';
+        }
+
+        $port = !strlen($port) ? "" : ":" . $port;
+
+        $result = $protocol . "://" . $_SERVER['SERVER_NAME'] . $port;
+
+        if (!$protocol_specified) {
+            $this->cachedRootUrl = $result;
+        }
+
+        return $result;
     }
 
     /**
@@ -451,7 +663,12 @@ class Phpr_Request
      */
     public function getField($name, $default = false)
     {
-        return array_key_exists($name, $this->get_fields) ? $this->get_fields[$name] : $default;
+        return array_key_exists($name, $this->getFields) ? $this->getFields[$name] : $default;
+    }
+
+    private function strleft($s1, $s2)
+    {
+        return substr($s1, 0, strpos($s1, $s2));
     }
 
     /**
@@ -526,157 +743,97 @@ class Phpr_Request
         }
     }
 
+
     /**
-     * @param  string $Name Optional name of parameter to return.
-     * @return mixed
-     * @ignore
-     * Returns a list of the event parameters, or a specified parameter value.
-     * This method is used by the PHP Road internally.
+     * @deprecated
+     * Unused
      */
-    public function getEventParams($Name = null)
+    public static function array_strip_slashes(&$value)
     {
-        if ($this->_cachedEvendParams == null) {
-            $this->_cachedEvendParams = array();
-
-            if (isset($_POST['phpr_handler_params'])) {
-                $pairs = explode('&', $_POST['phpr_handler_params']);
-                foreach ($pairs as $pair) {
-                    $parts = explode("=", urldecode($pair));
-                    $this->_cachedEvendParams[$parts[0]] = $parts[1];
-                }
-            }
-        }
-
-        if ($Name === null) {
-            return $this->_cachedEvendParams;
-        }
-
-        if (isset($this->_cachedEvendParams[$Name])) {
-            return $this->_cachedEvendParams[$Name];
-        }
-
-        return null;
-    }
-
-    public function getReferer($Detault = null)
-    {
-        if (isset($_SERVER['HTTP_REFERER'])) {
-            return $_SERVER['HTTP_REFERER'];
-        }
-
-        return $Detault;
+        $deprecate = new Deprecate();
+        $deprecate->setFunction('array_strip_slashes');
+        $value = stripslashes($value);
     }
 
     /**
-     * Returns the current request method name - <em>POST</em>, <em>GET</em>, <em>HEAD</em> or <em>PUT</em>.
-     *
-     * @documentable
-     * @return       string Returns the request method name.
+     * @deprecated
      */
-    public function getRequestMethod()
+    public function get_value_array($name, $default = array())
     {
-        if (isset($_SERVER['REQUEST_METHOD'])) {
-            return strtoupper($_SERVER['REQUEST_METHOD']);
-        }
-
-        return null;
-    }
-
-    public function getCurrentUrl()
-    {
-        $protocol = $this->protocol();
-        $port = ($_SERVER["SERVER_PORT"] == "80") ? ""
-            : (":" . $_SERVER["SERVER_PORT"]);
-
-        return $protocol . "://" . $_SERVER['SERVER_NAME'] . $port . $_SERVER['REQUEST_URI'];
+        $deprecate = new Deprecate();
+        $deprecate->setFunction('get_value_array', 'getValueArray');
+        return $this->getValueArray($name, $default);
     }
 
     /**
-     * Returns HTTP protocol name - <em>http</em> or <em>https</em>.
-     *
-     * @documentable
-     * @return       string Returns HTTP protocol name.
+     * @deprecated
+     */
+    public function get_query_string($include_request_name = false)
+    {
+        $deprecate = new Deprecate();
+        $deprecate->setFunction('get_query_string', 'getQueryString');
+        return $this->getQueryString($include_request_name);
+    }
+
+    /**
+     * @deprecated
      */
     public function protocol()
     {
-        if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) == 'https') {
-            $s = 's';
-        } else {
-            $s = (empty($_SERVER["HTTPS"]) || ($_SERVER["HTTPS"] === 'off')) ? '' : 's';
-        }
-
-        return $this->strleft(strtolower($_SERVER["SERVER_PROTOCOL"]), "/") . $s;
+        $deprecate = new Deprecate();
+        $deprecate->setFunction('protocol', 'getProtocol');
+        return $this->getProtocol();
     }
 
     /**
-     * Returns HTTP port number.
-     * If <em>STANDARD_HTTP_PORTS</em> parameter is set to TRUE in {@link http://lemonstand.com/docs/lemonstand_configuration_options/ config.php file},
-     * the method returns NULL.
-     *
-     * @documentable
-     * @return       integer Returns HTTP port number.
+     * @deprecated
      */
     public function port()
     {
-        if (Phpr::$config->get('STANDARD_HTTP_PORTS')) {
-            return null;
-        }
-
-        if (array_key_exists('HTTP_HOST', $_SERVER)) {
-            $matches = array();
-            if (preg_match('/:([0-9]+)/', $_SERVER['HTTP_HOST'], $matches)) {
-                return $matches[1];
-            }
-        }
-
-        return isset($_SERVER["SERVER_PORT"]) ? $_SERVER["SERVER_PORT"] : null;
+        $deprecate = new Deprecate();
+        $deprecate->setFunction('port', 'getPort');
+        return $this->getPort();
     }
 
-    public function getRootUrl($protocol = null)
+    /**
+     * @deprecated
+     */
+    public function post_array_item($arrayName, $name, $default = null)
     {
-        if (!isset($_SERVER['SERVER_NAME'])) {
-            return null;
-        }
-
-        $protocol_specified = strlen($protocol);
-        if (!$protocol_specified && $this->_cachedRootUrl !== null) {
-            return $this->_cachedRootUrl;
-        }
-
-        if ($protocol === null) {
-            $protocol = $this->protocol();
-        }
-
-        $port = $this->port();
-
-        $current_protocol = $this->protocol();
-        if ($protocol_specified && strtolower($protocol) != $current_protocol) {
-            $port = '';
-        }
-
-        $https = strtolower($protocol) == 'https';
-
-        if (!$https && $port == 80) {
-            $port = '';
-        }
-
-        if ($https && $port == 443) {
-            $port = '';
-        }
-
-        $port = !strlen($port) ? "" : ":" . $port;
-
-        $result = $protocol . "://" . $_SERVER['SERVER_NAME'] . $port;
-
-        if (!$protocol_specified) {
-            $this->_cachedRootUrl = $result;
-        }
-
-        return $result;
+        $deprecate = new Deprecate();
+        $deprecate->setFunction('post_array_item', 'postArray');
+        return $this->postArray($arrayName, $name, $default);
     }
 
-    private function strleft($s1, $s2)
+    /**
+     * @deprecated
+     */
+    public function post($name = null, $default = null)
     {
-        return substr($s1, 0, strpos($s1, $s2));
+        $deprecate = new Deprecate();
+        $deprecate->setFunction('post', 'postField');
+        return $this->postField($name = null, $default);
+    }
+
+    /**
+     * Handle deprecated properties
+     */
+
+    public function __get($name)
+    {
+        if ($name === 'get_fields') {
+            $deprecate = new Deprecate();
+            $deprecate->setClassProperty('get_fields', 'getFields');
+            return $this->getFields;
+        }
+    }
+
+    public function __set($name, $value)
+    {
+        if ($name === 'get_fields') {
+            $deprecate = new Deprecate();
+            $deprecate->setClassProperty('get_fields', 'getFields');
+            $this->getFields = $value;
+        }
     }
 }

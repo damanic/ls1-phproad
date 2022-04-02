@@ -118,7 +118,7 @@ Phpr::$security = new Phpr_Security();
  */
 
 if (Phpr::$router === null ) {
-    Phpr::$router = new Phpr_Router();
+    Phpr::$router = new Phpr\Router();
 }
 
 // Load config for usage

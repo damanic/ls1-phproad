@@ -1,37 +1,25 @@
 <?php
+namespace Phpr;
+
+use Phpr\SystemException;
 
 /**
- * PHP Road
- *
- * PHP application framework
- *
- * @package    PHPRoad
- * @author     Aleksey Bobkov, Andy Chentsov
- * @since      Version 1.0
- * @filesource
- */
-
-/**
- * PHP Road Router Class
+ * PHPR Router Class
  *
  * Router maps an URI string to the PHP Road controllers and actions.
- *
- * @package  PHPRoad
- * @category PHPRoad
- * @author   Aleksey Bobkov
  */
-class Phpr_Router
+class Router
 {
-    private $_rules = array();
-    private $_actionIndex = false;
-    private $_segments = array();
+    private array $rules = array();
+    private bool $actionIndex = false;
+    private array $segments = array();
 
     /**
      * @var array
      * A list of URI parameters names a and values.
      * The URI "archive/:year/:month/:day" will produce 3 parameters: year, month and day.
      */
-    public $parameters = array();
+    public array $parameters = array();
 
     /**
      * @var string
@@ -45,9 +33,9 @@ class Phpr_Router
      */
     public $action = null;
 
-    const _urlController = 'controller';
-    const _urlAction = 'action';
-    const _urlModule = 'module';
+    const URL_CONTROLLER = 'controller';
+    const URL_ACTION = 'action';
+    const URL_MODULE = 'module';
 
     /**
      * Parses an URI and finds the controller class name, action and parameters.
@@ -68,10 +56,10 @@ class Phpr_Router
             $URI = substr($URI, 1);
         }
 
-        $this->_segments = $segments = $this->segmentURI($URI);
+        $this->segments = $segments = $this->segmentURI($URI);
         $segmentCount = count($segments);
 
-        foreach ($this->_rules as $Rule) {
+        foreach ($this->rules as $Rule) {
             if (strlen($Rule->URI)) {
                 $ruleSegments = explode("/", $Rule->URI);
             } else {
@@ -118,22 +106,22 @@ class Phpr_Router
                     }
                 }
 
-                $this->_actionIndex = false;
+                $this->actionIndex = false;
 
                 // Evaluate the controller parameters
                 //
                 foreach ($ruleParams as $paramName => $paramIndex) {
-                    if ($this->_actionIndex === false && $paramName == self::_urlAction) {
-                        $this->_actionIndex = $paramIndex;
+                    if ($this->actionIndex === false && $paramName == self::URL_ACTION) {
+                        $this->actionIndex = $paramIndex;
                     }
 
-                    if ($paramName == self::_urlController || $paramName == self::_urlAction) {
+                    if ($paramName == self::URL_CONTROLLER || $paramName == self::URL_ACTION) {
                         continue;
                     }
 
                     $value = $this->evaluateParameterValue($paramName, $paramIndex, $segments, $Rule->defaults);
 
-                    if ($paramName != self::_urlModule) {
+                    if ($paramName != self::URL_MODULE) {
                         $Parameters[] = $value;
                     }
 
@@ -142,8 +130,8 @@ class Phpr_Router
 
                 // Evaluate the controller and action values
                 //
-                $Controller = $this->evaluateTargetValue(self::_urlController, $ruleParams, $Rule, $segments);
-                $Action = $this->evaluateTargetValue(self::_urlAction, $ruleParams, $Rule, $segments);
+                $Controller = $this->evaluateTargetValue(self::URL_CONTROLLER, $ruleParams, $Rule, $segments);
+                $Action = $this->evaluateTargetValue(self::URL_ACTION, $ruleParams, $Rule, $segments);
                 if (!strlen($Action)) {
                     $Action = 'index';
                 }
@@ -156,11 +144,11 @@ class Phpr_Router
                 $Folder = $Rule->folder;
 
                 if ($Rule->folder !== null) {
-                    $FolderParams = Phpr_Router::getURIParams(explode("/", $Rule->folder));
+                    $FolderParams = self::getURIParams(explode("/", $Rule->folder));
                     foreach ($FolderParams as $paramName => $paramIndex) {
-                        if ($paramName == self::_urlController) {
+                        if ($paramName == self::URL_CONTROLLER) {
                             $paramValue = $Controller;
-                        } elseif ($paramName == self::_urlAction) {
+                        } elseif ($paramName == self::URL_ACTION) {
                             $paramValue = $Action;
                         } else {
                             $paramValue = $this->parameters[$paramName];
@@ -175,12 +163,6 @@ class Phpr_Router
                 throw new Phpr_SystemException("Error routing rule [{$Rule->URI}]: " . $ex->getMessage());
             }
         }
-    }
-
-    public function rout($URI, &$Controller, &$Action, &$Parameters, &$Folder)
-    {
-        // deprecated
-        return $this->route($URI, $Controller, $Action, $Parameters, $Folder);
     }
 
     /**
@@ -229,13 +211,13 @@ class Phpr_Router
      */
     public function getControllerRootUrl()
     {
-        if ($this->_actionIndex === false) {
+        if ($this->actionIndex === false) {
             return null;
         }
 
         $result = array();
-        foreach ($this->_segments as $index => $value) {
-            if ($index < $this->_actionIndex) {
+        foreach ($this->segments as $index => $value) {
+            if ($index < $this->actionIndex) {
                 $result[] = $value;
             }
         }
@@ -259,7 +241,7 @@ class Phpr_Router
      *
      * @param  string          $TargetType  Specifies a type of the target - controller or action.
      * @param  array           &$RuleParams List of the rule parameters.
-     * @param  Phpr_RouterRule &$Rule       Specifies the rule.
+     * @param  Phpr\RouterRule &$Rule       Specifies the rule.
      * @param  array           &$Segments   A list of the URI segments.
      * @return string
      */
@@ -364,13 +346,13 @@ class Phpr_Router
     /**
      * Adds a routing rule.
      * Use this method to define custom URI mappings to your application controllers.
-     * After adding a rule use the Phpr_RouterRule class methods to configure the rule. For example: AddRule("archive/:year")->controller("blog")->action("Archive")->def("year", 2006).
+     * After adding a rule use the Phpr\RouterRule class methods to configure the rule. For example: AddRule("archive/:year")->controller("blog")->action("Archive")->def("year", 2006).
      *
-     * @return Phpr_RouterRule
+     * @return Phpr\RouterRule
      */
     public function addRule($URI)
     {
-        return $this->_rules[] = new Phpr_RouterRule($URI);
+        return $this->rules[] = new RouterRule($URI);
     }
 
     /**
@@ -401,179 +383,5 @@ class Phpr_Router
         }
 
         return $Result;
-    }
-}
-
-/**
- * PHP Road Router Rule Class
- *
- * Represents a rule for mapping an URI string to the PHP Road controller and action.
- * Do not use this class directly. Use the Phpr::$router->addRule method instead.
- *
- * @package  PHPRoad
- * @category PHPRoad
- * @author   Aleksey Bobkov
- */
-class Phpr_RouterRule
-{
-    public $URI = null;
-    public $controller = null;
-    public $action = null;
-    public $defaults = array();
-    public $checks = array();
-    public $folder = null;
-    public $converts = array();
-
-    private $_params = array();
-
-    /**
-     * Creates a new rule.
-     * Do not create rules directly. Use the Phpr::$router->addRule method instead.
-     *
-     * @param  string $URI Specifies the URI to be matched. No leading and trailing slashes. The :controller and :action names may be used. Example: :controller/:action/:id
-     * @return Phpr_RouterRule
-     */
-    public function __construct($URI)
-    {
-        $this->URI = $URI;
-        $this->_params = Phpr_Router::getURIParams(explode("/", $this->URI));
-    }
-
-    /**
-     * Sets a name of the controller to be used if the requested URI matches this rule URI.
-     *
-     * @param  string $Controller Specifies a controller name.
-     * @return Phpr_RouterRule
-     */
-    public function controller($Controller)
-    {
-        if ($this->controller !== null) {
-            throw new Phpr_SystemException(
-                "Invalid router rule configuration. The controller is already specified: [{$this->URI}]"
-            );
-        }
-
-        if (Phpr_Router::valueIsParam($Controller)) {
-            if (!isset($this->_params[$Controller])) {
-                throw new Phpr_SystemException(
-                    "Invalid router rule configuration. The parameter \"$Controller\" specified in the Controller instruction is not found in the rule URI: [{$this->URI}]"
-                );
-            }
-        }
-
-        $this->controller = $Controller;
-
-        return $this;
-    }
-
-    /**
-     * Sets a name of the controller action be executed if the requested URI matches this rule URI.
-     *
-     * @param  string $Action Specifies an action name.
-     * @return Phpr_RouterRule
-     */
-    public function action($Action)
-    {
-        if ($this->action !== null) {
-            throw new Phpr_SystemException(
-                "Invalid router rule configuration. The action is already specified: [{$this->URI}]"
-            );
-        }
-
-        if (Phpr_Router::valueIsParam($Action)) {
-            if (!isset($this->_params[$Action])) {
-                throw new Phpr_SystemException(
-                    "Invalid router rule configuration. The parameter \"$Action\" specified in the Action instruction is not found in the rule URI: [{$this->URI}]"
-                );
-            }
-        }
-
-        $this->action = $Action;
-        return $this;
-    }
-
-    /**
-     * Sets a default URI parameter value. This value will be used if the URI component is ommited.
-     *
-     * @param  string $Param Specifies a parameter name. The parameter must be present in the rule URI and prefixed with the colon character. For example "/date/:year".
-     * @param  mixed  $Value Specifies a parameter value.
-     * @return Phpr_RouterRule
-     */
-    public function def($Param, $Value)
-    {
-        if (!isset($this->_params[$Param])) {
-            throw new Phpr_SystemException(
-                "Invalid router rule configuration. The default parameter \"$Param\" is not found in the rule URI: [{$this->URI}]"
-            );
-        }
-
-        $this->defaults[$Param] = $Value;
-        return $this;
-    }
-
-    /**
-     * Converts a parameter value according a specified regular expression match and replacement strings
-     *
-     * @param  string $Param   Specifies a parameter name. The parameter must be present in the rule URI and prefixed with the colon character. For example "/date/:year".
-     * @param  mixed  $Match   Specifies a regular expression match value
-     * @param  mixed  $Replace Specifies a regular expression replace value
-     * @return Phpr_RouterRule
-     */
-    public function convert($Param, $Match, $Replace)
-    {
-        if (!isset($this->_params[$Param])) {
-            throw new Phpr_SystemException(
-                "Invalid router rule configuration. The convert parameter \"$Param\" is not found in the rule URI: [{$this->URI}]"
-            );
-        }
-
-        $this->converts[$Param] = array($Match, $Replace);
-        return $this;
-    }
-
-    /**
-     * Sets the URI parameter value check.
-     *
-     * @param  string $Param Specifies a parameter name. The parameter must be present in the rule URI and prefixed with the colon character. For example "/date/:year".
-     * @param  string $Check Specifies a checking value as a Perl-Compatible Regular Expression pattern, for example "/^\d{1,2}$/"
-     * @return Phpr_RouterRule
-     */
-    public function check($Param, $Check)
-    {
-        if (!isset($this->_params[$Param])) {
-            throw new Phpr_SystemException(
-                "Invalid router rule configuration. The parameter \"$Param\" specified in the Check instruction is not found in the rule URI: [{$this->URI}]"
-            );
-        }
-
-        $this->checks[$Param] = $Check;
-        return $this;
-    }
-
-    /**
-     * Defines a path to the controller class file.
-     *
-     * @param  string $Folder Specifies a path to the file.
-     *                        You may use parameters from URI and default parameters here.
-     *                        Example: Phpr::$router->addRule("catalog/:product")->def('product', 'books')->folder('controllers/:product');
-     * @return Phpr_RouterRule
-     */
-    public function folder($Folder)
-    {
-        $Folder = str_replace("\\", "/", $Folder);
-
-        // Validate the folder path
-        //
-        $PathParams = Phpr_Router::getURIParams(explode("/", $Folder));
-        foreach ($PathParams as $Param => $Index) {
-            if ($Param != Phpr_Router::_urlController && $Param != Phpr_Router::_urlAction && !isset($this->_params[$Param])) {
-                throw new Phpr_SystemException(
-                    "Invalid router rule configuration. The parameter \"$Param\" specified in the Folder instruction is not found in the rule URI: [{$this->URI}]"
-                );
-            }
-        }
-
-        $this->folder = $Folder;
-        return $this;
     }
 }

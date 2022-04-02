@@ -1,22 +1,26 @@
 <?php
+namespace Phpr;
+
+use Phpr;
+use Phpr\ValidationException;
 
 /**
  * Represents the application HTTP response.
- * An instance of this class is always available through the <em>$Phpr</em> class and you never need to create it manually:
+ * An instance of this class is always available through the <em>$Phpr</em> class:
  * <pre>Phpr::$response->redirect('http://google.com');</pre>
  *
- * @documentable
- * @see          Phpr_Request
- * @author       LemonStand eCommerce Inc.
- * @package      core.classes
  */
-class Phpr_Response
+class Response
 {
     const actionOn404Action = 'On404';
     const actionOnException = 'OnException';
     const controllerApplication = 'Application';
 
-    public static $defaultJsScripts = array('mootools.js', 'popups.js', 'phproad.js');
+    public static $defaultJsScripts = array(
+        'mootools.js',
+        'popups.js',
+        'phproad.js'
+    );
 
     /**
      * Opens a local URL (like "blog/edit/1")
@@ -101,8 +105,8 @@ class Phpr_Response
      * Note that this method terminates the script execution.
      *
      * @documentable
-     * @param        string  $url             Specifies the target URL.
-     * @param        boolean $send_301_header Determines whether HTTP header <em>301 Moved Permanently</em> should be sent.
+     * @param string $url Specifies the target URL.
+     * @param boolean $send_301_header Determines whether HTTP header <em>301 Moved Permanently</em> should be sent.
      */
     public function redirect($Uri, $Send301Header = false)
     {
@@ -112,12 +116,12 @@ class Phpr_Response
             }
 
             switch (Phpr::$config->get("REDIRECT", 'location')) {
-            case 'refresh':
-                header("Refresh:0;url=" . $Uri);
-                break;
-            default:
-                header("location:" . $Uri);
-                break;
+                case 'refresh':
+                    header("Refresh:0;url=" . $Uri);
+                    break;
+                default:
+                    header("location:" . $Uri);
+                    break;
             }
         } else {
             $event_output = '
@@ -144,12 +148,12 @@ class Phpr_Response
      * Sends a cookie.
      *
      * @documentable
-     * @param        string $name   Specifies the name of the cookie.
-     * @param        string $value  Specifies the cookie value.
-     * @param        string $expire Specifies a time the cookie expires, in days.
-     * @param        string $path   Specifies the path on the server in which the cookie will be available on.
-     * @param        string $domain Specifies a domain that the cookie is available to.
-     * @param        string $secure Indicates that the cookie should only be transmitted over a secure HTTPS connection.
+     * @param string $name Specifies the name of the cookie.
+     * @param string $value Specifies the cookie value.
+     * @param string $expire Specifies a time the cookie expires, in days.
+     * @param string $path Specifies the path on the server in which the cookie will be available on.
+     * @param string $domain Specifies a domain that the cookie is available to.
+     * @param string $secure Indicates that the cookie should only be transmitted over a secure HTTPS connection.
      */
     public function setCookie($Name, $Value, $Expire = 0, $Path = '/', $Domain = '', $Secure = null)
     {
@@ -185,6 +189,32 @@ class Phpr_Response
     }
 
     /**
+     * Deletes a cookie.
+     *
+     * @documentable
+     * @param string $name Specifies a name of the cookie.
+     * @param string $path Specifies the path on the server
+     * @param string $domain Specifies a domain that the cookie is available to.
+     * @param string $Secure Indicates that the cookie should only be transmitted over a secure HTTPS connection.
+     * @see          Phpr_Response::setCookie() setCookie()
+     */
+    public function deleteCookie($Name, $Path = '/', $Domain = '', $Secure = false)
+    {
+        if (Phpr::$request->isRemoteEvent()) {
+            if (post('no_cookies')) {
+                return;
+            }
+
+            $output = "<script type='text/javascript'>";
+            $output .= "Cookie.dispose('$Name', {duration: 0, path: '$Path', domain: '$Domain'});";
+            $output .= "</script>";
+            echo $output;
+        } else {
+            setcookie($Name, '', time() - 360000, $Path, $Domain, $Secure);
+        }
+    }
+
+    /**
      * Adds <script> section to AJAX response containing a list of JavaScript and CSS
      * resources which should be loaded before the response text is rendered.
      */
@@ -208,29 +238,19 @@ class Phpr_Response
         echo $result;
     }
 
-    /**
-     * Deletes a cookie.
-     *
-     * @documentable
-     * @param        string $name   Specifies a name of the cookie.
-     * @param        string $path   Specifies the path on the server
-     * @param        string $domain Specifies a domain that the cookie is available to.
-     * @param        string $Secure Indicates that the cookie should only be transmitted over a secure HTTPS connection.
-     * @see          Phpr_Response::setCookie() setCookie()
-     */
-    public function deleteCookie($Name, $Path = '/', $Domain = '', $Secure = false)
-    {
-        if (Phpr::$request->isRemoteEvent()) {
-            if (post('no_cookies')) {
-                return;
-            }
 
-            $output = "<script type='text/javascript'>";
-            $output .= "Cookie.dispose('$Name', {duration: 0, path: '$Path', domain: '$Domain'});";
-            $output .= "</script>";
-            echo $output;
+
+    /**
+     * Outputs a formatted exception, detecting if the request was an AJAX request or not.
+     */
+    public function reportException($exception)
+    {
+        $isAjax = Phpr::$request->isAjax();
+
+        if ($isAjax) {
+            $this->ajaxReportException($exception);
         } else {
-            setcookie($Name, '', time() - 360000, $Path, $Domain, $Secure);
+            $this->openErrorPage($exception);
         }
     }
 
@@ -239,9 +259,9 @@ class Phpr_Response
      * Note that this method terminates the script execution.
      *
      * @documentable
-     * @param        mixed   $exception Specifies the exception object or message.
-     * @param        boolean $html      Determines whether the response message should be in HTML format.
-     * @param        boolean $focus     Determines whether the focusing Java Script code must be added to the response.
+     * @param mixed $exception Specifies the exception object or message.
+     * @param boolean $html Determines whether the response message should be in HTML format.
+     * @param boolean $focus Determines whether the focusing Java Script code must be added to the response.
      *                                  This parameter will work only if $exception is a Phpr_ValidationException
      *                                  object
      */
@@ -274,4 +294,22 @@ class Phpr_Response
         die();
     }
 
+    /**
+     * This method is used by the PHPR internally.
+     * Outputs the requested javascript or css resource.
+     */
+    public static function processResourceRequest()
+    {
+        // @todo Use a better combine_resources script
+    }
+
+    /**
+     * @deprecated
+     */
+    public function cookie($Name, $Value, $Expire = 0, $Path = '/', $Domain = '', $Secure = null)
+    {
+        $deprecate = new Deprecate();
+        $deprecate->setFunction('cookie', 'setCookie');
+        $this->setCookie($Name, $Value, $Expire = 0, $Path = '/', $Domain = '', $Secure = null);
+    }
 }
