@@ -15,9 +15,16 @@ class Deprecate
     public static bool $suppressReported = false;
     private static array $reported = array();
 
-    public function setClass(string $className, string $replacement = null) : void
+    public function __construct(){
+        //@!?
+        if (!class_exists('Phpr\DeprecateException')) {
+            require_once PATH_APP.'/phproad/core/exceptions.php';
+        }
+    }
+
+    public function setClass(string $className, string $replacement = null): void
     {
-        $message =  'Class ' . $className . ' is a deprecated.';
+        $message = 'Class ' . $className . ' is a deprecated.';
         $message .= $replacement ? ' Use ' . $replacement . ' instead' : ' Sorry, there is no alternative';
 
         if (!$this->isReported($message)) {
@@ -25,12 +32,12 @@ class Deprecate
                 $this->setReported($message);
                 throw new DeprecateException($message);
             } catch (DeprecateException $ex) {
-                Phpr::$errorLog->logException($ex);
+                $this->handleException($ex);
             }
         }
     }
 
-    public function setFunction(string $FuncName, string $replacement = null) : void
+    public function setFunction(string $FuncName, string $replacement = null): void
     {
         $message = 'Function ' . $FuncName . ' is deprecated.';
         $message .= $replacement ? ' Use ' . $replacement . ' instead' : ' Sorry, there is no alternative';
@@ -40,12 +47,12 @@ class Deprecate
                 $this->setReported($message);
                 throw new DeprecateException($message);
             } catch (DeprecateException $ex) {
-                Phpr::$errorLog->logException($ex);
+                $this->handleException($ex);
             }
         }
     }
 
-    public function setArgument(string $FuncName, string $argName, string $replacement = null) : void
+    public function setArgument(string $FuncName, string $argName, string $replacement = null): void
     {
         $message = 'Function ' . $FuncName . ' was called with an argument that is deprecated: ' . $argName . '.';
         $message .= $replacement ? ' Use ' . $replacement . ' instead' : ' Sorry, there is no alternative';
@@ -55,12 +62,12 @@ class Deprecate
                 $this->setReported($message);
                 throw new DeprecateException($message);
             } catch (DeprecateException $ex) {
-                Phpr::$errorLog->logException($ex);
+                $this->handleException($ex);
             }
         }
     }
 
-    public function setClassProperty(string $propertyName, string $replacement = null, string $className = null) : void
+    public function setClassProperty(string $propertyName, string $replacement = null, string $className = null): void
     {
         if (!$className) {
             list($callTo, $callFrom) = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
@@ -74,12 +81,12 @@ class Deprecate
                 $this->setReported($message);
                 throw new DeprecateException($message);
             } catch (DeprecateException $ex) {
-                Phpr::$errorLog->logException($ex);
+                $this->handleException($ex);
             }
         }
     }
 
-    private function setReported(string $msg) : void
+    private function setReported(string $msg): void
     {
         if (self::$suppressReported) {
             $key = md5($msg);
@@ -87,7 +94,7 @@ class Deprecate
         }
     }
 
-    private function isReported($msg) : bool
+    private function isReported($msg): bool
     {
         if (count(self::$reported)) {
             $key = md5($msg);
@@ -96,5 +103,12 @@ class Deprecate
             }
         }
         return false;
+    }
+
+    private function handleException($ex)
+    {
+        if (isset(Phpr::$errorLog) && is_a(Phpr::$errorLog, 'Phpr\Phpr_ErrorLog')) {
+            Phpr::$errorLog->logException($ex);
+        }
     }
 }
