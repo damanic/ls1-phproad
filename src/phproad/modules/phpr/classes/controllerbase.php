@@ -87,7 +87,7 @@ abstract class ControllerBase extends Validatable
             }
         }
 
-        return Phpr::$request->post($Index, $Default);
+        return Phpr::$request->postField($Index, $Default);
     }
 
     /**
