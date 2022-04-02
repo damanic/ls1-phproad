@@ -1,27 +1,23 @@
 <?php
-
-/**
- * PHP Road
- *
- * PHP application framework
- *
- * @package    PHPRoad
- * @author     Aleksey Bobkov, Andy Chentsov
- * @since      Version 1.0
- * @filesource
- */
+namespace Phpr;
 
 /**
  * PHP Road module class
  *
  * This class assists in working with the PHP Road modules.
- *
- * @package  PHPRoad
- * @category PHPRoad
- * @author   Aleksey Bobkov
  */
-class Phpr_Module
+class Module extends ModuleBase
 {
+    public function setModuleInfo()
+    {
+        return new ModuleDetail(
+            "PHPR",
+            "Core framework",
+            "PHPRoad",
+            null
+        );
+    }
+
     /**
      * Returns a module directory location.
      *

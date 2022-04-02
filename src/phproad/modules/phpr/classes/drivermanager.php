@@ -46,7 +46,7 @@ class DriverManager
             return self::$classCache[$driver_class];
         }
 
-        $modules = Module_Manager::get_modules();
+        $modules = ModuleManager::getModules();
         foreach ($modules as $id => $module_info) {
             $class_path = PATH_APP . "/" . PHPR_MODULES . "/" . $id . "/" . self::DRIVERS_DIRECTORY . "/" . $driver_folder;
 
