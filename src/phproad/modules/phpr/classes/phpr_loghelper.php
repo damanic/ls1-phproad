@@ -1,7 +1,7 @@
 <?php
 /***
  * @deprecated
- * @see \File\Log
+ * @see \FileSystem\Log
  *
  * PHP Road Text file log helper class.
  *

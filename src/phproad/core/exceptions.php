@@ -37,9 +37,10 @@ class Exception extends \Exception
         if (Phpr::$errorLog !== null ) {
             try {
                 $result = Phpr::$errorLog->logException($this);
-
-                $this->log_id     = $result['id'];
-                $this->log_status = $result['status'];
+                if(is_array($result)) {
+                    $this->log_id = $result['id'] ?? null;
+                    $this->log_status = $result['status'] ?? null;
+                }
             } catch ( Exception $ex ) {
                 // Prevent the looping
             }

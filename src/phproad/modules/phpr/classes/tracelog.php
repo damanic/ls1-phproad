@@ -1,33 +1,52 @@
 <?php
+namespace Phpr;
+
+use Phpr;
+use Phpr\SystemException;
+use FileSystem\Log as File_Log;
 
 /**
- * PHP Road Trace Log Class
+ * PHPR Trace Log Class
  *
- * Trace log class allows the application to write the tracing messages to trace log files,
- * or to the database table 'trace_log'.
+ * Allows writing of traceable messages to trace log files and/or database
  *
  * To configure the trace log use the TRACE_LOG parameter in the application configuration file:
- * $CONFIG["TRACE_LOG"]["ORDERS"] = PATH_APP."/logs/orders.txt";
- * $CONFIG["TRACE_LOG"]["INFO"] = PATH_APP."/logs/support.txt";
- * The second-level key determines the listener name. Use the listener names to write tracing message
- * to different files: Phpr::$trace_log->write( 'Hello', 'ORDERS' );
- * To write record to the database table 'trace_log' specify null value instead of the log file path:
- * $CONFIG["TRACE_LOG"]["ORDERS"] = null;
+ *
+ *   $CONFIG["TRACE_LOG"]["BLOG"] = PATH_APP."/logs/blog.txt";
+ *   $CONFIG["TRACE_LOG"]["DEBUG"] = PATH_APP."/logs/debug.txt";
+ *
+ * The second-level key determines the listener name. Use the listener names to write tracing
+ * messages to different files:
+ *
+ *   Phpr::$trace_log->write('My traceable message', 'BLOG');
+ *   trace_log('My traceable message', 'BLOG');
  *
  * The instance of this class is available in the Phpr global object: Phpr::$trace_log.
  *
- * @see Phpr
+ * You can instruct PHPR to write to the database only by setting the file path to null:
+ *
+ *   $CONFIG["TRACE_LOG"]["BLOG"] = null;
+ *
  */
-class Phpr_TraceLog
+class TraceLog
 {
-    private $_listeners;
+    private $listeners;
 
-    /**
-     * Creates a new Phpr_ErrorLog instance.
-     */
     public function __construct()
     {
         $this->loadConfiguration();
+    }
+
+    /**
+     * Loads the error log configuration
+     */
+    protected function loadConfiguration()
+    {
+        $this->listeners = array();
+
+        foreach (Phpr::$config->get("TRACE_LOG", array()) as $listenerName => $filePath) {
+            $this->addListener($listenerName, $filePath);
+        }
     }
 
     /**
@@ -39,17 +58,17 @@ class Phpr_TraceLog
      */
     public function write($Message, $Listener = null)
     {
-        if (!count($this->_listeners)) {
+        if (!count($this->listeners)) {
             return false;
         }
 
         // Evaluate the listener name and ensure whether it exists
         //
         if ($Listener === null) {
-            $keys = array_keys($this->_listeners);
+            $keys = array_keys($this->listeners);
             $Listener = $keys[0];
         } else {
-            if (!array_key_exists($Listener, $this->_listeners)) {
+            if (!array_key_exists($Listener, $this->listeners)) {
                 return false;
             }
         }
@@ -73,24 +92,24 @@ class Phpr_TraceLog
                 //
                 if (file_exists($filePath)) {
                     if (!is_writable($filePath)) {
-                        $exception = new Phpr_SystemException('The trace log file is not writable: ' . $filePath);
-                        $exception->hint_message = 'Please assign writing permissions on the trace log file for the Apache user.';
+                        $exception = new SystemException('The trace log file is not writable: ' . $filePath);
+                        $exception->hint_message = 'Please assign writing permissions on the trace log file.';
                         throw $exception;
                     }
                 } else {
                     $directory = dirname($filePath);
                     if (!is_writable($directory)) {
-                        $exception = new Phpr_SystemException(
+                        $exception = new SystemException(
                             'The trace log file directory is not writable: ' . $directory
                         );
-                        $exception->hint_message = 'Please assign writing permissions on the trace log directory for the Apache user.';
+                        $exception->hint_message = 'Please assign writing permissions on the trace log directory.';
                         throw $exception;
                     }
                 }
             }
         }
 
-        $this->_listeners[$listenerName] = $filePath;
+        $this->listeners[$listenerName] = $filePath;
     }
 
     /**
@@ -103,26 +122,14 @@ class Phpr_TraceLog
      */
     protected function writeLogMessage($Message, $Listener)
     {
-        if ($this->_listeners[$Listener] !== null) {
-            return Phpr_LogHelper::writeLine($this->_listeners[$Listener], $Message);
+        if ($this->listeners[$Listener] !== null) {
+            return File_Log::writeLine($this->listeners[$Listener], $Message);
         } else {
-            if (!class_exists('Phpr_Trace_Log_Record') && !Phpr::$classLoader->load('Phpr_Trace_Log_Record')) {
+            if (!class_exists('Phpr\\Trace_Log_Record') && !Phpr::$class_loader->load('Phpr\\Trace_Log_Record')) {
                 return;
             }
 
             Phpr_Trace_Log_Record::add($Listener, $Message);
-        }
-    }
-
-    /**
-     * Loads the error log configuration
-     */
-    protected function loadConfiguration()
-    {
-        $this->_listeners = array();
-
-        foreach (Phpr::$config->get("TRACE_LOG", array()) as $listenerName => $filePath) {
-            $this->addListener($listenerName, $filePath);
         }
     }
 }

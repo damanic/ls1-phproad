@@ -694,7 +694,7 @@ class Locale
                 while (($row = fgetcsv($handle, 2000000, $delimeter)) !== false) {
                     ++$line_number;
 
-                    if (\File\Csv::csv_row_is_empty($row)) {
+                    if (\FileSystem\Csv::csv_row_is_empty($row)) {
                         continue;
                     }
 

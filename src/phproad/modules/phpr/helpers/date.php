@@ -118,12 +118,13 @@ class Date
             return self::$user_time_zone;
         }
 
-        $timeZone = Phpr::$config->get('TIMEZONE');
+        $timeZone = Phpr::$config->get('TIMEZONE', 'GMT');
         try {
             return self::$user_time_zone = new DateTimeZone($timeZone);
         } catch (Exception $Ex) {
             throw new SystemException(
-                'Invalid time zone specified in config.php: ' . $timeZone . '. Please refer this document for the list of correct time zones: http://docs.php.net/timezones.'
+                'Invalid time zone specified in config.php: ' . $timeZone . '. 
+                Please refer this document for the list of correct time zones: http://docs.php.net/timezones.'
             );
         }
     }
