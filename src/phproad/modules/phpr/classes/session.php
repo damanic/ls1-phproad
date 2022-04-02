@@ -1,38 +1,31 @@
 <?php
+namespace Phpr;
+
+use ArrayAccess;
+use ArrayIterator;
+use IteratorAggregate;
+use Countable;
+
+use Phpr;
+use Phpr\Flash;
+use Db\Helper as Db_Helper;
 
 /**
- * PHP Road
- *
- * PHP application framework
- *
- * @package    PHPRoad
- * @author     Aleksey Bobkov, Andy Chentsov
- * @since      Version 1.0
- * @filesource
- */
-
-/**
- * PHP Road Session Class
+ * PHPR Session Class
  *
  * This class incapsulates the PHP session.
  *
  * The instance of this class is available in the Phpr global object: Phpr::$session.
- *
- * @see Phpr
- *
- * @package  PHPRoad
- * @category PHPRoad
- * @author   Andy Duke
  */
-class Phpr_Session implements ArrayAccess, IteratorAggregate, Countable
+class Session implements ArrayAccess, IteratorAggregate, Countable
 {
     /**
      * Flash object
      *
-     * @var Phpr_Flash
+     * @var Phpr\Flash
      */
     public $flash = null;
-    protected $close_session_locks = null;
+    protected $closeSessionLocks = null;
 
     /**
      * Begins a session.
@@ -60,16 +53,16 @@ class Phpr_Session implements ArrayAccess, IteratorAggregate, Countable
         session_set_cookie_params(ini_get('session.cookie_lifetime'), $path, ini_get('session.cookie_domain'), $secure);
 
         if (version_compare(PHP_VERSION, '7.0.0') >= 0) {
-            $this->close_session_locks = true;
+            $this->closeSessionLocks = true;
         }
 
-        if ($this->close_session_locks) {
-            $result = $this->session_read();
+        if ($this->closeSessionLocks) {
+            $result = $this->sessionRead();
         } else {
-            $result = $this->session_open();
+            $result = $this->sessionOpen();
         }
         if ($result) {
-            $this->flash = new Phpr_Flash();
+            $this->flash = new Flash();
             if ($this->flash) {
                 if (array_key_exists('flash_partial', $_POST) && strlen($_POST['flash_partial'])) {
                     $this->flash['system'] = 'flash_partial:' . $_POST['flash_partial'];
@@ -97,7 +90,7 @@ class Phpr_Session implements ArrayAccess, IteratorAggregate, Countable
      */
     public function destroy()
     {
-        $this->session_open();
+        $this->sessionOpen();
         $_SESSION = array();
         session_destroy();
     }
@@ -140,8 +133,8 @@ class Phpr_Session implements ArrayAccess, IteratorAggregate, Countable
     public function set($Name, $Value = null)
     {
         $opened_session_lock = null;
-        if ($this->close_session_locks) {
-            $opened_session_lock = $this->session_open();
+        if ($this->closeSessionLocks) {
+            $opened_session_lock = $this->sessionOpen();
         }
 
         if ($Value === null) {
@@ -150,7 +143,7 @@ class Phpr_Session implements ArrayAccess, IteratorAggregate, Countable
             $_SESSION[$Name] = $Value;
         }
 
-        if ($this->close_session_locks && $opened_session_lock) {
+        if ($this->closeSessionLocks && $opened_session_lock) {
             session_write_close();
         }
     }
@@ -179,6 +172,67 @@ class Phpr_Session implements ArrayAccess, IteratorAggregate, Countable
         }
 
         $this->resetDbSessions();
+    }
+
+    /*
+     * Sessions in the database
+     */
+
+    public function resetDbSessions()
+    {
+        $ttl = (int)Phpr::$config->get('STORED_SESSION_TTL', 3);
+        Db_Helper::query(
+            'delete from db_session_data where created_at < DATE_SUB(now(), INTERVAL :seconds SECOND)',
+            array('seconds' => $ttl)
+        );
+    }
+
+    public function store()
+    {
+        $session_id = session_id();
+
+        Db_Helper::query(
+            'delete from db_session_data where session_id=:session_id',
+            array('session_id' => $session_id)
+        );
+
+        $data = serialize($_SESSION);
+        Db_Helper::query(
+            'insert into db_session_data(session_id, session_data, created_at, client_ip) values (:session_id, :session_data, NOW(), :client_ip)',
+            array(
+                'session_id' => $session_id,
+                'session_data' => $data,
+                'client_ip' => Phpr::$request->getUserIp()
+            )
+        );
+    }
+
+    public function restore($session_id)
+    {
+        $data = Db_Helper::scalar(
+            'select session_data from db_session_data where session_id=:session_id and client_ip=:client_ip',
+            array(
+                'session_id' => $session_id,
+                'client_ip' => Phpr::$request->getUserIp()
+            )
+        );
+
+        Db_Helper::query(
+            'delete from db_session_data where session_id=:session_id',
+            array('session_id' => $session_id)
+        );
+
+        if (strlen($data)) {
+            try {
+                $data = unserialize($data);
+                if (is_array($data)) {
+                    foreach ($data as $key => $value) {
+                        $this->set($key, $value);
+                    }
+                }
+            } catch (Exception $ex) {
+            }
+        }
     }
 
     /**
@@ -220,73 +274,12 @@ class Phpr_Session implements ArrayAccess, IteratorAggregate, Countable
         return count($_SESSION);
     }
 
-    /*
-     * Sessions in the database
-     */
-
-    public function resetDbSessions()
-    {
-        $ttl = (int)Phpr::$config->get('STORED_SESSION_TTL', 3);
-        Db_DbHelper::query(
-            'delete from db_session_data where created_at < DATE_SUB(now(), INTERVAL :seconds SECOND)',
-            array('seconds' => $ttl)
-        );
-    }
-
-    public function store()
-    {
-        $session_id = session_id();
-
-        Db_DbHelper::query(
-            'delete from db_session_data where session_id=:session_id',
-            array('session_id' => $session_id)
-        );
-
-        $data = serialize($_SESSION);
-        Db_DbHelper::query(
-            'insert into db_session_data(session_id, session_data, created_at, client_ip) values (:session_id, :session_data, NOW(), :client_ip)',
-            array(
-                'session_id' => $session_id,
-                'session_data' => $data,
-                'client_ip' => Phpr::$request->getUserIp()
-            )
-        );
-    }
-
-    public function restore($session_id)
-    {
-        $data = Db_DbHelper::scalar(
-            'select session_data from db_session_data where session_id=:session_id and client_ip=:client_ip',
-            array(
-                'session_id' => $session_id,
-                'client_ip' => Phpr::$request->getUserIp()
-            )
-        );
-
-        Db_DbHelper::query(
-            'delete from db_session_data where session_id=:session_id',
-            array('session_id' => $session_id)
-        );
-
-        if (strlen($data)) {
-            try {
-                $data = unserialize($data);
-                if (is_array($data)) {
-                    foreach ($data as $key => $value) {
-                        $this->set($key, $value);
-                    }
-                }
-            } catch (Exception $ex) {
-            }
-        }
-    }
-
     /**
      * Opens a session if not already open
      *
      * @return boolean true if session open, false if could not be started, null if it was already started
      */
-    protected function session_open()
+    protected function sessionOpen()
     {
         $session_opened = null;
         if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
@@ -306,14 +299,15 @@ class Phpr_Session implements ArrayAccess, IteratorAggregate, Countable
      *
      * @return boolean true if read successful, false if could not be read
      */
-    protected function session_read()
+    protected function sessionRead()
     {
         if (version_compare(PHP_VERSION, '7.0.0') >= 0) {
             $session_read = session_start(array('read_and_close' => true));
         } else {
-            $session_read = $this->session_open();
+            $session_read = $this->sessionOpen();
             session_write_close();
         }
         return $session_read;
     }
+
 }
