@@ -1,4 +1,5 @@
 <?php
+
 namespace Phpr;
 
 use Phpr;
@@ -7,52 +8,93 @@ use Phpr\DeprecateException;
 /**
  * PHPR Deprecate class
  *
- * Used for deprecating classes, methods and arguements internally
+ * Used for deprecating classes, methods and arguments internally
  */
 class Deprecate
 {
-    public function setClass($class_name, $replacement = null)
-    {
-        if ($replacement) {
-            $message = 'Class ' . $class_name . ' is a deprecated. Please use class ' . $replacement . ' instead';
-        } else {
-            $message = 'Class ' . $class_name . ' is a deprecated. Sorry, there is no alternative';
-        }
+    public static bool $suppressReported = false;
+    private static array $reported = array();
 
-        try {
-            throw new DeprecateException($message);
-        } catch (DeprecateException $ex) {
-            Phpr::$errorLog->logException($ex);
+    public function setClass(string $className, string $replacement = null) : void
+    {
+        $message =  'Class ' . $className . ' is a deprecated.';
+        $message .= $replacement ? ' Use ' . $replacement . ' instead' : ' Sorry, there is no alternative';
+
+        if (!$this->isReported($message)) {
+            try {
+                $this->setReported($message);
+                throw new DeprecateException($message);
+            } catch (DeprecateException $ex) {
+                Phpr::$errorLog->logException($ex);
+            }
         }
     }
 
-    public function setFunction($func_name, $replacement = null)
+    public function setFunction(string $FuncName, string $replacement = null) : void
     {
-        if ($replacement) {
-            $message = 'Function ' . $func_name . ' is deprecated. Please use ' . $replacement . ' instead';
-        } else {
-            $message = 'Function ' . $func_name . ' is deprecated. Sorry, there is no alternative';
-        }
+        $message = 'Function ' . $FuncName . ' is deprecated.';
+        $message .= $replacement ? ' Use ' . $replacement . ' instead' : ' Sorry, there is no alternative';
 
-        try {
-            throw new DeprecateException($message);
-        } catch (DeprecateException $ex) {
-            Phpr::$errorLog->logException($ex);
+        if (!$this->isReported($message)) {
+            try {
+                $this->setReported($message);
+                throw new DeprecateException($message);
+            } catch (DeprecateException $ex) {
+                Phpr::$errorLog->logException($ex);
+            }
         }
     }
 
-    public function setArgument($func_name, $arg_name, $replacement = null)
+    public function setArgument(string $FuncName, string $argName, string $replacement = null) : void
     {
-        if ($replacement) {
-            $message = 'Function ' . $func_name . ' was called with an argument that is deprecated: ' . $arg_name . '. Please use ' . $replacement . ' instead';
-        } else {
-            $message = 'Function ' . $func_name . ' was called with an argument that is deprecated: ' . $arg_name . '. Sorry, there is no alternative';
-        }
+        $message = 'Function ' . $FuncName . ' was called with an argument that is deprecated: ' . $argName . '.';
+        $message .= $replacement ? ' Use ' . $replacement . ' instead' : ' Sorry, there is no alternative';
 
-        try {
-            throw new DeprecateException($message);
-        } catch (DeprecateException $ex) {
-            Phpr::$errorLog->logException($ex);
+        if (!$this->isReported($message)) {
+            try {
+                $this->setReported($message);
+                throw new DeprecateException($message);
+            } catch (DeprecateException $ex) {
+                Phpr::$errorLog->logException($ex);
+            }
         }
+    }
+
+    public function setClassProperty(string $propertyName, string $replacement = null, string $className = null) : void
+    {
+        if (!$className) {
+            list($callTo, $callFrom) = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
+            $className = $callFrom['class'] ?? $className;
+        }
+        $message = 'Property YO ' . $className . '::$' . $propertyName . ' is deprecated.';
+        $message .= $replacement ? ' Use ' . $replacement . ' instead' : ' Sorry, there is no alternative';
+
+        if (!$this->isReported($message)) {
+            try {
+                $this->setReported($message);
+                throw new DeprecateException($message);
+            } catch (DeprecateException $ex) {
+                Phpr::$errorLog->logException($ex);
+            }
+        }
+    }
+
+    private function setReported(string $msg) : void
+    {
+        if (self::$suppressReported) {
+            $key = md5($msg);
+            self::$reported[$key] = true;
+        }
+    }
+
+    private function isReported($msg) : bool
+    {
+        if (count(self::$reported)) {
+            $key = md5($msg);
+            if (isset(self::$reported[$key])) {
+                return true;
+            }
+        }
+        return false;
     }
 }
