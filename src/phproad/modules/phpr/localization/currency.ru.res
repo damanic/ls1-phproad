@@ -4,15 +4,15 @@
 
 # International currency symbol
 #
-intl_currency_symbol	RUB
+intlCurrencySymbol	RUB
 
 # Local currency symbol
 #
-local_currency_symbol	р.
+localCurrencySymbol	р.
 
 # Decimal point character
 #
-decimal_separator	,
+decimalSeparator	,
 
 # Separator character for thousands (groups of three digits)
 #
@@ -20,15 +20,15 @@ group_separator
 
 # Number of decimals digits
 #
-decimal_digits	2
+decimalDigits	2
 
 # Sign for positive values
 #
-positive_sign	
+positiveSign
 
 # Sign for negative values
 #
-negative_sign	-
+negativeSign	-
 
 # The flag indicating that the currency symbol precedes a positive value
 #
@@ -36,7 +36,7 @@ negative_sign	-
 #    0: false
 #    1: true
 #
-p_cs_precedes	0
+pCsPrecedes	0
 
 # The flag indicating that a space separates the currency symbol from a positive value
 #
@@ -44,7 +44,7 @@ p_cs_precedes	0
 #    0: false
 #    1: true
 #
-p_sep_by_space	0
+pSepBySpace	0
 
 # The flag indicating that the currency symbol precedes a negative value
 #
@@ -52,7 +52,7 @@ p_sep_by_space	0
 #    0: false
 #    1: true
 #
-n_cs_precedes	0
+nCsPrecedes	0
 
 # The flag indicating that a space separates the currency symbol from a negative value
 #
@@ -60,7 +60,7 @@ n_cs_precedes	0
 #    0: false
 #    1: true
 #
-n_sep_by_space	0
+nSepBySpace	0
 
 # Positive value format
 #
@@ -71,7 +71,7 @@ n_sep_by_space	0
 #    3: the sign string immediately precedes the currency symbol
 #    4: the sign string immediately follows the currency symbol
 #
-p_format	1
+pFormat	1
 
 # Negative value format
 #
@@ -82,4 +82,4 @@ p_format	1
 #    3: the sign string immediately precedes the currency symbol
 #    4: the sign string immediately follows the currency symbol
 #
-n_format	1
+nFormat	1
