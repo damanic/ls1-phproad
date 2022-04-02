@@ -357,7 +357,7 @@ class ClassLoader
      * @return  string
      * @example 1
      * Look up file init.php
-     * $path = Phpr::$class_loader->find_path('init/init.php');
+     * $path = Phpr::$classLoader->find_path('init/init.php');
      */
     public function find_path($path)
     {
@@ -379,7 +379,7 @@ class ClassLoader
      * @return  array
      * @example 1
      * Find all module directories
-     * $dirs = Phpr::$class_loader->find_paths('modules');
+     * $dirs = Phpr::$classLoader->find_paths('modules');
      */
     public function find_paths($path)
     {
