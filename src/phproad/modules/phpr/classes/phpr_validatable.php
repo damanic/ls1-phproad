@@ -1,17 +1,7 @@
 <?php
 
 /**
- * PHP Road
- *
- * PHP application framework
- *
- * @package    PHPRoad
- * @author     Aleksey Bobkov, Andy Chentsov
- * @since      Version 1.0
- * @filesource
- */
-
-/**
+ * @deprecated
  * PHP Road Validatable Class
  *
  * Phpr_Validatable is a base class for classes that may perform data validation.
@@ -40,3 +30,5 @@ class Phpr_Validatable extends Phpr_Extensible
         return $this->$Method($Name, $Value);
     }
 }
+//$deprecate = new Phpr\Deprecate();
+//$deprecate->setClass('Phpr_Validatable','Phpr\ValidateExtension');

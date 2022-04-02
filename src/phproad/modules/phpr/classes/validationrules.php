@@ -1,492 +1,23 @@
 <?php
+namespace Phpr;
 
-/**
- * PHP Road
- *
- * PHP application framework
- *
- * @package    PHPRoad
- * @author     Aleksey Bobkov, Andy Chentsov
- * @since      Version 1.0
- * @filesource
- */
+use DateTimeZone;
 
-/**
- * Validates model property values.
- * Objects of this class are usually created with {@link Db_ColumnDefinition::validation()} method
- * and validation is triggered within {@link Db_ActiveRecord models},
- * however they can be created and used separately.
- *
- * @documentable
- * @author       LemonStand eCommerce Inc.
- * @package      core.classes
- */
-class Phpr_Validation
-{
-    private $_owner;
-
-    /**
-     * @ignore
-     * Contains a list of fields validation rules
-     * @var    array
-     */
-    public $_fields;
-
-    /**
-     * Indicates whether all validation rules are valid.
-     * A value of this field is set by the Validate method.
-     *
-     * @var boolean
-     */
-    public $valid;
-
-    /**
-     * Contains a list of invalid field names.
-     *
-     * @var array
-     */
-    public $errorFields;
-
-    /**
-     * Contains a list of fields error messages.
-     */
-    public $fieldErrors;
-
-    /**
-     * Keeps a common error message.
-     *
-     * @var string
-     */
-    public $errorMessage;
-
-    /**
-     * @ignore
-     * Contains an evaluated field values.
-     * @var    array
-     */
-    public $fieldValues;
-
-    /**
-     * Specifies a prefix to add to field identifiers in focusField method call
-     */
-    public $focusPrefix = null;
-
-    private $_formId;
-    private $_widgetData = array();
-
-    /**
-     * Creates a validation object.
-     *
-     * @documentable
-     * @param        Phpr_Validatable $owner   Specifies an optional owner model.
-     * @param        string           $form_id Specifies an optional HTML form identifier.
-     */
-    public function __construct($Owner = null, $FormId = 'FormElement')
-    {
-        $this->_owner = $Owner;
-        $this->_formId = $FormId;
-        $this->_fields = array();
-        $this->errorFields = array();
-        $this->valid = false;
-        $this->errorMessage = null;
-        $this->fieldErrors = array();
-        $this->fieldValues = array();
-    }
-
-    /**
-     * Sets a form element identifier
-     */
-    public function setFormId($FormId)
-    {
-        $this->_formId = $FormId;
-    }
-
-    /**
-     * Adds a field validation rule set.
-     * Add the rule set object to add validation rules.
-     *
-     * @documentable
-     * @param        string  $column_name Specifies the field name.
-     * @param        string  $label       Specifies the visual field label.
-     * @param        boolean $focusable   Determines whether the field is focusable.
-     * @return       Phpr_ValidationRules Returns the validation rule set object.
-     */
-    public function add($Field, $FieldName = null, $Focusable = true)
-    {
-        if ($FieldName === null) {
-            $FieldName = $Field;
-        }
-
-        return $this->_fields[$Field] = new Phpr_ValidationRules($this, $FieldName, $Focusable);
-    }
-
-    /**
-     * Sets a general or field-specific error message.
-     *
-     * @documentable
-     * @param        string  $message Specifies the error message text.
-     * @param        string  $field   Specifies the field name. If this parameter is omitted, the general message will be set.
-     * @param        boolean $throw   Indicates whether the validation error should be thrown.
-     * @return       Phpr_Validation Returns the updated validation object.
-     */
-    public function setError($Message, $Field = null, $Throw = false)
-    {
-        $this->valid = false;
-
-        if ($Field !== null) {
-            $this->fieldErrors[$Field] = $Message;
-            $this->errorFields[] = $Field;
-        } else {
-            $this->errorMessage = $Message;
-        }
-
-        if ($Throw) {
-            $this->throwException();
-        }
-
-        return $this;
-    }
-
-    /**
-     * Detects whether a field with the specified name has any errors assigned.
-     *
-     * @documentable
-     * @param        string $field Specifies the field name.
-     * @return       boolean Returns TRUE if the field has errors. Returns FALSE otherwise.
-     */
-    public function isError($Field)
-    {
-        return in_array($Field, $this->errorFields);
-    }
-
-    /**
-     * Returns an error message for a specified field.
-     *
-     * @documentable
-     * @param        string  $field Specifies the field name.
-     * @param        boolean $Html  Indicates whether the message must be prepared to HTML output.
-     * @return       string Returns the error text or NULL.
-     */
-    public function getError($Field, $Html = true)
-    {
-        if (!isset($this->fieldErrors[$Field])) {
-            return null;
-        }
-
-        $Message = $this->fieldErrors[$Field];
-        return $Html ? Phpr_Html::encode($Message) : $Message;
-    }
-
-    /**
-     * Returns name of the first field with error.
-     *
-     * @documentable
-     * @return       string Returns the field name or null.
-     */
-    public function firstErrorField()
-    {
-        if (isset($this->errorFields[0])) {
-            return $this->errorFields[0];
-        }
-
-        return null;
-    }
-
-    /**
-     * Runs the validation rules.
-     *
-     * @documentable
-     * @param        mixed  $data                 Specifies a data source - an array or object.
-     *                                            If this parameter is omitted, the data from
-     *                                            the POST array will be used.
-
-     * @param  string $deferred_session_key An edit session key for deferred bindings.
-     * @return boolean Returns TRUE if the validation passed.
-     */
-    public function validate($Data = null, $deferred_session_key = null)
-    {
-        $ErrorFound = false;
-
-        if ($Data === null) {
-            $SrcArr = $_POST;
-        } elseif (is_object($Data)) {
-            $SrcArr = (array)$Data;
-        } elseif (is_array($Data)) {
-            $SrcArr = $Data;
-        } else {
-            throw Phpr_SystemException("Invalid validation data object");
-        }
-
-        foreach ($this->_fields as $ParamName => $RuleSet) {
-            if (!is_object($Data)) {
-                $FieldValue = isset($SrcArr[$ParamName]) ? $SrcArr[$ParamName] : null;
-            } else {
-                if (!($Data instanceof Db_ActiveRecord)) {
-                    $FieldValue = $Data->$ParamName;
-                } else {
-                    $FieldValue = $Data->getDeferredValue($ParamName, $deferred_session_key);
-                }
-            }
-
-            foreach ($RuleSet->rules as $Rule) {
-                $RuleObj = $Rule[Phpr_ValidationRules::objName];
-
-                switch ($Rule[Phpr_ValidationRules::ruleType]) {
-                case Phpr_ValidationRules::typeInternal:
-                    $RuleResult = $RuleSet->evalInternal(
-                        $RuleObj,
-                        $ParamName,
-                        $FieldValue,
-                        $Rule[Phpr_ValidationRules::params],
-                        $Rule[Phpr_ValidationRules::message],
-                        $Data,
-                        $deferred_session_key
-                    );
-                    break;
-
-                case Phpr_ValidationRules::typeFunction:
-                    if (!function_exists($RuleObj)) {
-                        throw new Phpr_SystemException("Unknown validation function: $RuleObj");
-                    }
-
-                    $RuleResult = $RuleObj($FieldValue);
-                    break;
-
-                case Phpr_ValidationRules::typeMethod:
-                    if ($this->_owner === null) {
-                        throw new Phpr_SystemException(
-                            "Can not execute the method-type rule $RuleObj without an owner object"
-                        );
-                    }
-
-                    if (is_string($RuleObj)) {
-                        $RuleResult = $this->_owner->_execValidation($RuleObj, $ParamName, $FieldValue);
-                    } elseif (is_callable($RuleObj)) {
-                        $RuleResult = call_user_func($RuleObj, $ParamName, $FieldValue, $this, $this->_owner);
-                    }
-                    break;
-                }
-
-                if ($RuleResult === false) {
-                    $this->errorFields[] = $ParamName;
-                    $ErrorFound = true;
-                    continue 2;
-                }
-
-                if ($RuleResult === true) {
-                    continue;
-                }
-
-                $FieldValue = $RuleResult;
-            }
-
-            $this->fieldValues[$ParamName] = $FieldValue;
-        }
-
-        $this->valid = !$ErrorFound;
-
-        if ($this->valid) {
-            foreach ($this->fieldValues as $fieldName => $fieldValue) {
-                if ($Data === null) {
-                    $_POST[$fieldName] = $fieldValue;
-                } elseif (is_object($Data)) {
-                    if (!($Data instanceof Db_ActiveRecord)) {
-                        $Data->$fieldName = $fieldValue;
-                    } else {
-                        $Data->setDeferredValue($fieldName, $fieldValue, $deferred_session_key);
-                    }
-                }
-            }
-        }
-
-        return $this->valid;
-    }
-
-    /**
-     * Sets focus to a first error field.
-     * If there are no error fields, sets focus to a first form field.
-     * You may also specify explicitly with the optional parameter.
-     *
-     * @param string  $FieldId Optional identifier of a field to focus.
-     * @param boolean $Force   Optional. Determines whether the field specified
-     *                         in the first parameter must be focused even in
-     *                         case of errors.
-     */
-    public function focus($FieldId = null, $Force = false)
-    {
-        $hasErrors = count($this->errorFields);
-
-        $FormId = $this->_formId === null ? 'document.forms[0]' : $this->_formId;
-
-        if ($FieldId !== null && (!$hasErrors || ($hasErrors && $Force))) {
-            return "$('{$FormId}').focusField('$FieldId');";
-        }
-
-        if ($hasErrors) {
-            $Field = $this->errorFields[0];
-            if (isset($this->_fields[$Field]) && !$this->_fields[$Field]->focusable) {
-                return null;
-            }
-
-            return "$('{$FormId}').focusField('{$this->errorFields[0]}');";
-        }
-
-        return "$('{$FormId}').focusFirst();";
-    }
-
-    /**
-     * Sets a field name to focus for the first field having an error.
-     *
-     * @documentable
-     * @param        string $name Specifies the field name.
-     *                            If the value has the '%s' specifier it will be replaced with the field name.
-     */
-    public function setFirstFocusName($name)
-    {
-        $error_field = $this->firstErrorField();
-        if (!$error_field) {
-            return;
-        }
-
-        $rule = $this->getRule($error_field);
-        if ($rule) {
-            if (strpos($name, '%') !== false) {
-                $name = sprintf($name, $error_field);
-            }
-
-            $rule->focusId($name);
-        }
-    }
-
-    /**
-     * Generates a Java Script code for focusing an error field
-     *
-     * @param  boolean $AddScriptNode Indicates whether the script node must be generated
-     * @return string
-     */
-    public function getFocusErrorScript($AddScriptNode = true)
-    {
-        if (!count($this->errorFields)) {
-            return null;
-        }
-
-        $Field = $this->errorFields[0];
-        if (!isset($this->_fields[$Field]) || !$this->_fields[$Field]->focusable) {
-            return null;
-        }
-
-        $result = null;
-        if ($AddScriptNode) {
-            $result .= "<script type='text/javascript'>";
-        }
-
-        $FormId = $this->_formId === null ? 'document.forms[0]' : $this->_formId;
-        $FocusId = strlen($this->_fields[$Field]->focusId) ? $this->_fields[$Field]->focusId : $Field;
-
-        if ($this->focusPrefix) {
-            $FocusId = $this->focusPrefix . $FocusId;
-        }
-
-        $result .= "$(document.body).focusField('{$FocusId}');";
-        $result .= "window.phprErrorField = '$FocusId';";
-        if ($widgetData = $this->getWidgetData()) {
-            $result .= 'phpr_dispatch_widget_response_data(' . json_encode($widgetData) . ');';
-        }
-
-        if ($AddScriptNode) {
-            $result .= "</script>";
-        }
-
-        return $result;
-    }
-
-    public function setWidgetData($data)
-    {
-        $this->_widgetData[] = $data;
-    }
-
-    public function getWidgetData()
-    {
-        return $this->_widgetData;
-    }
-
-    /**
-     * Throws the Validation Exception in case if data is not valid.
-     *
-     * @documentable
-     */
-    public function throwException()
-    {
-        throw new Phpr_ValidationException($this);
-    }
-
-    public function hasRuleFor($field)
-    {
-        return array_key_exists($field, $this->_fields);
-    }
-
-    public function getRule($field)
-    {
-        if ($this->hasRuleFor($field)) {
-            return $this->_fields[$field];
-        }
-
-        return null;
-    }
-}
-
-/**
- * Validation exception class.
- * Phpr_ValidationException represens a data validation error.
- *
- * @author  LemonStand eCommerce Inc.
- * @package core.classes
- */
-class Phpr_ValidationException extends Phpr_ApplicationException
-{
-    public $Validation;
-
-    /**
-     * Creates a new Phpr_ValidationException instance
-     *
-     * @param Phpr_Validation $Validation Validation object that caused the exception.
-     */
-    public function __construct(Phpr_Validation $Validation)
-    {
-        parent::__construct();
-        $this->message = null;
-
-        $this->validation = $Validation;
-
-        if ($Validation->errorMessage !== null) {
-            $this->message = $Validation->errorMessage;
-        }
-
-        if (count($Validation->fieldErrors)) {
-            $keys = array_keys($Validation->fieldErrors);
-
-            if (strlen($this->message)) {
-                $this->message .= '\n';
-            }
-            $this->message .= $Validation->fieldErrors[$keys[0]];
-        }
-    }
-}
+use Phpr;
+use Phpr\DateTime as PhprDateTime;
+use Phpr\SystemException;
+use Db\ActiveRecord;
 
 /**
  * Represents a set of validation rules.
- * Objects of this class are usually created by {@link Phpr_Validation::add()} and {@link Db_ColumnDefinition::validation()} methods.
+ * Objects of this class are usually created by {@link Phpr\Validation::add()} and {@link Db\ColumnDefinition::validation()} methods.
  * Almost all methods of this class return the updated object. It allows to define rules as a chain:
  * <pre>$this->define_column('name', 'Name')->order('asc')->validation()->fn('trim')->required("Please specify the theme name.");</pre>
  * Rules are executed in the order they added. Some rules, like fn() can update the input value, instead of performing the actual
- * validation. The updated value then used in other rules. If the validation object is used with {@link Db_ActiveRecord models},
+ * validation. The updated value then used in other rules. If the validation object is used with {@link Db\ActiveRecord models},
  * the updated field values are assigned to the model properties before it is saved to the database.
- *
- * @documentable
- * @author       LemonStand eCommerce Inc.
- * @package      core.classes
  */
-class Phpr_ValidationRules
+class ValidationRules
 {
     const ruleType = 'type';
     const objName = 'name';
@@ -529,10 +60,10 @@ class Phpr_ValidationRules
     protected $validation;
 
     /**
-     * Creates a new Phpr_ValidationRules instance. Do not instantiate this class directly -
+     * Creates a new Phpr\ValidationRules instance. Do not instantiate this class directly -
      * the controller Validation property: $this->validation->addRule("FirstName").
      *
-     * @param Phpr_Validation $Validation Specifies the validation class instance.
+     * @param Phpr\Validation $Validation Specifies the validation class instance.
      * @param bool            $Focusable  Specifies whether the field is focusable.
      * @param string          $FieldName  Specifies a field name.
      */
@@ -553,7 +84,7 @@ class Phpr_ValidationRules
      *
      * @documentable
      * @param        string $name Specifies a PHP function name.
-     * @return       Phpr_ValidationRules Returns the updated rule set.
+     * @return       Phpr\ValidationRules Returns the updated rule set.
      */
     public function fn($Name)
     {
@@ -565,7 +96,7 @@ class Phpr_ValidationRules
      * Sets an identifier of a element that should be focused in case of error
      *
      * @param  string $Id Specifies an element identifier
-     * @return Phpr_ValidationRules
+     * @return Phpr\ValidationRules
      */
     public function focusId($Id)
     {
@@ -575,10 +106,10 @@ class Phpr_ValidationRules
 
     /**
      * Adds a rule that validates a value with an owner class' method.
-     * Use this method with {@link Db_ActiveRecord ActiveRecord} models. The model class should
+     * Use this method with {@link Db\ActiveRecord ActiveRecord} models. The model class should
      * contain a public method with the specified name. The should accept two parameters -
      * the field name and value, and return a string or boolean value. Alternatively you can use
-     * {@link Phpr_Validation::setError() setError()} method of the validation object to throw an exception.
+     * {@link Phpr\Validation::setError() setError()} method of the validation object to throw an exception.
      * <pre>
      * public function define_columns($context = null)
      * {
@@ -597,7 +128,7 @@ class Phpr_ValidationRules
      *
      * @documentable
      * @param        string $name Specifies the method name.
-     * @return       Phpr_ValidationRules Returns the updated rule set.
+     * @return       Phpr\ValidationRules Returns the updated rule set.
      */
     public function method($Name)
     {
@@ -613,13 +144,13 @@ class Phpr_ValidationRules
      * @return mixed
      * @ignore
      * Evaluates the internal validation rule.
-     * This method is used by the Phpr_Validation class internally.
+     * This method is used by the Phpr\Validation class internally.
      */
     public function evalInternal($Rule, $Name, $Value, &$Params, $CustomMessage, &$DataSrc, $deferred_session_key)
     {
         $MethodName = "eval" . $Rule;
         if (!method_exists($this, $MethodName)) {
-            throw new Phpr_SystemException("Unknown validation rule: $Rule");
+            throw new SystemException("Unknown validation rule: $Rule");
         }
 
         $Params['deferred_session_key'] = $deferred_session_key;
@@ -659,7 +190,7 @@ class Phpr_ValidationRules
      * @documentable
      * @param        string $custom_message Specifies an error message to display if the validation fails.
      *                                      Can contain <em>%s</em> placeholder which is replaced with the actual field name.
-     * @return       Phpr_ValidationRules Returns the updated rule set.
+     * @return       Phpr\ValidationRules Returns the updated rule set.
      */
     public function numeric($CustomMessage = null)
     {
@@ -704,7 +235,7 @@ class Phpr_ValidationRules
      * @documentable
      * @param        string $custom_message Specifies an error message to display if the validation fails.
      *                                      Can contain <em>%s</em> placeholder which is replaced with the actual field name.
-     * @return       Phpr_ValidationRules Returns the updated rule set.
+     * @return       Phpr\ValidationRules Returns the updated rule set.
      */
     public function float($CustomMessage = null)
     {
@@ -763,7 +294,7 @@ class Phpr_ValidationRules
      * @param        int    $length         Specifies the minimum value length.
      * @param        string $custom_message Specifies an error message to display if the validation fails.
      *                                      Can contain <em>%s</em> placeholder which is replaced with the actual field name.
-     * @return       Phpr_ValidationRules Returns the updated rule set.
+     * @return       Phpr\ValidationRules Returns the updated rule set.
      */
     public function minLength($Length, $CustomMessage = null)
     {
@@ -807,7 +338,7 @@ class Phpr_ValidationRules
      * @param        int    $length         Specifies the maximum value length.
      * @param        string $custom_message Specifies an error message to display if the validation fails.
      *                                      Can contain <em>%s</em> placeholder which is replaced with the actual field name.
-     * @return       Phpr_ValidationRules Returns the updated rule set.
+     * @return       Phpr\ValidationRules Returns the updated rule set.
      */
     public function maxLength($Length, $CustomMessage = null)
     {
@@ -850,7 +381,7 @@ class Phpr_ValidationRules
      * @param        int    $length         Specifies the required value length.
      * @param        string $custom_message Specifies an error message to display if the validation fails.
      *                                      Can contain <em>%s</em> placeholder which is replaced with the actual field name.
-     * @return       Phpr_ValidationRules Returns the updated rule set.
+     * @return       Phpr\ValidationRules Returns the updated rule set.
      */
     public function length($Length, $CustomMessage = null)
     {
@@ -917,7 +448,7 @@ class Phpr_ValidationRules
      *                                                 actual field name.
 
      * @param  callback $checker_filter_callback Specifies the required value length.
-     * @return Phpr_ValidationRules Returns the updated rule set.
+     * @return Phpr\ValidationRules Returns the updated rule set.
      */
     public function unique($CustomMessage = null, $CheckerFilterCallback = null)
     {
@@ -935,7 +466,7 @@ class Phpr_ValidationRules
      */
     protected function evalUnique($Name, $Value, &$Params, $CustomMessage, &$obj)
     {
-        if (!($obj instanceof Db_ActiveRecord) || !strlen($Value)) {
+        if (!($obj instanceof ActiveRecord) || !strlen($Value)) {
             return true;
         }
 
@@ -973,7 +504,7 @@ class Phpr_ValidationRules
      * @documentable
      * @param        string $custom_message Specifies an error message to display if the validation fails.
      *                                      Can contain <em>%s</em> placeholder which is replaced with the actual field name.
-     * @return       Phpr_ValidationRules Returns the updated rule set.
+     * @return       Phpr\ValidationRules Returns the updated rule set.
      */
     public function required($CustomMessage = null)
     {
@@ -1018,7 +549,7 @@ class Phpr_ValidationRules
      * Makes the field optional.
      *
      * @documentable
-     * @return       Phpr_ValidationRules Returns the updated rule set.
+     * @return       Phpr\ValidationRules Returns the updated rule set.
      */
     public function optional()
     {
@@ -1049,7 +580,7 @@ class Phpr_ValidationRules
      * @documentable
      * @param        string $custom_message Specifies an error message to display if the validation fails.
      *                                      Can contain <em>%s</em> placeholder which is replaced with the actual field name.
-     * @return       Phpr_ValidationRules Returns the updated rule set.
+     * @return       Phpr\ValidationRules Returns the updated rule set.
      */
     public function alpha($CustomMessage = null)
     {
@@ -1089,7 +620,7 @@ class Phpr_ValidationRules
      * @documentable
      * @param        string $custom_message Specifies an error message to display if the validation fails.
      *                                      Can contain <em>%s</em> placeholder which is replaced with the actual field name.
-     * @return       Phpr_ValidationRules Returns the updated rule set.
+     * @return       Phpr\ValidationRules Returns the updated rule set.
      */
     public function alphanum($CustomMessage = null)
     {
@@ -1132,7 +663,7 @@ class Phpr_ValidationRules
      *                                       Can contain <em>%s</em> placeholder which is replaced with the
      *                                       actual field name.
 
-     * @return Phpr_ValidationRules Returns the updated rule set.
+     * @return Phpr\ValidationRules Returns the updated rule set.
      */
     public function email($AllowEmpty = false, $CustomMessage = null)
     {
@@ -1177,7 +708,7 @@ class Phpr_ValidationRules
      * @documentable
      * @param        string $custom_message Specifies an error message to display if the validation fails.
      *                                      Can contain <em>%s</em> placeholder which is replaced with the actual field name.
-     * @return       Phpr_ValidationRules Returns the updated rule set.
+     * @return       Phpr\ValidationRules Returns the updated rule set.
      */
     public function url($CustomMessage = null)
     {
@@ -1225,7 +756,7 @@ class Phpr_ValidationRules
      * @documentable
      * @param        string $custom_message Specifies an error message to display if the validation fails.
      *                                      Can contain <em>%s</em> placeholder which is replaced with the actual field name.
-     * @return       Phpr_ValidationRules Returns the updated rule set.
+     * @return       Phpr\ValidationRules Returns the updated rule set.
      */
     public function ip($CustomMessage = null)
     {
@@ -1263,7 +794,7 @@ class Phpr_ValidationRules
      * Adds a rule that determines whether a value matches another field value.
      *
      * @param  string $Field Specifies a name of field this field value must match
-     * @return Phpr_ValidationRules
+     * @return Phpr\ValidationRules
      */
     public function matches($Field, $errorMessage = null)
     {
@@ -1283,8 +814,8 @@ class Phpr_ValidationRules
     {
         $fieldToMatch = $Params[0];
         $errorMessage = $Params[1];
-        if (!isset($this->validation->_fields[$fieldToMatch])) {
-            throw new Phpr_SystemException("Unknown validation field: $fieldToMatch");
+        if (!isset($this->validation->fields[$fieldToMatch])) {
+            throw new SystemException("Unknown validation field: $fieldToMatch");
         }
 
         $valueToMatch = isset($this->validation->fieldValues[$fieldToMatch]) ? $this->validation->fieldValues[$fieldToMatch] : Phpr::$request->postField(
@@ -1295,7 +826,7 @@ class Phpr_ValidationRules
 
         if (!$result) {
             if (!strlen($errorMessage)) {
-                $fieldToMatchName = $this->validation->_fields[$fieldToMatch]->fieldName;
+                $fieldToMatchName = $this->validation->fields[$fieldToMatch]->fieldName;
                 $this->validation->setError(
                     sprintf(Phpr::$lang->mod('phpr', 'matches', 'validation'), $this->fieldName, $fieldToMatchName),
                     $Name
@@ -1322,7 +853,7 @@ class Phpr_ValidationRules
      *                                       Can contain <em>%s</em> placeholder which
      *                                       is replaced with the actual field name.
 
-     * @return Phpr_ValidationRules Returns the updated rule set.
+     * @return Phpr\ValidationRules Returns the updated rule set.
      */
     public function regexp($Pattern, $errorMessage = null, $AllowEmpty = false)
     {
@@ -1372,7 +903,7 @@ class Phpr_ValidationRules
      *                             for en_US).
 
      * @param  string $errorMessage Optional error message.
-     * @return Phpr_ValidationRules
+     * @return Phpr\ValidationRules
      */
     public function dateTime($Format = "%x %X", $errorMessage = null, $dateAsIs = false)
     {
@@ -1402,19 +933,19 @@ class Phpr_ValidationRules
         try {
             $timeZoneObj = new DateTimeZone($timeZone);
         } catch (Exception $Ex) {
-            throw new Phpr_SystemException(
+            throw new SystemException(
                 'Invalid time zone specified in config.php: ' . $timeZone . '. Please refer this document for the list of correct time zones: http://docs.php.net/timezones.'
             );
         }
 
-        $result = Phpr_DateTime::parse($Value, $Params[0], $timeZoneObj);
+        $result = PhprDateTime::parse($Value, $Params[0], $timeZoneObj);
 
         if (!$result) {
             $errorMessage = $Params[1] !== null ? $Params[1] :
                 sprintf(
                     Phpr::$lang->mod('phpr', 'datetime', 'validation'),
                     $this->fieldName,
-                    Phpr_DateTime::now()->format($Params[0])
+                    PhprDateTime::now()->format($Params[0])
                 );
 
             $this->validation->setError($errorMessage, $Name);
@@ -1442,7 +973,7 @@ class Phpr_ValidationRules
      *                             for en_US).
 
      * @param  string $errorMessage Optional error message.
-     * @return Phpr_ValidationRules
+     * @return Phpr\ValidationRules
      */
     public function date($Format = "%x", $errorMessage = null)
     {
@@ -1468,14 +999,14 @@ class Phpr_ValidationRules
             return null;
         }
 
-        $result = Phpr_DateTime::parse($Value, $Params[0]);
+        $result = PhprDateTime::parse($Value, $Params[0]);
 
         if (!$result) {
             $errorMessage = $Params[1] !== null ? $Params[1] :
                 sprintf(
                     Phpr::$lang->mod('phpr', 'datetime', 'validation'),
                     $this->fieldName,
-                    Phpr_DateTime::now()->format($Params[0])
+                    PhprDateTime::now()->format($Params[0])
                 );
 
             $this->validation->setError($errorMessage, $Name);
@@ -1484,5 +1015,22 @@ class Phpr_ValidationRules
         }
 
         return $result;
+    }
+
+
+    /**
+     * Cleans HTML preventing XSS code.
+     * @param string $value Specifies a controller method name.
+     * @return Phpr\Validation_Rules
+     */
+    public function cleanHtml()
+    {
+        $this->registerInternal(__METHOD__, array());
+        return $this;
+    }
+
+    protected function evalCleanHtml($name, $value, &$params)
+    {
+        return Html::cleanXss($value);
     }
 }
