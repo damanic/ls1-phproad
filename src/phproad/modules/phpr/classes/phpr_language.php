@@ -1,20 +1,10 @@
 <?php
 
-/**
- * PHP Road
+/***
+ * @deprecated
+ * @see Phpr\Locale
  *
- * PHP application framework
- *
- * @package    PHPRoad
- * @author     Aleksey Bobkov, Andy Chentsov
- * @since      Version 1.0
- * @filesource
- */
-
-/**
- * PHP Road Validation Class
- *
- * Phpr_Language class assists in application lozalization.
+ * Phpr_Language class assists in application localization.
  *
  * The instance of this class is available in the Phpr global object: Phpr::$lang.
  * You may set user language programmatically: Phpr::$lang->setLanguage("en_EN"),
@@ -23,12 +13,8 @@
  * this case the language specified in the user browser configuration will be used.
  * If language is not set the default value en_EN will be used.
  *
- * @see Phpr
- *
- * @package  PHPRoad
- * @category PHPRoad
- * @author   Aleksey Bobkov
  */
+
 class Phpr_Language
 {
     const defaultLanguage = 'en_EN';
@@ -347,7 +333,7 @@ class Phpr_Language
      */
     private function loadNumberFormat()
     {
-        $this->_decSeparator = $this->mod('phpr', 'decimal_separator', 'numbers');
+        $this->_decSeparator = $this->mod('phpr', 'decimalSeparator', 'numbers');
         $this->_groupSeparator = $this->mod('phpr', 'group_separator', 'numbers');
     }
 
@@ -356,192 +342,20 @@ class Phpr_Language
      */
     private function loadCurrencyFormat()
     {
-        $this->_intl_currency_symbol = $this->mod('phpr', 'intl_currency_symbol', 'currency');
-        $this->_local_currency_symbol = $this->mod('phpr', 'local_currency_symbol', 'currency');
-        $this->_decimal_separator = $this->mod('phpr', 'decimal_separator', 'currency');
+        $this->_intl_currency_symbol = $this->mod('phpr', 'intlCurrencySymbol', 'currency');
+        $this->_local_currency_symbol = $this->mod('phpr', 'localCurrencySymbol', 'currency');
+        $this->_decimal_separator = $this->mod('phpr', 'decimalSeparator', 'currency');
         $this->_group_separator = $this->mod('phpr', 'group_separator', 'currency');
-        $this->_decimal_digits = $this->mod('phpr', 'decimal_digits', 'currency');
-        $this->_positive_sign = $this->mod('phpr', 'positive_sign', 'currency');
-        $this->_negative_sign = $this->mod('phpr', 'negative_sign', 'currency');
-        $this->_p_cs_precedes = (int)($this->mod('phpr', 'p_cs_precedes', 'currency'));
-        $this->_p_sep_by_space = (int)($this->mod('phpr', 'p_sep_by_space', 'currency'));
-        $this->_p_cs_precedes = (int)($this->mod('phpr', 'n_cs_precedes', 'currency'));
-        $this->_n_sep_by_space = (int)($this->mod('phpr', 'n_sep_by_space', 'currency'));
-        $this->_p_format = $this->mod('phpr', 'p_format', 'currency');
-        $this->_n_format = $this->mod('phpr', 'n_format', 'currency');
+        $this->_decimal_digits = $this->mod('phpr', 'decimalDigits', 'currency');
+        $this->_positive_sign = $this->mod('phpr', 'positiveSign', 'currency');
+        $this->_negative_sign = $this->mod('phpr', 'negativeSign', 'currency');
+        $this->_p_cs_precedes = (int)($this->mod('phpr', 'pCsPrecedes', 'currency'));
+        $this->_p_sep_by_space = (int)($this->mod('phpr', 'pSepBySpace', 'currency'));
+        $this->_p_cs_precedes = (int)($this->mod('phpr', 'nCsPrecedes', 'currency'));
+        $this->_n_sep_by_space = (int)($this->mod('phpr', 'nSepBySpace', 'currency'));
+        $this->_p_format = $this->mod('phpr', 'pFormat', 'currency');
+        $this->_n_format = $this->mod('phpr', 'nFormat', 'currency');
 
         $this->_currencyLoaded = true;
-    }
-}
-
-/**
- * PHP Road Localization Manager Class
- *
- * This class is used by the Language object internally.
- * Phpr_LocalizationManager class reads strings from the localization files.
- *
- * @package  PHPRoad
- * @category PHPRoad
- * @author   Aleksey Bobkov
- */
-class Phpr_LocalizationManager
-{
-    private $_language;
-    private $_localizationPath;
-    private $_stringCache;
-
-    /**
-     * Creates a new Phpr_LocalizationManager instance.
-     *
-     * @param string $Language            Specifies the user language.
-     * @param string $LocalizationDirPath Specifies a path to the localization directory.
-     */
-    public function __construct($Language, $LocalizationDirPath)
-    {
-        if (!file_exists($LocalizationDirPath) || !is_readable($LocalizationDirPath)) {
-            throw new Phpr_SystemException(sprintf('Localization directory %s is not readable.', $LocalizationDirPath));
-        }
-
-        $this->_language = strtolower($Language);
-        $this->_localizationPath = $LocalizationDirPath;
-        $this->_stringCache = array();
-    }
-
-    /**
-     * Returns a localization string.
-     *
-     * @param  string $Key      Specifies a string key.
-     * @param  string $Category Specifies a file category.
-     * @return string
-     */
-    public function getString($Key, $Category = null)
-    {
-        // Try to load exact language value
-        //
-        $languageString = $this->getStringInternal($Key, $Category, $this->_language);
-
-        if ($languageString !== null) {
-            return $languageString;
-        }
-
-        // Try to fallback to a neutral culture
-        //
-        if (!(($pos = strpos($this->_language, '_')) === false)) {
-            $language = substr($this->_language, 0, $pos);
-            $languageString = $this->getStringInternal($Key, $Category, $language);
-        }
-
-        if (!is_null($languageString)) {
-            return $languageString;
-        }
-
-        // Try to fallback to a default language
-        //
-        $languageString = $this->getStringInternal($Key, $Category, null);
-
-        return $languageString;
-    }
-
-    /**
-     * Sets the user language to use by this Localization Manager instance.
-     *
-     * @param string $Language Language
-     */
-    public function setLanguage($Language)
-    {
-        $this->_language = strtolower($Language);
-    }
-
-    /**
-     * Returns a localization string in a specified langauge.
-     *
-     * @param  string $Key      Specifies a string key
-     * @param  string $Category Specifies a file category
-     * @param  string $Language Specifies a language
-     * @return string
-     */
-    private function getStringInternal($Key, $Category, $Language)
-    {
-        if (!strlen($Language)) {
-            $Language = "default";
-        }
-
-        if (!array_key_exists($Category, $this->_stringCache) || !array_key_exists(
-            $Language,
-            $this->_stringCache[$Category]
-        )
-        ) {
-            $this->preloadLanguageKeys($Language, $Category);
-        }
-
-        if (is_null($this->_stringCache[$Category][$Language])) {
-            return null;
-        }
-
-        if (!array_key_exists($Key, $this->_stringCache[$Category][$Language])) {
-            return null;
-        } else {
-            return $this->_stringCache[$Category][$Language][$Key];
-        }
-    }
-
-    /**
-     * Preloads the language strings.
-     *
-     * @param  string $Language Specifies a language
-     * @param  string $Category Specifies a file category
-     * @return string
-     */
-    private function preloadLanguageKeys($Language, $Category)
-    {
-        $PrefixNamePart = $Category;
-        if (strlen($PrefixNamePart)) {
-            $PrefixNamePart = $PrefixNamePart . ".";
-        }
-
-        $fileName = $PrefixNamePart . $Language . ".res";
-
-        $filePath = $this->_localizationPath . "/" . $fileName;
-
-        if (!file_exists($filePath)) {
-            if (!array_key_exists($Category, $this->_stringCache)) {
-                $this->_stringCache[$Category] = array();
-            }
-
-            $this->_stringCache[$Category][$Language] = null;
-            return;
-        }
-
-        if (!is_readable($filePath)) {
-            throw new Phpr_SystemException(sprintf('Localization file %s is not readable.', $fileName));
-        }
-
-        $prevSetting = ini_get('auto_detect_line_endings');
-        ini_set('auto_detect_line_endings', 1);
-
-        $strings = file($filePath);
-
-        $fileStrings = array();
-
-        foreach ($strings as $string) {
-            if (strlen($string) > 0 && substr($string, 0, 1) != '#') {
-                $stringParts = explode("\t", $string);
-                if (count($stringParts) > 1) {
-                    $stringKey = $stringParts[0];
-                    $stringValue = rtrim($stringParts[1], "\r\n");
-                    $stringValue = str_replace("\\n", "\n", $stringValue);
-
-                    $fileStrings[$stringKey] = $stringValue;
-                }
-            }
-        }
-
-        ini_set('auto_detect_line_endings', $prevSetting);
-
-        if (!array_key_exists($Category, $this->_stringCache)) {
-            $this->_stringCache[$Category] = array();
-        }
-
-        $this->_stringCache[$Category][$Language] = $fileStrings;
     }
 }

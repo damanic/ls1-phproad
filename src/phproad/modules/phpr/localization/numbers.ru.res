@@ -4,7 +4,7 @@
 
 # Decimal point character
 #
-decimal_separator	,
+decimalSeparator	,
 
 # Separator character for thousands (groups of three digits)
 #
