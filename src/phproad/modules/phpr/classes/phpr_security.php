@@ -172,11 +172,11 @@ class Phpr_Security
          * Load the login form data
          */
         if ($Login === null) {
-            $Login = Phpr::$request->post('login');
+            $Login = Phpr::$request->postField('login');
         }
 
         if ($Password === null) {
-            $Password = Phpr::$request->post('password');
+            $Password = Phpr::$request->postField('password');
         }
 
         /*

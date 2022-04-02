@@ -414,7 +414,7 @@ class Db_GridWidget extends Db_FormWidget
             $this->cleanup_grid_export();
             $model_class = get_class($model);
 
-            $data = Phpr::$request->post_array_item($model_class, $field, array());
+            $data = Phpr::$request->postArray($model_class, $field, array());
 
             $is_manual_disabled = isset($data['disabled']);
             if ($is_manual_disabled) {
@@ -691,7 +691,7 @@ class Db_GridWidget extends Db_FormWidget
     protected function on_navigate_to_page($field, $model)
     {
         $model_class = get_class($model);
-        $data = Phpr::$request->post_array_item($model_class, $field, array());
+        $data = Phpr::$request->postArray($model_class, $field, array());
         $data_source = $this->get_data_source();
 
         $data_source->commit($data);

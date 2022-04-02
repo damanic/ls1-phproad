@@ -95,7 +95,7 @@ class Phpr_Cron
 
     private static function execute_crontabs()
     {
-        $modules = Core_ModuleManager::listModules();
+        $modules = ModuleManager::listModules();
         foreach ($modules as $module) {
             if (!method_exists($module, 'subscribe_crontab')) {
                 continue;

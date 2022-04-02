@@ -1287,7 +1287,7 @@ class Phpr_ValidationRules
             throw new Phpr_SystemException("Unknown validation field: $fieldToMatch");
         }
 
-        $valueToMatch = isset($this->validation->fieldValues[$fieldToMatch]) ? $this->validation->fieldValues[$fieldToMatch] : Phpr::$request->post(
+        $valueToMatch = isset($this->validation->fieldValues[$fieldToMatch]) ? $this->validation->fieldValues[$fieldToMatch] : Phpr::$request->postField(
             $fieldToMatch
         );
 

@@ -247,7 +247,7 @@ class Phpr_Component extends Phpr_ControllerBase
             return $this->_StoredVars[$VarName];
         }
 
-        return Phpr::$request->post($VarName);
+        return Phpr::$request->postField($VarName);
     }
 
     /**
@@ -264,7 +264,7 @@ class Phpr_Component extends Phpr_ControllerBase
                 return $this->Options[$Name];
             }
 
-            return Phpr::$request->post($this->Id . $Name, $Default);
+            return Phpr::$request->postField($this->Id . $Name, $Default);
         } else {
             if (isset($this->Options[$Name])) {
                 return $this->Options[$Name];
@@ -284,7 +284,7 @@ class Phpr_Component extends Phpr_ControllerBase
      */
     public static function GetComponentOption($Id, $Name, $Default)
     {
-        return Phpr::$request->post($Id . $Name, $Default);
+        return Phpr::$request->postField($Id . $Name, $Default);
     }
 
     /**

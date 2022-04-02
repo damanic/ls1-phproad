@@ -96,7 +96,7 @@ function flash()
  */
 function post( $name, $default = null )
 {
-    return Phpr::$request->post($name, $default);
+    return Phpr::$request->postField($name, $default);
 }
 
 /**
@@ -124,7 +124,7 @@ function post( $name, $default = null )
  */
 function post_array_item( $array_name, $name, $default = null )
 {
-    return Phpr::$request->post_array_item($array_name, $name, $default);
+    return Phpr::$request->postArray($array_name, $name, $default);
 }
 
 /*
