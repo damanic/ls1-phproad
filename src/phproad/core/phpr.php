@@ -58,7 +58,7 @@ class Phpr
     /**
      * URI router. Maps URI strings to the controllers and actions
      *
-     * @var Phpr_Router
+     * @var Phpr\Router
      */
     public static $router = null;
 
