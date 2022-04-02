@@ -1,25 +1,19 @@
 <?php
+namespace Phpr;
+
+use Phpr;
+use Phpr\ApplicationException;
+use Db\ActiveRecord;
 
 /**
- * Allows to paginate records, including database models.
- * Phpr_Pagination is an general purpose class allowing to paginate a list of records, including database models.
- * Usually objects of this class are created automatically with {@link Db_ActiveRecord::paginate()} method.
- * Below is a typical usage of the pagination object:
- * <pre>$pagination = $products->paginate(0, 10);</pre>
- * After obtaining the pagination object you can extract the {@link Phpr_Pagination::getPageCount() number of pages} from this object
- * and generate pagination markup.
- *
- * @documentable
- * @see          Db_ActiveRecord
- * @author       LemonStand eCommerce Inc.
- * @package      core.classes
+ * PHPR Pagination Class
  */
-class Phpr_Pagination
+class Pagination
 {
-    private $_currentPageIndex;
-    private $_pageSize;
-    private $_rowCount;
-    private $_pageCount;
+    private $currentPageIndex;
+    private $pageSize;
+    private $rowCount;
+    private $pageCount;
 
     /**
      * Creates a new object of Phpr_Pagination class.
@@ -30,22 +24,22 @@ class Phpr_Pagination
      */
     public function __construct($PageSize = 20)
     {
-        $this->_currentPageIndex = 0;
-        $this->_pageSize = $PageSize;
-        $this->_rowCount = 0;
-        $this->_pageCount = 1;
+        $this->currentPageIndex = 0;
+        $this->pageSize = $PageSize;
+        $this->rowCount = 0;
+        $this->pageCount = 1;
     }
 
     /**
-     * Applies pagination to an {@link Db_ActiveRecord} object.
-     * This method should be called before the model's {@link Db_ActiveRecord::find_all()} method
-     * is called. {@link Db_ActiveRecord} class has a more convenient method for applying
-     * pagination -  {@link Db_ActiveRecord::paginate() paginate()}.
+     * Applies pagination to an {@link Db\ActiveRecord} object.
+     * This method should be called before the model's {@link Db\ActiveRecord::find_all()} method
+     * is called. {@link Db\ActiveRecord} class has a more convenient method for applying
+     * pagination -  {@link Db\ActiveRecord::paginate() paginate()}.
      *
      * @documentable.
-     * @param         Db_ActiveRecord $model Specifies the model object to limit.
+     * @param         Db\ActiveRecord $model Specifies the model object to limit.
      */
-    public function limitActiveRecord(Db_ActiveRecord $Obj)
+    public function limitActiveRecord(ActiveRecord $Obj)
     {
         $Obj->limit($this->getPageSize(), $this->getFirstPageRowIndex());
     }
@@ -113,7 +107,7 @@ class Phpr_Pagination
      */
     public function setCurrentPageIndex($Value)
     {
-        $lastPageIndex = $this->_pageCount - 1;
+        $lastPageIndex = $this->pageCount - 1;
 
         if ($Value < 0) {
             $Value = 0;
@@ -123,7 +117,7 @@ class Phpr_Pagination
             $Value = $lastPageIndex;
         }
 
-        $this->_currentPageIndex = $Value;
+        $this->currentPageIndex = $Value;
 
         return $Value;
     }
@@ -136,7 +130,7 @@ class Phpr_Pagination
      */
     public function getCurrentPageIndex()
     {
-        return $this->_currentPageIndex;
+        return $this->currentPageIndex;
     }
 
     /**
@@ -151,10 +145,10 @@ class Phpr_Pagination
             throw new Phpr_ApplicationException("Page size is out of range");
         }
 
-        $this->_pageSize = $Value;
+        $this->pageSize = $Value;
 
-        $this->_pageCount = $this->evaluatePageCount($Value, $this->_rowCount);
-        $this->_currentPageIndex = $this->fixCurrentPageIndex($this->_currentPageIndex, $this->_pageCount);
+        $this->pageCount = $this->evaluatePageCount($Value, $this->rowCount);
+        $this->currentPageIndex = $this->fixCurrentPageIndex($this->currentPageIndex, $this->pageCount);
     }
 
     /**
@@ -167,14 +161,14 @@ class Phpr_Pagination
      */
     public function getPageSize()
     {
-        return $this->_pageSize;
+        return $this->pageSize;
     }
 
     /**
      * Sets the total number of rows.
      * This method should be called before the {@link Phpr_Pagination::limitActiveRecord() limitActiveRecord()}
-     * method call. If you are working with {@link Db_ActiveRecord} objects, you can obtain
-     * the total number of rows with {@link Db_ActiveRecord::requestRowCount()} method. {@link Db_ActiveRecord::paginate()}
+     * method call. If you are working with {@link Db\ActiveRecord} objects, you can obtain
+     * the total number of rows with {@link Db\ActiveRecord::requestRowCount()} method. {@link Db\ActiveRecord::paginate()}
      * method does this work automatically.
      *
      * @documentable
@@ -186,9 +180,9 @@ class Phpr_Pagination
             throw new Phpr_ApplicationException("Row count is out of range");
         }
 
-        $this->_pageCount = $this->evaluatePageCount($this->_pageSize, $Value);
-        $this->_currentPageIndex = $this->fixCurrentPageIndex($this->_currentPageIndex, $this->_pageCount);
-        $this->_rowCount = $Value;
+        $this->pageCount = $this->evaluatePageCount($this->pageSize, $Value);
+        $this->currentPageIndex = $this->fixCurrentPageIndex($this->currentPageIndex, $this->pageCount);
+        $this->rowCount = $Value;
     }
 
     /**
@@ -200,7 +194,7 @@ class Phpr_Pagination
      */
     public function getRowCount()
     {
-        return $this->_rowCount;
+        return $this->rowCount;
     }
 
     /**
@@ -211,7 +205,7 @@ class Phpr_Pagination
      */
     public function getFirstPageRowIndex()
     {
-        return $this->_pageSize * $this->_currentPageIndex;
+        return $this->pageSize * $this->currentPageIndex;
     }
 
     /**
@@ -223,10 +217,10 @@ class Phpr_Pagination
     public function getLastPageRowIndex()
     {
         $index = $this->getFirstPageRowIndex();
-        $index += $this->_pageSize - 1;
+        $index += $this->pageSize - 1;
 
-        if ($index > $this->_rowCount - 1) {
-            $index = $this->_rowCount - 1;
+        if ($index > $this->rowCount - 1) {
+            $index = $this->rowCount - 1;
         }
 
         return $index;
@@ -262,6 +256,6 @@ class Phpr_Pagination
      */
     public function getPageCount()
     {
-        return $this->_pageCount;
+        return $this->pageCount;
     }
 }
