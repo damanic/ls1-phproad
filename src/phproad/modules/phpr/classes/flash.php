@@ -1,71 +1,64 @@
 <?php
+namespace Phpr;
+
+use ArrayAccess;
+use ArrayIterator;
+use IteratorAggregate;
+use Countable;
+
+use Phpr;
 
 /**
- * PHP Road
- *
- * PHP application framework
- *
- * @package    PHPRoad
- * @author     Aleksey Bobkov, Andy Chentsov
- * @since      Version 1.0
- * @filesource
- */
-
-/**
- * PHP Road Session Class
+ * PHPR Flash Class
  *
  * The flash provides a way to pass temporary objects between actions.
  *
  * The instance of this class is available in the Session object: Phpr::$session->flash
  *
  * @see Phpr
- *
- * @package  PHPRoad
- * @category PHPRoad
- * @author   Andy Duke
  */
-class Phpr_Flash implements ArrayAccess, IteratorAggregate, Countable
+class Flash implements ArrayAccess, IteratorAggregate, Countable
 {
+    const flash_key = '__flash';
+
     public $flash = array();
 
     /**
-     * Creates a new Phpr_Flash instance
+     * Creates a new Phpr\Flash instance
      */
     public function __construct()
     {
-        if (!Phpr::$session->has('__flash')) {
+        if (!Phpr::$session->has(self::flash_key)) {
             return;
         }
 
-        $this->flash = Phpr::$session->get('__flash');
+        $this->flash = Phpr::$session->get(self::flash_key);
         $this->now();
     }
 
     /**
      * Removes an object with a specified key or erases the flash data.
-     *
-     * @param string $Key Specifies a key to remove, optional
+     * @param string $key Specifies a key to remove, optional
      */
-    public function discard($Key = null)
+    public function discard($key = null)
     {
-        if ($Key === null) {
+        if ($key === null) {
             $this->flash = array();
         } else {
-            unset($this->flash[$Key]);
+            unset($this->flash[$key]);
         }
     }
 
     /**
      * Stores the flash data to the session.
-     *
-     * @param string $Key Specifies a key to store, optional
+     * @param string $key Specifies a key to store, optional
      */
-    public function store($Key = null)
+    public function store($key = null)
     {
-        if ($Key === null) {
-            Phpr::$session->set('__flash', $this->flash);
+        if ($key === null) {
+            Phpr::$session->set(self::flash_key, $this->flash);
         } else {
-            Phpr::$session->set('__flash', array($Key => $this->flash[$Key]));
+            Phpr::$session->set(self::flash_key, array($key => $this->flash[$key]));
         }
     }
 
@@ -74,7 +67,7 @@ class Phpr_Flash implements ArrayAccess, IteratorAggregate, Countable
      */
     public function now()
     {
-        Phpr::$session->remove('__flash');
+        Phpr::$session->remove(self::flash_key);
     }
 
     /**
@@ -118,7 +111,6 @@ class Phpr_Flash implements ArrayAccess, IteratorAggregate, Countable
 
     /**
      * Returns a number of flash items
-     *
      * @return integer
      */
     public function count()
