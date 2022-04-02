@@ -1,20 +1,7 @@
 <?php
-
-/**
- * @ignore
- *
- * PHP Road
- *
- * PHP application framework
- *
- * @package    PHPRoad
- * @author     Aleksey Bobkov, Andy Chentsov
- * @since      Version 1.0
- * @filesource
- */
-
-/**
- * @ignore
+/***
+ * @deprecated
+ * @see \File\Log
  *
  * PHP Road Text file log helper class.
  *

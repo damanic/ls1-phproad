@@ -1,9 +1,8 @@
 <?php
 
-/*
- * Extensible object model
+/***
+ * @deprecated
  */
-
 class Phpr_Extensible extends Phpr_Extension
 {
     protected $extensible_data = array(

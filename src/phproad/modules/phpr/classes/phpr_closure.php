@@ -1,5 +1,8 @@
 <?php
 
+/***
+ * @deprecated
+ */
 class Phpr_Closure
 {
     private $function;
