@@ -403,18 +403,18 @@ class ValidationException extends ApplicationException
 
         $this->validation = $validation;
 
-        if ($validation->error_message !== null) {
-            $this->message = $validation->error_message;
+        if ($validation->errorMessage !== null) {
+            $this->message = $validation->errorMessage;
         }
 
-        if (count($validation->field_errors)) {
-            $keys = array_keys($validation->field_errors);
+        if (count($validation->fieldErrors)) {
+            $keys = array_keys($validation->fieldErrors);
 
             if (strlen($this->message)) {
                 $this->message .= PHP_EOL;
             }
 
-            $this->message .= $validation->field_errors[$keys[0]];
+            $this->message .= $validation->fieldErrors[$keys[0]];
         }
     }
 }
