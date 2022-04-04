@@ -1,6 +1,7 @@
 <?php
 namespace Phpr;
 
+use Phpr\Deprecate;
 use Phpr\SystemException;
 use Phpr\ValidationException;
 use Db\ActiveRecord;
@@ -18,11 +19,10 @@ class Validation
     private $widgetData = array();
 
     /**
-     * @ignore
      * Contains a list of fields validation rules
      * @var    array
      */
-    public $fields;
+    protected $fields;
 
     /**
      * Indicates whether all validation rules are valid.
@@ -413,17 +413,70 @@ class Validation
         throw new ValidationException($this);
     }
 
-    public function hasRuleFor($field)
+    /**
+     * Check if a Phpr\ValidationRules exists for given field name
+     * @param string $field Field name
+     * @return bool
+     */
+    public function hasRuleFor(string $field): bool
     {
         return array_key_exists($field, $this->fields);
     }
 
-    public function getRule($field)
+    /**
+     * Get validation rule for given field name
+     * @param string $field Field name
+     * @return ValidationRules|null
+     */
+    public function getRule(string $field)
     {
         if ($this->hasRuleFor($field)) {
             return $this->fields[$field];
         }
-
         return null;
+    }
+
+    /**
+     * Remove validation rule for given field name
+     * @param string $field Field name
+     * @return void
+     */
+    public function removeRule(string $field) : void
+    {
+        if ($this->hasRuleFor($field)) {
+            unset($this->fields[$field]);
+        }
+    }
+
+
+    /**
+     * Remove all validation rules
+     */
+    public function removeRules() : void
+    {
+        foreach ($this->getFields() as $field) {
+            $this->removeRule($field);
+        }
+    }
+
+    /**
+     * Get all validation rules for given field name
+     * @return array Array of Phpr\ValidationRules
+     */
+    public function getFields() : array
+    {
+        return $this->fields;
+    }
+
+    /*
+     * DEPRECATED properties
+     */
+    public function __get($name)
+    {
+        if ($name === '_fields') {
+            $deprecate = new Deprecate();
+            $deprecate->setClassProperty('_fields', 'fields');
+            return $this->getFields();
+        }
     }
 }
