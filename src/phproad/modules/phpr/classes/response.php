@@ -93,7 +93,7 @@ class Response
             exit;
         }
 
-        $error = Phpr_ErrorLog::get_exception_details($exception);
+        $error = ErrorLog::get_exception_details($exception);
 
         // Output the default exception message.
         include PATH_SYSTEM . "/errorpages/exception.htm";
@@ -278,7 +278,7 @@ class Response
         /*
          * Add focusing Java Script code
          */
-        if ($Focus && $Exception instanceof Phpr_ValidationException) {
+        if ($Focus && $Exception instanceof ValidationException) {
             $Message .= $Exception->validation->getFocusErrorScript();
         }
 

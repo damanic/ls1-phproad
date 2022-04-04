@@ -53,7 +53,7 @@ class Pagination
     public static function fromSession($Name, $PageSize = 20)
     {
         if (!Phpr::$session->has($Name)) {
-            Phpr::$session[$Name] = new Phpr_Pagination($PageSize);
+            Phpr::$session[$Name] = new Pagination($PageSize);
         }
 
         return Phpr::$session[$Name];
@@ -142,7 +142,7 @@ class Pagination
     public function setPageSize($Value)
     {
         if ($Value <= 0) {
-            throw new Phpr_ApplicationException("Page size is out of range");
+            throw new ApplicationException("Page size is out of range");
         }
 
         $this->pageSize = $Value;
@@ -177,7 +177,7 @@ class Pagination
     public function setRowCount($Value)
     {
         if ($Value < 0) {
-            throw new Phpr_ApplicationException("Row count is out of range");
+            throw new ApplicationException("Row count is out of range");
         }
 
         $this->pageCount = $this->evaluatePageCount($this->pageSize, $Value);

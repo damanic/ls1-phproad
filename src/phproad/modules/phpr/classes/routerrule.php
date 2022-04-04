@@ -44,14 +44,14 @@ class RouterRule
     public function controller($Controller)
     {
         if ($this->controller !== null) {
-            throw new Phpr_SystemException(
+            throw new SystemException(
                 "Invalid router rule configuration. The controller is already specified: [{$this->URI}]"
             );
         }
 
         if (Router::valueIsParam($Controller)) {
             if (!isset($this->params[$Controller])) {
-                throw new Phpr_SystemException(
+                throw new SystemException(
                     "Invalid router rule configuration. The parameter \"$Controller\" specified in the Controller instruction is not found in the rule URI: [{$this->URI}]"
                 );
             }
@@ -71,14 +71,14 @@ class RouterRule
     public function action($Action)
     {
         if ($this->action !== null) {
-            throw new Phpr_SystemException(
+            throw new SystemException(
                 "Invalid router rule configuration. The action is already specified: [{$this->URI}]"
             );
         }
 
         if (Router::valueIsParam($Action)) {
             if (!isset($this->params[$Action])) {
-                throw new Phpr_SystemException(
+                throw new SystemException(
                     "Invalid router rule configuration. The parameter \"$Action\" specified in the Action instruction is not found in the rule URI: [{$this->URI}]"
                 );
             }
@@ -98,7 +98,7 @@ class RouterRule
     public function def($Param, $Value)
     {
         if (!isset($this->params[$Param])) {
-            throw new Phpr_SystemException(
+            throw new SystemException(
                 "Invalid router rule configuration. The default parameter \"$Param\" is not found in the rule URI: [{$this->URI}]"
             );
         }
@@ -118,7 +118,7 @@ class RouterRule
     public function convert($Param, $Match, $Replace)
     {
         if (!isset($this->params[$Param])) {
-            throw new Phpr_SystemException(
+            throw new SystemException(
                 "Invalid router rule configuration. The convert parameter \"$Param\" is not found in the rule URI: [{$this->URI}]"
             );
         }
@@ -137,7 +137,7 @@ class RouterRule
     public function check($Param, $Check)
     {
         if (!isset($this->params[$Param])) {
-            throw new Phpr_SystemException(
+            throw new SystemException(
                 "Invalid router rule configuration. The parameter \"$Param\" specified in the Check instruction is not found in the rule URI: [{$this->URI}]"
             );
         }
@@ -163,7 +163,7 @@ class RouterRule
         $PathParams = Router::getURIParams(explode("/", $Folder));
         foreach ($PathParams as $Param => $Index) {
             if ($Param != Router::URL_CONTROLLER && $Param != Router::URL_ACTION && !isset($this->params[$Param])) {
-                throw new Phpr_SystemException(
+                throw new SystemException(
                     "Invalid router rule configuration. The parameter \"$Param\" specified in the Folder instruction is not found in the rule URI: [{$this->URI}]"
                 );
             }

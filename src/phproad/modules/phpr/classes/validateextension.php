@@ -7,7 +7,7 @@ use Phpr\SystemException;
  * Base class for extension validation
  * @see Phpr\Extension
  */
-class ValidateExtension extends Phpr_Extension
+class ValidateExtension extends Extension
 {
     /**
      * Executes a validation method.

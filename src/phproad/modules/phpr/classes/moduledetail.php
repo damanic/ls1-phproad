@@ -25,11 +25,11 @@ class ModuleDetail
 	
 	public function getVersion()
 	{
-		return Phpr_Version::getModuleVersion($this->id);
+		return Version::getModuleVersion($this->id);
 	}
 	
 	public function getBuild()
 	{
-		return Phpr_Version::getModuleBuild($this->id);
+		return Version::getModuleBuild($this->id);
 	}
 }

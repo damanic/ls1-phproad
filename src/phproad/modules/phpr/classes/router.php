@@ -160,7 +160,7 @@ class Router
 
                 break;
             } catch (Exception $ex) {
-                throw new Phpr_SystemException("Error routing rule [{$Rule->URI}]: " . $ex->getMessage());
+                throw new SystemException("Error routing rule [{$Rule->URI}]: " . $ex->getMessage());
             }
         }
     }
