@@ -217,8 +217,8 @@ class Validation
                 }
             }
 
-            if ($field_value instanceof DataCollection) {
-                $field_value = $field_value->as_array('id');
+            if ($FieldValue instanceof DataCollection) {
+                $FieldValue = $FieldValue->as_array('id');
             }
 
             foreach ($RuleSet->rules as $Rule) {
