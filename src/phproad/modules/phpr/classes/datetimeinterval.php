@@ -311,16 +311,16 @@ class DateTimeInterval
         }
 
         if ($mins < 60) {
-            return 'about ' . Strings::word_form($mins, 'minute', true);
+            return 'about ' . Strings::wordForm($mins, 'minute', true);
         }
 
         $hours = floor($this->getHoursTotal());
         if ($hours < 24) {
-            return 'about ' . Strings::word_form($hours, 'hour', true);
+            return 'about ' . Strings::wordForm($hours, 'hour', true);
         }
 
         $days = floor($this->getDaysTotal());
-        return Strings::word_form($days, 'day', true);
+        return Strings::wordForm($days, 'day', true);
     }
 
     /**

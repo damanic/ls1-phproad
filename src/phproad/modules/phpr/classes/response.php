@@ -81,6 +81,7 @@ class Response
      */
     public function openErrorPage($exception)
     {
+
         if (ob_get_length()) {
             ob_clean();
         }
@@ -308,8 +309,7 @@ class Response
      */
     public function cookie($Name, $Value, $Expire = 0, $Path = '/', $Domain = '', $Secure = null)
     {
-        $deprecate = new Deprecate();
-        $deprecate->setFunction('cookie', 'setCookie');
-        $this->setCookie($Name, $Value, $Expire = 0, $Path = '/', $Domain = '', $Secure = null);
+        Phpr::$deprecate->setFunction('cookie', 'setCookie');
+        $this->setCookie($Name, $Value, $Expire, $Path, $Domain, $Secure);
     }
 }

@@ -24,7 +24,7 @@ class Debug
         $time = $time_end - self::$start_times[$name];
 
         if ($add_memory_usage) {
-            $message .= ' Peak memory usage: ' . File::size_from_bytes(memory_get_peak_usage());
+            $message .= ' Peak memory usage: ' . File::sizeFromBytes(memory_get_peak_usage());
         }
 
         if ($reset_timer) {

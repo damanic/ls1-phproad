@@ -214,7 +214,7 @@ class Db_DbHelper
             $fields = array($fields);
         }
 
-        $words = Core_String::split_to_words($query);
+        $words = Phpr_Strings::splitToWords($query);
 
         $word_queries = array();
         foreach ($words as $word) {

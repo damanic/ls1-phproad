@@ -56,7 +56,7 @@ class SecurityFramework
             $salt = $this->salt($key);
         }
 
-        $strong_key = substr(md5($salt . $key), 0, $this->encryptionHandler->get_key_size());
+        $strong_key = substr(md5($salt . $key), 0, $this->encryptionHandler->getKeySize());
         $result = $this->encryptionHandler->encrypt($data, $strong_key);
 
         return self::obfuscate_data($result, $strong_key);
@@ -89,7 +89,7 @@ class SecurityFramework
             }
         }
 
-        $strong_key = substr(md5($salt . $key), 0, $this->encryptionHandler->get_key_size());
+        $strong_key = substr(md5($salt . $key), 0, $this->encryptionHandler->getKeySize());
         $data = self::deobfuscate_data($data, $strong_key);
         $result = $this->encryptionHandler->decrypt($data, $strong_key);
         $res = null;
@@ -216,8 +216,8 @@ class SecurityFramework
      */
     protected function get_mode_descriptor()
     {
-        if (method_exists($this->encryptionHandler, 'get_mode_descriptor')) {
-            return $this->encryptionHandler->get_mode_descriptor();
+        if (method_exists($this->encryptionHandler, 'getModeDescriptor')) {
+            return $this->encryptionHandler->getModeDescriptor();
         }
     }
 

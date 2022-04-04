@@ -56,4 +56,23 @@ class File
     {
         return pathinfo($file_path, PATHINFO_EXTENSION);
     }
+
+    /**
+     * Outputs the content of a given file path
+     */
+    public static function print($filePath)
+    {
+        $chunksize = 1 * (1024 * 1024); // how many bytes per chunk
+        $buffer = '';
+        $handle = fopen($filePath, 'rb');
+        if ($handle === false) {
+            return false;
+        }
+        while (!feof($handle)) {
+            $buffer = fread($handle, $chunksize);
+            print $buffer;
+        }
+        return fclose($handle);
+    }
+
 }

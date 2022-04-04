@@ -719,7 +719,7 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
         }
 
         if (!$has_foreign_key) {
-            $options['foreign_key'] = Phpr_Inflector::foreign_key($this->table_name, $object->primary_key);
+            $options['foreign_key'] = Phpr_Inflector::foreignKey($this->table_name, $object->primary_key);
         }
 
         $foreignKey = $options['foreign_key'];
@@ -1063,8 +1063,8 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
                 $options = array_merge(
                     array(
                     'join_table' => $this->get_join_table_name($this->table_name, $object->table_name),
-                    'primary_key' => Phpr_Inflector::foreign_key($this->table_name, $this->primary_key),
-                    'foreign_key' => Phpr_Inflector::foreign_key($object->table_name, $object->primary_key)
+                    'primary_key' => Phpr_Inflector::foreignKey($this->table_name, $this->primary_key),
+                    'foreign_key' => Phpr_Inflector::foreignKey($object->table_name, $object->primary_key)
                     ), Phpr_Util::splat($relation_info)
                 );
 
@@ -1842,7 +1842,7 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
                     $has_primary_key = $has_foreign_key = false;
                     $options = $this->get_relation_options('belongs_to', $name, $has_primary_key, $has_foreign_key);
                     if (!$has_foreign_key) {
-                        $options['foreign_key'] = Phpr_Inflector::foreign_key($value->table_name, $this->primary_key);
+                        $options['foreign_key'] = Phpr_Inflector::foreignKey($value->table_name, $this->primary_key);
                     }
 
                     $this->{$options['foreign_key']} = $value->{$options['primary_key']};
@@ -2017,18 +2017,18 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
             case 'has_one':
                 //$object->where($object->primary_key . ' = ?', $this->{$options['foreign_key']});
                 if (!$has_foreign_key) {
-                    $options['foreign_key'] = Phpr_Inflector::foreign_key($this->table_name, $object->primary_key);
+                    $options['foreign_key'] = Phpr_Inflector::foreignKey($this->table_name, $object->primary_key);
                 }
 
                 $object->where($options['foreign_key'] . ' = ?', $this->{$options['primary_key']});
                 break;
             case 'has_many':
                 if (!$has_foreign_key) {
-                    $options['foreign_key'] = Phpr_Inflector::foreign_key($this->table_name, $object->primary_key);
+                    $options['foreign_key'] = Phpr_Inflector::foreignKey($this->table_name, $object->primary_key);
                 }
 
                 if (!$has_primary_key) {
-                    $options['primary_key'] = Phpr_Inflector::foreign_key($this->table_name, $this->primary_key);
+                    $options['primary_key'] = Phpr_Inflector::foreignKey($this->table_name, $this->primary_key);
                 }
 
                 $object->where($options['foreign_key'] . ' = ?', $this->get_primary_key_value());
@@ -2039,7 +2039,7 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
                 }
 
                 if (!$has_primary_key) {
-                    $options['primary_key'] = Phpr_Inflector::foreign_key($this->table_name, $this->primary_key);
+                    $options['primary_key'] = Phpr_Inflector::foreignKey($this->table_name, $this->primary_key);
                 }
 
                 if (isset($options['join_primary_key'])) {
@@ -2047,7 +2047,7 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
                 }
 
                 if (!$has_foreign_key) {
-                    $options['foreign_key'] = Phpr_Inflector::foreign_key(
+                    $options['foreign_key'] = Phpr_Inflector::foreignKey(
                         $object->table_name,
                         $object->primary_key
                     );
@@ -2068,7 +2068,7 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
                 break;
             case 'belongs_to':
                 if (!$has_foreign_key) {
-                    $options['foreign_key'] = Phpr_Inflector::foreign_key($object->table_name, $this->primary_key);
+                    $options['foreign_key'] = Phpr_Inflector::foreignKey($object->table_name, $this->primary_key);
                 }
 
                 $object->where($options['primary_key'] . ' = ?', $this->{$options['foreign_key']});
@@ -2168,7 +2168,7 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
         $default_options = array(
             'class_name' => Phpr_Inflector::classify($name),
             'primary_key' => $this->primary_key,
-            'foreign_key' => Phpr_Inflector::foreign_key($name, $this->primary_key),
+            'foreign_key' => Phpr_Inflector::foreignKey($name, $this->primary_key),
             'conditions' => null,
             'order' => null,
             'limit' => null,
@@ -2278,7 +2278,7 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
                 case 'has_many':
                     $defaults = array(
                         'class_name' => Phpr_Inflector::classify($name),
-                        'foreign_key' => Phpr_Inflector::foreign_key($this->table_name, $this->primary_key)
+                        'foreign_key' => Phpr_Inflector::foreignKey($this->table_name, $this->primary_key)
                     );
 
                     if (is_array($info['relation'])) {
@@ -2353,14 +2353,14 @@ class Db_ActiveRecord extends Db_SqlBase implements IteratorAggregate
                     }
 
                     if (!isset($options['primary_key'])) {
-                        $options['primary_key'] = Phpr_Inflector::foreign_key(
+                        $options['primary_key'] = Phpr_Inflector::foreignKey(
                             $this->table_name,
                             $this->primary_key
                         );
                     }
 
                     if (!isset($options['foreign_key'])) {
-                        $options['foreign_key'] = Phpr_Inflector::foreign_key(
+                        $options['foreign_key'] = Phpr_Inflector::foreignKey(
                             $object->table_name,
                             $object->primary_key
                         );

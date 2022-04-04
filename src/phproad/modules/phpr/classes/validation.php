@@ -1,6 +1,7 @@
 <?php
 namespace Phpr;
 
+use Phpr;
 use Phpr\Deprecate;
 use Phpr\SystemException;
 use Phpr\ValidationException;
@@ -474,8 +475,7 @@ class Validation
     public function __get($name)
     {
         if ($name === '_fields') {
-            $deprecate = new Deprecate();
-            $deprecate->setClassProperty('_fields', 'fields');
+            Phpr::$deprecate->setClassProperty('_fields', 'fields');
             return $this->getFields();
         }
     }

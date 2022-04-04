@@ -28,7 +28,7 @@ class Phpr
      * Configuration object.
      * Provides array access to the configuration options.
      *
-     * @var Phpr_Config
+     * @var Phpr\Config
      */
     public static $config = null;
 
@@ -37,21 +37,21 @@ class Phpr
      * This object is used by the PHP Road for finding and loading classses.
      * Use this object to register a directories containing your application classes.
      *
-     * @var Phpr_ClassLoader
+     * @var Phpr\ClassLoader
      */
     public static $classLoader = null;
 
     /**
      * Error logging object. Allows the application to maintain the error log.
      *
-     * @var Phpr_ErrorLog
+     * @var Phpr\ErrorLog
      */
     public static $errorLog = null;
 
     /**
      * Trace logging object. Allows the application to write the tracing messages to the trace log(s).
      *
-     * @var Phpr_TraceLog
+     * @var Phpr\TraceLog
      */
     public static $traceLog = null;
 
@@ -65,14 +65,14 @@ class Phpr
     /**
      * Response object. Use this object for open the local URI's, redirect browser, show the 404 page and so on.
      *
-     * @var Phpr_Response
+     * @var Phpr\Response
      */
     public static $response = null;
 
     /**
      * Request object. Use this object to access the Post and Cookie variables.
      *
-     * @var Phpr_Request
+     * @var Phpr\Request
      */
     public static $request = null;
 
@@ -86,30 +86,37 @@ class Phpr
     /**
      * Security object. Provides a basic security features based on cookies.
      *
-     * @var Phpr_Security
+     * @var Phpr\Security
      */
     public static $security = null;
 
     /**
      * Front-end security object.
      *
-     * @var Phpr_Security
+     * @var Phpr\Security
      */
     public static $frontend_security = null;
 
     /**
      * Security object. The session support allows you to register arbitrary variables to be preserved across requests.
      *
-     * @var Phpr_Session
+     * @var Phpr\Session
      */
     public static $session = null;
 
     /**
      * Events object. The events allows you to add and fire events.
      *
-     * @var Phpr_Session
+     * @var Phpr\Events
      */
     public static $events = null;
+
+    /**
+     * Deprecate object. Allows you to mark deprecated classes and methods.
+     *
+     * @var Phpr\Deprecate
+     */
+    public static $deprecate;
 
     /**
      * Determine if all PHPR foundation objects have been initialized

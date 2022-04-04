@@ -107,7 +107,7 @@ class Phpr_Language
 
             $this->_moduleLocManagers[$Module] = new Phpr_LocalizationManager(
                 $this->_language,
-                $ModulePath . '/localization'
+                $ModulePath . '/locale'
             );
         }
 

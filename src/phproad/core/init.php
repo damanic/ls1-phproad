@@ -113,6 +113,10 @@ Phpr::$session = new Phpr_Session();
  */
 Phpr::$security = new Phpr_Security();
 
+// Internal deprecation
+Phpr::$deprecate = new Phpr_Deprecate();
+Phpr_Deprecate::$suppressReported = true;
+
 /*
  * Configure the application and initialize the request object
  */

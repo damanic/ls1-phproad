@@ -132,7 +132,7 @@ class Db_DeferredBinding extends Db_ActiveRecord
             }
 
             if (!$has_foreign_key) {
-                $options['foreign_key'] = Phpr_Inflector::foreign_key(
+                $options['foreign_key'] = Phpr_Inflector::foreignKey(
                     $master_object->table_name,
                     $relatedObj->primary_key
                 );

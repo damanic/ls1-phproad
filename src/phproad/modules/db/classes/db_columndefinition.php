@@ -587,7 +587,7 @@ class Db_ColumnDefinition
                 switch ($relationType) {
                 case 'has_one':
                     if (!$has_foreign_key) {
-                        $options['foreign_key'] = Phpr_Inflector::foreign_key(
+                        $options['foreign_key'] = Phpr_Inflector::foreignKey(
                             $this->_model->table_name,
                             $object->primary_key
                         );
@@ -634,14 +634,14 @@ class Db_ColumnDefinition
                 }
 
                 if (!$has_primary_key) {
-                    $options['primary_key'] = Phpr_Inflector::foreign_key(
+                    $options['primary_key'] = Phpr_Inflector::foreignKey(
                         $this->_model->table_name,
                         $this->_model->primary_key
                     );
                 }
 
                 if (!$has_foreign_key) {
-                    $options['foreign_key'] = Phpr_Inflector::foreign_key(
+                    $options['foreign_key'] = Phpr_Inflector::foreignKey(
                         $object->table_name,
                         $object->primary_key
                     );

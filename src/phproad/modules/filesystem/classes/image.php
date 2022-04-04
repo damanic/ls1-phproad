@@ -427,4 +427,47 @@ class Image
         return array('optimal_width' => $optimal_width, 'optimal_height' => $optimal_height);
     }
 
+
+    /**
+     * @deprecated
+     */
+    public static function makeThumbnail(
+        $srcPath,
+        $destPath,
+        $destWidth,
+        $destHeight,
+        $forceGd = false,
+        $mode = 'keep_ratio',
+        $returnJpeg = true
+    ) {
+        Phpr::$deprecate->setFunction('makeThumbnail', 'makeThumb');
+        self::makeThumb(
+            $srcPath,
+            $destPath,
+            $destWidth,
+            $destHeight,
+            $forceGd,
+            $mode,
+            $returnJpeg
+        );
+    }
+
+    /**
+     * @deprecated
+     */
+    public static function createThumbnailName($path, $width, $height, $mode = 'keep_ratio')
+    {
+        Phpr::$deprecate->setFunction('createThumbnailName', 'createThumbName');
+        self::createThumbName($path,$width, $height, $mode );
+    }
+
+    /**
+     * @deprecated
+     */
+    public static function deleteImageThumbnails($path)
+    {
+        Phpr::$deprecate->setFunction('deleteImageThumbnails', 'deleteImageThumbs');
+        self::deleteImageThumbs($path);
+    }
+
 }

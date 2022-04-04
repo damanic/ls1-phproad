@@ -227,5 +227,5 @@ function radio_state( $value )
  */
 function root_url( $value = '/', $add_host_name_and_protocol = false, $protocol = null )
 {
-    return Phpr_Url::root_url($value, $add_host_name_and_protocol, $protocol);
+    return Phpr_Url::rootUrl($value, $add_host_name_and_protocol, $protocol);
 }

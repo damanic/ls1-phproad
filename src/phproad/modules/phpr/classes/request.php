@@ -209,8 +209,8 @@ class Request
     public function isAdmin()
     {
         $request_param_name = Phpr::$config->get('REQUEST_PARAM_NAME', 'q');
-        $admin_url = '/' . Strings::normalize_uri(Phpr::$config->get('ADMIN_URL', 'admin'));
-        $current_url = '/' . Strings::normalize_uri(
+        $admin_url = '/' . Strings::normalizeUri(Phpr::$config->get('ADMIN_URL', 'admin'));
+        $current_url = '/' . Strings::normalizeUri(
                 isset($_REQUEST[$request_param_name]) ? $_REQUEST[$request_param_name] : ''
             );
 
@@ -750,8 +750,7 @@ class Request
      */
     public static function array_strip_slashes(&$value)
     {
-        $deprecate = new Deprecate();
-        $deprecate->setFunction('array_strip_slashes');
+        Phpr::$deprecate->setFunction('array_strip_slashes');
         $value = stripslashes($value);
     }
 
@@ -770,8 +769,7 @@ class Request
      */
     public function get_query_string($include_request_name = false)
     {
-        $deprecate = new Deprecate();
-        $deprecate->setFunction('get_query_string', 'getQueryString');
+        Phpr::$deprecate->setFunction('get_query_string', 'getQueryString');
         return $this->getQueryString($include_request_name);
     }
 
@@ -780,8 +778,7 @@ class Request
      */
     public function protocol()
     {
-        $deprecate = new Deprecate();
-        $deprecate->setFunction('protocol', 'getProtocol');
+        Phpr::$deprecate->setFunction('protocol', 'getProtocol');
         return $this->getProtocol();
     }
 
@@ -800,8 +797,7 @@ class Request
      */
     public function post_array_item($arrayName, $name, $default = null)
     {
-        $deprecate = new Deprecate();
-        $deprecate->setFunction('post_array_item', 'postArray');
+        Phpr::$deprecate->setFunction('post_array_item', 'postArray');
         return $this->postArray($arrayName, $name, $default);
     }
 
@@ -822,8 +818,7 @@ class Request
     public function __get($name)
     {
         if ($name === 'get_fields') {
-            $deprecate = new Deprecate();
-            $deprecate->setClassProperty('get_fields', 'getFields');
+            Phpr::$deprecate->setClassProperty('get_fields', 'getFields');
             return $this->getFields;
         }
     }
@@ -831,8 +826,7 @@ class Request
     public function __set($name, $value)
     {
         if ($name === 'get_fields') {
-            $deprecate = new Deprecate();
-            $deprecate->setClassProperty('get_fields', 'getFields');
+            Phpr::$deprecate->setClassProperty('get_fields', 'getFields');
             $this->getFields = $value;
         }
     }
