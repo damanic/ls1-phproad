@@ -284,8 +284,8 @@ class Image
     public static function createThumbName($path, $width, $height, $mode = 'keep_ratio')
     {
         return md5(dirname($path)) . basename($path) . '_' . filemtime(
-                PATH_PUBLIC . $path
-            ) . '_' . $width . 'x' . $height . '_' . $mode . '.jpg';
+            PATH_PUBLIC . $path
+        ) . '_' . $width . 'x' . $height . '_' . $mode . '.jpg';
     }
 
     /**
@@ -313,12 +313,12 @@ class Image
     private static function createImage($extension, $source_path)
     {
         switch ($extension) {
-            case 'jpeg' :
-            case 'jpg' :
+            case 'jpeg':
+            case 'jpg':
                 return @imagecreatefromjpeg($source_path);
-            case 'png' :
+            case 'png':
                 return @imagecreatefrompng($source_path);
-            case 'gif' :
+            case 'gif':
                 return @imagecreatefromgif($source_path);
         }
 
@@ -366,12 +366,10 @@ class Image
     // Reserved for future use
     private static function getSizeByAuto($width, $height, $new_width, $new_height)
     {
-        if ($height < $width) // Image to be resized is wider (landscape)
-        {
+        if ($height < $width) { // Image to be resized is wider (landscape)
             $optimal_width = $new_width;
             $optimal_height = self::getSizeByFixedWidth($width, $height, $new_width);
-        } elseif ($height > $width) // Image to be resized is taller (portrait)
-        {
+        } elseif ($height > $width) { // Image to be resized is taller (portrait)
             $optimal_width = self::getSizeByFixedHeight($width, $height, $new_height);
             $optimal_height = $new_height;
         } else // Source image is a square
@@ -458,7 +456,7 @@ class Image
     public static function createThumbnailName($path, $width, $height, $mode = 'keep_ratio')
     {
         Phpr::$deprecate->setFunction('createThumbnailName', 'createThumbName');
-        self::createThumbName($path,$width, $height, $mode );
+        return self::createThumbName($path, $width, $height, $mode);
     }
 
     /**
@@ -469,5 +467,4 @@ class Image
         Phpr::$deprecate->setFunction('deleteImageThumbnails', 'deleteImageThumbs');
         self::deleteImageThumbs($path);
     }
-
 }

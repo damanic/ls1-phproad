@@ -118,6 +118,6 @@ class Url
     public static function get_params($url)
     {
         Phpr::$deprecate->setFunction('get_params','getParams');
-        self::getParams($url);
+        return self::getParams($url);
     }
 }

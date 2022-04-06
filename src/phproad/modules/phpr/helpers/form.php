@@ -425,7 +425,7 @@ class Form
     public static function open_tag($attributes = array())
     {
         Phpr::$deprecate->setFunction('open_tag', 'openTag');
-        self::openTag($attributes);
+        return self::openTag($attributes);
     }
 
     /**
@@ -434,7 +434,7 @@ class Form
     public static function close_tag()
     {
         Phpr::$deprecate->setFunction('close_tag', 'closeTag');
-        self::closeTag();
+        return self::closeTag();
     }
 
 }

@@ -307,7 +307,7 @@ class Strings
     public static function word_form($n, $word, $add_number = false)
     {
         Phpr::$deprecate->setFunction('word_form', 'wordForm');
-        self::wordForm($n, $word, $add_number);
+        return self::wordForm($n, $word, $add_number);
     }
 
 }

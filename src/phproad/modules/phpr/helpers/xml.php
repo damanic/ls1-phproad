@@ -223,7 +223,7 @@ class Xml
     public static function create_node($document, $parent = null, $field, $value = null, $use_cdata = false)
     {
         Phpr::$deprecate->setFunction('create_node', 'createNode');
-        self::createNode($document, $parent, $field, $value, $use_cdata);
+        return self::createNode($document, $parent, $field, $value, $use_cdata);
     }
 
     /**
@@ -232,7 +232,7 @@ class Xml
     public static function create_cdata($document, $parent, $value)
     {
         Phpr::$deprecate->setFunction('create_cdata', 'createCdata');
-        self::createCdata($document, $parent, $value);
+        return self::createCdata($document, $parent, $value);
     }
 
     /**
@@ -241,7 +241,7 @@ class Xml
     public static function from_plain_array($params = array(), $root_node = 'data', $use_cdata = false)
     {
         Phpr::$deprecate->setFunction('from_plain_array', 'fromPlainArray');
-        self::fromPlainArray($params, $root_node, $use_cdata);
+        return self::fromPlainArray($params, $root_node, $use_cdata);
     }
 
     /**
@@ -250,7 +250,7 @@ class Xml
     public static function to_plain_array($xml_string, $use_parent_keys = false)
     {
         Phpr::$deprecate->setFunction('to_plain_array', 'toPlainArray');
-        self::toPlainArray($xml_string, $use_parent_keys);
+        return self::toPlainArray($xml_string, $use_parent_keys);
     }
 
 
@@ -260,7 +260,7 @@ class Xml
     public static function from_array($params = array(), $root_node = 'data', $use_cdata = false, &$document = null)
     {
         Phpr::$deprecate->setFunction('from_array', 'fromArray');
-        self::fromArray($params, $root_node, $use_cdata, $document);
+        return self::fromArray($params, $root_node, $use_cdata, $document);
     }
 
     /**
@@ -269,7 +269,7 @@ class Xml
     public static function to_array($xml_data)
     {
         Phpr::$deprecate->setFunction('to_array', 'toArray');
-        self::toArray($xml_data);
+        return self::toArray($xml_data);
     }
 
     /**
@@ -278,7 +278,6 @@ class Xml
     public static function beautify_xml($xml)
     {
         Phpr::$deprecate->setFunction('beautify_xml', 'beautifyXml');
-        self::beautifyXml($xml);
+        return self::beautifyXml($xml);
     }
-
 }
