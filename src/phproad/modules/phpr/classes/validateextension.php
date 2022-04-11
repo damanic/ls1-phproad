@@ -27,4 +27,11 @@ class ValidateExtension extends Extension
         throw new SystemException('Validation method ' . $method . ' not found in ' . get_class($this));
     }
 
+    /**
+     * @deprecated
+     */
+    public function _execValidation($method, $name, $value){
+        return $this->execValidation($method,$name,$value);
+    }
+
 }
