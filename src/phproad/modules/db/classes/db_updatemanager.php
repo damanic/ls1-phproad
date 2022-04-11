@@ -1,7 +1,8 @@
 <?php
 
 /**
- * Manages module updates
+ * @todo deprecate
+ * See: Db\Update_Manger
  */
 class Db_UpdateManager
 {

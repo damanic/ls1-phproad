@@ -59,7 +59,7 @@ class Db_Base extends Phpr_Validatable
         //            if ($value == '*')
         //                return $value;
 
-        if ($value instanceof Phpr_DateTime) {
+        if ($value instanceof \Phpr\DateTime) {
             $value = $value->toSqlDateTime();
         }
 

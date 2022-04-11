@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @deprecated
+ * Use: Phpr\User_Parameters
+ */
 class Db_UserParameters
 {
     private static $_parameterCache = null;

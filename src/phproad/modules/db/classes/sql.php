@@ -441,7 +441,7 @@ class Sql extends Sql_Where
     public function sql_update($table, $bind, $where, $order = '')
     {
         // is the $where a WhereBase object?
-        if ($where instanceof WhereBase) {
+        if ($where instanceof \Db\WhereBase) {
             $where = $where->build_where();
         }
 
@@ -480,7 +480,7 @@ class Sql extends Sql_Where
     public function sql_delete($table, $where)
     {
         // is the $where a WhereBase object?
-        if ($where instanceof WhereBase) {
+        if ($where instanceof \Db\WhereBase) {
             $where = $where->build_where();
         }
 

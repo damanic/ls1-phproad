@@ -1,4 +1,8 @@
 <?php
+namespace Db;
+
+use Phpr;
+use Phpr\SystemException;
 
 define('frm_text', 'text');
 define('frm_password', 'password');
@@ -26,7 +30,7 @@ define('frm_widget', 'widget');
 /**
  * Represents a model form field definition.
  * Objects of this class are used for defining form field properties in models.
- * {@link Db_ListBehavioer List Behavior} use data from
+ * {@link Db_ListBehavior List Behavior} use data from
  * form definition objects to display fields in forms.
  *
  * Almost every class property has a method with a matching name and usually properties are not used directly.
@@ -37,7 +41,7 @@ define('frm_widget', 'widget');
  * @author       LemonStand eCommerce Inc.
  * @package      core.classes
  */
-class Db_FormFieldDefinition extends Db_FormElement
+class FormFieldDefinition extends FormElement
 {
     /**
      * @var          string Specifies the database column or relation name.
@@ -404,7 +408,7 @@ class Db_FormFieldDefinition extends Db_FormElement
 
         $column_definitions = $model->get_column_definitions();
         if (!array_key_exists($dbName, $column_definitions)) {
-            throw new Phpr_SystemException(
+            throw new SystemException(
                 "Column {$modelClass}.{$dbName} cannot be added to a form because it is not defined with define_column method call."
             );
         }
@@ -416,7 +420,7 @@ class Db_FormFieldDefinition extends Db_FormElement
             array('belongs_to', 'has_many', 'has_and_belongs_to_many')
         )
         ) {
-            throw new Phpr_SystemException(
+            throw new SystemException(
                 "Error adding form field $dbName. Form fields can only be defined for the belongs_to, has_and_belongs_to_many and has_many relations. {$this->_columnDefinition->referenceType} associations are not supported."
             );
         }

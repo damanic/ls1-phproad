@@ -211,14 +211,14 @@ class Validation
             if (!is_object($Data)) {
                 $FieldValue = isset($SrcArr[$ParamName]) ? $SrcArr[$ParamName] : null;
             } else {
-                if (!($Data instanceof Db_ActiveRecord)) {
+                if (!($Data instanceof \Db\ActiveRecord)) {
                     $FieldValue = $Data->$ParamName;
                 } else {
                     $FieldValue = $Data->getDeferredValue($ParamName, $deferred_session_key);
                 }
             }
 
-            if ($FieldValue instanceof DataCollection) {
+            if ($FieldValue instanceof \Db\DataCollection) {
                 $FieldValue = $FieldValue->as_array('id');
             }
 
@@ -284,7 +284,7 @@ class Validation
                 if ($Data === null) {
                     $_POST[$fieldName] = $fieldValue;
                 } elseif (is_object($Data)) {
-                    if (!($Data instanceof Db_ActiveRecord)) {
+                    if (!($Data instanceof \Db\ActiveRecord)) {
                         $Data->$fieldName = $fieldValue;
                     } else {
                         $Data->setDeferredValue($fieldName, $fieldValue, $deferred_session_key);

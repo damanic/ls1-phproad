@@ -716,7 +716,7 @@ class Db_FormBehavior extends Phpr_ControllerBehavior
 
             if ($keyValue !== -1) {
                 $assignedValues = array();
-                if ($keyValue instanceof Db_DataCollection) {
+                if ($keyValue instanceof \Db\DataCollection) {
                     if (!$keyValue->count()) {
                         return array();
                     }
@@ -827,7 +827,7 @@ class Db_FormBehavior extends Phpr_ControllerBehavior
         }
 
         foreach ($model->$dbName as $record) {
-            if ($record instanceof Db_ActiveRecord) {
+            if ($record instanceof \Db\ActiveRecord) {
                 if ($record->get_primary_key_value() == $value) {
                     return true;
                 }
@@ -1068,7 +1068,7 @@ class Db_FormBehavior extends Phpr_ControllerBehavior
         $postData = post($modelClass, array());
 
         foreach ($model->form_elements as $form_element) {
-            if (!($form_element instanceof Db_FormFieldDefinition)) {
+            if (!($form_element instanceof \Db\FormFieldDefinition)) {
                 continue;
             }
 

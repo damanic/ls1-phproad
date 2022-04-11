@@ -466,7 +466,7 @@ class ValidationRules
      */
     protected function evalUnique($Name, $Value, &$Params, $CustomMessage, &$obj)
     {
-        if (!($obj instanceof ActiveRecord) || !strlen($Value)) {
+        if (!($obj instanceof \Db\ActiveRecord) || !strlen($Value)) {
             return true;
         }
 
@@ -524,7 +524,7 @@ class ValidationRules
     {
         if (!is_array($Value) && !($Value instanceof Db_DataCollection)) {
             $result = trim($Value) != '' ? true : false;
-        } elseif ($Value instanceof Db_DataCollection) {
+        } elseif ($Value instanceof \Db\DataCollection) {
             $result = $Value->count() ? true : false;
         } else {
             $result = count($Value) ? true : false;

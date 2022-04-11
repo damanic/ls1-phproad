@@ -33,7 +33,7 @@ class Sql_Where extends Sql_Base
         // Off $cond
         array_shift($args);
 
-        if ($cond instanceof Sql_Where) {
+        if ($cond instanceof \Db\Sql_Where) {
             $cond = $cond->build_where();
         } else {
             if (!self::$getMatches) {

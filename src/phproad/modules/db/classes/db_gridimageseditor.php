@@ -4,7 +4,7 @@ class Db_GridImagesEditor extends Db_GridEditor
 {
     public function __construct($model)
     {
-        if (!($model instanceof Db_MemoryCacheable)) {
+        if (!($model instanceof \Db\MemoryCacheable)) {
             throw new Phpr_SystemException(
                 sprintf(
                     'Model %s should implement the Db_MemoryCacheable interface in order to be used with Db_GridImages editor'

@@ -1,7 +1,7 @@
 <?php
 
-/*
- * Sortable model extension
+/**
+ * @deprecated
  */
 
 /*

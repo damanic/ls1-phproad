@@ -63,7 +63,7 @@ class DataCollection implements ArrayAccess, IteratorAggregate, Countable
 
     public function offsetSet($offset, $value)
     {
-        if (!is_null($this->parent) && ($this->parent instanceof Db\ActiveRecord)) {
+        if (!is_null($this->parent) && ($this->parent instanceof \Db\ActiveRecord)) {
             $this->parent->bind($this->relation, $value);
         }
 
@@ -405,7 +405,7 @@ class DataCollection implements ArrayAccess, IteratorAggregate, Countable
      */
     public function add($record, $deferred_session_key = null)
     {
-        if (is_null($this->parent) || !($this->parent instanceof ActiveRecord)) {
+        if (is_null($this->parent) || !($this->parent instanceof \Db\ActiveRecord)) {
             return;
         }
         $this->parent->bind($this->relation, $record, $deferred_session_key);
@@ -426,7 +426,7 @@ class DataCollection implements ArrayAccess, IteratorAggregate, Countable
      */
     public function delete($record, $deferred_session_key = null)
     {
-        if (is_null($this->parent) || !($this->parent instanceof ActiveRecord)) {
+        if (is_null($this->parent) || !($this->parent instanceof \Db\ActiveRecord)) {
             return;
         }
 
@@ -444,7 +444,7 @@ class DataCollection implements ArrayAccess, IteratorAggregate, Countable
      */
     public function clear($deferred_session_key = null)
     {
-        if (is_null($this->parent) || !($this->parent instanceof ActiveRecord)) {
+        if (is_null($this->parent) || !($this->parent instanceof \Db\ActiveRecord)) {
             return;
         }
 

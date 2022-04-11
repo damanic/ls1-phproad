@@ -1,10 +1,10 @@
-<?php
+<?php namespace Db;
 
-/**
- * @deprecated
+/*
+ * Interface for models which cache records in the memory
  */
 
-interface Db_MemoryCacheable
+interface MemoryCacheable
 {
     /*
      * Returns a record by its identifier. If the record exists in the cache,

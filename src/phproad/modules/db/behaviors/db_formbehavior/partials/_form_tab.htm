@@ -10,7 +10,7 @@
 			<ul class="formElements">
 			<? foreach ($collapsable as $element): ?>
 				<? 
-					if ($this->form_preview_mode && $element instanceof Db_FormFieldDefinition && $element->noPreview)
+					if ($this->form_preview_mode && $element instanceof \Db\FormFieldDefinition && $element->noPreview)
 				 		continue;
 				?>
 	
@@ -27,7 +27,7 @@
 <ul class="formElements">
 <? foreach ($non_collapsable as $element): ?>
 	<? 
-		if ($this->form_preview_mode && $element instanceof Db_FormFieldDefinition && $element->noPreview)
+		if ($this->form_preview_mode && $element instanceof \Db\FormFieldDefinition && $element->noPreview)
 	 		continue;
 	?>
 	

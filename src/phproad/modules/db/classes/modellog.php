@@ -1,10 +1,18 @@
-<?php
+<?php namespace Db;
+
+use DOMDocument;
+use DOMElement;
+
+use Phpr;
+use Phpr\Extension;
+use Phpr\Xml;
+use Db\Helper as DbHelper;
 
 /**
  * Adds logging functionality to model classes.
  * Only fields defined with the method define_column are considered.
  */
-class Db_ModelLog extends Phpr_Extension
+class ModelLog extends Extension
 {
     const typeCreate = 'create';
     const typeUpdate = 'update';
@@ -166,7 +174,7 @@ class Db_ModelLog extends Phpr_Extension
      *
      * @param bool $log_active_user If set to false, lookup of active user will not be performed
      *
-     * @return Db_ActiveRecord The model deleted
+     * @return ActiveRecord The model deleted
      */
     public function modelLogOnModelDeleted($log_active_user = true)
     {
@@ -189,7 +197,7 @@ class Db_ModelLog extends Phpr_Extension
      * they can be compared against created/updated values to
      * identify changed fields.
      *
-     * @return Db_ActiveRecord The model under consideration
+     * @return ActiveRecord The model under consideration
      */
     public function modelLogOnModelLoaded()
     {
@@ -253,7 +261,7 @@ class Db_ModelLog extends Phpr_Extension
     public function modelLogFind()
     {
         $primary_key = $this->_model->primary_key;
-        $records = Db_ModelLogRecord::create();
+        $records = ModelLogRecord::create();
         $records->where('master_object_class=?', get_class($this->_model));
         $records->where('master_object_id=?', $this->_model->$primary_key);
         return $records;
@@ -266,7 +274,7 @@ class Db_ModelLog extends Phpr_Extension
     private function createLogRecord($type, $content, $user = null)
     {
         $primaryKey = $this->_model->primary_key;
-        $record = new Db_ModelLogRecord();
+        $record = new ModelLogRecord();
         $record->master_object_class = get_class($this->_model);
         $record->master_object_id = $this->_model->$primaryKey;
         $record->param_data = $content;
@@ -292,14 +300,14 @@ class Db_ModelLog extends Phpr_Extension
         $where = 'master_object_class=:class AND master_object_id=:id';
         $bind = array('class' => get_class($this->_model), 'id' => $this->_model->$primary_key);
 
-        $count = Db_Helper::scalar('select count(*) from db_model_logs where ' . $where, $bind);
+        $count = DbHelper::scalar('select count(*) from db_model_logs where ' . $where, $bind);
         $offset = $count - $number_to_keep;
 
         if ($offset <= 0) {
             return;
         }
 
-        Db_Helper::query(
+        DbHelper::query(
             'delete from db_model_logs where ' . $where . ' order by record_datetime limit ' . $offset,
             $bind
         );

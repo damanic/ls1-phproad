@@ -534,7 +534,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
 
         $cachingCase = false;
 
-        if ($id instanceof Db\WhereBase) {
+        if ($id instanceof \Db\WhereBase) {
             $this->where($id);
         } elseif (is_array($id)) {
             $this->where($this->primary_key . ' IN (?)', $id);
@@ -586,7 +586,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
     {
         $result = $this->find_all_internal($id, $include, $form_context);
 
-        if ($result instanceof Db\ActiveRecord) {
+        if ($result instanceof \Db\ActiveRecord) {
             $result = new DataCollection(array($result));
         } else {
             if (!$result) {
@@ -614,7 +614,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
             $result[] = new ActiverecordProxy($row['id'], get_class($this), $row, $this->strict);
         }
 
-        if ($result instanceof ActiverecordProxy) {
+        if ($result instanceof \Db\ActiverecordProxy) {
             $result = new DataCollection(array($result));
         }
 
@@ -648,7 +648,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
 
     public function find_by_sql($sql, $include = array())
     {
-        if ($sql instanceof Db\Sql) {
+        if ($sql instanceof \Db\Sql) {
             $sql = $sql->build_sql();
         }
 
@@ -1258,7 +1258,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
             }
 
             return new PhprDateTime($value);
-        } elseif ($value instanceof Phpr\DateTime) {
+        } elseif ($value instanceof \Phpr\DateTime) {
             return $value->toSqlDateTime();
         }
 
@@ -1517,7 +1517,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
         }
 
         // update updated_user_id column
-        if ($this->auto_footprints && !($this instanceof Phpr\User) && $this->field('updated_user_id')) {
+        if ($this->auto_footprints && !($this instanceof \Phpr\User) && $this->field('updated_user_id')) {
             $user = Phpr::$security->getUser();
             if ($user) {
                 $new_values['updated_user_id'] = $this->updated_user_id = $user->id;
@@ -1534,12 +1534,12 @@ class ActiveRecord extends Sql implements IteratorAggregate
 
                 $new_value = $new_values[$key];
 
-                if (is_object($value) && $value instanceof Phpr\DateTime && !is_object($new_value)) {
+                if (is_object($value) && $value instanceof \Phpr\DateTime && !is_object($new_value)) {
                     $new_value = $this->type_cast_date($new_value, $key);
                 }
 
                 if (is_object($value) && is_object($new_value)) {
-                    if ($value instanceof Phpr\DateTime && $new_value instanceof Phpr\DateTime) {
+                    if ($value instanceof Phpr\DateTime && $new_value instanceof \Phpr\DateTime) {
                         $equal = $value->equals($new_value);
                     }
                 } else {
@@ -1835,7 +1835,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
             // this if checks if first its an object if its parent is ActiveRecord
             $is_object = is_object($value);
 
-            if ($is_object && ($value instanceof Db\ActiveRecord)) {
+            if ($is_object && ($value instanceof \Db\ActiveRecord)) {
                 if (!is_null($this->has_one) && array_key_exists($name, $this->has_one)) {
                     $primary_key = $value->primary_key;
                     if (isset($this->has_one[$name]['foreign_key'])) {
@@ -1864,7 +1864,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
                     $this->{$options['foreign_key']} = $value->{$options['primary_key']};
                 }
                 // this elseif checks if its an array of objects and if its parent is ActiveRecord
-            } elseif (is_array($value) || ($is_object && ($value instanceof Db\DataCollection))) {
+            } elseif (is_array($value) || ($is_object && ($value instanceof \Db\DataCollection))) {
                 // update (replace) related records
                 if (isset($this->has_models[$name])) {
                     $type = $this->has_models[$name];
@@ -1873,9 +1873,9 @@ class ActiveRecord extends Sql implements IteratorAggregate
                     }
 
                     $this->unbind_all($name);
-                    if ($value instanceof Db\ActiveRecord) {
+                    if ($value instanceof \Db\ActiveRecord) {
                         $this->bind($name, $value);
-                    } elseif (($value instanceof Db\DataCollection) || is_array($value)) {
+                    } elseif (($value instanceof \Db\DataCollection) || is_array($value)) {
                         foreach ($value as $record) {
                             $this->bind($name, $record);
                         }
@@ -2012,7 +2012,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
 
         // Apply params filter
         if (!is_null($params)) {
-            if ($params instanceof Db\WhereBase) {
+            if ($params instanceof \Db\WhereBase) {
                 $object->where($params);
             } elseif (is_array($params)) {
                 $object->where($object->primary_key . ' IN (?)', $params);
@@ -2225,7 +2225,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
         $relations = $this->$type;
         $relation = $relations[$name];
 
-        if ($record instanceof Db\ActiveRecord) {
+        if ($record instanceof \Db\ActiveRecord) {
             $record = $record->{$record->primary_key};
         }
 
@@ -2637,9 +2637,9 @@ class ActiveRecord extends Sql implements IteratorAggregate
                     continue;
                 }
 
-                if ($this->{$name} instanceof Db\ActiveRecord) {
+                if ($this->{$name} instanceof \Db\ActiveRecord) {
                     $record['relations'][$name] = $this->{$name}->serialize($serialize_relations);
-                } elseif ($this->{$name} instanceof Db\DataCollection) {
+                } elseif ($this->{$name} instanceof \Db\DataCollection) {
                     $record['relations'][$name] = array();
                     foreach ($this->{$name} as $item) {
                         $record['relations'][$name][] = $record->serialize($serialize_relations);
@@ -3274,7 +3274,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
     public function find_form_field($dbName)
     {
         foreach ($this->form_elements as $element) {
-            if ($element instanceof Db\FormFieldDefinition && $element->dbName == $dbName) {
+            if ($element instanceof \Db\FormFieldDefinition && $element->dbName == $dbName) {
                 return $element;
             }
         }
@@ -3294,7 +3294,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
     public function delete_form_field($dbName)
     {
         foreach ($this->form_elements as $index => $element) {
-            if ($element instanceof Db\FormFieldDefinition && $element->dbName == $dbName) {
+            if ($element instanceof \Db\FormFieldDefinition && $element->dbName == $dbName) {
                 unset($this->form_elements[$index]);
                 return true;
             }

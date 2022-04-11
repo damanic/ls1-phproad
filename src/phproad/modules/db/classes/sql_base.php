@@ -23,7 +23,7 @@ class Sql_Base extends ValidateExtension
             return implode(', ', $value);
         }
 
-        if ($value instanceof PhprDateTime) {
+        if ($value instanceof \Phpr\DateTime) {
             $value = $value->toSqlDateTime();
         }
 
