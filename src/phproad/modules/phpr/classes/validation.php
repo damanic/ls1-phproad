@@ -455,7 +455,7 @@ class Validation
      */
     public function removeRules() : void
     {
-        foreach ($this->getFields() as $field) {
+        foreach ($this->getFields() as $field => $validation) {
             $this->removeRule($field);
         }
     }
