@@ -10,7 +10,7 @@
  * @category PHPRoad
  * @author   Aleksey Bobkov
  */
-class Phpr_Validatable extends Phpr_Extensible
+class Phpr_Validatable extends Phpr_Extension
 {
     /**
      * Executes a validation method.
