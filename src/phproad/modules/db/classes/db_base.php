@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @deprecated
+ */
+
 class Db_Base extends Phpr_Validatable
 {
     public function prepare($sql, $bind = null)

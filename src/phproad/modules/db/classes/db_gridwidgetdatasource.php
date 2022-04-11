@@ -91,7 +91,7 @@ class Db_GridWidgetDataSource
         }
 
         $page_data = array_slice($data, $pagination->getFirstPageRowIndex(), $pagination->getPageSize(), true);
-        $processed = Backend::$events->fireEvent('core:onPrepareFormGridWidgetDataPage', $this, $page_data);
+        $processed = Phpr::$events->fireEvent('core:onPrepareFormGridWidgetDataPage', $this, $page_data);
         foreach ($processed as $processed_page) {
             if ($processed_page) {
                 return $processed_page;

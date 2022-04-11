@@ -412,7 +412,7 @@ class Db_FormBehavior extends Phpr_ControllerBehavior
         $this->viewData['form_session_key'] = $this->formGetEditSessionKey();
         $this->viewData['form_lock_object'] = $lock;
 
-        Backend::$events->fireEvent('core:onBeforeFormRender', $this->_controller, $model);
+        Phpr::$events->fireEvent('core:onBeforeFormRender', $this->_controller, $model);
 
         $this->renderPartial('form_form');
     }
@@ -438,7 +438,7 @@ class Db_FormBehavior extends Phpr_ControllerBehavior
 
         $this->form_preview_mode = true;
 
-        Backend::$events->fireEvent('core:onBeforeFormRenderPreview', $this->_controller, $model);
+        Phpr::$events->fireEvent('core:onBeforeFormRenderPreview', $this->_controller, $model);
 
         $this->formRender($model);
     }
@@ -1096,11 +1096,11 @@ class Db_FormBehavior extends Phpr_ControllerBehavior
             $this->_controller->formBeforeSave($obj, $this->formGetEditSessionKey());
             $this->_controller->formBeforeCreateSave($obj, $this->formGetEditSessionKey());
 
-            Backend::$events->fireEvent('core:onBeforeFormRecordCreate', $this->_controller, $obj);
+            Phpr::$events->fireEvent('core:onBeforeFormRecordCreate', $this->_controller, $obj);
 
             $obj->save(post($this->_controller->form_model_class, array()), $this->formGetEditSessionKey());
 
-            Backend::$events->fireEvent('core:onAfterFormRecordCreate', $this->_controller, $obj);
+            Phpr::$events->fireEvent('core:onAfterFormRecordCreate', $this->_controller, $obj);
 
             $this->_controller->formAfterCreateSave($obj, $this->formGetEditSessionKey());
             $this->_controller->formAfterSave($obj, $this->formGetEditSessionKey());
@@ -1146,12 +1146,12 @@ class Db_FormBehavior extends Phpr_ControllerBehavior
             $this->_controller->formBeforeSave($obj, $this->formGetEditSessionKey());
             $this->_controller->formBeforeEditSave($obj, $this->formGetEditSessionKey());
 
-            Backend::$events->fireEvent('core:onBeforeFormRecordUpdate', $this->_controller, $obj);
+            Phpr::$events->fireEvent('core:onBeforeFormRecordUpdate', $this->_controller, $obj);
 
             $flash_set = false;
             $obj->save(post($this->_controller->form_model_class, array()), $this->formGetEditSessionKey());
 
-            Backend::$events->fireEvent('core:onAfterFormRecordUpdate', $this->_controller, $obj);
+            Phpr::$events->fireEvent('core:onAfterFormRecordUpdate', $this->_controller, $obj);
 
             $this->_controller->formAfterSave($obj, $this->formGetEditSessionKey());
 
@@ -1260,7 +1260,7 @@ class Db_FormBehavior extends Phpr_ControllerBehavior
                 );
             }
 
-            Backend::$events->fireEvent('core:onBeforeFormRecordDelete', $this->_controller, $obj);
+            Phpr::$events->fireEvent('core:onBeforeFormRecordDelete', $this->_controller, $obj);
 
             $obj->delete();
 
@@ -1270,7 +1270,7 @@ class Db_FormBehavior extends Phpr_ControllerBehavior
 
             $obj->cancelDeferredBindings($this->formGetEditSessionKey());
 
-            Backend::$events->fireEvent('core:onAfterFormRecordDelete', $this->_controller, $obj);
+            Phpr::$events->fireEvent('core:onAfterFormRecordDelete', $this->_controller, $obj);
 
             if ($this->_controller->enable_concurrency_locking && !Db_RecordLock::lock_exists($obj)) {
                 Db_RecordLock::unlock_record($obj);
@@ -1694,7 +1694,7 @@ class Db_FormBehavior extends Phpr_ControllerBehavior
                 $data_model = $this->create_custom_model($model_class, null);
             }
 
-            Backend::$events->fireEvent('core:onInitFormWidgetModel', $this->_controller, $data_model);
+            Phpr::$events->fireEvent('core:onInitFormWidgetModel', $this->_controller, $data_model);
 
             $field = post('phpr_event_field');
             $widget = $this->formInitWidget($field, $data_model);

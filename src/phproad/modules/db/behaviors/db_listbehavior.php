@@ -566,7 +566,7 @@ class Db_ListBehavior extends Phpr_ControllerBehavior
         $noColumnInfoInit = false,
         $extendCsvCallback = array()
     ) {
-        Backend::$events->fireEvent('core:onBeforeListExport', $this->_controller);
+        Phpr::$events->fireEvent('core:onBeforeListExport', $this->_controller);
 
         $this->applyOptions($options);
 

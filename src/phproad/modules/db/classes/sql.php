@@ -1,8 +1,13 @@
-<?php
+<?php namespace Db;
 
-class Db_SqlBase extends Db_WhereBase
+use Phpr;
+use Phpr\Util;
+
+class Sql extends Sql_Where
 {
-    protected $_driver = null;
+    const defaultDriver = 'Db\MySQLi_Driver';
+
+    protected $driver = null;
 
     public $use_straight_join = false;
 
@@ -12,6 +17,23 @@ class Db_SqlBase extends Db_WhereBase
         'fields' => array(),
         'order' => array()
     );
+
+    public static function create()
+    {
+        return new self();
+    }
+
+    public function __toString()
+    {
+        try {
+            return $this->build_sql();
+        } catch (\Exception $ex) {
+            // __toString cannot throw an exception
+            Phpr::$traceLog->write('Exception thrown in Db\Sql::__toString: '. $ex->getMessage());
+            return '';
+        }
+    }
+
 
     public function reset()
     {
@@ -354,9 +376,18 @@ class Db_SqlBase extends Db_WhereBase
         return $this->prepare_tablename($sql);
     }
 
-    private function prepare_tablename($sql, $tablename = '')
+    private function prepare_tablename($sql, $tableName = '')
     {
-        return str_replace(':__table_name__', ($tablename == '') ? $this->parts['from'][0] : $tablename, $sql);
+        if ($tableName == '' && isset($this->parts['from'][0])) {
+            $tableName = $this->parts['from'][0];
+        }
+
+        // Critical problem
+        if ($tableName == '') {
+            $tableName = '???';
+        }
+
+        return str_replace(':__table_name__', $tableName, $sql);
     }
 
     /* Insert/Update/Delete */
@@ -496,6 +527,15 @@ class Db_SqlBase extends Db_WhereBase
         return $this->driver()->describe_table($table);
     }
 
+    /**
+     * Returns the index descriptions for a table.
+     * @return array
+     */
+    public function describeIndex($table)
+    {
+        return $this->driver()->describeIndex($table);
+    }
+
     /* Fetch methods */
 
     protected function _fetchAll($result, $col = null)
@@ -518,9 +558,10 @@ class Db_SqlBase extends Db_WhereBase
     public function fetchAll($sql, $bind = null)
     {
         $result = Phpr::$events->fire_event(
-            array('name' => 'db:onBeforeDatabaseFetch', 'type' => 'filter'), array(
-            'sql' => $sql,
-            'fetch' => null
+            array('name' => 'db:onBeforeDatabaseFetch', 'type' => 'filter'),
+            array(
+                'sql' => $sql,
+                'fetch' => null
             )
         );
 
@@ -551,9 +592,10 @@ class Db_SqlBase extends Db_WhereBase
     public function fetchCol($sql, $bind = null)
     {
         $result = Phpr::$events->fire_event(
-            array('name' => 'db:onBeforeDatabaseFetch', 'type' => 'filter'), array(
-            'sql' => $sql,
-            'fetch' => null
+            array('name' => 'db:onBeforeDatabaseFetch', 'type' => 'filter'),
+            array(
+                'sql' => $sql,
+                'fetch' => null
             )
         );
 
@@ -582,9 +624,10 @@ class Db_SqlBase extends Db_WhereBase
     public function fetchOne($sql, $bind = null)
     {
         $result = Phpr::$events->fire_event(
-            array('name' => 'db:onBeforeDatabaseFetch', 'type' => 'filter'), array(
-            'sql' => $sql,
-            'fetch' => null
+            array('name' => 'db:onBeforeDatabaseFetch', 'type' => 'filter'),
+            array(
+                'sql' => $sql,
+                'fetch' => null
             )
         );
 
@@ -613,9 +656,10 @@ class Db_SqlBase extends Db_WhereBase
     public function fetchRow($sql, $bind = null)
     {
         $result = Phpr::$events->fire_event(
-            array('name' => 'db:onBeforeDatabaseFetch', 'type' => 'filter'), array(
-            'sql' => $sql,
-            'fetch' => null
+            array('name' => 'db:onBeforeDatabaseFetch', 'type' => 'filter'),
+            array(
+                'sql' => $sql,
+                'fetch' => null
             )
         );
 
@@ -642,13 +686,13 @@ class Db_SqlBase extends Db_WhereBase
             Phpr::$traceLog->write($sql, 'SQL');
         }
 
-        if (Phpr::$config && Phpr::$config->get('ENABLE_DEVELOPER_TOOLS') && Backend::$events) {
-            Backend::$events->fire_event('core:onBeforeDatabaseQuery', $sql);
+        if (Phpr::$config && Phpr::$config->get('ENABLE_DEVELOPER_TOOLS') && Phpr::$events) {
+            Phpr::$events->fire_event('core:onBeforeDatabaseQuery', $sql);
         }
 
         $result = $this->driver()->execute($sql);
-        if (Phpr::$config && Phpr::$config->get('ENABLE_DEVELOPER_TOOLS') && Backend::$events) {
-            Backend::$events->fire_event('core:onAfterDatabaseQuery', $sql, $result);
+        if (Phpr::$config && Phpr::$config->get('ENABLE_DEVELOPER_TOOLS') && Phpr::$events) {
+            Phpr::$events->fire_event('core:onAfterDatabaseQuery', $sql, $result);
         }
 
         return $result;
@@ -656,19 +700,19 @@ class Db_SqlBase extends Db_WhereBase
 
     /* Service routines */
 
-    public function driver()
+    public function driver() //driver
     {
-        if ($this->_driver === null) {
-            if (isset(Phpr::$config['driver'])) {
-                $driver = Phpr::$config['driver'] . 'Driver';
+        if ($this->driver === null) {
+            if (Phpr::$config && Phpr::$config->get('DB_DRIVER')) {
+                $driver = 'Db\\'.Phpr::$config->get('DB_DRIVER') . 'Driver';
             } else {
-                $driver = 'Db_MySQLiDriver';
+                $driver = self::defaultDriver;
             }
 
-            $this->_driver = new $driver();
+            $this->driver = new $driver();
         }
 
-        return $this->_driver;
+        return $this->driver;
     }
 
     protected function set_part($name, $value)
@@ -688,5 +732,10 @@ class Db_SqlBase extends Db_WhereBase
     protected function get_limit()
     {
         return (isset($this->parts['limitCount']) ? $this->parts['limitCount'] : 0);
+    }
+
+    protected function assign_driver(\Db\Driver_Base $driver)
+    {
+        $this->driver = $driver;
     }
 }

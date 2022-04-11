@@ -1,6 +1,7 @@
-<?php
+<?php namespace Db;
 
-class Db_ActiveRecordColumn
+
+class ActiveRecordColumn
 {
     public $name = '';
     public $type = 'text';
@@ -9,19 +10,19 @@ class Db_ActiveRecordColumn
     public $custom;
     public $sql_type;
 
-    public function __construct($column_info)
+    public function __construct($columnInfo)
     {
         $options = array();
 
-        $this->name = $column_info['name'];
-        $this->type = isset($column_info['type']) ? $column_info['type'] : 'varchar';
-        $this->calculated = isset($column_info['calculated']) ? $column_info['calculated'] : false;
-        $this->custom = isset($column_info['custom']) ? $column_info['custom'] : false;
+        $this->name = $columnInfo['name'];
+        $this->type = isset($columnInfo['type']) ? $columnInfo['type'] : 'varchar';
+        $this->calculated = isset($columnInfo['calculated']) ? $columnInfo['calculated'] : false;
+        $this->custom = isset($columnInfo['custom']) ? $columnInfo['custom'] : false;
 
-        if (isset($column_info['sql_type'])) {
-            $this->sql_type = $column_info['sql_type'];
+        if (isset($columnInfo['sql_type'])) {
+            $this->sql_type = $columnInfo['sql_type'];
             $matches = array();
-            if (preg_match('/^varchar\(([0-9]*)\)$/', $column_info['sql_type'], $matches)) {
+            if (preg_match('/^varchar\(([0-9]*)\)$/', $columnInfo['sql_type'], $matches)) {
                 $this->length = $matches[1];
             }
         }

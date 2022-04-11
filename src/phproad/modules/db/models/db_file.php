@@ -329,7 +329,7 @@ class Db_File extends Db_ActiveRecord
      */
     public function getThumbnailPath($width, $height, $returnJpeg = true, $params = array('mode' => 'keep_ratio'))
     {
-        $processed_images = Backend::$events->fireEvent(
+        $processed_images = Phpr::$events->fireEvent(
             'core:onProcessImage',
             $this,
             $width,
@@ -477,7 +477,7 @@ class Db_File extends Db_ActiveRecord
 
     public function before_create($deferred_session_key = null)
     {
-        Backend::$events->fireEvent('core:onFileBeforeCreate', $this);
+        Phpr::$events->fireEvent('core:onFileBeforeCreate', $this);
     }
 
     /*
@@ -495,7 +495,7 @@ class Db_File extends Db_ActiveRecord
      * <pre>
      * public function subscribeEvents()
      * {
-     *   Backend::$events->addEvent('core:onProcessImage', $this, 'process_image');
+     *   Phpr::$events->addEvent('core:onProcessImage', $this, 'process_image');
      * }
      *
      * public function process_image($file_obj, $width, $height, $returnJpeg, $params)

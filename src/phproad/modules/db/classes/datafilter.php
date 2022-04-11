@@ -1,10 +1,16 @@
-<?php
+<?php namespace Db;
 
-class Db_DataFilter
+/**
+ * PHPR Data Filter
+ *
+ * Currently used as a base class for List Filters
+ */
+
+class DataFilter
 {
-    public $model_class_name = null;
-    public $model_filters = null;
-    public $list_columns = array();
+    public string $model_class_name;
+    public string $model_filters;
+    public array $list_columns = array();
 
     public function prepareListData()
     {

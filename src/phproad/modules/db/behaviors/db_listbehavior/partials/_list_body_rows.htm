@@ -10,7 +10,7 @@
 		}
 		
 		$this->listBeforeRenderRecord($row);
-		Backend::$events->fireEvent('core:onBeforeListRecordDisplay', $this, $list_model_class, $row);
+		Phpr::$events->fireEvent('core:onBeforeListRecordDisplay', $this, $list_model_class, $row);
 		$this->listRenderPartial('list_body_row', array('row'=>$row, 'list_tree_level'=>$list_tree_level));
 	}
 ?>

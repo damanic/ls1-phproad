@@ -1,6 +1,7 @@
 <?php
+namespace Db;
 
-class Db_DataFilterSwitcher
+class DataFilterSwitcher
 {
     public function applyToModel($model, $enabled, $context = null)
     {

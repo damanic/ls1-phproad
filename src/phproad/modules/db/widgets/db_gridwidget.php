@@ -697,7 +697,7 @@ class Db_GridWidget extends Db_FormWidget
         $data_source->commit($data);
 
         if (post('phpr_grid_event_name')) {
-            Backend::$events->fireEvent(post('phpr_grid_event_name'), $data_source);
+            Phpr::$events->fireEvent(post('phpr_grid_event_name'), $data_source);
         }
 
         if (post('phpr_append_row')) {
@@ -709,7 +709,7 @@ class Db_GridWidget extends Db_FormWidget
         }
 
         if (post('phpr_grid_event')) {
-            Backend::$events->fireEvent(post('phpr_grid_event'), $this, $data_source);
+            Phpr::$events->fireEvent(post('phpr_grid_event'), $this, $data_source);
         }
 
         $this->prepare_data_fields(post('phpr_page_index', 0));

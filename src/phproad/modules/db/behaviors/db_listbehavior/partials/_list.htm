@@ -49,7 +49,7 @@
 	</tbody>
 </table>
 
-<? Backend::$events->fireEvent('core:onAfterRenderListTable', $this) ?>
+<? Phpr::$events->fireEvent('core:onAfterRenderListTable', $this) ?>
 
 <? if (!$this->list_no_interaction && $list_total_row_count > 0 && !$this->list_render_as_tree && !$this->list_no_pagination): ?>
 	<?= Backend_Html::ajaxPagination($list_pagination,
@@ -61,4 +61,4 @@
 <input type="hidden" class="list_load_indicator" value="<?= $list_load_indicator ?>"/>
 <script type="text/javascript">realignPopups();</script>
 
-<? Backend::$events->fireEvent('core:onAfterRenderListPagination', $this) ?>
+<? Phpr::$events->fireEvent('core:onAfterRenderListPagination', $this) ?>

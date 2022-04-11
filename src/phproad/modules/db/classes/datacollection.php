@@ -1,20 +1,25 @@
-<?php
+<?php namespace Db;
+
+use ArrayAccess;
+use ArrayIterator;
+use IteratorAggregate;
+use Countable;
 
 /**
  * Represents a collection of ActiveRecord objects.
- * Objects of this class are returned by {@link Db_ActiveRecord::find_all()} method
+ * Objects of this class are returned by {@link \Db\ActiveRecord::find_all()} method
  * and some other methods and {@link http://lemonstand.com/docs/creating_data_relations/ relations}.
  *
  * @documentable
  * @author       LemonStand eCommerce Inc.
  * @package      core.classes
  */
-class Db_DataCollection implements ArrayAccess, IteratorAggregate, Countable
+class DataCollection implements ArrayAccess, IteratorAggregate, Countable
 {
     public $objectArray = array();
 
     /**
-     * @var           Db_ActiveRecord A reference to the parent model.
+     * @var           \Db\ActiveRecord A reference to the parent model.
      * This field is set only for data collections created by relations.
      * @documentable.
      */
@@ -58,7 +63,7 @@ class Db_DataCollection implements ArrayAccess, IteratorAggregate, Countable
 
     public function offsetSet($offset, $value)
     {
-        if (!is_null($this->parent) && ($this->parent instanceof Db_ActiveRecord)) {
+        if (!is_null($this->parent) && ($this->parent instanceof Db\ActiveRecord)) {
             $this->parent->bind($this->relation, $value);
         }
 
@@ -87,7 +92,7 @@ class Db_DataCollection implements ArrayAccess, IteratorAggregate, Countable
      * Returns a first element in the collection.
      *
      * @documentable
-     * @return       Db_ActiveRecord Returns the model object or NULL.
+     * @return       \Db\ActiveRecord Returns the model object or NULL.
      */
     public function first()
     {
@@ -125,7 +130,7 @@ class Db_DataCollection implements ArrayAccess, IteratorAggregate, Countable
             }
             $limited[] = $item;
         }
-        return new Db_DataCollection($limited);
+        return new DataCollection($limited);
     }
 
     public function skip($count)
@@ -139,7 +144,7 @@ class Db_DataCollection implements ArrayAccess, IteratorAggregate, Countable
             $skipped[] = $item;
         }
 
-        return new Db_DataCollection($skipped);
+        return new DataCollection($skipped);
     }
 
     public function except($value, $key = 'id')
@@ -268,7 +273,7 @@ class Db_DataCollection implements ArrayAccess, IteratorAggregate, Countable
      * This method simplifies front-end coding.
      *
      * @documentable
-     * @return       Db_DataCollection Returns a collection
+     * @return       \Db\DataCollection Returns a collection
      */
     public function collection()
     {
@@ -391,16 +396,16 @@ class Db_DataCollection implements ArrayAccess, IteratorAggregate, Countable
      * The model should be saved in order the relation changes to apply.
      *
      * @documentable
-     * @param        Db_ActiveRecord $record               Specifies a record to add.
+     * @param        \Db\ActiveRecord $record               Specifies a record to add.
      * @param        string          $deferred_session_key Optional deferred session key.
      *                                                     If the key is specified, it
      *                                                     should be used in {@link
-     *                                                     Db_ActiveRecord::save()}
+     *                                                     \Db\ActiveRecord::save()}
      *                                                     method call.
      */
     public function add($record, $deferred_session_key = null)
     {
-        if (is_null($this->parent) || !($this->parent instanceof Db_ActiveRecord)) {
+        if (is_null($this->parent) || !($this->parent instanceof ActiveRecord)) {
             return;
         }
         $this->parent->bind($this->relation, $record, $deferred_session_key);
@@ -412,16 +417,16 @@ class Db_DataCollection implements ArrayAccess, IteratorAggregate, Countable
      * The model should be saved in order the relation changes to apply.
      *
      * @documentable
-     * @param        Db_ActiveRecord $record               Specifies a record to remove.
+     * @param        \Db\ActiveRecord $record               Specifies a record to remove.
      * @param        string          $deferred_session_key Optional deferred session key.
      *                                                     If the key is specified, it
      *                                                     should be used in {@link
-     *                                                     Db_ActiveRecord::save()}
+     *                                                     \Db\ActiveRecord::save()}
      *                                                     method call.
      */
     public function delete($record, $deferred_session_key = null)
     {
-        if (is_null($this->parent) || !($this->parent instanceof Db_ActiveRecord)) {
+        if (is_null($this->parent) || !($this->parent instanceof ActiveRecord)) {
             return;
         }
 
@@ -435,11 +440,11 @@ class Db_DataCollection implements ArrayAccess, IteratorAggregate, Countable
      *
      * @documentable
      * @param        string $deferred_session_key Optional deferred session key.
-     *                                            If the key is specified, it should be used in {@link Db_ActiveRecord::save()} method call.
+     *                                            If the key is specified, it should be used in {@link \Db\ActiveRecord::save()} method call.
      */
     public function clear($deferred_session_key = null)
     {
-        if (is_null($this->parent) || !($this->parent instanceof Db_ActiveRecord)) {
+        if (is_null($this->parent) || !($this->parent instanceof ActiveRecord)) {
             return;
         }
 

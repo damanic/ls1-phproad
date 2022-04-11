@@ -1,23 +1,27 @@
-<?php
+<?php namespace Db;
 
+use Phpr;
+use Phpr\Extension;
+use Db\Helper as Db_Helper;
+use Db\ActiveRecord_Proxy;
 /**
  * Allows to extend models with tree functionality.
- * Any {@link Db_ActiveRecord} descendant can be extended with this class.
+ * Any {@link Db\ActiveRecord} descendant can be extended with this class.
  * To extend a model class add this class name to the model's <em>implement</em>
  * property. Example:
- * <pre>public $implement = 'Db_Act_As_Tree';</pre>
+ * <pre>public $implement = 'Db\Act_As_Tree';</pre>
  *
  * @documentable
  * @author       LemonStand eCommerce Inc.
  * @package      core.classes
  */
-class Db_Act_As_Tree extends Phpr_Extension
+class Act_As_Tree extends Extension
 {
-    private $_model_class;
-    private $_model;
-    private static $_object_cache = array();
-    private static $_parent_cache = array();
-    private static $_cache_sort_column = array();
+    private $modelClass;
+    private $model;
+    private static $objectCache = array();
+    private static $parentCache = array();
+    private static $cacheSortColumn = array();
 
     /**
      * @var          string Specifies a database column which contains a reference to a parent record.
@@ -32,15 +36,15 @@ class Db_Act_As_Tree extends Phpr_Extension
 
     public function __construct($model, $proxy_model_class = null)
     {
-        $this->_model_class = $proxy_model_class ? $proxy_model_class : get_class($model);
-        $this->_model = $model;
+        $this->modelClass = $proxy_model_class ? $proxy_model_class : get_class($model);
+        $this->model = $model;
     }
 
     public static function clear_cache()
     {
-        self::$_object_cache = array();
-        self::$_parent_cache = array();
-        self::$_cache_sort_column = array();
+        self::$objectCache = array();
+        self::$parentCache = array();
+        self::$cacheSortColumn = array();
     }
 
     /**
@@ -50,7 +54,7 @@ class Db_Act_As_Tree extends Phpr_Extension
      *
      * @documentable
      * @param        string $order_by Specifies a database column name to sort the items by.
-     * @return       Db_DataCollection Returns a collection of children records.
+     * @return       Db\DataCollection Returns a collection of children records.
      */
     public function list_children($order_by = 'name')
     {
@@ -60,11 +64,11 @@ class Db_Act_As_Tree extends Phpr_Extension
 
         $cache_key = $this->get_cache_key($order_by);
 
-        if (isset(self::$_object_cache[$this->_model_class][$cache_key][$this->_model->id])) {
-            return new Db_DataCollection(self::$_object_cache[$this->_model_class][$cache_key][$this->_model->id]);
+        if (isset(self::$objectCache[$this->modelClass][$cache_key][$this->model->id])) {
+            return new DataCollection(self::$objectCache[$this->modelClass][$cache_key][$this->model->id]);
         }
 
-        return new Db_DataCollection();
+        return new DataCollection();
     }
 
     /**
@@ -74,7 +78,7 @@ class Db_Act_As_Tree extends Phpr_Extension
      *
      * @documentable
      * @param        string $order_by Specifies a database column name to sort the items by.
-     * @return       Db_DataCollection Returns a collection of root records.
+     * @return       Db\DataCollection Returns a collection of root records.
      */
     public function list_root_children($order_by = 'name')
     {
@@ -84,11 +88,11 @@ class Db_Act_As_Tree extends Phpr_Extension
 
         $cache_key = $this->get_cache_key($order_by);
 
-        if (isset(self::$_object_cache[$this->_model_class][$cache_key][-1])) {
-            return new Db_DataCollection(self::$_object_cache[$this->_model_class][$cache_key][-1]);
+        if (isset(self::$objectCache[$this->modelClass][$cache_key][-1])) {
+            return new DataCollection(self::$objectCache[$this->modelClass][$cache_key][-1]);
         }
 
-        return new Db_DataCollection();
+        return new DataCollection();
     }
 
     public function list_all_children($order_by = 'name')
@@ -101,7 +105,7 @@ class Db_Act_As_Tree extends Phpr_Extension
     public function list_all_children_recursive($order_by)
     {
         $result = array();
-        $children = $this->_model->list_children($order_by);
+        $children = $this->model->list_children($order_by);
 
         foreach ($children as $child) {
             $result[] = $child;
@@ -122,7 +126,7 @@ class Db_Act_As_Tree extends Phpr_Extension
 
         $result = array();
         foreach ($parents as $parent) {
-            $result[] = $parent->{$this->_model->act_as_tree_name_field};
+            $result[] = $parent->{$this->model->act_as_tree_name_field};
         }
 
         return implode($separator, array_reverse($result));
@@ -134,9 +138,9 @@ class Db_Act_As_Tree extends Phpr_Extension
      * @documentable
      * @param        string $order_by Specifies a database column name to sort the items by.
      *                                Due to the performance considerations the parameter value should match the value
-     *                                you use for {@link Db_Act_As_Tree::list_all_children_recursive() list_all_children_recursive()}
-     *                                and {@link Db_Act_As_Tree::list_children() list_children()} methods.
-     * @return       Db_ActiveRecord Returns the parent model or NULL if the parent record is not found or the method is called for a root record.
+     *                                you use for {@link Db\Act_As_Tree::list_all_children_recursive() list_all_children_recursive()}
+     *                                and {@link Db\Act_As_Tree::list_children() list_children()} methods.
+     * @return       Db\ActiveRecord Returns the parent model or NULL if the parent record is not found or the method is called for a root record.
      */
     public function get_parent($order_by = 'name')
     {
@@ -146,16 +150,16 @@ class Db_Act_As_Tree extends Phpr_Extension
 
         $cache_key = $this->get_cache_key($order_by);
 
-        $parentKey = $this->_model->act_as_tree_parent_key;
-        if (!$this->_model->$parentKey) {
+        $parentKey = $this->model->act_as_tree_parent_key;
+        if (!$this->model->$parentKey) {
             return null;
         }
 
-        if (!isset(self::$_parent_cache[$this->_model_class][$cache_key][$this->_model->$parentKey])) {
+        if (!isset(self::$parentCache[$this->modelClass][$cache_key][$this->model->$parentKey])) {
             return null;
         }
 
-        return self::$_parent_cache[$this->_model_class][$cache_key][$this->_model->$parentKey];
+        return self::$parentCache[$this->modelClass][$cache_key][$this->model->$parentKey];
     }
 
     /**
@@ -181,11 +185,11 @@ class Db_Act_As_Tree extends Phpr_Extension
      */
     public function get_parents($include_this = false, $order_by = 'name')
     {
-        $parent = $this->_model->get_parent($order_by);
+        $parent = $this->model->get_parent($order_by);
         $result = array();
 
         if ($include_this) {
-            $result[] = $this->_model;
+            $result[] = $this->model;
         }
 
         while ($parent != null) {
@@ -199,7 +203,7 @@ class Db_Act_As_Tree extends Phpr_Extension
     private function init_cache($order_by = 'name')
     {
         if (Phpr::$config->get('USE_PROXY_MODELS')) {
-            $model = clone $this->_model;
+            $model = clone $this->model;
             $cache_key = $this->get_cache_key($order_by);
 
             if ($model->act_as_tree_sql_filter) {
@@ -209,23 +213,23 @@ class Db_Act_As_Tree extends Phpr_Extension
             $model->applyCalculatedColumns();
             $sql = $model->order($order_by)->build_sql();
 
-            $records = Db_DbHelper::queryArray($sql);
+            $records = DbHelper::queryArray($sql);
 
             $_object_cache = array();
             $_parent_cache = array();
 
-            $parentKey = $this->_model->act_as_tree_parent_key;
+            $parentKey = $this->model->act_as_tree_parent_key;
             foreach ($records as $record_data) {
                 $record_data['act_as_tree_parent_key'] = $parentKey;
                 $record_data['act_as_tree_sql_filter'] = $model->act_as_tree_sql_filter;
 
-                $record = new Db_ActiverecordProxy(
+                $record = new ActiverecordProxy(
                     $record_data['id'],
-                    $this->_model_class,
+                    $this->modelClass,
                     $record_data,
-                    $this->_model->strict
+                    $this->model->strict
                 );
-                $record->extend_with('Db_Act_As_Tree', false, $this->_model_class);
+                $record->extend_with('Db\Act_As_Tree', false, $this->modelClass);
 
                 $parent_id = $record->$parentKey != null ? $record->$parentKey : -1;
 
@@ -237,17 +241,17 @@ class Db_Act_As_Tree extends Phpr_Extension
                 $_parent_cache[$record->id] = $record;
             }
 
-            self::$_object_cache[$this->_model_class][$cache_key] = $_object_cache;
-            self::$_parent_cache[$this->_model_class][$cache_key] = $_parent_cache;
-            self::$_cache_sort_column[$this->_model_class][$cache_key] = $order_by;
+            self::$objectCache[$this->modelClass][$cache_key] = $_object_cache;
+            self::$parentCache[$this->modelClass][$cache_key] = $_parent_cache;
+            self::$cacheSortColumn[$this->modelClass][$cache_key] = $order_by;
 
             return;
         }
 
-        $class_name = $this->_model_class;
+        $class_name = $this->modelClass;
         $cache_key = $this->get_cache_key($order_by);
 
-        $model = clone $this->_model;
+        $model = clone $this->model;
 
         $model->order($order_by);
 
@@ -259,7 +263,7 @@ class Db_Act_As_Tree extends Phpr_Extension
         $_object_cache = array();
         $_parent_cache = array();
 
-        $parentKey = $this->_model->act_as_tree_parent_key;
+        $parentKey = $this->model->act_as_tree_parent_key;
         foreach ($records as $record) {
             $parent_id = $record->$parentKey !== null ? $record->$parentKey : -1;
 
@@ -271,31 +275,31 @@ class Db_Act_As_Tree extends Phpr_Extension
             $_parent_cache[$record->id] = $record;
         }
 
-        self::$_object_cache[$this->_model_class][$cache_key] = $_object_cache;
-        self::$_parent_cache[$this->_model_class][$cache_key] = $_parent_cache;
-        self::$_cache_sort_column[$this->_model_class][$cache_key] = $order_by;
+        self::$objectCache[$this->modelClass][$cache_key] = $_object_cache;
+        self::$parentCache[$this->modelClass][$cache_key] = $_parent_cache;
+        self::$cacheSortColumn[$this->modelClass][$cache_key] = $order_by;
     }
 
     private function get_cache_key($order_by)
     {
-        return $order_by . $this->_model->act_as_tree_sql_filter;
+        return $order_by . $this->model->act_as_tree_sql_filter;
     }
 
     private function cache_exists($order_by)
     {
         $cache_key = $this->get_cache_key($order_by);
-        return array_key_exists($this->_model_class, self::$_object_cache) && array_key_exists(
+        return array_key_exists($this->modelClass, self::$objectCache) && array_key_exists(
             $cache_key,
-            self::$_object_cache[$this->_model_class]
+            self::$objectCache[$this->modelClass]
         );
     }
 
     private function cache_key_match($order_by)
     {
-        if (!array_key_exists($this->_model_class, self::$_cache_sort_column)) {
+        if (!array_key_exists($this->modelClass, self::$cacheSortColumn)) {
             return false;
         }
 
-        return self::$_cache_sort_column[$this->_model_class] == $order_by;
+        return self::$cacheSortColumn[$this->modelClass] == $order_by;
     }
 }

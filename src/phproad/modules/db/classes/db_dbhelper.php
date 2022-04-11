@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @deprecated
+ */
+
 class Db_DbHelper
 {
     protected static $driver = false;

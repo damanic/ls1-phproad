@@ -20,7 +20,7 @@ class Application extends Phpr_Controller
         $action = strtolower(Phpr::$request->getCurrentUri());
         $params = null;
 
-        $custom_pages = Backend::$events->fireEvent('cms:onBeforeRoute', $action);
+        $custom_pages = Phpr::$events->fireEvent('cms:onBeforeRoute', $action);
         $page         = null;
         foreach ( $custom_pages as $custom_page_data ) {
             if ($custom_page_data && is_array($custom_page_data) ) {
@@ -33,7 +33,7 @@ class Application extends Phpr_Controller
         $page = $page ? $page : Cms_Page::findByUrl($action, $params);
         if (! $page || ! $page->visible_for_customer_group(Cms_Controller::get_customer_group_id()) || ! $page->is_published ) {
             // look for a handler to handle 404 pages
-            $results = Backend::$events->fireEvent('cms:onPageNotFound');
+            $results = Phpr::$events->fireEvent('cms:onPageNotFound');
 
             foreach ( $results as $result ) {
                 if ($result === true ) {

@@ -1,16 +1,26 @@
-<?php
+<?php 
+
+namespace Db;
+
+use Phpr;
+use Phpr\Inflector;
+use Phpr\DateTime as PhprDateTime;
+use Phpr\Date;
+use Phpr\Time;
+use Phpr\Html;
+use Phpr\SystemException;
 
 /**
  * Represents a model column definition.
  * Objects of this class are used for defining presentation and validation field properties in models.
- * {@link Db_ListBehavioer List Behavior} and {@link Db_FormBehavior Form Behavior} use data from the
+ * {@link \Db\ListBehavior List Behavior} and {@link \Db\FormBehavior Form Behavior} use data from the
  * column definition objects to output correct field labels and format field data.
  *
  * @documentable
  * @author       LemonStand eCommerce Inc.
  * @package      core.classes
  */
-class Db_ColumnDefinition
+class ColumnDefinition
 {
     /**
      * @var          string Specifies the database column name.
@@ -50,14 +60,14 @@ class Db_ColumnDefinition
     public $currency = false;
     public $noSorting = false;
 
-    private $_model;
-    private $_columnInfo;
-    private $_calculated_column_name;
-    private $_validationObj = null;
+    private $model;
+    private $columnInfo;
+    private $calculatedColumnName;
+    private $validationObj = null;
 
-    private static $_relation_joins = array();
-    private static $_cached_models = array();
-    private static $_cached_class_instances = array();
+    private static $relationJoins = array();
+    private static $cachedModels = array();
+    private static $cachedClassInstances = array();
 
     public $index;
 
@@ -66,21 +76,21 @@ class Db_ColumnDefinition
      *
      * @var string
      */
-    private $_dateFormat = '%x';
-    private $_dateTimeFormat = '%x %X';
-    private $_timeFormat = '%X';
+    private $dateFormat = '%x';
+    private $dateTimeFormat = '%x %X';
+    private $timeFormat = '%X';
 
     /**
      * Floating point numbers display precision.
      *
      * @var int
      */
-    private $_precision = 2;
+    private $precision = 2;
 
     /**
      * Text display length
      */
-    private $_length = null;
+    private $length = null;
 
     public function __construct(
         $model,
@@ -93,19 +103,19 @@ class Db_ColumnDefinition
         // traceLog('Column definition for '.get_class($model).':'.$dbName.' #'.$model->id);
         $this->dbName = $dbName;
         $this->displayName = $displayName;
-        $this->_model = $model;
+        $this->model = $model;
         $this->isReference = strlen($relationName);
         $this->relationName = $relationName;
 
         if (!$this->isReference) {
-            $this->_columnInfo = $this->_model->column($dbName);
-            if ($this->_columnInfo) {
-                $this->type = $this->_columnInfo->type;
+            $this->columnInfo = $this->model->column($dbName);
+            if ($this->columnInfo) {
+                $this->type = $this->columnInfo->type;
             }
 
-            if ($this->_columnInfo) {
-                $this->isCalculated = $this->_columnInfo->calculated;
-                $this->isCustom = $this->_columnInfo->custom;
+            if ($this->columnInfo) {
+                $this->isCalculated = $this->columnInfo->calculated;
+                $this->isCustom = $this->columnInfo->custom;
             }
         } else {
             $this->type = $type;
@@ -143,40 +153,40 @@ class Db_ColumnDefinition
      * By default column types match the database column types, but you can use
      * this method to override the database column type and thus change the field
      * display parameters. For example, if you set the field type to db_number
-     * for a varchar field, its value will be aligned to the right in {@link Db_ListBehavior lists} and {@link Db_FormBehavior forms}.
+     * for a varchar field, its value will be aligned to the right in {@link \Db\ListBehavior lists} and {@link \Db\FormBehavior forms}.
      *
      * @documentable
      * @param        string $typeName Specifies the type name
-     *                                (see <em>db_xxx</em> constants in the description of {@link Db_ActiveRecord} class)
-     * @return       Db_ColumnDefinition Returns the updated column definition object.
+     *                                (see <em>db_xxx</em> constants in the description of {@link \Db\ActiveRecord} class)
+     * @return       \Db\ColumnDefinition Returns the updated column definition object.
      */
     public function type($typeName)
     {
         $validTypes = array(db_varchar, db_number, db_float, db_bool, db_datetime, db_date, db_time, db_text);
         if (!in_array($typeName, $validTypes)) {
-            throw new Phpr_SystemException('Invalid database type: ' . $typeName);
+            throw new SystemException('Invalid database type: ' . $typeName);
         }
 
         $this->type = $typeName;
-        $this->_columnInfo = null;
+        $this->columnInfo = null;
 
         return $this;
     }
 
     /**
      * Specifies the date format.
-     * The date format is used for displaying date and date/time field values in {@link Db_ListBehavior lists} and {@link Db_FormBehavior forms}.
+     * The date format is used for displaying date and date/time field values in {@link \Db\ListBehavior lists} and {@link \Db\FormBehavior forms}.
      *
      * @documentable
      * @param        string $displayFormat Specifies the display format, compatible with {@link http://php.net/manual/en/function.strftime.php strftime} PHP function.
-     * @return       Db_ColumnDefinition Returns the updated column definition object.
+     * @return       \Db\ColumnDefinition Returns the updated column definition object.
      */
     public function dateFormat($displayFormat)
     {
         if ($this->type == db_datetime || $this->type == db_date || $this->type == db_time) {
-            $this->_dateFormat = $displayFormat;
+            $this->dateFormat = $displayFormat;
         } else {
-            throw new Phpr_SystemException(
+            throw new SystemException(
                 'Error in column definition for: ' . $this->dbName . ' column. Method "dateFormat" is applicable only for date or time fields.'
             );
         }
@@ -187,18 +197,18 @@ class Db_ColumnDefinition
 
     /**
      * Specifies the time format.
-     * The date format is used for displaying date and date/time field values in {@link Db_ListBehavior lists} and {@link Db_FormBehavior forms}.
+     * The date format is used for displaying date and date/time field values in {@link \Db\ListBehavior lists} and {@link \Db\FormBehavior forms}.
      *
      * @documentable
      * @param        string $displayFormat Specifies the display format, compatible with {@link http://php.net/manual/en/function.strftime.php strftime} PHP function.
-     * @return       Db_ColumnDefinition Returns the updated column definition object.
+     * @return       \Db\ColumnDefinition Returns the updated column definition object.
      */
     public function timeFormat($displayFormat)
     {
         if ($this->type == db_datetime || $this->type == db_time) {
-            $this->_timeFormat = $displayFormat;
+            $this->timeFormat = $displayFormat;
         } else {
-            throw new Phpr_SystemException(
+            throw new SystemException(
                 'Error in column definition for: ' . $this->dbName . ' column. Method "timeFormat" is applicable only for datetime or time fields.'
             );
         }
@@ -210,9 +220,9 @@ class Db_ColumnDefinition
     public function dateTimeFormat($displayFormat)
     {
         if ($this->type == db_datetime) {
-            $this->_dateTimeFormat = $displayFormat;
+            $this->dateTimeFormat = $displayFormat;
         } else {
-            throw new Phpr_SystemException(
+            throw new SystemException(
                 'Error in column definition for: ' . $this->dbName . ' column. Method "dateTimeFormat" is applicable only for datetime fields.'
             );
         }
@@ -222,12 +232,12 @@ class Db_ColumnDefinition
 
     /**
      * Disables timezone conversion for datetime fields.
-     * By default datetime fields are converted to GMT during saving and {@link Db_ActiveRecord::displayField() displayField()} returns value converted
+     * By default datetime fields are converted to GMT during saving and {@link \Db\ActiveRecord::displayField() displayField()} returns value converted
      * back to a time zone specified in <em>TIMEZONE</em> parameter in the configuration file (config.php). You can cancel this behavior
      * by calling this method.
      *
      * @documentable
-     * @return       Db_ColumnDefinition Returns the updated column definition object.
+     * @return       \Db\ColumnDefinition Returns the updated column definition object.
      */
     public function dateAsIs()
     {
@@ -237,18 +247,18 @@ class Db_ColumnDefinition
     }
 
     /**
-     * Sets the precision for displaying floating point numbers in {@link Db_ListBehavior lists}.
+     * Sets the precision for displaying floating point numbers in {@link \Db\ListBehavior lists}.
      *
      * @documentable
      * @param        integer $precision Specifies the number of decimal places.
-     * @return       Db_ColumnDefinition Returns the updated column definition object.
+     * @return       \Db\ColumnDefinition Returns the updated column definition object.
      */
     public function precision($precision)
     {
         if ($this->type == db_float) {
-            $this->_precision = $precision;
+            $this->precision = $precision;
         } else {
-            throw new Phpr_SystemException(
+            throw new SystemException(
                 'Error in column definition for: ' . $this->dbName . ' column. Method "precision" is applicable only for floating point number fields.'
             );
         }
@@ -257,19 +267,19 @@ class Db_ColumnDefinition
     }
 
     /**
-     * Sets the maximum length for displaying varchar and text values in {@link Db_ListBehavior lists}.
+     * Sets the maximum length for displaying varchar and text values in {@link \Db\ListBehavior lists}.
      * Text values longer than the specified length get truncated.
      *
      * @documentable
      * @param        integer $length Specifies the length value.
-     * @return       Db_ColumnDefinition Returns the updated column definition object.
+     * @return       \Db\ColumnDefinition Returns the updated column definition object.
      */
     public function length($length)
     {
         if ($this->type == db_varchar || $this->type == db_text) {
-            $this->_length = $length;
+            $this->length = $length;
         } else {
-            throw new Phpr_SystemException(
+            throw new SystemException(
                 'Error in column definition for: ' . $this->dbName . ' column. Method "length" is applicable only for varchar or text fields.'
             );
         }
@@ -278,10 +288,10 @@ class Db_ColumnDefinition
     }
 
     /**
-     * Hides the column from {@link Db_ListBehavior lists}.
+     * Hides the column from {@link \Db\ListBehavior lists}.
      *
      * @documentable
-     * @return       Db_ColumnDefinition Returns the updated column definition object.
+     * @return       \Db\ColumnDefinition Returns the updated column definition object.
      */
     public function invisible()
     {
@@ -290,11 +300,11 @@ class Db_ColumnDefinition
     }
 
     /**
-     * Makes the column invisible in {@link Db_ListBehavior lists} by default.
+     * Makes the column invisible in {@link \Db\ListBehavior lists} by default.
      * Users can make the column visible by updating the list settings.
      *
      * @documentable
-     * @return       Db_ColumnDefinition Returns the updated column definition object.
+     * @return       \Db\ColumnDefinition Returns the updated column definition object.
      */
     public function defaultInvisible()
     {
@@ -303,12 +313,12 @@ class Db_ColumnDefinition
     }
 
     /**
-     * Sets column title for {@link Db_ListBehavior lists}.
+     * Sets column title for {@link \Db\ListBehavior lists}.
      * By default list column titles match column names. You can override the column name with this method.
      *
      * @documentable
-     * @param        string $title Specifies the column {@link Db_ListBehavior list} title.
-     * @return       Db_ColumnDefinition Returns the updated column definition object.
+     * @param        string $title Specifies the column {@link \Db\ListBehavior list} title.
+     * @return       \Db\ColumnDefinition Returns the updated column definition object.
      */
     public function listTitle($title)
     {
@@ -317,11 +327,11 @@ class Db_ColumnDefinition
     }
 
     /**
-     * Allows to hide the column {@link Db_ListBehavior list} title.
+     * Allows to hide the column {@link \Db\ListBehavior list} title.
      *
      * @documentable
      * @param        boolean $value Determines whether the title is invisible.
-     * @return       Db_ColumnDefinition Returns the updated column definition object.
+     * @return       \Db\ColumnDefinition Returns the updated column definition object.
      */
     public function listNoTitle($value = true)
     {
@@ -339,12 +349,12 @@ class Db_ColumnDefinition
     }
 
     /**
-     * Disables or enables sorting for the column in {@link Db_ListBehavior lists}.
-     * By default all columns are sortable in {@link Db_ListBehavior lists}. You can use this method to disable sorting by a specific column.
+     * Disables or enables sorting for the column in {@link \Db\ListBehavior lists}.
+     * By default all columns are sortable in {@link \Db\ListBehavior lists}. You can use this method to disable sorting by a specific column.
      *
      * @documentable
      * @param        boolean $value Determines whether the column is not sortable.
-     * @return       Db_ColumnDefinition Returns the updated column definition object.
+     * @return       \Db\ColumnDefinition Returns the updated column definition object.
      */
     public function noSorting($value = true)
     {
@@ -363,12 +373,12 @@ class Db_ColumnDefinition
 
     /**
      * Indicates that lists should use this column as a sorting column by default.
-     * {@link Db_ListBehavior List Behavior} uses this feature until the user
+     * {@link \Db\ListBehavior List Behavior} uses this feature until the user
      * chooses selects another sorting column.
      *
      * @documentable
      * @param        string $direction Specifies the sorting direction - <em>asc</em> or <em>desc</em>.
-     * @return       Db_ColumnDefinition Returns the updated column definition object.
+     * @return       \Db\ColumnDefinition Returns the updated column definition object.
      */
     public function order($directon = 'asc')
     {
@@ -382,7 +392,7 @@ class Db_ColumnDefinition
      *
      * @documentable
      * @param        boolean $value Enables or disables the feature. Pass TRUE value to display values as currency.
-     * @return       Db_ColumnDefinition Returns the updated column definition object.
+     * @return       \Db\ColumnDefinition Returns the updated column definition object.
      */
     public function currency($value)
     {
@@ -392,40 +402,40 @@ class Db_ColumnDefinition
 
     /**
      * Initializes and returns the validation rule set object.
-     * Use the {@link Phpr_ValidationRules validation rule set object} to configure the column validation parameters.
+     * Use the {@link Phpr\ValidationRules validation rule set object} to configure the column validation parameters.
      * Note that validation is automatically enabled for date, datetime, float and numeric fields.
      *
      * @documentable
      * @param        string  $customFormatMessage Specifies the format-specific validation message.
      * @param        boolean $re_add              This parameter is for internal use.
-     * @return       Phpr_ValidationRules Returns the validation object.
+     * @return       Phpr\ValidationRules Returns the validation object.
      */
     public function validation($customFormatMessage = null, $readd = false)
     {
         if (!strlen($this->type)) {
-            throw new Phpr_SystemException(
+            throw new SystemException(
                 'Error applying validation to ' . $this->dbName . ' column. Column type is unknown. Probably this is a calculated column. Please call the "type" method to set the column type.'
             );
         }
 
-        if ($this->_validationObj && !$readd) {
-            return $this->_validationObj;
+        if ($this->validationObj && !$readd) {
+            return $this->validationObj;
         }
 
         $dbName = $this->isReference ? $this->referenceForeignKey : $this->dbName;
 
-        $rule = $this->_model->validation->add($dbName, $this->displayName);
+        $rule = $this->model->validation->add($dbName, $this->displayName);
         if ($this->type == db_date) {
-            $rule->date($this->_dateFormat, $customFormatMessage);
+            $rule->date($this->dateFormat, $customFormatMessage);
         } elseif ($this->type == db_datetime) {
-            $rule->dateTime($this->_dateFormat . ' ' . $this->_timeFormat, $customFormatMessage, $this->dateAsIs);
+            $rule->dateTime($this->dateFormat . ' ' . $this->timeFormat, $customFormatMessage, $this->dateAsIs);
         } elseif ($this->type == db_float) {
             $rule->float($customFormatMessage);
         } elseif ($this->type == db_number) {
             $rule->numeric($customFormatMessage);
         }
 
-        return $this->_validationObj = $rule;
+        return $this->validationObj = $rule;
     }
 
     /*
@@ -436,17 +446,17 @@ class Db_ColumnDefinition
 
     public function getColumnInfo()
     {
-        return $this->_columnInfo;
+        return $this->columnInfo;
     }
 
     public function getDateFormat()
     {
-        return $this->_dateFormat;
+        return $this->dateFormat;
     }
 
     public function getTimeFormat()
     {
-        return $this->_timeFormat;
+        return $this->timeFormat;
     }
 
     /*
@@ -458,64 +468,64 @@ class Db_ColumnDefinition
         $dbName = $this->dbName;
 
         if (!$this->isReference) {
-            $value = $this->_model->$dbName;
+            $value = $this->model->$dbName;
         } else {
-            $columName = $this->_calculated_column_name;
-            $value = $this->_model->$columName;
+            $columName = $this->calculatedColumnName;
+            $value = $this->model->$columName;
         }
 
         switch ($this->type) {
         case db_varchar:
         case db_text:
-            if ($media == 'form' || $this->_length === null) {
+            if ($media == 'form' || $this->length === null) {
                 return $value;
             }
 
-            return Phpr_Html::strTrim($value, $this->_length);
+            return Html::strTrim($value, $this->length);
         case db_number:
         case db_bool:
             return $value;
         case db_float:
             if ($media != 'form') {
                 if ($this->currency) {
-                    if (method_exists($this->_model, 'format_currency')) {
-                        return $this->_model->format_currency($value);
+                    if (method_exists($this->model, 'format_currency')) {
+                        return $this->model->format_currency($value);
                     } else {
                         return Phpr::$lang->currency($value);
                     }
                 }
-                return Phpr::$lang->num($value, $this->_precision);
+                return Phpr::$lang->num($value, $this->precision);
             } else {
                 return $value;
             }
             // no break
         case db_date:
             if (gettype($value) == 'string' && strlen($value)) {
-                $value = new Phpr_Datetime($value . ' 00:00:00');
+                $value = new PhprDateTime($value . ' 00:00:00');
             }
-            return $value ? $value->format($this->_dateFormat) : null;
+            return $value ? $value->format($this->dateFormat) : null;
         case db_datetime:
             if (gettype($value) == 'string' && strlen($value)) {
                 if (strlen($value) == 10) {
                     $value .= ' 00:00:00';
                 }
-                $value = new Phpr_Datetime($value);
+                $value = new PhprDateTime($value);
             }
             if (!$this->dateAsIs) {
                 if ($media == 'time') {
-                    return $value ? Phpr_Date::display($value, $this->_timeFormat) : null;
+                    return $value ? Date::display($value, $this->timeFormat) : null;
                 } elseif ($media == 'date') {
-                    return $value ? Phpr_Date::display($value, $this->_dateFormat) : null;
+                    return $value ? Date::display($value, $this->dateFormat) : null;
                 } else {
-                    return $value ? Phpr_Date::display($value, $this->_dateTimeFormat) : null;
+                    return $value ? Date::display($value, $this->dateTimeFormat) : null;
                 }
             } else {
                 if ($media == 'time') {
-                    return $value ? $value->format($this->_timeFormat) : null;
+                    return $value ? $value->format($this->timeFormat) : null;
                 } elseif ($media == 'date') {
-                    return $value ? $value->format($this->_dateFormat) : null;
+                    return $value ? $value->format($this->dateFormat) : null;
                 } else {
-                    return $value ? $value->format($this->_dateTimeFormat) : null;
+                    return $value ? $value->format($this->dateTimeFormat) : null;
                 }
             }
             // no break
@@ -532,23 +542,23 @@ class Db_ColumnDefinition
             return $this->dbName;
         }
 
-        return $this->_calculated_column_name;
+        return $this->calculatedColumnName;
     }
 
     protected function defineReferenceColumn()
     {
-        if (!array_key_exists($this->relationName, $this->_model->has_models)) {
-            throw new Phpr_SystemException(
+        if (!array_key_exists($this->relationName, $this->model->has_models)) {
+            throw new SystemException(
                 'Error defining reference "' . $this->relationName . '". Relation ' . $this->relationName . ' is not found in model ' . get_class(
-                    $this->_model
+                    $this->model
                 )
             );
         }
 
-        $relationType = $this->_model->has_models[$this->relationName];
+        $relationType = $this->model->has_models[$this->relationName];
 
         $has_primary_key = $has_foreign_key = false;
-        $options = $this->_model->get_relation_options(
+        $options = $this->model->get_relation_options(
             $relationType,
             $this->relationName,
             $has_primary_key,
@@ -556,57 +566,57 @@ class Db_ColumnDefinition
         );
 
         if (!is_null($options['finder_sql'])) {
-            throw new Phpr_SystemException(
+            throw new SystemException(
                 'Error defining reference "' . $this->relationName . '". Relation finder_sql option is not supported.'
             );
         }
 
         $this->referenceType = $relationType;
 
-        $columnName = $this->_calculated_column_name = $this->dbName . '_calculated';
+        $columnName = $this->calculatedColumnName = $this->dbName . '_calculated';
 
         $colDefinition = array();
         $colDefinition['type'] = $this->type;
 
         $this->referenceClassName = $options['class_name'];
 
-        if (!array_key_exists($options['class_name'], self::$_cached_class_instances)) {
+        if (!array_key_exists($options['class_name'], self::$cachedClassInstances)) {
             $object = new $options['class_name'](null, array('no_column_init' => true, 'no_validation' => true));
-            self::$_cached_class_instances[$options['class_name']] = $object;
+            self::$cachedClassInstances[$options['class_name']] = $object;
         }
 
-        $object = self::$_cached_class_instances[$options['class_name']];
+        $object = self::$cachedClassInstances[$options['class_name']];
 
         if ($relationType == 'has_one' || $relationType == 'belongs_to') {
             $objectTableName = $this->relationName . '_calculated_join';
             $colDefinition['sql'] = str_replace('@', $objectTableName . '.', $this->referenceValueExpr);
 
-            $joinExists = isset(self::$_relation_joins[$this->_model->objectId][$this->relationName]);
+            $joinExists = isset(self::$relationJoins[$this->model->objectId][$this->relationName]);
 
             if (!$joinExists) {
                 switch ($relationType) {
                 case 'has_one':
                     if (!$has_foreign_key) {
-                        $options['foreign_key'] = Phpr_Inflector::foreignKey(
-                            $this->_model->table_name,
+                        $options['foreign_key'] = Inflector::foreignKey(
+                            $this->model->table_name,
                             $object->primary_key
                         );
                     }
 
                     $this->referenceForeignKey = $options['foreign_key'];
-                    $condition = "{$objectTableName}.{$options['foreign_key']} = {$this->_model->table_name}.{$options['primary_key']}";
+                    $condition = "{$objectTableName}.{$options['foreign_key']} = {$this->model->table_name}.{$options['primary_key']}";
                     $colDefinition['join'] = array("{$object->table_name} as {$objectTableName}" => $condition);
                     break;
                 case 'belongs_to':
-                    $condition = "{$objectTableName}.{$options['primary_key']} = {$this->_model->table_name}.{$options['foreign_key']}";
+                    $condition = "{$objectTableName}.{$options['primary_key']} = {$this->model->table_name}.{$options['foreign_key']}";
                     $this->referenceForeignKey = $options['foreign_key'];
                     $colDefinition['join'] = array("{$object->table_name} as {$objectTableName}" => $condition);
 
                     break;
                 }
-                self::$_relation_joins[$this->_model->objectId][$this->relationName] = $this->referenceForeignKey;
+                self::$relationJoins[$this->model->objectId][$this->relationName] = $this->referenceForeignKey;
             } else {
-                $this->referenceForeignKey = self::$_relation_joins[$this->_model->objectId][$this->relationName];
+                $this->referenceForeignKey = self::$relationJoins[$this->model->objectId][$this->relationName];
             }
         } else {
             $this->referenceForeignKey = $this->relationName;
@@ -615,7 +625,7 @@ class Db_ColumnDefinition
             case 'has_many':
                 $valueExpr = str_replace('@', $object->table_name . '.', $this->referenceValueExpr);
                 $colDefinition['sql'] = "select group_concat($valueExpr ORDER BY 1 SEPARATOR ', ') from {$object->table_name} where
-							{$object->table_name}.{$options['foreign_key']} = {$this->_model->table_name}.{$options['primary_key']}";
+							{$object->table_name}.{$options['foreign_key']} = {$this->model->table_name}.{$options['primary_key']}";
 
                 if ($options['conditions']) {
                     $colDefinition['sql'] .= " and ({$options['conditions']})";
@@ -627,21 +637,21 @@ class Db_ColumnDefinition
                 $valueExpr = str_replace('@', $join_table_alias . '.', $this->referenceValueExpr);
 
                 if (!isset($options['join_table'])) {
-                    $options['join_table'] = $this->_model->get_join_table_name(
-                        $this->_model->table_name,
+                    $options['join_table'] = $this->model->get_join_table_name(
+                        $this->model->table_name,
                         $object->table_name
                     );
                 }
 
                 if (!$has_primary_key) {
-                    $options['primary_key'] = Phpr_Inflector::foreignKey(
-                        $this->_model->table_name,
-                        $this->_model->primary_key
+                    $options['primary_key'] = Inflector::foreignKey(
+                        $this->model->table_name,
+                        $this->model->primary_key
                     );
                 }
 
                 if (!$has_foreign_key) {
-                    $options['foreign_key'] = Phpr_Inflector::foreignKey(
+                    $options['foreign_key'] = Inflector::foreignKey(
                         $object->table_name,
                         $object->primary_key
                     );
@@ -649,7 +659,7 @@ class Db_ColumnDefinition
 
                 $colDefinition['sql'] = "select group_concat($valueExpr ORDER BY 1 SEPARATOR ', ') from {$object->table_name} as {$join_table_alias}, {$options['join_table']} where
 							{$join_table_alias}.{$object->primary_key}={$options['join_table']}.{$options['foreign_key']} and
-							{$options['join_table']}.{$options['primary_key']}={$this->_model->table_name}.{$this->_model->primary_key}";
+							{$options['join_table']}.{$options['primary_key']}={$this->model->table_name}.{$this->model->primary_key}";
 
                 if ($options['conditions']) {
                     $colDefinition['sql'] .= " and ({$options['conditions']})";
@@ -658,12 +668,12 @@ class Db_ColumnDefinition
             }
         }
 
-        $this->_model->calculated_columns[$columnName] = $colDefinition;
+        $this->model->calculated_columns[$columnName] = $colDefinition;
     }
 
     public function setContext($model)
     {
-        $this->_model = $model;
+        $this->model = $model;
         return $this;
     }
 }

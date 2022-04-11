@@ -1,10 +1,20 @@
 <?php
+namespace Db;
 
-class Db_WhereBase extends Db_Base
+class Sql_Where extends Sql_Base
 {
     private $where = array();
+    private static $getMatches;
 
-    private static $get_matches;
+    public static function create()
+    {
+        return new self();
+    }
+
+    public function __toString()
+    {
+        return $this->build_where();
+    }
 
     public function reset()
     {
@@ -23,18 +33,18 @@ class Db_WhereBase extends Db_Base
         // Off $cond
         array_shift($args);
 
-        if ($cond instanceof Db_WhereBase) {
+        if ($cond instanceof Sql_Where) {
             $cond = $cond->build_where();
         } else {
-            if (!self::$get_matches) {
-                self::$get_matches = function ($matches) {
+            if (!self::$getMatches) {
+                self::$getMatches = function ($matches) {
                     return ':__table_name__.' . $matches[0];
                 };
             }
 
             $cond = preg_replace_callback(
                 '/^([a-z_0-9`]+)[\s|=]+/i',
-                self::$get_matches,
+                self::$getMatches,
                 $cond
             );
 
@@ -98,6 +108,10 @@ class Db_WhereBase extends Db_Base
         return implode(' ', $where);
     }
 
+    /**
+     * @deprecated
+     * @see reset()
+     */
     public function reset_where()
     {
         $this->where = array();

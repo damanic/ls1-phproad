@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @deprecated
+ */
 class Db_Where extends Db_WhereBase
 {
     public static function create()
