@@ -25,7 +25,7 @@ use Phpr\Validatable;
  * @category PHPRoad
  * @author   Aleksey Bobkov
  */
-abstract class ControllerBase extends Validatable
+abstract class ControllerBase extends ValidateExtension
 {
     protected $_suppressView = false;
     protected $_eventPostPrefix = 'ev';
@@ -335,6 +335,13 @@ abstract class ControllerBase extends Validatable
         }
 
         return $result;
+    }
+
+    /**
+     * @deprecated
+     */
+    public function render_partial($View, $Params = null, $PartialMode = true, $ForcePath = false){
+       $this->renderPartial($View, $Params, $PartialMode, $ForcePath);
     }
 
     /**
