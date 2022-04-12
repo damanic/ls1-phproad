@@ -2,6 +2,7 @@
 namespace Phpr;
 
 use Phpr\SystemException;
+use Phpr\Inflector;
 
 class Extension
 {
@@ -50,7 +51,7 @@ class Extension
                 $uses = array_merge($uses, $this->implement);
             } else {
                 throw new SystemException(
-                    'Class ' . get_class($this) . ' contains an invalid ' . $implement . ' value'
+                    'Class ' . get_class($this) . ' contains an invalid ' . $this->implement . ' value'
                 );
             }
         }
@@ -238,63 +239,102 @@ class Extension
 
     public function method_exists($name)
     {
-        return (method_exists($this, $name)
-            || isset($this->extension_data['methods'][$name])
-            || isset($this->extension_data['dynamic_methods'][$name]));
+        $methodNames = $this->includeLegacyNames($name);
+        foreach ($methodNames as $methodName) {
+            if (method_exists($this, $methodName)
+                || isset($this->extension_data['methods'][$methodName])
+                || isset($this->extension_data['dynamic_methods'][$methodName])) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    // Magic
+    // Too Much Magic!
     //
 
     public function __get($name)
     {
-        if (property_exists($this, $name)) {
-            return $this->{$name};
-        }
+        // build a list of names to check for a property
+        $propertyNames = $this->includeLegacyNames($name);
 
-        foreach ($this->extension_data['extensions'] as $extension_object) {
-            if (property_exists($extension_object, $name)) {
-                return $extension_object->{$name};
+        foreach ($propertyNames as $propertyName) {
+            if (property_exists($this, $propertyName)) {
+                return $this->{$propertyName};
+            }
+
+            foreach ($this->extension_data['extensions'] as $extension_object) {
+                if (property_exists($extension_object, $propertyName)) {
+                    return $extension_object->{$propertyName};
+                }
             }
         }
+        //throw new SystemException('Property ' . $name . ' is not defined in class ' . get_class($this));
     }
 
     public function __set($name, $value)
     {
-        if (property_exists($this, $name)) {
-            return $this->{$name} = $value;
-        }
+        // build a list of names to check for a property
+        $propertyNames = $this->includeLegacyNames($name);
 
-        foreach ($this->extension_data['extensions'] as $extension_object) {
-            if (!isset($extension_object->{$name})) {
-                continue;
+        foreach ($propertyNames as $propertyName) {
+            if (property_exists($this, $propertyName)) {
+                return $this->{$propertyName} = $value;
             }
 
-            return $extension_object->{$name} = $value;
+            foreach ($this->extension_data['extensions'] as $extension_object) {
+                if (!isset($extension_object->{$propertyName})) {
+                    continue;
+                }
+
+                return $extension_object->{$propertyName} = $value;
+            }
         }
+
+       // throw new SystemException('Property ' . $name . ' is not defined in class ' . get_class($this));
     }
 
     public function __call($name, $params = null)
     {
-        if (method_exists($this, $name)) {
-            return call_user_func_array(array($this, $name), $params);
+        // build a list of names to check for a method
+        $methodNames = $this->includeLegacyNames($name);
+
+        // loop until we finding a method to match the name
+        foreach ($methodNames as $methodName) {
+            if (method_exists($this, $methodName)) {
+                return call_user_func_array(array($this, $methodName), $params);
+            }
+
+            if (isset($this->extension_data['methods'][$methodName])) {
+                $extensionName = $this->extension_data['methods'][$methodName];
+                $extensionObject = $this->extension_data['extensions'][$extensionName];
+
+                return call_user_func_array(array($extensionObject, $methodName), $params);
+            }
+
+            if (isset($this->extension_data['dynamic_methods'][$methodName])) {
+                $extensionObject = $this->extension_data['dynamic_methods'][$methodName][0];
+                $actual_name = $this->extension_data['dynamic_methods'][$methodName][1];
+                return call_user_func_array(array($extensionObject, $actual_name), $params);
+            }
         }
 
-        if (isset($this->extension_data['methods'][$name])) {
-            $extension_name = $this->extension_data['methods'][$name];
-            $extension_object = $this->extension_data['extensions'][$extension_name];
+//        throw new SystemException('Class ' . get_class($this) . ' does not have a method definition for ' . $name);
+    }
 
-            return call_user_func_array(array($extension_object, $name), $params);
-        }
-
-        if (isset($this->extension_data['dynamic_methods'][$name])) {
-            $extension_object = $this->extension_data['dynamic_methods'][$name][0];
-            $actual_name = $this->extension_data['dynamic_methods'][$name][1];
-
-            return call_user_func_array(array($extension_object, $actual_name), $params);
-        }
-
-        throw new SystemException('Class ' . get_class($this) . ' does not have a method definition for ' . $name);
+    /**
+     * Older modules may have outdated references using old code style.
+     * This method returns the name requested along with CamelCase and PascalCase variants.
+     * @param string $name Method/Function/Property name
+     * @return array array of possible names
+     */
+    private function includeLegacyNames($name): array
+    {
+        return array(
+            $name,
+            Inflector::camelize($name),
+            Inflector::underscore($name)
+        );
     }
 
 
