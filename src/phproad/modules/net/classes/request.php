@@ -127,7 +127,7 @@ class Request
     }
 
     /**
-     * Returns an exisiting option's current value
+     * Returns an existing option's current value
      *
      * @param string $key CURL option
      *

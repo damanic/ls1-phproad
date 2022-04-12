@@ -1,9 +1,11 @@
 <?php
 namespace Db;
 
+use Db\Sql;
 use Phpr\SystemException;
 use Phpr\ValidationException;
-use Db\Sql;
+use Phpr\Inflector;
+use Phpr\String;
 
 class Helper
 {
@@ -18,21 +20,6 @@ class Helper
     {
         $tables = self::listTables();
         return in_array($tableName, $tables);
-    }
-
-    public static function executeSqlScript($filePath, $separator = ';')
-    {
-        $fileContents = file_get_contents($filePath);
-        $fileContents = str_replace("\r\n", "\n", $fileContents);
-        $statements = explode($separator . "\n", $fileContents);
-
-        $sql = Sql::create();
-
-        foreach ($statements as $statement) {
-            if (strlen(trim($statement))) {
-                $sql->execute($statement);
-            }
-        }
     }
 
     public static function scalar($sql, $bind = array())
@@ -131,42 +118,98 @@ class Helper
         return $result;
     }
 
-    public static function createDbDump($path, $options = array())
+    public static function executeSqlFromFile($file_path, $separator = ';')
+    {
+        $file_contents = file_get_contents($file_path);
+        $file_contents = str_replace("\r\n", "\n", $file_contents);
+        $statements = explode($separator."\n", $file_contents);
+
+        $sql = Sql::create(static::getDriver());
+
+        foreach ($statements as $statement) {
+            if (strlen(trim($statement))) {
+                $sql->execute($statement);
+            }
+        }
+    }
+
+    public static function exportSqlToFile($path, $options = array())
     {
         @set_time_limit(600);
 
-        $tables_to_ignore = array_key_exists('ignore', $options) ? $options['ignore'] : array();
-        $separator = array_key_exists('separator', $options) ? $options['separator'] : ';';
+        $tables_to_ignore = isset($options['ignore']) ? $options['ignore'] : array();
+        $separator = isset($options['separator']) ? $options['separator'] : ';';
 
-        $fp = @fopen($path, "w");
-        if (!$fp) {
-            throw new Phpr_SystemException('Error opening file for writing: ' . $path);
+        $file_handle = @fopen($path, "w");
+        if (!$file_handle) {
+            throw new SystemException('Error opening file for writing: '.$path);
         }
 
-        $sql = Sql::create();
+        $sql = Sql::create(static::getDriver());
 
         try {
-            fwrite($fp, "SET NAMES utf8" . $separator . "\n\n");
+            fwrite($file_handle, "SET NAMES utf8".$separator."\n\n");
             $tables = self::listTables();
 
-            foreach ($tables as $index => $table) {
-                if (in_array($table, $tables_to_ignore)) {
+            foreach ($tables as $table_name) {
+                if (in_array($table_name, $tables_to_ignore)) {
                     continue;
                 }
 
-                fwrite($fp, '# TABLE ' . $table . "\n#\n");
-                fwrite($fp, 'DROP TABLE IF EXISTS `' . $table . "`" . $separator . "\n");
-                fwrite($fp, self::getTableStruct($table) . $separator . "\n\n");
-                self::getTableDump($table, $fp, $separator);
+                fwrite($file_handle, '# TABLE '.$table_name."\n#\n");
+                fwrite($file_handle, 'DROP TABLE IF EXISTS `'.$table_name."`".$separator."\n");
+                fwrite($file_handle, self::getTableStruct($table_name).$separator."\n\n");
+                self::geTableDump($table_name, $file_handle, $separator);
                 $sql->driver()->reconnect();
             }
 
-            @fclose($fp);
-            @chmod($path, Phpr_Files::getFilePermissions());
+            @fclose($file_handle);
+            @chmod($path, File::getPermissions());
         } catch (Exception $ex) {
-            @fclose($fp);
+            @fclose($file_handle);
             throw $ex;
         }
+    }
+
+
+    public static function dropColumn($table_name, $column_name)
+    {
+        $sql = Sql::create(static::getDriver());
+        return $sql->query($sql->prepare('ALTER TABLE `'.$table_name.'` DROP `'.$column_name.'`'));
+    }
+
+    public static function renameColumn($table_name, $column_name, $new_column_name)
+    {
+        $sql = Sql::create(static::getDriver());
+        $table_arr = $sql->describe_table($table_name);
+
+        if (!isset($table_arr[$column_name])) {
+            return false;
+        }
+
+        $sql_type = $table_arr[$column_name]['sql_type'];
+        return $sql->query($sql->prepare('ALTER TABLE `'.$table_name.'` CHANGE COLUMN `'.$column_name.'` `'.$new_column_name.'` '.$sql_type));
+    }
+
+
+    /**
+     * Slugifys and caps a string to a safe length
+     * Returns a URI code
+     * @param $model
+     * @param $column_name
+     * @param $string
+     * @param null $max_length
+     * @return mixed
+     */
+    public static function getUniqueSlugifyValue($model, $column_name, $string, $max_length = null)
+    {
+        $table_name = $model->table_name;
+        $slug = Inflector::slugify($string);
+        if ($max_length) {
+            $slug = substr($slug, 0, $max_length);
+        }
+
+        return self::getUniqueColumnValue($model, $column_name, $slug);
     }
 
     /**
@@ -180,29 +223,45 @@ class Helper
      * @param  bool            $case_sensitive Specifies whether function should perform a case-sensitive search
      * @return string
      */
-    public static function getUniqueColumnValue($model, $column_name, $base_value, $case_sensitive = false)
+    public static function getUniqueColumnValue($model, $column_name, $column_value, $case_sensitive = false, $separator = '-')
     {
-        $base_value = trim($base_value);
-        $base_value = preg_replace('/_copy_[0-9]+$/', '', $base_value);
-
-        $column_value = $base_value;
         $counter = 1;
         $table_name = $model->table_name;
+        $column_value = preg_replace('/'.preg_quote($separator).'[0-9]+$/', '', trim($column_value));
+        $original_value = $column_value;
 
-        $query = $case_sensitive ?
-            "select count(*) from $table_name where $column_name=:test_value" :
-            "select count(*) from $table_name where lower($column_name)=lower(:test_value)";
+        $query = $case_sensitive
+            ? "select count(*) from ".$table_name." where ".$column_name."=:value"
+            : "select count(*) from ".$table_name." where lower(".$column_name.")=lower(:value)";
 
-        while (self::scalar(
-            "select count(*) from $table_name where $column_name=:test_value", array(
-                'test_value' => $column_value
-            )
-        )) {
-            $column_value = $base_value . '_copy_' . $counter;
+        while (self::scalar($query, array('value'=>$column_value))) {
             $counter++;
+            $column_value = $original_value.$separator.$counter;
         }
 
         return $column_value;
+    }
+
+
+    /**
+     * Generates a unique column value by adding suffix _copy_1, _copy_2, etc
+     * $column_value of "Person" would generate "Person_copy_1"
+     * @param $model
+     * @param $column_name
+     * @param $column_value
+     * @param false $case_sensitive
+     * @return string
+     */
+    public static function getUniqueCopyValue($model, $column_name, $column_value, $case_sensitive = false)
+    {
+        return self::getUniqueColumnValue($model, $column_name, $column_value, $case_sensitive, '_copy_');
+    }
+
+
+
+    public static function getLastInsertId()
+    {
+        static::getDriver()->get_last_insert_id();
     }
 
     /**
@@ -219,7 +278,7 @@ class Helper
             $fields = array($fields);
         }
 
-        $words = Phpr_Strings::splitToWords($query);
+        $words = Strings::splitToWords($query);
 
         $word_queries = array();
         foreach ($words as $word) {
@@ -267,5 +326,37 @@ class Helper
     public static function escape($str)
     {
         return self::driver()->escape($str);
+    }
+
+    //
+    // Internals
+    //
+
+    protected static function getDriver()
+    {
+        if (!self::$driver) {
+            $sql = Sql::create();
+            return self::$driver = $sql->driver();
+        }
+
+        return self::$driver;
+    }
+
+    /**
+     * @deprecated
+     */
+    public static function executeSqlScript($filePath, $separator = ';')
+    {
+        self::executeSqlFromFile($filePath, $separator);
+    }
+
+
+    /**
+     * @throws SystemException
+     * @deprecated
+     */
+    public static function createDbDump($path, $options = array())
+    {
+        self::exportSqlToFile($path, $options);
     }
 }

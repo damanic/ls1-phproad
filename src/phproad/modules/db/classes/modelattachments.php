@@ -49,7 +49,7 @@ class ModelAttachments extends Extension
      * Saves and attaches a postback file to a model
      * @param string $field Field name for the file relationship
      * @param array $file_info The file postback array. Eg: $_FILE[$field]
-     * @param bool $delete Determines whether any exisiting attachments should be deleted first
+     * @param bool $delete Determines whether any existing attachments should be deleted first
      * @param string $session_key Defined session key for deferred bindings
      * @return Db\File
      */

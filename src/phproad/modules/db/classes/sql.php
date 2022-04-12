@@ -18,9 +18,13 @@ class Sql extends Sql_Where
         'order' => array()
     );
 
-    public static function create()
+    public static function create(\Db\Driver_Base $driver = null)
     {
-        return new self();
+        $instance = new self();
+        if($driver) {
+            $instance->assign_driver($driver);
+        }
+        return $instance;
     }
 
     public function __toString()
@@ -538,7 +542,7 @@ class Sql extends Sql_Where
 
     /* Fetch methods */
 
-    protected function _fetchAll($result, $col = null)
+    private function doFetchAll($result, $col = null)
     {
         $data = array();
         while ($row = $this->driver()->fetch($result, $col)) {
@@ -572,7 +576,7 @@ class Sql extends Sql_Where
         }
 
         $result = $this->query($this->prepare($sql, $bind));
-        $fetch = $this->_fetchAll($result);
+        $fetch = $this->doFetchAll($result);
         $this->driver()->free_query_result($result);
 
         Phpr::$events->fire_event('db:onAfterDatabaseFetch', $sql, $fetch);
@@ -606,7 +610,7 @@ class Sql extends Sql_Where
         }
 
         $result = $this->query($this->prepare($sql, $bind));
-        $fetch = $this->_fetchAll($result, 0);
+        $fetch = $this->doFetchAll($result, 0);
         $this->driver()->free_query_result($result);
 
         Phpr::$events->fire_event('db:onAfterDatabaseFetch', $sql, $fetch);
