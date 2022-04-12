@@ -1068,7 +1068,7 @@ class Db_ListBehavior extends Phpr_ControllerBehavior
 
             $direction = $this->_controller->list_sorting_direction;
             if (strtoupper($direction) != 'ASC' && strtoupper($direction) != 'DESC') {
-                $direction = 'asc';
+                $direction = 'ASC';
             }
             return (object)(array('field' => $column, 'direction' => $direction));
         }
@@ -1094,7 +1094,7 @@ class Db_ListBehavior extends Phpr_ControllerBehavior
             $column = $this->_controller->list_default_sorting_column;
             $direction = $this->_controller->list_sorting_direction;
             if (strtoupper($direction) != 'ASC' && strtoupper($direction) != 'DESC') {
-                $direction = 'asc';
+                $direction = 'ASC';
             }
             $this->_list_sorting_column = (object)(array('field' => $column, 'direction' => $direction));
             return $this->_list_sorting_column;
@@ -1110,12 +1110,17 @@ class Db_ListBehavior extends Phpr_ControllerBehavior
             return null;
         }
 
-        $columnNames = array_keys($listColumns);
-        $firstColumn = $columnNames[0];
+        $firstQualifiedColumn = null;
+        foreach($listColumns as $column){
+            if(!$column->isCustom){
+                $firstQualifiedColumn = $column;
+                break;
+            }
+        }
 
         $this->_list_sorting_column = (object)(array(
-            'field' => $listColumns[$firstColumn]->dbName,
-            'direction' => 'asc'
+            'field' => $firstQualifiedColumn->dbName,
+            'direction' => 'ASC'
         ));
         return $this->_list_sorting_column;
     }
