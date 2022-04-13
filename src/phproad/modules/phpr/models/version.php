@@ -3,7 +3,7 @@
 namespace Phpr;
 
 use Db\ActiveRecord;
-use Db\Helper as Db_Helper;
+use Db\Helper as DbHelper;
 
 /**
  * Data object for Module versions
@@ -40,7 +40,7 @@ class Version extends ActiveRecord
         }
 
         self::$version_cache = array();
-        $versions = Db_Helper::object_array('select * from phpr_module_versions');
+        $versions = DbHelper::object_array('select * from phpr_module_versions');
         foreach ($versions as $version) {
             if (!isset($version->module_id)) {
                 continue;
@@ -71,7 +71,7 @@ class Version extends ActiveRecord
         }
 
         self::$build_cache = array();
-        $versions = Db_Helper::objectArray('select * from phpr_module_versions');
+        $versions = DbHelper::objectArray('select * from phpr_module_versions');
         foreach ($versions as $version) {
             if (!isset($version->module_id)) {
                 continue;
@@ -86,7 +86,7 @@ class Version extends ActiveRecord
     public static function getModuleBuildsString()
     {
         if (self::$db_version_string === null) {
-            self::$db_version_string = Db_DbHelper::scalar(
+            self::$db_version_string = DbHelper::scalar(
                 "select group_concat(version order by module_id separator '|') from phpr_module_versions"
             );
         }

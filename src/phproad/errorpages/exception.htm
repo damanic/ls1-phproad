@@ -93,7 +93,7 @@
 								
 								foreach($error->call_stack as $index => $stack_item): 
 							?>
-								<tr class="<?= Backend_Html::zebra('callstack') ?> <?= $index == $last_index ? 'last' : null ?>">
+								<tr class="<?= Phpr\Html::zebra('callstack') ?> <?= $index == $last_index ? 'last' : null ?>">
 									<td class="first"><?= $stack_item->id ?></td>
 									<td><?= $stack_item->document ?></td>
 									<td class="last"><?= $stack_item->type ?></td>
@@ -119,7 +119,7 @@
 										else 
 											$args = '()';
 								?>
-								<tr class="<?= Backend_Html::zebra('callstack') ?> <?= $index == $last_index ? 'last' : null ?>">
+								<tr class="<?= Phpr\Html::zebra('callstack') ?> <?= $index == $last_index ? 'last' : null ?>">
 									<td class="first"><?= $stack_item->id ?></td>
 									<td><?= $stack_item->function_name . '(' . $args . ')' ?></td>
 									<td><?= $stack_item->document ?></td>

@@ -522,7 +522,7 @@ class Security
             'delete from db_saved_tickets where created_at < DATE_SUB(now(), INTERVAL :seconds SECOND)',
             array('seconds' => $ttl)
         );
-        $data = Db_DbHelper::scalar(
+        $data = DbHelper::scalar(
             'select ticket_data from db_saved_tickets where ticket_id=:ticket_id',
             array('ticket_id' => $ticket_id)
         );
@@ -530,7 +530,7 @@ class Security
             return null;
         }
 
-        Db_DbHelper::query('delete from db_saved_tickets where ticket_id=:ticket_id', array('ticket_id' => $ticket_id));
+        DbHelper::query('delete from db_saved_tickets where ticket_id=:ticket_id', array('ticket_id' => $ticket_id));
 
         return $data;
     }
@@ -543,6 +543,6 @@ class Security
             return null;
         }
 
-        Db_DbHelper::query('delete from db_saved_tickets where ticket_id=:ticket_id', array('ticket_id' => $ticket_id));
+        DbHelper::query('delete from db_saved_tickets where ticket_id=:ticket_id', array('ticket_id' => $ticket_id));
     }
 }

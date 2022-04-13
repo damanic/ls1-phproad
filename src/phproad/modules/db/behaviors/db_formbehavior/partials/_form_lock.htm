@@ -2,7 +2,7 @@
 $form_lock_object = isset($form_lock_object) ? $form_lock_object : false;
 if ($form_lock_object):
 ?>
-	<?= Phpr_Form::openTag(array('id'=>'phpr_lock_form_element')) ?>
+	<?= Phpr\Form ::openTag(array('id'=>'phpr_lock_form_element')) ?>
 		<input type="hidden" name="lock_id" value="<?= $form_lock_object->id ?>" id="form_lock_record_id"/>
 	</form>
 <? endif ?>

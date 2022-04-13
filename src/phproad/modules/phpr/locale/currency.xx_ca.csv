@@ -12,7 +12,7 @@ phpr.currency, local_currency_symbol, $
 
 "Decimal point character"
 
-phpr.currency, decimal_separator,.
+phpr.currency, decimalSeparator,.
 
 "Separator character for thousands (groups of three digits)"
 

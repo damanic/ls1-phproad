@@ -26,7 +26,7 @@
  * @see          Db_ListBehavior
  * @see          Db_FilterBehavior
  */
-class Db_FormBehavior extends Phpr_ControllerBehavior
+class Db_FormBehavior extends Phpr\ControllerBehavior
 {
     /**
      * @var          string Specifies a title of the Create Record page.
@@ -369,7 +369,7 @@ class Db_FormBehavior extends Phpr_ControllerBehavior
      * The event handlers are defined in the extension class.
      * Example of the Create form:
      * <pre>
-     * <?= Phpr_Form::openTag() ?>
+     * <?= Phpr\Form ::openTag() ?>
      *   <? $this->formRender() ?>
      *
      *   <?= backend_ajax_button('Create', 'create_onSave', array('class'=>'default')) ?>
@@ -378,7 +378,7 @@ class Db_FormBehavior extends Phpr_ControllerBehavior
      * </pre>
      * Example of the Edit form:
      * <pre>
-     * <?= Phpr_Form::openTag(array('id'=>'form_element')) ?>
+     * <?= Phpr\Form ::openTag(array('id'=>'form_element')) ?>
      *   <? $this->formRender() ?>
      *
      *   <?= backend_ajax_button('Save', 'edit_onSave', array('class'=>'default')) ?>
@@ -555,6 +555,7 @@ class Db_FormBehavior extends Phpr_ControllerBehavior
 
         $sessionKey = $sessionKey ? $sessionKey : $this->formGetEditSessionKey();
 
+        //@todo out of scope
         $url = Backend_Html::controllerUrl();
         $url = substr($url, 0, -1);
 

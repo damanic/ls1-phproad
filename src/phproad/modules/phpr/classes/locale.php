@@ -381,64 +381,6 @@ class Locale
     }
 
     /**
-     * Loads the user locale.
-     */
-    private function initLocale($force = false)
-    {
-        if (!$force && $this->localeCode !== null) {
-            return;
-        }
-
-        Phpr::$events->fire_event('phpr:on_before_locale_initialized', $this);
-
-        $localeCode = Phpr::$config->get('LOCALE', self::defaultLocaleCode);
-        $locale_code = self::defaultLocaleCode;
-
-        if ($locale_code === 'auto') {
-            $locale_code = Phpr::$request->get_user_language();
-        }
-
-        $x1 = explode('_', $locale_code);
-
-        $this->languageCode = $x1[0];
-        $this->countryCode = $x1[1];
-        $this->localeCode = $locale_code;
-
-        Phpr::$events->fire_event('phpr:on_after_locale_initialized', $this);
-    }
-
-    /**
-     * Loads the number format preferences.
-     */
-    private function loadNumberFormat()
-    {
-        $this->decSeparator = $this->getString('phpr.numbers', 'decimalSeparator');
-        $this->group_separator = $this->getString('phpr.numbers', 'group_separator');
-    }
-
-    /**
-     * Loads the currency format preferences.
-     */
-    private function loadCurrencyFormat()
-    {
-        $this->intlCurrencySymbol = $this->getString('phpr.currency', 'intlCurrencySymbol');
-        $this->localCurrencySymbol = $this->getString('phpr.currency', 'localCurrencySymbol');
-        $this->decimalSeparator = $this->getString('phpr.currency', 'decimalSeparator');
-        $this->group_separator = $this->getString('phpr.currency', 'group_separator');
-        $this->decimalDigits = $this->getString('phpr.currency', 'decimalDigits');
-        $this->positiveSign = $this->getString('phpr.currency', 'positiveSign');
-        $this->negativeSign = $this->getString('phpr.currency', 'negativeSign');
-        $this->pCsPrecedes = (int)$this->getString('phpr.currency', 'pCsPrecedes');
-        $this->pSepBySpace = (int)$this->getString('phpr.currency', 'pSepBySpace');
-        $this->pCsPrecedes = (int)$this->getString('phpr.currency', 'nCsPrecedes');
-        $this->nSepBySpace = (int)$this->getString('phpr.currency', 'nSepBySpace');
-        $this->pFormat = $this->getString('phpr.currency', 'pFormat');
-        $this->nFormat = $this->getString('phpr.currency', 'nFormat');
-
-        $this->currencyIsLoaded = true;
-    }
-
-    /**
      * Returns a string in a specified locale container.
      * @param string $locale Specifies a language
      * @param string $container Specifies a file category
@@ -486,6 +428,8 @@ class Locale
 
     public function getPluralization($locale)
     {
+        traceLog('Getting Pluralizxation '.$locale);
+        traceLog($this->getPluralizations());
         // attempt to load the locale if pluralization doesn't exist
         if (!$this->pluralizationExists($locale)) {
             $this->load($locale);
@@ -590,10 +534,10 @@ class Locale
 
             foreach ($iterator as $file) {
                 if ($file->isDir() || !preg_match(
-                        "/^([^\.]*)\.([^\.]*)\." . $extension . "$/i",
-                        $file->getFilename(),
-                        $m1
-                    )) {
+                    "/^([^\.]*)\.([^\.]*)\." . $extension . "$/i",
+                    $file->getFilename(),
+                    $m1
+                )) {
                     continue;
                 }
 
@@ -694,7 +638,7 @@ class Locale
                 while (($row = fgetcsv($handle, 2000000, $delimeter)) !== false) {
                     ++$line_number;
 
-                    if (\FileSystem\Csv::csv_row_is_empty($row)) {
+                    if (\FileSystem\Csv::csvRowIsEmpty($row)) {
                         continue;
                     }
 
@@ -750,5 +694,135 @@ class Locale
         }
 
         ini_set('auto_detect_line_endings', $auto_detect_line_endings);
+    }
+
+    /**
+     * @deprecated
+     */
+    public function mod($Module, $Key, $Category = null)
+    {
+        Phpr::$deprecate->setFunction('mod', 'getString');
+        return $this->getString("$Module.$Category", $Key);
+    }
+
+    /**
+     * @deprecated
+     */
+    public function app($Module, $Key)
+    {
+        Phpr::$deprecate->setFunction('app');
+    }
+
+    /**
+     * @deprecated
+     */
+    public function setLanguage($Language)
+    {
+        Phpr::$deprecate->setFunction('setLanguage', 'setLocale');
+        $this->setLocale($Language);
+    }
+
+    /**
+     * @deprecated
+     */
+    public function getLanguage()
+    {
+        Phpr::$deprecate->setFunction('getLanguage', 'getLocale');
+        return $this->getLocaleCode();
+    }
+
+    /**
+     * @deprecated
+     */
+    public function num($Number, $Decimals = 0)
+    {
+        Phpr::$deprecate->setFunction('num', 'getNumber');
+        return $this->getNumber($Number, $Decimals);
+    }
+
+    /**
+     * @deprecated
+     */
+    public function strToNum($Str)
+    {
+        Phpr::$deprecate->setFunction('strToNum', 'stringToNumber');
+        return $this->stringToNumber($Str);
+    }
+
+    /**
+     * @deprecated
+     */
+    public function strToDate($Str, $Format = "%x", $TimeZone = null)
+    {
+        Phpr::$deprecate->setFunction('strToDate', 'stringToDate');
+        return $this->stringToDate($Str, $Format, $TimeZone);
+    }
+
+    /**
+     * @deprecated
+     */
+    public function currency($Value)
+    {
+        Phpr::$deprecate->setFunction('currency', 'getCurrency');
+        return $this->getCurrency($Value);
+    }
+
+
+    /**
+     * Loads the user locale.
+     */
+    private function initLocale($force = false)
+    {
+        if (!$force && $this->localeCode !== null) {
+            return;
+        }
+
+        $localeCode = Phpr::$config->get('LOCALE', null);
+        if (!$localeCode) {
+            //try legacy config param
+            $localeCode = Phpr::$config->get('LANGUAGE', self::defaultLocaleCode);
+        }
+
+        if ($localeCode === 'auto') {
+            $localeCode = Phpr::$request->getUserLanguage();
+        }
+
+        $x1 = explode('_', $localeCode);
+        $this->languageCode = $x1[0];
+        $this->countryCode = $x1[1];
+        $this->localeCode = $localeCode;
+
+        $this->load();
+    }
+
+    /**
+     * Loads the number format preferences.
+     */
+    private function loadNumberFormat()
+    {
+        $this->decSeparator = $this->getString('phpr.numbers', 'decimalSeparator');
+        $this->group_separator = $this->getString('phpr.numbers', 'group_separator');
+    }
+
+    /**
+     * Loads the currency format preferences.
+     */
+    private function loadCurrencyFormat()
+    {
+        $this->intlCurrencySymbol = $this->getString('phpr.currency', 'intlCurrencySymbol');
+        $this->localCurrencySymbol = $this->getString('phpr.currency', 'localCurrencySymbol');
+        $this->decimalSeparator = $this->getString('phpr.currency', 'decimalSeparator');
+        $this->group_separator = $this->getString('phpr.currency', 'group_separator');
+        $this->decimalDigits = $this->getString('phpr.currency', 'decimalDigits');
+        $this->positiveSign = $this->getString('phpr.currency', 'positiveSign');
+        $this->negativeSign = $this->getString('phpr.currency', 'negativeSign');
+        $this->pCsPrecedes = (int)$this->getString('phpr.currency', 'pCsPrecedes');
+        $this->pSepBySpace = (int)$this->getString('phpr.currency', 'pSepBySpace');
+        $this->pCsPrecedes = (int)$this->getString('phpr.currency', 'nCsPrecedes');
+        $this->nSepBySpace = (int)$this->getString('phpr.currency', 'nSepBySpace');
+        $this->pFormat = $this->getString('phpr.currency', 'pFormat');
+        $this->nFormat = $this->getString('phpr.currency', 'nFormat');
+
+        $this->currencyIsLoaded = true;
     }
 }

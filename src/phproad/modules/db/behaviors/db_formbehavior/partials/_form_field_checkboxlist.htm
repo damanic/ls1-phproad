@@ -46,7 +46,7 @@
 			$level = isset($level) ? $level : 0;
 	?>
 		<div class="option" style="<?= $level > 0 ? 'padding-left:'.(10*$level).'px' : null ?>">
-			<input <?= Phpr_Form::checkboxState($checked) ?> type="checkbox" id="<?= $fieldId ?>" name="<?= $form_model_class ?>[<?= $dbName ?>][]" value="<?= h($value) ?>" class="checkbox"/>
+			<input <?= Phpr\Form ::checkboxState($checked) ?> type="checkbox" id="<?= $fieldId ?>" name="<?= $form_model_class ?>[<?= $dbName ?>][]" value="<?= h($value) ?>" class="checkbox"/>
 			<label class="choice" for="<?= $fieldId ?>">
 				<?= $form_field->optionsHtmlEncode ? h($name) : $name ?>
 				<? if (strlen($description)): ?><span class="description"><?= h($description) ?></span><? endif ?>

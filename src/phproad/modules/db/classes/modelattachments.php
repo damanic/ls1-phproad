@@ -1,7 +1,7 @@
 <?php namespace Db;
 
 use Phpr\Extension;
-use File\Upload;
+use FileSystem\Upload;
 /**
  * Adds method 'add_attachments_field' to ActiveRecord class.
  * Use this class to add file attachments fields to your models.

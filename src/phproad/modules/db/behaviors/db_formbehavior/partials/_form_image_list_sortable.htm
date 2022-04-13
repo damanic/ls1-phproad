@@ -11,7 +11,7 @@
 	<? endif ?>
 	<ul class="imageList_sortable" id="<?= $listId ?>">
 		<? foreach ($form_file_list as $index=>$file): ?>
-			<li class="<?= $index == $form_file_list->count-1 ? 'last' : null ?> <?= Backend_Html::zebra('images_'.$listId) ?>">
+			<li class="<?= $index == $form_file_list->count-1 ? 'last' : null ?> <?= Phpr\Html::zebra('images_'.$listId) ?>">
 				<a href="#" class="row_drag_handle phpr_image_handle" onclick="return false" title="Reorder grouped products">Reorder options</a>
 				
 				<a class="image_link" href="<?= $baseUrl.urlencode($file->disk_name) ?>" target="_blank"><img src="<?= $file->getThumbnailPath(100, 'auto') ?>" alt="<?= h($file->name) ?>"/></a>

@@ -5,7 +5,7 @@
 	</h2>
 	<div class="content">
 		<div class="form700">
-			<?= Phpr_Form::openTag() ?>
+			<?= Phpr\Form ::openTag() ?>
 				<? if ($this->viewDataElement('not_found')): ?>
 					<p>Filter not found.</p>
 				<? else: ?>
@@ -60,7 +60,7 @@
 									</tr>
 								<? else: ?>
 									<? foreach ($filter_checked_records as $record): ?>
-										<tr class="<?= Backend_Html::zebra('filter_record') ?>">
+										<tr class="<?= Phpr\Html::zebra('filter_record') ?>">
 											<td class="iconCell">
 												<a class="filter_control" href="#" onclick="return filter_delete_record(this)"><img src="phproad/modules/db/behaviors/db_filterbehavior/resources/images/remove_record.gif" alt="Remove record" title="Remove record" width="16" height="16"/></a>
 											</td>

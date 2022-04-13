@@ -202,7 +202,7 @@ class Phpr_Component extends Phpr_ControllerBase
 
     /**
      * Returns the remote event handler information for using with the
-     * control helpers like Phpr_Form::Button or Phpr_Form::Anchor.
+     * control helpers like Phpr\Form ::Button or Phpr\Form ::Anchor.
      * Remote events are called using the AJAX.
      *
      * @param  string $EventName Specifies the event name.
@@ -303,7 +303,7 @@ class Phpr_Component extends Phpr_ControllerBase
 
     /**
      * Returns the composite event handler information for using with the
-     * control helpers like Phpr_Form::Button or Phpr_Form::Anchor.
+     * control helpers like Phpr\Form ::Button or Phpr\Form ::Anchor.
      * Use this method if you want to handle the component event with a page
      * controller event handler before passing it to the component event handler.
      *
@@ -347,7 +347,7 @@ class Phpr_Component extends Phpr_ControllerBase
     protected function RenderOptions()
     {
         foreach ($this->_StoredVars as $Name => $Value) {
-            echo Phpr_Form::HiddenField($Name, $Value);
+            echo Phpr\Form ::HiddenField($Name, $Value);
         }
     }
 }

@@ -52,7 +52,7 @@
 <? Phpr::$events->fireEvent('core:onAfterRenderListTable', $this) ?>
 
 <? if (!$this->list_no_interaction && $list_total_row_count > 0 && !$this->list_render_as_tree && !$this->list_no_pagination): ?>
-	<?= Backend_Html::ajaxPagination($list_pagination,
+	<?= Phpr\Html::ajaxPagination($list_pagination,
 		"$(this).getForm().sendPhpr('".$this->getEventHandler('onListPrevPage')."', {update: '".$this->listGetContainerId() ."', loadIndicator: {element: '".$this->listGetContainerId()."', hideOnSuccess: 1, src: '".$list_load_indicator."', show: false}, onBeforePost: LightLoadingIndicator.show.pass('Loading...'), onComplete: LightLoadingIndicator.hide, onSuccess: function(){\$('".$this->listGetContainerId()."').fireEvent('listUpdated')}});",
 		"$(this).getForm().sendPhpr('".$this->getEventHandler('onListNextPage')."', {update: '".$this->listGetContainerId() ."', loadIndicator: {element: '".$this->listGetContainerId()."', show: false, hideOnSuccess: 1, src: '".$list_load_indicator."'}, onBeforePost: LightLoadingIndicator.show.pass('Loading...'), onComplete: LightLoadingIndicator.hide, onSuccess: function(){\$('".$this->listGetContainerId()."').fireEvent('listUpdated')}});",
 		"$(this).getForm().sendPhpr('".$this->getEventHandler('onListSetPage')."', {extraFields: {pageIndex: %s}, update: '".$this->listGetContainerId() ."', loadIndicator: {show: false, element: '".$this->listGetContainerId()."', hideOnSuccess: 1, src: '".$list_load_indicator."'}, onBeforePost: LightLoadingIndicator.show.pass('Loading...'), onComplete: LightLoadingIndicator.hide, onSuccess: function(){\$('".$this->listGetContainerId()."').fireEvent('listUpdated')}});"

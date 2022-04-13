@@ -3,7 +3,7 @@
 	<div class="content">
 		<p <? if (count($columns) <= 10): ?>class="dashSeparator"<? endif ?>>Use checkboxes to select columns you want to see in the list. You can change position of columns by dragging them up or down.</p>
 
-		<?= Phpr_Form::openTag(array('id'=>$this->listGetPopupFormId())) ?>
+		<?= Phpr\Form ::openTag(array('id'=>$this->listGetPopupFormId())) ?>
 			<? if (count($columns) > 10): ?>
 				<div class="listColumnsScroller">
 			<? endif ?>
@@ -20,7 +20,7 @@
 
 				?>
 					<li>
-						<input value="1" name="list_visible_colums[<?= $column->dbName ?>]" type="checkbox" <?= Phpr_Form::checkboxState($isVisible) ?>/><?= strlen($column->listTitle) ? h($column->listTitle) : h($column->displayName) ?>
+						<input value="1" name="list_visible_colums[<?= $column->dbName ?>]" type="checkbox" <?= Phpr\Form ::checkboxState($isVisible) ?>/><?= strlen($column->listTitle) ? h($column->listTitle) : h($column->displayName) ?>
 						<input value="<?= $column->dbName ?>" name="ordered_list[]" type="hidden"/>
 					</li>
 				<? endforeach ?>

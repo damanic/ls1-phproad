@@ -69,11 +69,11 @@
 <? endif ?>
 
 <? if (count($this->filter_switchers)): ?>
-	<?= Phpr_Form::openTag(array('id'=>null)) ?>
+	<?= Phpr\Form ::openTag(array('id'=>null)) ?>
 	<ul class="filter_switchers">
 		<? foreach ($this->filter_switchers as $filter_id=>$filter_info): ?>
 			<li>
-				<input <?= Phpr_Form::checkboxState(in_array($filter_id, $filterCheckedSwitchers)) ?> onclick="$(this).getForm().sendPhpr('<?= $this->getEventHandler('onFilterApplySwitchers') ?>', {loadIndicator: {show: false}, onSuccess: function(){ cancelPopup();  <?= $this->filter_onApply ?>}})" type="checkbox" value="1" name="filter_switchers[<?= $filter_id ?>]" id="<?= 'filter_switcher_'.$filter_id ?>"/>
+				<input <?= Phpr\Form ::checkboxState(in_array($filter_id, $filterCheckedSwitchers)) ?> onclick="$(this).getForm().sendPhpr('<?= $this->getEventHandler('onFilterApplySwitchers') ?>', {loadIndicator: {show: false}, onSuccess: function(){ cancelPopup();  <?= $this->filter_onApply ?>}})" type="checkbox" value="1" name="filter_switchers[<?= $filter_id ?>]" id="<?= 'filter_switcher_'.$filter_id ?>"/>
 				<label for="<?= 'filter_switcher_'.$filter_id ?>"><?= h($filter_info['name']) ?></label>
 			</li>
 		<? endforeach ?>

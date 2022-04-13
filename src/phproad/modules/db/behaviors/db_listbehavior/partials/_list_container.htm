@@ -77,7 +77,7 @@
 <?
 	if (!$this->list_no_interaction && !$this->list_no_form):
 ?>
-	<?= Phpr_Form::openTag(array('id'=>$this->listGetFormId())) ?>
+	<?= Phpr\Form ::openTag(array('id'=>$this->listGetFormId())) ?>
 <? endif ?>
 	<? 
 	$scrollable = $this->list_scrollable || (isset($this->list_options['list_scrollable']) && $this->list_options['list_scrollable']);

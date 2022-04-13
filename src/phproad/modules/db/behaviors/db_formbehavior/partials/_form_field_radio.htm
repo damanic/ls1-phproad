@@ -23,7 +23,7 @@
 		$fieldId = $this->formGetElementId($fieldId);
 ?>
 	<div class="option">
-		<input <? if ($form_field->disabled) echo 'disabled="disabled"' ?> <?= Phpr_Form::radioState($value, $form_model->$dbName) ?> type="radio" id="<?= $fieldId ?>" name="<?= $form_model_class ?>[<?= $dbName ?>]" value="<?= h($value) ?>" class="radio"/>
+		<input <? if ($form_field->disabled) echo 'disabled="disabled"' ?> <?= Phpr\Form ::radioState($value, $form_model->$dbName) ?> type="radio" id="<?= $fieldId ?>" name="<?= $form_model_class ?>[<?= $dbName ?>]" value="<?= h($value) ?>" class="radio"/>
 		<label class="choice" for="<?= $fieldId ?>">
 			<?= h($name) ?>
 			<? if (strlen($description)): ?><span class="description"><?= h($description) ?></span><? endif ?>

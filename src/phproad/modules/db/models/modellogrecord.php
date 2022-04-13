@@ -1,10 +1,13 @@
-<?php
+<?php namespace Db;
+
+use Phpr\Xml;
+use Phpr\DateTime as PhprDateTime;
 
 /**
  * DB Model log record class
  */
 
-class Db_ModelLogRecord extends Db_ActiveRecord
+class ModelLogRecord extends ActiveRecord
 {
     public $table_name = "db_model_logs";
 
@@ -24,7 +27,7 @@ class Db_ModelLogRecord extends Db_ActiveRecord
 
     public function before_validation_on_create($deferred_session_key = null)
     {
-        $this->record_datetime = Phpr_DateTime::now();
+        $this->record_datetime = PhprDateTime::now();
     }
 
     public function define_columns($context = null)
@@ -32,6 +35,7 @@ class Db_ModelLogRecord extends Db_ActiveRecord
         $this->define_column('id', 'ID');
         $this->define_column('record_datetime', 'Date and Time')->order('desc')->dateFormat('%x %X');
         $this->define_column('message', 'Message');
+        $this->define_column('param_data', 'Param Data')->invisible();
     }
 
     public function define_form_fields($context = null)
@@ -42,25 +46,21 @@ class Db_ModelLogRecord extends Db_ActiveRecord
     public function eval_message()
     {
         switch ($this->type) {
-        case Db_ModelLog::typeCreate:
-            return $this->model_log_create_name;
-                break;
-        case Db_ModelLog::typeUpdate:
-            return $this->model_log_update_name;
-                break;
-        case Db_ModelLog::typeDelete:
-            return $this->model_log_delete_name;
-                break;
-        case Db_ModelLog::typeCustom:
-            return $this->get_param_data_field('message', $this->model_log_custom_name);
-                break;
+            case ModelLog::typeCreate:
+                return $this->model_log_create_name;
+            case ModelLog::typeUpdate:
+                return $this->model_log_update_name;
+            case ModelLog::typeDelete:
+                return $this->model_log_delete_name;
+            case ModelLog::typeCustom:
+                return $this->getDataValue('message', $this->model_log_custom_name);
         }
         return "";
     }
 
     public function is_custom()
     {
-        return ($this->type == Db_ModelLog::typeCustom);
+        return ($this->type == ModelLog::typeCustom);
     }
 
 
@@ -72,7 +72,7 @@ class Db_ModelLogRecord extends Db_ActiveRecord
     public function get_fields_array()
     {
         $changed_fields_array = array();
-        $field_data_array = $this->get_param_data_field('field');
+        $field_data_array = $this->getDataValue('field');
 
 
         if ($field_data_array) {
@@ -85,33 +85,59 @@ class Db_ModelLogRecord extends Db_ActiveRecord
         return $changed_fields_array;
     }
 
+    /**
+     * Returns logged parameter data stored in XML to array
+     *
+     * @return mixed|null
+     */
+    public function dataAsArray()
+    {
+        if ($this->param_data_array !== null) {
+            return $this->param_data_array;
+        }
+
+        $result = array();
+        if (strlen($this->param_data)) {
+            try {
+                $result = Xml::toPlainArray($this->param_data, true);
+            } catch (\Exception $ex) {
+                // Do nothing
+            }
+        }
+
+        return $this->param_data_array = $result;
+    }
 
     /**
      * Returns logged parameter data stored in XML to array
      *
      * @return mixed|null
      */
-    public function get_param_data_as_array()
+    public function getDataValue($field, $default = null)
     {
-        $this->param_data_array = $this->param_data_array ? $this->param_data_array : Phpr_Xml::to_array(
-            $this->param_data
-        );
-        return $this->param_data_array;
-    }
+        $fields = $this->dataAsArray();
 
-    /**
-     * Returns a specific data field stored in XML to array
-     *
-     * @return mixed|null
-     */
-    public function get_param_data_field($field, $default = null)
-    {
-        $data_fields = $this->get_param_data_as_array();
-
-        if (!array_key_exists($field, $data_fields)) {
+        if (!array_key_exists($field, $fields)) {
             return $default;
         }
 
-        return $data_fields[$field];
+        return $fields[$field];
+    }
+
+
+    /**
+     * @deprecated
+     */
+    public function get_param_data_as_array()
+    {
+        return $this->dataAsArray();
+    }
+
+    /**
+     * @deprecated
+     */
+    public function get_param_data_field($field, $default = null)
+    {
+        return $this->getDataValue($field, $default);
     }
 }

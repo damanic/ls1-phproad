@@ -13,7 +13,7 @@
 	
 ?>
 
-<tr class="<?= Backend_Html::zebra($this->listGetName()) ?> <?= $this->listGetRowClass($row) ?>">
+<tr class="<?= Phpr\Html::zebra($this->listGetName()) ?> <?= $this->listGetRowClass($row) ?>">
 	<? if ($this->list_render_as_tree && !$this->list_no_interaction): ?>
 		<? $this->listRenderPartial('list_body_expand_control', array('expanded'=>$expanded, 'childCount'=>count($list_data), 'row'=>$row)) ?>
 	<? endif ?>

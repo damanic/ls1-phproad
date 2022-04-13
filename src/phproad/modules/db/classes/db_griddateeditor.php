@@ -24,10 +24,10 @@ class Db_GridDateEditor extends Db_GridEditor
                 'row_index' => post('phpr_grid_row_index'),
                 'date_format' => str_replace('%', null, Phpr::$lang->mod('phpr', 'short_date_format', 'dates')),
                 'week' => Phpr::$lang->mod('phpr', 'week_abbr', 'dates'),
-                'days' => Backend_Html::loadDatesLangArr('A_weekday_', 7),
-                'days_short' => Backend_Html::loadDatesLangArr('a_weekday_', 7, 7),
-                'months' => Backend_Html::loadDatesLangArr('n_month_', 12),
-                'month_short' => Backend_Html::loadDatesLangArr('b_month_', 12),
+                'days' => Phpr\Html::getLocaleDatesArray('A_weekday_', 7),
+                'days_short' => Phpr\Html::getLocaleDatesArray('a_weekday_', 7, 7),
+                'months' => Phpr\Html::getLocaleDatesArray('n_month_', 12),
+                'month_short' => Phpr\Html::getLocaleDatesArray('b_month_', 12),
                 'selected_date' => $selected_date
                 )
             );

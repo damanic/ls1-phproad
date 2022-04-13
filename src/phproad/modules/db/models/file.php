@@ -1,14 +1,24 @@
 <?php
 
+namespace Db;
+
+use Phpr;
+use Phpr\SystemException;
+use Phpr\ApplicationException;
+use FileSystem\File as FileSystemFile;
+use FileSystem\Image;
+use FileSystem\Upload;
+use Db\Helper as DbHelper;
+
 /**
- * Represents a file or image attached to a {@link Db_ActiveRecord model}.
+ * Represents a file or image attached to a {@link ActiveRecord model}.
  * This class used for creating model relations which contain model attachments.
  * <span class="note">Please note that downloadable product files are presented with another class - {@link Shop_ProductFile}.</span>
  * The example below demonstrates a typical relation which can be presented as a single file, single image, multiple file or multiple image
- * widget on the form, depending in the value passed to the field's {@link Db_FormFieldDefinition::renderFilesAs()} method:
+ * widget on the form, depending in the value passed to the field's {@link FormFieldDefinition::renderFilesAs()} method:
  * <pre>
  * public $has_many = array(
- *  'images'=>array('class_name'=>'Db_File', 'foreign_key'=>'master_object_id',
+ *  'images'=>array('class_name'=>'Db\File', 'foreign_key'=>'master_object_id',
  *    'conditions'=>"master_object_class='Shop_Product' and field='images'",
  *    'order'=>'sort_order, id', 'delete'=>true)
  * );
@@ -18,15 +28,15 @@
  * is enough if you are not going to display files in the model form. If administrators should be able to upload files, you should
  * define the model column and form field as described below.
  *
- * After adding the relations a corresponding column should be created with {@link Db_ActiveRecord::define_multi_relation_column()} method:
+ * After adding the relations a corresponding column should be created with {@link ActiveRecord::define_multi_relation_column()} method:
  * <pre>
  * public function define_columns($context = null)
  * {
  *   $this->define_multi_relation_column('images', 'images', 'Images', '@name')->invisible();
  * }
  * </pre>
- * And finally, the field should be added to the form with {@link Db_ActiveRecord::define_form_fields()} method. The type of the form widget
- * is defined with {@link Db_FormFieldDefinition::renderFilesAs()} method.
+ * And finally, the field should be added to the form with {@link ActiveRecord::define_form_fields()} method. The type of the form widget
+ * is defined with {@link FormFieldDefinition::renderFilesAs()} method.
  * <pre>
  * public function define_form_fields($context = null)
  * {
@@ -37,26 +47,30 @@
  * </pre>
  *
  * @documentable
- * @see          Db_FormFieldDefinition::renderFilesAs()
- * @see          Db_FormFieldDefinition::renderAs()
- * @see          Db_FormFieldDefinition::addDocumentLabel()
- * @see          Db_FormFieldDefinition::noAttachmentsLabel()
- * @see          Db_FormFieldDefinition::fileDownloadBaseUrl()
- * @see          Db_ActiveRecord::define_multi_relation_column()
+ * @see          FormFieldDefinition::renderFilesAs()
+ * @see          FormFieldDefinition::renderAs()
+ * @see          FormFieldDefinition::addDocumentLabel()
+ * @see          FormFieldDefinition::noAttachmentsLabel()
+ * @see          FormFieldDefinition::fileDownloadBaseUrl()
+ * @see          ActiveRecord::define_multi_relation_column()
  * @author       LemonStand eCommerce Inc.
  * @package      core.classes
  */
-class Db_File extends Db_ActiveRecord
+class File extends ActiveRecord
 {
-    public $implement = 'Db_AutoFootprints';
+    public $implement = 'Db\AutoFootprints';
 
     public $table_name = 'db_files';
     public $simpleCaching = true;
 
+    public $uploaded_dir = '/uploaded';  // Public path
+    public $uploaded_path = '/uploaded'; // Absolute path
+    public $thumbnail_error =  null;
+
     /**
      * @var          boolean Determines whether the file on the server can be accessed from the Web.
      * Public files are stored to uploaded/public directory, which is open for the external access.
-     * The {@link Db_FormBehavior form behavior} considers image files ({@link Db_FormFieldDefinition::renderFilesAs() rendered as} single image or image lists)
+     * The {@link FormBehavior form behavior} considers image files ({@link FormFieldDefinition::renderFilesAs() rendered as} single image or image lists)
      * as public, and all other files as non public.
      * @documentable
      */
@@ -121,7 +135,7 @@ class Db_File extends Db_ActiveRecord
 
     public function __construct($values = null, $options = array())
     {
-        $front_end = Db_ActiveRecord::$execution_context == 'front-end';
+        $front_end = ActiveRecord::$execution_context == 'front-end';
         if ($front_end) {
             unset($this->calculated_columns['user_name']);
         }
@@ -133,8 +147,8 @@ class Db_File extends Db_ActiveRecord
      * Creates a new class instance.
      *
      * @documentable
-     * @param        array $values Optional list of column values.
-     * @return       Db_File Returns the file object.
+     * @param array $values Optional list of column values.
+     * @return       File Returns the file object.
      */
     public static function create($values = null)
     {
@@ -143,7 +157,7 @@ class Db_File extends Db_ActiveRecord
 
     public function fromPost($fileInfo)
     {
-        Phpr_Files::validateUploadedFile($fileInfo);
+        Upload::validateUploadedFile($fileInfo);
 
         $this->mime_type = $this->evalMimeType($fileInfo);
         $this->size = $fileInfo['size'];
@@ -153,8 +167,30 @@ class Db_File extends Db_ActiveRecord
         $destPath = $this->getFileSavePath($this->disk_name);
 
         if (!@move_uploaded_file($fileInfo["tmp_name"], $destPath)) {
-            throw new Phpr_SystemException("Error copying file to $destPath.");
+            throw new SystemException("Error copying file to $destPath.");
         }
+
+        return $this;
+    }
+
+    public function fromXhr($file_info)
+    {
+        $file_info = Upload::validateXhrInfo($file_info);
+        $this->mime_type = $this->evalMimeType($file_info);
+        $this->size = $file_info['size'];
+        $this->name = $file_info['name'];
+        $this->disk_name = $this->getDiskFileName($file_info);
+
+        $results = Phpr::$events->fire_event('phpr:on_before_file_created_from_xhr', $this, $file_info);
+
+        foreach ($results as $result)
+        {
+            if ($result)
+                return $this;
+        }
+
+        $dest_path = $this->getFileSavePath($this->disk_name);
+        Upload::saveXhrFile($file_info, $dest_path);
 
         return $this;
     }
@@ -163,7 +199,7 @@ class Db_File extends Db_ActiveRecord
      * Creates a file object from a disk file.
      * Use this method for adding files from disk to a list of model's files.
      * <pre>
-     * $file = Db_File::create()->fromFile(PATH_APP.'/temp/picture.png');
+     * $file = Db\File::create()->fromFile(PATH_APP.'/temp/picture.png');
      * $file->is_public = true;
      * $file->master_object_class = 'Shop_Product';
      * $file->field = 'images';
@@ -174,8 +210,8 @@ class Db_File extends Db_ActiveRecord
      * </pre>
      *
      * @documentable
-     * @param        string $file_path Specifies a path to the file.
-     * @return       Db_File Returns the initialized file.
+     * @param string $file_path Specifies a path to the file.
+     * @return       File Returns the initialized file.
      */
     public function fromFile($file_path)
     {
@@ -192,7 +228,7 @@ class Db_File extends Db_ActiveRecord
         $destPath = $this->getFileSavePath($this->disk_name);
 
         if (!@copy($file_path, $destPath)) {
-            throw new Phpr_SystemException("Error copying file to $destPath.");
+            throw new SystemException("Error copying file to $destPath.");
         }
 
         return $this;
@@ -241,10 +277,10 @@ class Db_File extends Db_ActiveRecord
 
     public function after_create()
     {
-        Db_DbHelper::query(
+        DbHelper::query(
             'update db_files set sort_order=:sort_order where id=:id', array(
-            'sort_order' => $this->id,
-            'id' => $this->id
+                'sort_order' => $this->id,
+                'id' => $this->id
             )
         );
         $this->sort_order = $this->id;
@@ -275,14 +311,14 @@ class Db_File extends Db_ActiveRecord
      * Outputs the file to the browser.
      * Depending on the file type and <em>$disposition</em> parameter value a browser either displays the file contents or offers to save it to the disk.
      *
-     * @param        string $disposition Specifies the content disposition HTTP header value: <em>inline</em> or <em>attachment</em>.
+     * @param string $disposition Specifies the content disposition HTTP header value: <em>inline</em> or <em>attachment</em>.
      * @documentable
      */
     public function output($disposition = 'inline')
     {
         $path = $this->getFileSavePath($this->disk_name);
         if (!file_exists($path)) {
-            throw new Phpr_ApplicationException('Error: file not found.');
+            throw new ApplicationException('Error: file not found.');
         }
 
         $encoding = Phpr::$config["FILESYSTEM_CODEPAGE"];
@@ -303,7 +339,7 @@ class Db_File extends Db_ActiveRecord
         header('Content-Length: ' . $this->size);
         //            header("Connection: close");
 
-        Phpr_Files::readFile($path);
+        FileSystemFile::print($path);
     }
 
     /**
@@ -321,10 +357,10 @@ class Db_File extends Db_ActiveRecord
      * Behavior of this method can be altered by {@link core:onProcessImage} event handlers.
      *
      * @documentable
-     * @param        mixed   $width   Specifies the thumbnail width. Use the 'auto' word to scale image width proportionally.
-     * @param        mixed   $height  Specifies the thumbnail height. Use the 'auto' word to scale height width proportionally.
-     * @param        boolean $as_jpeg Determines whether JPEG or PNG image will be created.
-     * @param        array   $params  A list of parameters.
+     * @param mixed $width Specifies the thumbnail width. Use the 'auto' word to scale image width proportionally.
+     * @param mixed $height Specifies the thumbnail height. Use the 'auto' word to scale height width proportionally.
+     * @param boolean $as_jpeg Determines whether JPEG or PNG image will be created.
+     * @param array $params A list of parameters.
      * @return       string Returns the image URL relative to the website root.
      */
     public function getThumbnailPath($width, $height, $returnJpeg = true, $params = array('mode' => 'keep_ratio'))
@@ -357,7 +393,7 @@ class Db_File extends Db_ActiveRecord
         }
 
         try {
-            Phpr_Image::makeThumbnail(
+            Image::makeThumb(
                 $this->getFileSavePath($this->disk_name),
                 $thumbFile,
                 $width,
@@ -374,14 +410,14 @@ class Db_File extends Db_ActiveRecord
     }
 
     /**
-     * This method is an alias for the {@link Db_File::getThumbnailPath() getThumbnailPath()} method.
+     * This method is an alias for the {@link File::getThumbnailPath() getThumbnailPath()} method.
      * Creates an image thumbnail.
      *
      * @documentable
-     * @param        mixed   $width   Specifies the thumbnail width. Use the 'auto' word to scale image width proportionally.
-     * @param        mixed   $height  Specifies the thumbnail height. Use the 'auto' word to scale height width proportionally.
-     * @param        boolean $as_jpeg Determines whether JPEG or PNG image will be created.
-     * @param        array   $params  A list of parameters.
+     * @param mixed $width Specifies the thumbnail width. Use the 'auto' word to scale image width proportionally.
+     * @param mixed $height Specifies the thumbnail height. Use the 'auto' word to scale height width proportionally.
+     * @param boolean $as_jpeg Determines whether JPEG or PNG image will be created.
+     * @param array $params A list of parameters.
      * @return       string Returns the image URL relative to the website root.
      */
     public function thumb($width, $height, $returnJpeg = true, $params = array('mode' => 'keep_ratio'))
@@ -399,11 +435,10 @@ class Db_File extends Db_ActiveRecord
      */
     public function getPath()
     {
-        if (!$this->is_public) {
-            return '/uploaded/' . $this->disk_name;
-        } else {
-            return '/uploaded/public/' . $this->disk_name;
-        }
+        if (!$this->is_public)
+            return $this->uploadedDir.'/'.$this->disk_name;
+        else
+            return $this->uploadedDir.'/public/'.$this->disk_name;
     }
 
     /**
@@ -412,14 +447,14 @@ class Db_File extends Db_ActiveRecord
      * updated before it is saved.
      *
      * @documentable
-     * @return       Db_File Returns the new file object.
+     * @return       File Returns the new file object.
      */
     public function copy()
     {
         $srcPath = $this->getFileSavePath($this->disk_name);
         $destName = $this->getDiskFileName(array('name' => $this->disk_name));
 
-        $obj = new Db_File();
+        $obj = new File();
         $obj->mime_type = $this->mime_type;
         $obj->size = $this->size;
         $obj->name = $this->name;
@@ -429,7 +464,7 @@ class Db_File extends Db_ActiveRecord
         $obj->is_public = $this->is_public;
 
         if (!copy($srcPath, $obj->getFileSavePath($destName))) {
-            throw new Phpr_SystemException("Error copying file");
+            throw new Phpr\SystemException("Error copying file");
         }
 
         return $obj;
@@ -447,10 +482,10 @@ class Db_File extends Db_ActiveRecord
 
         foreach ($item_ids as $index => $id) {
             $order = $item_orders[$index];
-            Db_DbHelper::query(
+            DbHelper::query(
                 'update db_files set sort_order=:sort_order where id=:id', array(
-                'sort_order' => $order,
-                'id' => $id
+                    'sort_order' => $order,
+                    'id' => $id
                 )
             );
         }
@@ -480,13 +515,14 @@ class Db_File extends Db_ActiveRecord
         Phpr::$events->fireEvent('core:onFileBeforeCreate', $this);
     }
 
+
     /*
      * Event descriptions
      */
 
     /**
      * Allows to process product and other images with third-party image manipulation tools.
-     * This event is triggered every time when you call the {@link Db_File::getThumbnailPath()} method,
+     * This event is triggered every time when you call the {@link File::getThumbnailPath()} method,
      * and hence - every time when you call the {@link Shop_Product::image_url()} and {@link Shop_Category::image_url()} methods.
      * Thus the event allows to use the usual programming interface with third-party image processing modules.
      *
@@ -523,21 +559,17 @@ class Db_File extends Db_ActiveRecord
      * </pre>
      *
      * @event core:onProcessImage
-     * @param Db_File $file    Specifies the original file object.
-     * @param mixed   $width   The image width requested in the {@link Db_File::getThumbnailPath()} method call.
-     * @param mixed   $height  The image height requested in the {@link Db_File::getThumbnailPath()} method call.
+     * @param File $file Specifies the original file object.
+     * @param mixed $width The image width requested in the {@link File::getThumbnailPath()} method call.
+     * @param mixed $height The image height requested in the {@link File::getThumbnailPath()} method call.
      * @param boolean $as_jpeg Determines whether JPEG or PNG image will be created.
-     * @param array   $params  Specifies the <em>$params</em> parameter value specified in the {@link Db_File::getThumbnailPath()} method call.
+     * @param array $params Specifies the <em>$params</em> parameter value specified in the {@link File::getThumbnailPath()} method call.
      *                         You can use this parameter for passing image library specific parameters from the {@link
-     *                         Db_File::getThumbnailPath()} call to the event handler.
-
+     *                         Db\File::getThumbnailPath()} call to the event handler.
      * @return  string Returns path to the generated image.
      * @package core.events
      * @author  LemonStand eCommerce Inc.
      */
-    private function event_onProcessImage($file, $width, $height, $as_jpeg, $params)
-    {
-    }
 
     /**
      * Triggered before a new file record saved to the database.
@@ -545,11 +577,9 @@ class Db_File extends Db_ActiveRecord
      * to cancel the file creation.
      *
      * @event   core:onFileBeforeCreate
-     * @param   Db_File $file Specifies the new file object.
+     * @param File $file Specifies the new file object.
      * @author  LemonStand eCommerce Inc.
      * @package core.events
      */
-    private function event_onFileBeforeCreate($file)
-    {
-    }
+
 }

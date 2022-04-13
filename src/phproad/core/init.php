@@ -94,28 +94,28 @@ require_once 'exceptions.php';
  * Initialize the events object
  */
 
-Phpr::$events = new Phpr_Events();
+Phpr::$events = new Phpr\Events();
 
 /*
  * Initialize the response object
  */
 
-Phpr::$response = new Phpr_Response();
+Phpr::$response = new Phpr\Response();
 
 /*
  * Initialize the session object
  */
 
-Phpr::$session = new Phpr_Session();
+Phpr::$session = new Phpr\Session();
 
 /*
  * Initialize the security system
  */
-Phpr::$security = new Phpr_Security();
+Phpr::$security = new Phpr\Security();
 
 // Internal deprecation
-Phpr::$deprecate = new Phpr_Deprecate();
-Phpr_Deprecate::$suppressReported = true;
+Phpr::$deprecate = new Phpr\Deprecate();
+Phpr\Deprecate::$suppressReported = true;
 
 /*
  * Configure the application and initialize the request object
@@ -135,9 +135,9 @@ if ($path = Phpr::$classLoader->find_path('init/init.php') ) {
     include_once $path;
 }
 
-Phpr::$config = new Phpr_Config();
+Phpr::$config = new Phpr\Config();
 
-Phpr::$request = new Phpr_Request();
+Phpr::$request = new Phpr\Request();
 
 require PATH_SYSTEM . '/core/class_functions.php';
 
@@ -150,13 +150,13 @@ if (file_exists(PATH_APP . '/' . 'init/custom_helpers.php') ) {
  */
 
 if (Phpr::$errorLog === null ) {
-    Phpr::$errorLog = new Phpr_ErrorLog();
+    Phpr::$errorLog = new Phpr\ErrorLog();
 }
 if (Phpr::$traceLog === null ) {
-    Phpr::$traceLog = new Phpr_TraceLog();
+    Phpr::$traceLog = new Phpr\TraceLog();
 }
 
-Phpr::$lang = new Phpr_Language();
+Phpr::$lang = new Phpr\Locale();
 
 /*
  * Run modules initialization scripts

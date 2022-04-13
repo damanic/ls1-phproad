@@ -66,8 +66,8 @@ class User extends ActiveRecord
         }
 
         if ($Object !== null) {
-            $Result = self::$db->fetchOne(
-                self::$db->select()->from('rights', 'MAX(Value)')->joinInner(
+            $Result = $this->driver()->fetchOne(
+                $this->driver()->select()->from('rights', 'MAX(Value)')->joinInner(
                     'groups_users',
                     'groups_users.group_Id=rights.group_Id'
                 )->where('groups_users.user_Id=?', $this->Id)->where('rights.Module=?', $Module)->where(
@@ -75,26 +75,25 @@ class User extends ActiveRecord
                     $Resource
                 )->where('rights.Object=?', $Object)
             );
+        } elseif ($Resource != null) {
+            $Result = $this->driver()->fetchOne(
+                $this->driver()->select()->from('rights', 'MAX(Value)')->joinInner(
+                    'groups_users',
+                    'groups_users.group_Id=rights.group_Id'
+                )->where('groups_users.user_Id=?', $this->Id)->where('rights.Module=?', $Module)->where(
+                    'rights.Resource=?',
+                    $Resource
+                )
+            );
         } else {
-            if ($Resource != null) {
-                $Result = self::$db->fetchOne(
-                    self::$db->select()->from('rights', 'MAX(Value)')->joinInner(
-                        'groups_users',
-                        'groups_users.group_Id=rights.group_Id'
-                    )->where('groups_users.user_Id=?', $this->Id)->where('rights.Module=?', $Module)->where(
-                        'rights.Resource=?',
-                        $Resource
-                    )
-                );
-            } else {
-                $Result = self::$db->fetchOne(
-                    self::$db->select()->from('rights', 'MAX(Value) as RightValue')->joinInner(
-                        'groups_users',
-                        'groups_users.group_Id=rights.group_Id'
-                    )->where('groups_users.user_Id=?', $this->Id)->where('rights.Module=?', $Module)
-                );
-            }
+            $Result = $this->driver()->fetchOne(
+                $this->driver()->select()->from('rights', 'MAX(Value) as RightValue')->joinInner(
+                    'groups_users',
+                    'groups_users.group_Id=rights.group_Id'
+                )->where('groups_users.user_Id=?', $this->Id)->where('rights.Module=?', $Module)
+            );
         }
+
 
         if (!isset($this->AuthorizationCache[$Module])) {
             $this->AuthorizationCache[$Module] = array();

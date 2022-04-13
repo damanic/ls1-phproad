@@ -4,7 +4,7 @@ use ReflectionObject;
 
 use Phpr;
 use Phpr\SystemException;
-use File\Path;
+use FileSystem\Path;
 
 /**
  * Base class for form widgets. Form widgets can render custom form controls,

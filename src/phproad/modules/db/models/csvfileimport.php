@@ -1,14 +1,15 @@
 <?php
+namespace Db;
 
-class Db_CsvFileImport extends Db_ActiveRecord
+class CsvFileImport extends ActiveRecord
 {
     public $table_name = 'db_files';
 
     public $has_many = array(
         'csv_file' => array(
-            'class_name' => 'Db_File',
+            'class_name' => 'Db\File',
             'foreign_key' => 'id',
-            'conditions' => "master_object_class='Db_CsvFileImport'",
+            'conditions' => "master_object_class='Db\CsvFileImport'",
             'order' => 'id',
             'delete' => true
         )

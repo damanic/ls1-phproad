@@ -18,12 +18,12 @@
  */
 function h( $str )
 {
-    return Phpr_Html::encode($str);
+    return \Phpr\Html::encode($str);
 }
 
 function plainText( $Str )
 {
-    return Phpr_Html::plainText($Str);
+    return \Phpr\Html::plainText($Str);
 }
 
 /*
@@ -35,15 +35,15 @@ function plainText( $Str )
  */
 function displayDate( $Date, $Format = '%x' )
 {
-    return Phpr_Date::display($Date, $Format);
+    return \Phpr\Date::display($Date, $Format);
 }
 
 /**
- * @return Phpr_DateTime
+ * @return Phpr\DateTime
  */
 function gmtNow()
 {
-    return Phpr_DateTime::gmtNow();
+    return \Phpr\DateTime::gmtNow();
 }
 
 /*
@@ -74,6 +74,7 @@ function traceLog( $Str, $Listener = 'INFO' )
 
 function flash()
 {
+    //@todo out of scope
     return Backend_Html::flash();
 }
 
@@ -154,7 +155,7 @@ function post_array_item( $array_name, $name, $default = null )
  */
 function option_state( $current_value, $selected_value )
 {
-    return PHpr_Form::optionState($current_value, $selected_value);
+    return \Phpr\Form::optionState($current_value, $selected_value);
 }
 
 /**
@@ -174,7 +175,7 @@ function option_state( $current_value, $selected_value )
  */
 function checkbox_state( $value )
 {
-    return Phpr_Form::checkboxState($value);
+    return \Phpr\Form ::checkboxState($value);
 }
 
 /**
@@ -196,7 +197,7 @@ function checkbox_state( $value )
  */
 function radio_state( $value )
 {
-    return Phpr_Form::checkboxState($value);
+    return \Phpr\Form ::checkboxState($value);
 }
 
 /*
@@ -227,5 +228,5 @@ function radio_state( $value )
  */
 function root_url( $value = '/', $add_host_name_and_protocol = false, $protocol = null )
 {
-    return Phpr_Url::rootUrl($value, $add_host_name_and_protocol, $protocol);
+    return \Phpr\Url::rootUrl($value, $add_host_name_and_protocol, $protocol);
 }

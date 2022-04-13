@@ -21,7 +21,7 @@
 			var init_calendar = function() {
 				if ($('<?= $inputId ?>').phpr_control_initialized === undefined)
 				{
-					<?= Backend_Html::calendar($inputId, $calendar_format); ?>
+					<?= Phpr\Html::calendar($inputId, $calendar_format); ?>
 					$('<?= $inputId ?>').phpr_control_initialized = true;
 				}
 			}

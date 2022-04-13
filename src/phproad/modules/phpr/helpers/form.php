@@ -108,7 +108,7 @@ class Form
     {
         if (!isset($options['class'])) {
             throw new ApplicationException(
-                "Missing widget class from Phpr_Form::widget(), please define 'class' in options array as the second parameter"
+                "Missing widget class from Phpr\Form ::widget(), please define 'class' in options array as the second parameter"
             );
         }
 

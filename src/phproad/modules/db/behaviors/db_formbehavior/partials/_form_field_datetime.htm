@@ -51,7 +51,7 @@
 		var init_datetime_calendar = function() {
 			if ($('<?= $inputId ?>-date').phpr_control_initialized === undefined)
 			{
-				<?= Backend_Html::calendar($inputId.'-date', $calendar_format); ?>
+				<?= Phpr\Html::calendar($inputId.'-date', $calendar_format); ?>
 				$('<?= $inputId ?>-date').phpr_control_initialized = true;
 			}
 		}

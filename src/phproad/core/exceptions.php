@@ -351,7 +351,7 @@ class PhpException extends SystemException
      * @param string $Message Message of exception.
      * @param int $Type Type of the PHP error.
      * @param string $File Source filename.
-     * @param string $Line Source line.
+     * @param int $Line Source line.
      */
     public function __construct($Message, $Type, $File, $Line)
     {

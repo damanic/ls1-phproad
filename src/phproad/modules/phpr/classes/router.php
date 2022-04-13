@@ -241,7 +241,7 @@ class Router
      *
      * @param  string          $TargetType  Specifies a type of the target - controller or action.
      * @param  array           &$RuleParams List of the rule parameters.
-     * @param  Phpr\RouterRule &$Rule       Specifies the rule.
+     * @param  RouterRule &$Rule       Specifies the rule.
      * @param  array           &$Segments   A list of the URI segments.
      * @return string
      */
@@ -346,9 +346,9 @@ class Router
     /**
      * Adds a routing rule.
      * Use this method to define custom URI mappings to your application controllers.
-     * After adding a rule use the Phpr\RouterRule class methods to configure the rule. For example: AddRule("archive/:year")->controller("blog")->action("Archive")->def("year", 2006).
+     * After adding a rule use the RouterRule class methods to configure the rule. For example: AddRule("archive/:year")->controller("blog")->action("Archive")->def("year", 2006).
      *
-     * @return Phpr\RouterRule
+     * @return RouterRule
      */
     public function addRule($URI)
     {

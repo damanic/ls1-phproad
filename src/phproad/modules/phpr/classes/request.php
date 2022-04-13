@@ -269,7 +269,7 @@ class Request
      *
      * @return string
      */
-    public function gerUserLanguage()
+    public function getUserLanguage()
     {
         if ($this->language !== null) {
             return $this->language;

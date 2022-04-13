@@ -22,7 +22,7 @@
  * @see          Db_FormBehavior
  * @see          Db_ListBehavior
  */
-class Db_FilterBehavior extends Phpr_ControllerBehavior
+class Db_FilterBehavior extends Phpr\ControllerBehavior
 {
 
     /**

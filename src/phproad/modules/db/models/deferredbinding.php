@@ -1,6 +1,10 @@
-<?php
+<?php namespace Db;
 
-class Db_DeferredBinding extends Db_ActiveRecord
+use Phpr\Inflector;
+use Phpr\DateTime as PhprDateTime;
+use Db\Helper as DbHelper;
+
+class DeferredBinding extends ActiveRecord
 {
     public $table_name = 'db_deferred_bindings';
     public $simpleCaching = true;
@@ -79,7 +83,7 @@ class Db_DeferredBinding extends Db_ActiveRecord
 
     public static function cleanUp($days = 5)
     {
-        $thisDate = Phpr_DateTime::now();
+        $thisDate = PhprDateTime::now();
 
         $records = self::create()->where(
             'ADDDATE(created_at, INTERVAL :days DAY) < :thisDate',
@@ -132,7 +136,7 @@ class Db_DeferredBinding extends Db_ActiveRecord
             }
 
             if (!$has_foreign_key) {
-                $options['foreign_key'] = Phpr_Inflector::foreignKey(
+                $options['foreign_key'] = Inflector::foreignKey(
                     $master_object->table_name,
                     $relatedObj->primary_key
                 );
@@ -141,7 +145,7 @@ class Db_DeferredBinding extends Db_ActiveRecord
             if (!$relatedObj->{$options['foreign_key']}) {
                 $relatedObj->delete();
             }
-        } catch (exception $ex) {
+        } catch (Exception $ex) {
         }
     }
 
@@ -151,7 +155,7 @@ class Db_DeferredBinding extends Db_ActiveRecord
         $detail_class_name = get_class($detail);
         $detail_key_value = $detail->get_primary_key_value();
 
-        Db_DbHelper::query(
+        DbHelper::query(
             'delete 
 					from db_deferred_bindings 
 				where

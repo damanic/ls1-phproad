@@ -1,11 +1,15 @@
-<?php
+<?php namespace Db;
 
-class Db_RecordLock extends Db_ActiveRecord
+use Phpr;
+use Phpr\PhprDateTime;
+use Db\Helper as DbHelper;
+
+class RecordLock extends ActiveRecord
 {
     const lock_timeout = 20;
 
     public $table_name = 'db_record_locks';
-    public $implement = 'Db_AutoFootprints';
+    public $implement = 'Db\AutoFootprints';
 
     public static function create($values = null)
     {
@@ -28,30 +32,30 @@ class Db_RecordLock extends Db_ActiveRecord
         }
 
         $obj->where('created_user_id <> ?', $user->id);
-        $obj->where('date_add(last_ping, interval ' . (self::lock_timeout) . ' second) > ?', Phpr_DateTime::now());
+        $obj->where('date_add(last_ping, interval ' . (self::lock_timeout) . ' second) > ?', PhprDateTime::now());
 
         return $obj->find();
     }
 
     public function get_age_str()
     {
-        return Phpr_DateTime::now()->substractDateTime($this->created_at)->intervalAsString() . ' ago';
+        return PhprDateTime::now()->substractDateTime($this->created_at)->intervalAsString() . ' ago';
     }
 
     public static function ping($lock_id)
     {
-        Db_DbHelper::query(
+        DbHelper::query(
             'update db_record_locks set last_ping=:last_ping where id=:id',
             array(
                 'id' => $lock_id,
-                'last_ping' => Phpr_DateTime::now()
+                'last_ping' => PhprDateTime::now()
             )
         );
     }
 
     public function get_age_mins()
     {
-        return Phpr_DateTime::now()->substractDateTime($this->created_at)->getMinutesTotal();
+        return PhprDateTime::now()->substractDateTime($this->created_at)->getMinutesTotal();
     }
 
     public static function lock($obj)
@@ -69,7 +73,7 @@ class Db_RecordLock extends Db_ActiveRecord
             $lock->non_db_hash = $obj;
         }
 
-        $lock->last_ping = Phpr_DateTime::now();
+        $lock->last_ping = PhprDateTime::now();
         $lock->save();
 
         return $lock;
@@ -81,7 +85,7 @@ class Db_RecordLock extends Db_ActiveRecord
             $record_id = $obj->get_primary_key_value();
             $record_class = get_class($obj);
 
-            Db_DbHelper::query(
+            DbHelper::query(
                 'delete from db_record_locks where record_id=:record_id and record_class=:record_class',
                 array(
                     'record_id' => $record_id,
@@ -89,7 +93,7 @@ class Db_RecordLock extends Db_ActiveRecord
                 )
             );
         } else {
-            Db_DbHelper::query(
+            DbHelper::query(
                 'delete from db_record_locks where non_db_hash=:non_db_hash',
                 array('non_db_hash' => $obj)
             );
@@ -105,7 +109,7 @@ class Db_RecordLock extends Db_ActiveRecord
         $obj = self::create()->find($lock_id);
         if ($obj) {
             if (!strlen($obj->non_db_hash)) {
-                Db_DbHelper::query(
+                DbHelper::query(
                     'delete from db_record_locks where record_id=:record_id and record_class=:record_class',
                     array(
                         'record_id' => $obj->record_id,
@@ -113,7 +117,7 @@ class Db_RecordLock extends Db_ActiveRecord
                     )
                 );
             } else {
-                Db_DbHelper::query(
+                DbHelper::query(
                     'delete from db_record_locks where non_db_hash=:non_db_hash',
                     array('non_db_hash' => $obj->non_db_hash)
                 );
@@ -124,9 +128,9 @@ class Db_RecordLock extends Db_ActiveRecord
     public static function cleanUp()
     {
         try {
-            Db_DbHelper::query(
+            DbHelper::query(
                 'delete from db_record_locks where date_add(last_ping, interval ' . (self::lock_timeout * 2) . ' second) < :now',
-                array('now' => Phpr_DateTime::now())
+                array('now' => PhprDateTime::now())
             );
         } catch (Exception $ex) {
         }

@@ -517,7 +517,7 @@ class Html
 
     /**
      * Returns word "even" each even call for a specified counter.
-     * Example: <tr class="<?=Phpr_Html::zebra('customer') ?>">
+     * Example: <tr class="<?=Phpr\Html::zebra('customer') ?>">
      * $param string $counter_name Specifies a counter name.
      */
     public static function zebra($counter_name)
@@ -549,8 +549,8 @@ class Html
         $prev_page_handler = 'null',
         $exact_page_handler = 'null'
     ) {
-        $cur_page_index = $pagination->get_current_page_index();
-        $page_number = $pagination->get_page_count();
+        $cur_page_index = $pagination->getCurrentPageIndex();
+        $page_number = $pagination->getPageCount();
 
         $result = '<div class="pagination">';
 
@@ -558,9 +558,9 @@ class Html
         $result .= '<div class="summary">';
         $result .= '<p>';
         $result .= '<span class="interval">Showing  ';
-        $result .= '<strong>' . ($pagination->get_first_page_row_index() + 1) . '-' . ($pagination->get_last_page_row_index() + 1) . '</strong> ';
+        $result .= '<strong>' . ($pagination->getFirstPageRowIndex() + 1) . '-' . ($pagination->getLastPageRowIndex() + 1) . '</strong> ';
         $result .= 'of </span>';
-        $result .= '<strong class="row-count" id="list_row_count_label">' . $pagination->get_row_count() . '</strong> ';
+        $result .= '<strong class="row-count" id="list_row_count_label">' . $pagination->getRowCount() . '</strong> ';
         $result .= 'records.';
         $result .= '</p>';
         $result .= '</div>';
@@ -711,7 +711,7 @@ class Html
         $week = Phpr::$lang->getString('phpr.dates', 'week_abbr');
         $days = self::getLocaleDatesArray('A_weekday_', 7);
         $days_short = self::getLocaleDatesArray('a_weekday_', 7, 7);
-        $days_min = Html::getLocaleDatesArray('a_weekday_', 7, 7, 2);
+        $days_min = self::getLocaleDatesArray('a_weekday_', 7, 7, 2);
         $months = self::getLocaleDatesArray('n_month_', 12);
         $months_short = self::getLocaleDatesArray('b_month_', 12);
 

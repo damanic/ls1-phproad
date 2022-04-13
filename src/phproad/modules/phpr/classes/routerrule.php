@@ -27,7 +27,7 @@ class RouterRule
      * Do not create rules directly. Use the Phpr::$router->addRule method instead.
      *
      * @param  string $URI Specifies the URI to be matched. No leading and trailing slashes. The :controller and :action names may be used. Example: :controller/:action/:id
-     * @return Phpr\RouterRule
+     * @return RouterRule
      */
     public function __construct($URI)
     {
@@ -39,7 +39,7 @@ class RouterRule
      * Sets a name of the controller to be used if the requested URI matches this rule URI.
      *
      * @param  string $Controller Specifies a controller name.
-     * @return Phpr\RouterRule
+     * @return RouterRule
      */
     public function controller($Controller)
     {
@@ -66,7 +66,7 @@ class RouterRule
      * Sets a name of the controller action be executed if the requested URI matches this rule URI.
      *
      * @param  string $Action Specifies an action name.
-     * @return Phpr\RouterRule
+     * @return RouterRule
      */
     public function action($Action)
     {
@@ -93,7 +93,7 @@ class RouterRule
      *
      * @param  string $Param Specifies a parameter name. The parameter must be present in the rule URI and prefixed with the colon character. For example "/date/:year".
      * @param  mixed  $Value Specifies a parameter value.
-     * @return Phpr\RouterRule
+     * @return RouterRule
      */
     public function def($Param, $Value)
     {
@@ -113,7 +113,7 @@ class RouterRule
      * @param  string $Param   Specifies a parameter name. The parameter must be present in the rule URI and prefixed with the colon character. For example "/date/:year".
      * @param  mixed  $Match   Specifies a regular expression match value
      * @param  mixed  $Replace Specifies a regular expression replace value
-     * @return Phpr\RouterRule
+     * @return RouterRule
      */
     public function convert($Param, $Match, $Replace)
     {
@@ -132,7 +132,7 @@ class RouterRule
      *
      * @param  string $Param Specifies a parameter name. The parameter must be present in the rule URI and prefixed with the colon character. For example "/date/:year".
      * @param  string $Check Specifies a checking value as a Perl-Compatible Regular Expression pattern, for example "/^\d{1,2}$/"
-     * @return Phpr\RouterRule
+     * @return RouterRule
      */
     public function check($Param, $Check)
     {
@@ -152,7 +152,7 @@ class RouterRule
      * @param  string $Folder Specifies a path to the file.
      *                        You may use parameters from URI and default parameters here.
      *                        Example: Phpr::$router->addRule("catalog/:product")->def('product', 'books')->folder('controllers/:product');
-     * @return Phpr\RouterRule
+     * @return RouterRule
      */
     public function folder($Folder)
     {

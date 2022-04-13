@@ -26,7 +26,7 @@
  * @see          Db_FormBehavior
  * @see          Db_FilterBehavior
  */
-class Db_ListBehavior extends Phpr_ControllerBehavior
+class Db_ListBehavior extends Phpr\ControllerBehavior
 {
     /**
      * @var          string A name of the model class.

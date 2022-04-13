@@ -3,7 +3,7 @@ Container, Source, Destination
 "Number format"
 
 "Decimal point character"
-phpr.numbers,decimal_separator,.
+phpr.numbers,decimalSeparator,.
 
 "Separator character for thousands (groups of three digits)"
 phpr.numbers,group_separator,","

@@ -1,6 +1,6 @@
 <div class="form400">
 	<? if (!$completed): ?>
-		<?= Phpr_Form::openTag(array('enctype'=>'multipart/form-data')) ?>
+		<?= Phpr\Form ::openTag(array('enctype'=>'multipart/form-data')) ?>
 			<p>Вы можете импортировать данные из предварительно подготовленного файла Microsoft Excel.</p>
 		
 			<p><a class="csv_template_link" href="<?= $this->list_csv_template_url ?>">Загрузить шаблон файла</a></p>
