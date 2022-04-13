@@ -18,11 +18,10 @@ class ModelCsv extends Extension
     private $fileName = 'export.csv';
     private $columns = null;
 
-    public function __construct($model, $proxy_model_class = null)
+    public function __construct($model)
     {
         parent::__construct();
-
-        $this->modelClass = $proxy_model_class ? $proxy_model_class : get_class($model);
+        $this->modelClass = is_a($model,'Db\ActiveRecordProxy') ? $model->get_proxied_model_class() : get_class($model);
         $this->model = $model;
         $this->fileName = (isset($model->csv_file_name)) ? $model->csv_file_name : $this->fileName;
         $this->columns = (isset($model->csv_columns)) ? $model->csv_columns : null;

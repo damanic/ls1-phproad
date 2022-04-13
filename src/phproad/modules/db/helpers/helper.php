@@ -5,15 +5,16 @@ use Db\Sql;
 use Phpr\SystemException;
 use Phpr\ValidationException;
 use Phpr\Inflector;
-use Phpr\String;
+use Phpr\Strings;
 
 class Helper
 {
-    protected static $driver = false;
+    protected static $driver;
 
     public static function listTables()
     {
-        return Sql::create()->fetchCol('show tables');
+        $sqlInstance = self::getSqlInstance();
+        return $sqlInstance->fetchCol('show tables');
     }
 
     public static function tableExists($tableName)
@@ -24,7 +25,8 @@ class Helper
 
     public static function scalar($sql, $bind = array())
     {
-        return Sql::create()->fetchOne($sql, $bind);
+        $sqlInstance = self::getSqlInstance();
+        return $sqlInstance->fetchOne($sql, $bind);
     }
 
     public static function scalarArray($sql, $bind = array())
@@ -44,13 +46,13 @@ class Helper
 
     public static function query($sql, $bind = array())
     {
-        $obj = Sql::create();
-        return $obj->query($obj->prepare($sql, $bind));
+        $sqlInstance = self::getSqlInstance();
+        return $sqlInstance->query($sqlInstance->prepare($sql, $bind));
     }
 
     public static function fetch_next($resource)
     {
-        return self::driver()->fetch($resource);
+        self::driver()->fetch($resource);
     }
 
     public static function free_result($resource)
@@ -60,7 +62,8 @@ class Helper
 
     public static function queryArray($sql, $bind = array())
     {
-        return Sql::create()->fetchAll($sql, $bind);
+        $sqlInstance = self::getSqlInstance();
+        return $sqlInstance->fetchAll($sql, $bind);
     }
 
     public static function objectArray($sql, $bind = array())
@@ -87,30 +90,30 @@ class Helper
 
     public static function getTableStruct($tableName)
     {
-        $sql = Sql::create();
-        $result = $sql->query($sql->prepare("SHOW CREATE TABLE `$tableName`"));
-        return $sql->driver()->fetch($result, 1);
+        $sqlInstance = self::getSqlInstance();
+        $result = $sqlInstance->query($sqlInstance->prepare("SHOW CREATE TABLE `$tableName`"));
+        return $sqlInstance->driver()->fetch($result, 1);
     }
 
     public static function getTableDump($tableName, $fp = null, $separator = ';')
     {
-        $sql = Sql::create();
-        $qr = $sql->query("SELECT * FROM `$tableName`");
+        $sqlInstance = self::getSqlInstance();
+        $qr = $sqlInstance->query("SELECT * FROM `$tableName`");
 
         $result = null;
         $columnNames = null;
-        while ($row = $sql->driver()->fetch($qr)) {
+        while ($row = $sqlInstance->driver()->fetch($qr)) {
             if ($columnNames === null) {
                 $columnNames = '`' . implode('`,`', array_keys($row)) . '`';
             }
 
             if (!$fp) {
                 $result .= "INSERT INTO `$tableName`(" . $columnNames . ") VALUES (";
-                $result .= $sql->quote(array_values($row));
+                $result .= $sqlInstance->quote(array_values($row));
                 $result .= ")" . $separator . "\n";
             } else {
                 fwrite($fp, "INSERT INTO `$tableName`(" . $columnNames . ") VALUES (");
-                fwrite($fp, $sql->quote(array_values($row)));
+                fwrite($fp, $sqlInstance->quote(array_values($row)));
                 fwrite($fp, ")" . $separator . "\n");
             }
         }
@@ -123,12 +126,11 @@ class Helper
         $file_contents = file_get_contents($file_path);
         $file_contents = str_replace("\r\n", "\n", $file_contents);
         $statements = explode($separator."\n", $file_contents);
-
-        $sql = Sql::create(static::getDriver());
+        $sqlInstance = self::getSqlInstance();
 
         foreach ($statements as $statement) {
             if (strlen(trim($statement))) {
-                $sql->execute($statement);
+                $sqlInstance->execute($statement);
             }
         }
     }
@@ -145,7 +147,7 @@ class Helper
             throw new SystemException('Error opening file for writing: '.$path);
         }
 
-        $sql = Sql::create(static::getDriver());
+        $sqlInstance = self::getSqlInstance();
 
         try {
             fwrite($file_handle, "SET NAMES utf8".$separator."\n\n");
@@ -160,7 +162,7 @@ class Helper
                 fwrite($file_handle, 'DROP TABLE IF EXISTS `'.$table_name."`".$separator."\n");
                 fwrite($file_handle, self::getTableStruct($table_name).$separator."\n\n");
                 self::geTableDump($table_name, $file_handle, $separator);
-                $sql->driver()->reconnect();
+                $sqlInstance->driver()->reconnect();
             }
 
             @fclose($file_handle);
@@ -174,21 +176,21 @@ class Helper
 
     public static function dropColumn($table_name, $column_name)
     {
-        $sql = Sql::create(static::getDriver());
-        return $sql->query($sql->prepare('ALTER TABLE `'.$table_name.'` DROP `'.$column_name.'`'));
+        $sqlInstance = self::getSqlInstance();
+        return $sqlInstance->query($sqlInstance->prepare('ALTER TABLE `'.$table_name.'` DROP `'.$column_name.'`'));
     }
 
     public static function renameColumn($table_name, $column_name, $new_column_name)
     {
-        $sql = Sql::create(static::getDriver());
-        $table_arr = $sql->describe_table($table_name);
+        $sqlInstance = self::getSqlInstance();
+        $table_arr = $sqlInstance->describe_table($table_name);
 
         if (!isset($table_arr[$column_name])) {
             return false;
         }
 
         $sql_type = $table_arr[$column_name]['sql_type'];
-        return $sql->query($sql->prepare('ALTER TABLE `'.$table_name.'` CHANGE COLUMN `'.$column_name.'` `'.$new_column_name.'` '.$sql_type));
+        return $sqlInstance->query($sqlInstance->prepare('ALTER TABLE `'.$table_name.'` CHANGE COLUMN `'.$column_name.'` `'.$new_column_name.'` '.$sql_type));
     }
 
 
@@ -261,7 +263,7 @@ class Helper
 
     public static function getLastInsertId()
     {
-        static::getDriver()->get_last_insert_id();
+        return self::driver()->get_last_insert_id();
     }
 
     /**
@@ -291,7 +293,7 @@ class Helper
             }
 
             $word = trim(mb_strtolower($word));
-            $word_queries[] = '%1$s like \'%2$s' . self::driver()->escape($word) . '%2$s\'';
+            $word_queries[] = '%1$s like \'%2$s' . self::escape($word) . '%2$s\'';
         }
 
         $field_queries = array();
@@ -310,17 +312,16 @@ class Helper
 
     public static function reset_driver()
     {
-        self::$driver = false;
+        static::$driver = null;
     }
 
     public static function driver()
     {
-        if (!self::$driver) {
-            $sql = Sql::create();
-            return self::$driver = $sql->driver();
+        if (!static::$driver) {
+            return static::$driver = self::getSqlInstance()->driver();
         }
 
-        return self::$driver;
+        return static::$driver;
     }
 
     public static function escape($str)
@@ -332,14 +333,13 @@ class Helper
     // Internals
     //
 
-    protected static function getDriver()
+    protected static function getSqlInstance(): \Db\Sql
     {
-        if (!self::$driver) {
-            $sql = Sql::create();
-            return self::$driver = $sql->driver();
+        $sqlInstance = Sql::create();
+        if (static::$driver) {
+            $sqlInstance->assignDriver(static::$driver);
         }
-
-        return self::$driver;
+        return $sqlInstance;
     }
 
     /**

@@ -74,7 +74,7 @@ class Db_ListBehavior extends Phpr_ControllerBehavior
 
     /**
      * @var          boolean Determines whether the list should be rendered as a tree.
-     * This feature is supported only if the model class is extended with {@link Db_Act_As_Tree} extension.
+     * This feature is supported only if the model class is extended with {@link Db\Act_As_Tree} extension.
      * @documentable
      */
     public $list_render_as_tree = false;

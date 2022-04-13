@@ -732,7 +732,7 @@ class Db_FormBehavior extends Phpr_ControllerBehavior
 
                 $records = $object->find_all($assignedValues);
             } else {
-                if (!$object->isExtendedWith('Db_Act_As_Tree')) {
+                if (!$object->isExtendedWith('Db\Act_As_Tree')) {
                     $records = $object->find_all();
                 } else {
                     $records = array();
@@ -740,7 +740,7 @@ class Db_FormBehavior extends Phpr_ControllerBehavior
                 }
             }
 
-            $isTree = $object->isExtendedWith('Db_Act_As_Tree');
+            $isTree = $object->isExtendedWith('Db\Act_As_Tree');
 
             foreach ($records as $record) {
                 if ($field_definition->referenceDescriptionField === null) {

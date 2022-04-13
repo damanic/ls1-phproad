@@ -2,6 +2,7 @@
 namespace Phpr;
 
 use Phpr;
+use Db\Helper as DbHelper;
 
 /**
  * PHP Road
@@ -491,13 +492,13 @@ class Security
         $ticket_id = null;
         while ($ticket_exists) {
             $ticket_id = str_replace('.', '', uniqid('', true));
-            $ticket_exists = Db_DbHelper::scalar(
+            $ticket_exists = DbHelper::scalar(
                 'select count(*) from db_saved_tickets where ticket_id=:ticket_id',
                 array('ticket_id' => $ticket_id)
             );
         }
 
-        Db_DbHelper::query(
+        DbHelper::query(
             'insert into db_saved_tickets(ticket_id, ticket_data, created_at) values (:ticket_id, :ticket_data, NOW())',
             array(
                 'ticket_id' => $ticket_id,
@@ -517,7 +518,7 @@ class Security
         }
 
         $ttl = (int)Phpr::$config->get('STORED_SESSION_TTL', 3);
-        Db_DbHelper::query(
+        DbHelper::query(
             'delete from db_saved_tickets where created_at < DATE_SUB(now(), INTERVAL :seconds SECOND)',
             array('seconds' => $ttl)
         );

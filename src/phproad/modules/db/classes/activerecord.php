@@ -14,7 +14,7 @@ use Phpr\SecurityFramework;
 use Phpr\SystemException;
 use Db;
 use Db\Helper as DbHelper;
-use Db\ActiveRecord_Proxy;
+use Db\ActiveRecordProxy;
 
 define('db_varchar', 'varchar');
 define('db_number', 'number');

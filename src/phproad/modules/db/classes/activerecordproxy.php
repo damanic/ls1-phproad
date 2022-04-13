@@ -1,8 +1,6 @@
 <?php namespace Db;
 
-use Phpr\Extension;
-
-class ActiverecordProxy extends Extension
+class ActiverecordProxy
 {
     private $proxyModelClass;
     private $proxyModelKey;

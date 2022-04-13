@@ -18,13 +18,9 @@ class Sql extends Sql_Where
         'order' => array()
     );
 
-    public static function create(\Db\Driver_Base $driver = null)
+    public static function create()
     {
-        $instance = new self();
-        if($driver) {
-            $instance->assign_driver($driver);
-        }
-        return $instance;
+        return new self();
     }
 
     public function __toString()
@@ -713,10 +709,16 @@ class Sql extends Sql_Where
                 $driver = self::defaultDriver;
             }
 
-            $this->driver = new $driver();
+            $driverInstance = new $driver();
+            $this->assignDriver($driverInstance);
         }
 
         return $this->driver;
+    }
+
+    public function assignDriver(Driver_Base $driver)
+    {
+        $this->driver = $driver;
     }
 
     protected function set_part($name, $value)
@@ -738,8 +740,4 @@ class Sql extends Sql_Where
         return (isset($this->parts['limitCount']) ? $this->parts['limitCount'] : 0);
     }
 
-    protected function assign_driver(\Db\Driver_Base $driver)
-    {
-        $this->driver = $driver;
-    }
 }

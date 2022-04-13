@@ -10,10 +10,10 @@
 class FormElement
 {
     /**
-     * @var          string|null Specifies the form tab name.
+     * @var          string Specifies the form tab name.
      * @documentable
      */
-    public ?string $tab;
+    public string $tab = '';
 
     /**
      * @var          bool Makes the element invisible in the form preview.
@@ -45,12 +45,27 @@ class FormElement
      * If you use tabs, you should call this method for all form field in the model.
      *
      * @documentable
-     * @param        string $tabCaption Specifies the tab caption.
+     * @param        string|null $tabCaption Specifies the tab caption.
      * @return       FormElement Returns the updated form element object.
      */
-    public function tab($tabCaption)
+    public function tab(?string $tabCaption)
     {
-        $this->tab = $tabCaption;
+        $this->removeTab();
+        if (is_string($tabCaption)) {
+            $this->tab = $tabCaption;
+        }
+        return $this;
+    }
+
+    /**
+     * Removes the tab caption if assigned
+     *
+     * @documentable
+     * @return       FormElement Returns the updated form element object.
+     */
+    public function removeTab()
+    {
+        $this->tab = '';
         return $this;
     }
 

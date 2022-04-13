@@ -27,7 +27,7 @@ class ModelAttachments extends Extension
     {
         $this->_model->add_relation(
             'has_many', $columnName, array(
-            'class_name' => 'Db_File',
+            'class_name' => 'Db\File',
             'foreign_key' => 'master_object_id',
             'conditions' => "master_object_class='" . get_class($this->_model) . "'",
             'order' => 'id',

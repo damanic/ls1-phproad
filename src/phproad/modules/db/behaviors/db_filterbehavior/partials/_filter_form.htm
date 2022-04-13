@@ -10,7 +10,7 @@
 					<p>Filter not found.</p>
 				<? else: ?>
 					<?
-						$is_sliding_list = $model->isExtendedWith('Db_Act_As_Tree');
+						$is_sliding_list = $model->isExtendedWith('Db\Act_As_Tree');
 					?>
 					<p><?= isset($filterInfo['prompt']) ? h($filterInfo['prompt']) : h($this->filter_prompt) ?></p>
 

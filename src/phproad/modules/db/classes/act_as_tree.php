@@ -3,7 +3,8 @@
 use Phpr;
 use Phpr\Extension;
 use Db\Helper as Db_Helper;
-use Db\ActiveRecord_Proxy;
+use Db\ActiveRecordProxy;
+
 /**
  * Allows to extend models with tree functionality.
  * Any {@link Db\ActiveRecord} descendant can be extended with this class.
@@ -34,9 +35,9 @@ class Act_As_Tree extends Extension
     public $act_as_tree_level = 0;
     public $act_as_tree_sql_filter = null;
 
-    public function __construct($model, $proxy_model_class = null)
+    public function __construct($model)
     {
-        $this->modelClass = $proxy_model_class ? $proxy_model_class : get_class($model);
+        $this->modelClass = is_a($model, 'Db\ActiveRecordProxy') ? $model->get_proxied_model_class() : get_class($model);
         $this->model = $model;
     }
 
@@ -229,7 +230,7 @@ class Act_As_Tree extends Extension
                     $record_data,
                     $this->model->strict
                 );
-                $record->extend_with('Db\Act_As_Tree', false, $this->modelClass);
+                $record->extend_with('Db\Act_As_Tree', false);
 
                 $parent_id = $record->$parentKey != null ? $record->$parentKey : -1;
 

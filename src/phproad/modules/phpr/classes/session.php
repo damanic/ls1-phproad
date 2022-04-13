@@ -8,7 +8,7 @@ use Countable;
 
 use Phpr;
 use Phpr\Flash;
-use Db\Helper as Db_Helper;
+use Db\Helper as DbHelper;
 
 /**
  * PHPR Session Class
@@ -181,7 +181,7 @@ class Session implements ArrayAccess, IteratorAggregate, Countable
     public function resetDbSessions()
     {
         $ttl = (int)Phpr::$config->get('STORED_SESSION_TTL', 3);
-        Db_Helper::query(
+        DbHelper::query(
             'delete from db_session_data where created_at < DATE_SUB(now(), INTERVAL :seconds SECOND)',
             array('seconds' => $ttl)
         );
@@ -191,13 +191,13 @@ class Session implements ArrayAccess, IteratorAggregate, Countable
     {
         $session_id = session_id();
 
-        Db_Helper::query(
+        DbHelper::query(
             'delete from db_session_data where session_id=:session_id',
             array('session_id' => $session_id)
         );
 
         $data = serialize($_SESSION);
-        Db_Helper::query(
+        DbHelper::query(
             'insert into db_session_data(session_id, session_data, created_at, client_ip) values (:session_id, :session_data, NOW(), :client_ip)',
             array(
                 'session_id' => $session_id,
@@ -209,7 +209,7 @@ class Session implements ArrayAccess, IteratorAggregate, Countable
 
     public function restore($session_id)
     {
-        $data = Db_Helper::scalar(
+        $data = DbHelper::scalar(
             'select session_data from db_session_data where session_id=:session_id and client_ip=:client_ip',
             array(
                 'session_id' => $session_id,
@@ -217,7 +217,7 @@ class Session implements ArrayAccess, IteratorAggregate, Countable
             )
         );
 
-        Db_Helper::query(
+        DbHelper::query(
             'delete from db_session_data where session_id=:session_id',
             array('session_id' => $session_id)
         );

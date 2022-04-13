@@ -3,7 +3,7 @@ namespace Phpr;
 
 use Phpr;
 use Phpr\DateTime as PhprDateTime;
-use Db\Helper as Db_Helper;
+use Db\Helper as DbHelper;
 use Db\Sql as Sql;
 
 /**
@@ -20,7 +20,7 @@ class Cron
             'record_code' => $code,
             'now' => PhprDateTime::now()->toSqlDateTime()
         );
-        Db_Helper::query(
+        DbHelper::query(
             'insert into phpr_cron_table (record_code, updated_at) values (:record_code, now()) on duplicate key update updated_at =:now',
             $bind
         );
@@ -28,7 +28,7 @@ class Cron
 
     public static function get_interval($code)
     {
-        $interval = Db_Helper::scalar(
+        $interval = DbHelper::scalar(
             'select updated_at from phpr_cron_table where record_code =:record_code',
             array('record_code' => $code)
         );
@@ -65,7 +65,7 @@ class Cron
             'param_data' => serialize($param_data),
             'now' => PhprDateTime::now()->toSqlDateTime()
         );
-        Db_Helper::query(
+        DbHelper::query(
             'insert into phpr_cron_jobs (handler_name, param_data, created_at) values (:handler_name, :param_data, now())',
             $bind
         );
@@ -75,10 +75,10 @@ class Cron
     {
         // Worker can perform only 5 jobs per run
         //
-        $jobs = Db_Helper::objectArray('select * from phpr_cron_jobs order by created_at asc limit 5');
+        $jobs = DbHelper::objectArray('select * from phpr_cron_jobs order by created_at asc limit 5');
 
         foreach ($jobs as $job) {
-            Db_Helper::query('delete from phpr_cron_jobs where id=:id limit 1', array('id' => $job->id));
+            DbHelper::query('delete from phpr_cron_jobs where id=:id limit 1', array('id' => $job->id));
 
             $params = $job->param_data ? unserialize($job->param_data) : array();
             $parts = explode('::', $job->handler_name);

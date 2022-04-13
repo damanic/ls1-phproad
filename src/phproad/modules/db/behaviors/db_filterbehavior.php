@@ -100,7 +100,7 @@ class Db_FilterBehavior extends Phpr_ControllerBehavior
             $this->_controller->list_custom_body_cells = PATH_APP . '/phproad/modules/db/behaviors/db_filterbehavior/partials/_filter_body_control.htm';
             $this->_controller->list_custom_head_cells = PATH_APP . '/phproad/modules/db/behaviors/db_filterbehavior/partials/_filter_head_control.htm';
 
-            $is_sliding_list = $modelObj->isExtendedWith('Db_Act_As_Tree');
+            $is_sliding_list = $modelObj->isExtendedWith('Db\Act_As_Tree');
 
             $this->_controller->list_options['list_model_class']            = get_class($modelObj);
             $this->_controller->list_options['list_no_setup_link']          = true;
@@ -323,7 +323,7 @@ class Db_FilterBehavior extends Phpr_ControllerBehavior
             // $records = $modelObj->find_all();
             $recordNum = $modelObj->requestRowCount();
 
-            // if (!$modelObj->isExtendedWith('Db_Act_As_Tree'))
+            // if (!$modelObj->isExtendedWith('Db\Act_As_Tree'))
             // $recordNum = $records->count;
             // else
             // {

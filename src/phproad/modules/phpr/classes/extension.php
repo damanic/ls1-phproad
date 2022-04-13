@@ -98,7 +98,7 @@ class Extension
         }
     }
 
-    public function extend_with($extension_objects, $recursion_extension = true, $proxy_model_class = null)
+    public function extend_with($extension_objects, $recursion_extension = true, $_deprecatedProp = null)
     {
         if (!is_array($extension_objects)) {
             $extension_objects = array($extension_objects);
@@ -117,8 +117,7 @@ class Extension
                     throw new SystemException(sprintf('Extension "%s" already added', $extension_name));
                 }
 
-                $extension_object = new $extension_name($this, $proxy_model_class);
-
+                $extension_object = new $extension_name($this);
                 $this->extension_data['extensions'][$extension_name] = $extension_object;
             } else {
                 if (is_object($extension_object)) {
@@ -147,7 +146,7 @@ class Extension
         if ($recursion_extension) {
             foreach ($new_extensions as $extension_name => $extension_object) {
                 if (is_subclass_of($extension_object, 'Phpr\Extension')) {
-                    $extension_object->extend_with($this, false, $proxy_model_class);
+                    $extension_object->extend_with($this, false);
                 }
             }
         }
