@@ -12,6 +12,8 @@
             <directory name="vendor" />
             <directory name="./src/phproad/thirdpart" />
             <directory name="./src/phproad/modules/phpr/vendor" />
+            <directory name="./src/phproad/modules/net/vendor" />
+            <directory name="./src/phproad/modules/filesystem/vendor/" />
         </ignoreFiles>
     </projectFiles>
 </psalm>
