@@ -64,9 +64,9 @@ class ActiverecordProxy
          * Try to call extension methods
          */
 
-        if (array_key_exists($method, $this->extension_data['methods'])) {
-            return parent::__call($method, $arguments);
-        }
+//        if (array_key_exists($method, $this->extension_data['methods'])) {
+//            return parent::__call($method, $arguments);
+//        }
 
         /*
          * Try to call a proxiable method
