@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * @deprecated Implement in backend module
+ *
  * Adds record list features to back-end controllers.
  * This class allows to extend any back-end controller with a list functionality.
  * It allows to render configurable record lists along with processing corresponding

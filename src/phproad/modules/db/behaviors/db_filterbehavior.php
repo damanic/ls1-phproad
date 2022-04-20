@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * @deprecated Implement in backend module
+ *
  * Adds list filters features to back-end controllers.
  * This class allows to extend any back-end controller with a list filters functionality.
  *

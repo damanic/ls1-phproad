@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * @deprecated Implement in backend module
+ *
  * Adds form handling features to back-end controllers.
  * This class allows to extend any back-end controller with a form handling functionality.
  * It allows to render Create, Edit and Preview forms along with processing corresponding
