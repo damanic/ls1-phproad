@@ -19,7 +19,7 @@ class Module_Parameters
 
         self::$cache = array();
 
-        $records = Db_Helper::object_array('select * from phpr_module_params');
+        $records = Db_Helper::objectArray('select * from phpr_module_params');
         foreach ($records as $param) {
             $name = $param->name;
             $module_id = $param->module_id;

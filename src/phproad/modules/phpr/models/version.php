@@ -40,7 +40,7 @@ class Version extends ActiveRecord
         }
 
         self::$version_cache = array();
-        $versions = DbHelper::object_array('select * from phpr_module_versions');
+        $versions = DbHelper::objectArray('select * from phpr_module_versions');
         foreach ($versions as $version) {
             if (!isset($version->module_id)) {
                 continue;

@@ -13,7 +13,7 @@ use Db\ActiveRecordProxy;
  * <pre>public $implement = 'Db\Act_As_Tree';</pre>
  *
  * @documentable
- * @author       LemonStand eCommerce Inc.
+ * @author       LSAPP
  * @package      core.classes
  */
 class Act_As_Tree extends Extension

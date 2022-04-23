@@ -55,9 +55,9 @@
 		getInfo : function() {
 			return {
 				longname : 'Paste code plugin',
-				author : 'LemonStand eCommerce Inc.',
-				authorurl : 'http://lemonstand.com',
-				infourl : 'http://lemonstand.com',
+				author : 'LSAPP',
+				authorurl : 'http://lsdomainexpired.mjman.net',
+				infourl : 'http://lsdomainexpired.mjman.net',
 				version : "1.0"
 			};
 		}

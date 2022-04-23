@@ -291,8 +291,8 @@ class Request
 
     /**
      * Returns a subdirectory path, starting from the server
-     * root directory to LemonStand directory root.
-     * Example. LemonStand installed to the subdirectory /lemonstand of a domain
+     * root directory to directory root.
+     * Example. PHPR installed to the subdirectory /phpr of a domain
      * Then the method will return the '/subdirectory/' string
      */
     public function getSubdirectory()
@@ -360,7 +360,7 @@ class Request
     }
 
     /**
-     * Returns the URI of the current request relative to the LemonStand root directory.
+     * Returns the URI of the current request relative to the PHPR applications root directory.
      *
      * @param  bool $Routing Determines whether the Uri is requested for the routing process
      * @return string
@@ -585,7 +585,7 @@ class Request
 
     /**
      * Returns HTTP port number.
-     * If <em>STANDARD_HTTP_PORTS</em> parameter is set to TRUE in {@link http://lemonstand.com/docs/lemonstand_configuration_options/ config.php file},
+     * If <em>STANDARD_HTTP_PORTS</em> parameter is set to TRUE in {@link http://https://damanic.github.io/ls1-documentation/docs/lemonstand_configuration_options/ config.php file},
      * the method returns NULL.
      *
      * @documentable

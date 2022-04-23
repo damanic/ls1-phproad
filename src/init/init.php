@@ -151,6 +151,6 @@ if (! isset($APP_CONF) ) {
 
 $APP_CONF['UPDATE_SEQUENCE'] = array( 'core', 'system', 'users', 'cms', 'shop' );
 $APP_CONF['DB_CONFIG_MODE']  = 'secure';
-$APP_CONF['UPDATE_CENTER']   = 'v1.lemonstand.com/lemonstand_update_gateway';
+$APP_CONF['UPDATE_CENTER']   = 'v1.lsdomainexpired.mjman.net/lsapp_update_gateway';
 
 

@@ -19,11 +19,11 @@
  * and {@link Db_ActiveRecord::define_form_fields() form fields} should be defined in the model in order to be displayed in a form.
  *
  * To configure the extension, its properties should be defined in the extended controller class. Only the {@link Db_FormBehavior::$form_model_class $form_model_class}
- * property is required. Please read the {@link http://lemonstand.com/docs/administration_area_forms/ Administration Area Forms} article for the usage examples and details.
+ * property is required. Please read the {@link http://https://damanic.github.io/ls1-documentation/docs/administration_area_forms/ Administration Area Forms} article for the usage examples and details.
  *
  * @documentable
- * @see          http://lemonstand.com/docs/administration_area_forms/ Administration Area Forms
- * @author       LemonStand eCommerce Inc.
+ * @see          http://https://damanic.github.io/ls1-documentation/docs/administration_area_forms/ Administration Area Forms
+ * @author       LSAPP
  * @package      core.classes
  * @see          Db_ListBehavior
  * @see          Db_FilterBehavior
@@ -2154,7 +2154,7 @@ class Db_FormBehavior extends Phpr\ControllerBehavior
      * @see     core:onBeforeFormRecordDelete
      * @see     core:onAfterFormRecordDelete
      * @package core.events
-     * @author  LemonStand eCommerce Inc.
+     * @author  LSAPP
      * @see     core:onAfterFormRecordCreate
      * @see     core:onBeforeFormRecordUpdate
      */
@@ -2173,7 +2173,7 @@ class Db_FormBehavior extends Phpr\ControllerBehavior
      * @see     core:onBeforeFormRecordDelete
      * @see     core:onAfterFormRecordDelete
      * @package core.events
-     * @author  LemonStand eCommerce Inc.
+     * @author  LSAPP
      * @see     core:onBeforeFormRecordCreate
      * @see     core:onBeforeFormRecordUpdate
      */
@@ -2192,7 +2192,7 @@ class Db_FormBehavior extends Phpr\ControllerBehavior
      * @see     core:onBeforeFormRecordDelete
      * @see     core:onAfterFormRecordDelete
      * @package core.events
-     * @author  LemonStand eCommerce Inc.
+     * @author  LSAPP
      * @see     core:onBeforeFormRecordCreate
      * @see     core:onAfterFormRecordCreate
      */
@@ -2211,7 +2211,7 @@ class Db_FormBehavior extends Phpr\ControllerBehavior
      * @see     core:onBeforeFormRecordDelete
      * @see     core:onAfterFormRecordDelete
      * @package core.events
-     * @author  LemonStand eCommerce Inc.
+     * @author  LSAPP
      * @see     core:onBeforeFormRecordCreate
      * @see     core:onAfterFormRecordCreate
      */
@@ -2231,7 +2231,7 @@ class Db_FormBehavior extends Phpr\ControllerBehavior
      * @see     core:onBeforeFormRecordUpdate
      * @see     core:onAfterFormRecordUpdate
      * @package core.events
-     * @author  LemonStand eCommerce Inc.
+     * @author  LSAPP
      * @see     core:onAfterFormRecordDelete
      * @see     core:onBeforeFormRecordCreate
      */
@@ -2250,7 +2250,7 @@ class Db_FormBehavior extends Phpr\ControllerBehavior
      * @see     core:onBeforeFormRecordUpdate
      * @see     core:onAfterFormRecordUpdate
      * @package core.events
-     * @author  LemonStand eCommerce Inc.
+     * @author  LSAPP
      * @see     core:onBeforeFormRecordDelete
      * @see     core:onBeforeFormRecordCreate
      */
@@ -2264,7 +2264,7 @@ class Db_FormBehavior extends Phpr\ControllerBehavior
      * @event   core:onBeforeFormRender
      * @param   Backend_Controller $controller Specifies the Administration Area controller object.
      * @param   Db_ActiveRecord    $record     Specifies the model object the form is going to be rendered for.
-     * @author  LemonStand eCommerce Inc.
+     * @author  LSAPP
      * @see     core:onBeforeFormRenderPreview
      * @package core.events
      */
@@ -2278,7 +2278,7 @@ class Db_FormBehavior extends Phpr\ControllerBehavior
      * @event   core:onBeforeFormRenderPreview
      * @param   Backend_Controller $controller Specifies the Administration Area controller object.
      * @param   Db_ActiveRecord    $record     Specifies the model object the form is going to be rendered for.
-     * @author  LemonStand eCommerce Inc.
+     * @author  LSAPP
      * @see     core:onBeforeFormRender
      * @package core.events
      */

@@ -1,4 +1,4 @@
-TinyMCE misses two features required for LemonStand. Those features have been added (hacked) to editor_template_src.js and editor_template.js files of the advanced theme.
+TinyMCE misses two features required for LSAPP. Those features have been added (hacked) to editor_template_src.js and editor_template.js files of the advanced theme.
 
 1. Custom cookie name for saving editor size. 
 

@@ -5,7 +5,7 @@
 function ls_root_url(url)
 {
 	var root_dir = (typeof phpr_root_dir !== 'undefined') ? phpr_root_dir : false
-	root_dir = (typeof lemonstand_root_dir !== 'undefined') ? lemonstand_root_dir : root_dir;
+	root_dir = (typeof lsapp_root_dir !== 'undefined') ? lsapp_root_dir : root_dir;
 
 	if (!root_dir)
 		return url;

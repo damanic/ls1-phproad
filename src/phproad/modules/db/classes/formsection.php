@@ -7,7 +7,7 @@
  * the {@link Db_ActiveRecord} class.
  *
  * @documentable
- * @author       LemonStand eCommerce Inc.
+ * @author       LSAPP
  * @package      core.classes
  */
 class FormSection extends FormElement

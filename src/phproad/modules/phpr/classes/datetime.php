@@ -12,12 +12,12 @@ use Phpr\ApplicationException;
 
 /**
  * Represents a date and time value.
- * Usually you don't need to create instances of this class manually. Some fields of LemonStand objects
+ * Usually you don't need to create instances of this class manually. Some fields of PHPR objects
  * are instances of Phpr\DateTime class, for example the {@link Shop_Order::order_datetime $order_datetime}
  * field of the {@link Shop_Order} class. The class has methods for returning formatted date and time value as string.
  *
  * @documentable
- * @author       LemonStand eCommerce Inc.
+ * @author       LSAPP
  * @package      core.classes
  */
 class DateTime

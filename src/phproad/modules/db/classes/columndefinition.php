@@ -17,7 +17,7 @@ use Phpr\SystemException;
  * column definition objects to output correct field labels and format field data.
  *
  * @documentable
- * @author       LemonStand eCommerce Inc.
+ * @author       LSAPP
  * @package      core.classes
  */
 class ColumnDefinition

@@ -38,7 +38,7 @@ define('frm_widget', 'widget');
  * <pre>$this->add_form_field('price_tiers')->tab('Pricing')->renderAs('price_tiers');</pre>
  *
  * @documentable
- * @author       LemonStand eCommerce Inc.
+ * @author       LSAPP
  * @package      core.classes
  */
 class FormFieldDefinition extends FormElement
@@ -289,7 +289,7 @@ class FormFieldDefinition extends FormElement
 
     /**
      * @var          string Specifies URL of a CSS file to style content of a TinyMCE editor for a HTML field.
-     * The URL should be relative to LemonStand application root.
+     * The URL should be relative to LSAPP application root.
      * @documentable
      */
     public $htmlContentCss = '/phproad/resources/css/htmlcontent.css';
@@ -994,7 +994,7 @@ class FormFieldDefinition extends FormElement
 
     /**
      * Sets a custom CSS file to be used to style HTML field content.
-     * The URL should be relative to LemonStand application root.
+     * The URL should be relative to LSAPP application root.
      *
      * @documentable
      * @param        string $url Specifies an URL of CSS file

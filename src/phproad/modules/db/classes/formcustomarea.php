@@ -10,7 +10,7 @@ namespace Db;
  * where <em>id</em> is an area identifier.
  *
  * @documentable
- * @author       LemonStand eCommerce Inc.
+ * @author       LSAPP
  * @package      core.classes
  */
 class FormCustomArea extends FormElement

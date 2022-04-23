@@ -78,9 +78,9 @@
 		 */
 		getInfo : function() {
 			return {
-				longname : 'LemonStand Wiki insert link plugin',
-				author : 'LemonStand eCommerce Inc.',
-				authorurl : 'http://lemonstand.com',
+				longname : 'LSAPP Wiki insert link plugin',
+				author : 'LSAPP',
+				authorurl : 'http://lsdomainexpired.mjman.net',
 				version : "1.0"
 			};
 		}

@@ -108,7 +108,7 @@ class MySQLiDriver extends Driver_Base
         // If error, generate exception
         if ($err = mysqli_errno($this->get_connection()) != 0) {
             $exception               = new DatabaseException('MySQL error executing query: ' . mysqli_error($this->get_connection()));
-            $exception->hint_message = 'This problem could be caused by the LemonStand MySQL connection configuration errors. Please log into the LemonStand Configuration Tool and update the database connection parameters. Also please make sure that MySQL server is running.';
+            $exception->hint_message = 'This problem could be caused by the LSAPP MySQL connection configuration errors. Please log into the LSAPP Configuration Tool and update the database connection parameters. Also please make sure that MySQL server is running.';
             throw $exception;
         }
 

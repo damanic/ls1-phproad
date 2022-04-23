@@ -14,7 +14,7 @@
  * @param        string $string specifies a string to process.
  * @return       string returns the processed string.
  * @package      core.helpers
- * @author       LemonStand eCommerce Inc.
+ * @author       LSAPP
  */
 function h( $str )
 {
@@ -63,7 +63,7 @@ function gmtNow()
  * @param        mixed $listener The trace log listener.
  *                               The default listener writes to logs/info.txt file.
  * @package      core.helpers
- * @author       LemonStand eCommerce Inc.
+ * @author       LSAPP
  */
 function traceLog( $Str, $Listener = 'INFO' )
 {
@@ -92,7 +92,7 @@ function flash()
  * @param        mixed $default specifies a default value. Optional parameter, the default value is NULL.
  * @return       mixed Returns the POST array value or the default value.
  * @package      core.helpers
- * @author       LemonStand eCommerce Inc.
+ * @author       LSAPP
  * @see          post_array_item()
  */
 function post( $name, $default = null )
@@ -119,7 +119,7 @@ function post( $name, $default = null )
  * @param        string $name       specifies the array element key in the first array.
  * @param        mixed  $default    specifies a default value.
  * @return       mixed returns the found array element value or the default value.
- * @author       LemonStand eCommerce Inc.
+ * @author       LSAPP
  * @see          post()
  * @package      core.helpers
  */
@@ -148,7 +148,7 @@ function post_array_item( $array_name, $name, $default = null )
  * @param        mixed $current_value  specifies a value of current OPTION element.
  * @param        mixed $selected_value specifies a selected value.
  * @return       string returns <em>selected="selected"</em> string or empty string.
- * @author       LemonStand eCommerce Inc.
+ * @author       LSAPP
  * @package      core.helpers
  * @see          checkbox_state()
  * @see          radio_state()
@@ -169,7 +169,7 @@ function option_state( $current_value, $selected_value )
  * @param        boolean $value Specifies a current checkbox state.
  * @return       string returns <em>checked="checked"</em> string or empty string.
  * @see          radio_state()
- * @author       LemonStand eCommerce Inc.
+ * @author       LSAPP
  * @package      core.helpers
  * @see          option_state()
  */
@@ -191,7 +191,7 @@ function checkbox_state( $value )
  * @param        boolean $value specifies a current radio button value.
  * @return       string returns <em>checked="checked"</em> string or empty string.
  * @see          option_state()
- * @author       LemonStand eCommerce Inc.
+ * @author       LSAPP
  * @package      core.helpers
  * @see          checkbox_state()
  */
@@ -205,24 +205,24 @@ function radio_state( $value )
  */
 
 /**
- * Returns file URL relative to the LemonStand root.
- * The function makes links independent of the actual LemonStand installation directory name, whenever it
+ * Returns file URL relative to the LSAPP root.
+ * The function makes links independent of the actual LSAPP installation directory name, whenever it
  * is installed into a subdirectory or to a domain root directory. It is highly recommended to use
  * this function for creating links, because it can save you lots of time if you decide to move
- * your LemonStand installation from a subdirectory to the domain root directory. <span class="note">Using this function
- * is required in {@link http://lemonstand.com/docs/creating_themes_for_marketplace LemonStand Marketplace themes}.</span>
- * For example, if you installed LemonStand into the shop subdirectory of <em>http://my_host.com</em> domain, the following call
+ * your LSAPP installation from a subdirectory to the domain root directory. <span class="note">Using this function
+ * is required in {@link http://https://damanic.github.io/ls1-documentation/docs/creating_themes_for_marketplace LSAPP Marketplace themes}.</span>
+ * For example, if you installed LSAPP into the shop subdirectory of <em>http://my_host.com</em> domain, the following call
  * will return <em>/shop/cart</em> URL:
  * <pre>root_url('/cart')</pre>
- * If you move LemonStand installation to the domain root directory the same function call will return <em>/cart</em> URL, so that you
+ * If you move LSAPP installation to the domain root directory the same function call will return <em>/cart</em> URL, so that you
  * do not need to update your links manually.
  *
  * @documentable
  * @param        string $value                      Specifies the URL to process.
  * @param        string $add_host_name_and_protocol Indicates whether the URL should contain the host name and protocol.
  * @param        string $protocol                   Optional HTTP protocol name to override the actual protocol name.
- * @return       string Returns an URL of a specified resource relative to the LemonStand domain root.
- * @author       LemonStand eCommerce Inc.
+ * @return       string Returns an URL of a specified resource relative to the LSAPP domain root.
+ * @author       LSAPP
  * @see          site_url()
  * @package      cms.helpers
  */

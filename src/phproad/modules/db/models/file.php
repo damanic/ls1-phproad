@@ -53,7 +53,7 @@ use Db\Helper as DbHelper;
  * @see          FormFieldDefinition::noAttachmentsLabel()
  * @see          FormFieldDefinition::fileDownloadBaseUrl()
  * @see          ActiveRecord::define_multi_relation_column()
- * @author       LemonStand eCommerce Inc.
+ * @author       LSAPP
  * @package      core.classes
  */
 class File extends ActiveRecord
@@ -426,7 +426,7 @@ class File extends ActiveRecord
     }
 
     /**
-     * Returns the file path relative to LemonStand root directory.
+     * Returns the file path relative to LSAPP root directory.
      * Use <em>PATH_APP</em> constant to obtain the absolute path:
      * <pre>$absolute_path = PATH_APP.$file->getPath();</pre>
      *
@@ -526,7 +526,7 @@ class File extends ActiveRecord
      * and hence - every time when you call the {@link Shop_Product::image_url()} and {@link Shop_Category::image_url()} methods.
      * Thus the event allows to use the usual programming interface with third-party image processing modules.
      *
-     * The event handler should return a path to the generated image. The path should be relative to the LemonStand root directory.
+     * The event handler should return a path to the generated image. The path should be relative to the LSAPP root directory.
      * In the event handler you should check whether the thumbnail is not generated yet. Example of the event handler:
      * <pre>
      * public function subscribeEvents()
@@ -568,7 +568,7 @@ class File extends ActiveRecord
      *                         Db\File::getThumbnailPath()} call to the event handler.
      * @return  string Returns path to the generated image.
      * @package core.events
-     * @author  LemonStand eCommerce Inc.
+     * @author  LSAPP
      */
 
     /**
@@ -578,7 +578,7 @@ class File extends ActiveRecord
      *
      * @event   core:onFileBeforeCreate
      * @param File $file Specifies the new file object.
-     * @author  LemonStand eCommerce Inc.
+     * @author  LSAPP
      * @package core.events
      */
 

@@ -28,8 +28,8 @@ define('db_text', 'text');
 $activerecord_no_columns_info = false;
 
 /**
- * Base class for LemonStand models.
- * Db\ActiveRecord class is a base class for many other LemonStand classes, including
+ * Base class for LSAPP models.
+ * Db\ActiveRecord class is a base class for many other LSAPP classes, including
  * {@link Shop_Customer}, {@link Shop_Order}, {@link Cms_Page} and others. The class has a number of
  * methods which enable you to find and update records in the database.
  *
@@ -55,9 +55,9 @@ $activerecord_no_columns_info = false;
  *   $customer->save();
  * </pre>
  *
- * @see          http://lemonstand.com/docs/working_with_the_database/ Working with the database
+ * @see          http://https://damanic.github.io/ls1-documentation/docs/working_with_the_database/ Working with the database
  * @documentable
- * @author       LemonStand eCommerce Inc.
+ * @author       LSAPP
  * @package      core.classes
  */
 class ActiveRecord extends Sql implements IteratorAggregate
@@ -96,7 +96,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
 
     /**
      * @var          array Contains a list of <em>Has One</em> relations.
-     * Please read {@link http://lemonstand.com/docs/creating_data_relations/ Creating data relations}
+     * Please read {@link http://https://damanic.github.io/ls1-documentation/docs/creating_data_relations/ Creating data relations}
      * article for details.
      * @documentable
      */
@@ -104,7 +104,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
 
     /**
      * @var          array Contains a list of <em>Has Many</em> relations.
-     * Please read {@link http://lemonstand.com/docs/creating_data_relations/ Creating data relations}
+     * Please read {@link http://https://damanic.github.io/ls1-documentation/docs/creating_data_relations/ Creating data relations}
      * article for details.
      * @documentable
      */
@@ -112,7 +112,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
 
     /**
      * @var          array Contains a list of <em>Has and Belongs To Many</em> relations.
-     * Please read {@link http://lemonstand.com/docs/creating_data_relations/ Creating data relations}
+     * Please read {@link http://https://damanic.github.io/ls1-documentation/docs/creating_data_relations/ Creating data relations}
      * article for details.
      * @documentable
      */
@@ -120,7 +120,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
 
     /**
      * @var          array Contains a list of <em>Belongs To</em> Many relations.
-     * Please read {@link http://lemonstand.com/docs/creating_data_relations/ Creating data relations}
+     * Please read {@link http://https://damanic.github.io/ls1-documentation/docs/creating_data_relations/ Creating data relations}
      * article for details.
      * @documentable
      */
@@ -694,7 +694,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
     }
 
     /**
-     * Returns a list of {@link http://lemonstand.com/docs/creating_data_relations/ relation} objects, taking into account deferred relations.
+     * Returns a list of {@link http://https://damanic.github.io/ls1-documentation/docs/creating_data_relations/ relation} objects, taking into account deferred relations.
      * Use this method to obtain a list of relation records, before the record is saved to the database.
      *
      * @documentable
@@ -3019,7 +3019,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
     }
 
     /**
-     * Adds column definition for <em>has_on</em> or <em>belongs_to</em> {@link http://lemonstand.com/docs/creating_data_relations/ relation} field.
+     * Adds column definition for <em>has_on</em> or <em>belongs_to</em> {@link http://https://damanic.github.io/ls1-documentation/docs/creating_data_relations/ relation} field.
      * You should define columns for a relation field if you want the field to be displayed in lists or forms. The method
      * returns {@link Db\ColumnDefinition column definition object} object which you can use to configure the column presentation and validation parameters.
      * Example:
@@ -3083,7 +3083,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
     }
 
     /**
-     * Adds column definition for <em>has_and_belongs_to_many</em> or <em>has_many</em> {@link http://lemonstand.com/docs/creating_data_relations/ relation} field.
+     * Adds column definition for <em>has_and_belongs_to_many</em> or <em>has_many</em> {@link http://https://damanic.github.io/ls1-documentation/docs/creating_data_relations/ relation} field.
      * You should define columns for a relation field if you want the field to be displayed in lists or forms. The method
      * returns a {@link Db\ColumnDefinition column definition object} which you can use to configure the column presentation and validation parameters.
      * Example:
@@ -3348,8 +3348,8 @@ class ActiveRecord extends Sql implements IteratorAggregate
      * }
      * </pre>
      *
-     * @see          http://lemonstand.com/docs/administration_area_lists/ Lists
-     * @see          http://lemonstand.com/docs/administration_area_forms/ Forms
+     * @see          http://https://damanic.github.io/ls1-documentation/docs/administration_area_lists/ Lists
+     * @see          http://https://damanic.github.io/ls1-documentation/docs/administration_area_forms/ Forms
      * @documentable
      * @param        string $context Specifies the execution context.
      */
@@ -3374,7 +3374,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
      * }
      * </pre>
      *
-     * @see          http://lemonstand.com/docs/administration_area_forms/ Forms
+     * @see          http://https://damanic.github.io/ls1-documentation/docs/administration_area_forms/ Forms
      * @documentable
      * @param        string $context Specifies the execution context.
      */
@@ -3444,7 +3444,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
     /**
      * Triggered before a SQL query is sent to the database.
      * <span class="note">This event is triggered only if the <em>ENABLE_DEVELOPER_TOOLS</em>
-     * {@link http://lemonstand.com/docs/lemonstand_configuration_options/ configuration option} is enabled. </span>
+     * {@link http://https://damanic.github.io/ls1-documentation/docs/lemonstand_configuration_options/ configuration option} is enabled. </span>
      * Event handler example:
      * <pre>
      * public function subscribeEvents()
@@ -3470,7 +3470,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
      * @triggered /phproad/modules/db/classes/db_sqlbase.php
      * @param     string $query Specifies the SQL query string.
      * @package   core.events
-     * @author    LemonStand eCommerce Inc.
+     * @author    LSAPP
      * @see       core:onAfterDatabaseQuery
      */
     private function event_onBeforeDatabaseQuery($query)
@@ -3480,7 +3480,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
     /**
      * Triggered before a SQL query is executed by the database.
      * <span class="note">This event is triggered only if the <em>ENABLE_DEVELOPER_TOOLS</em>
-     * {@link http://lemonstand.com/docs/lemonstand_configuration_options/ configuration option} is enabled. </span>
+     * {@link http://https://damanic.github.io/ls1-documentation/docs/lemonstand_configuration_options/ configuration option} is enabled. </span>
      * The handler should accept two parameters - the SQL query string and MySQL query result value.
      * The result value depends on the query type and described in {@link http://ru.php.net/manual/en/function.mysql-query.php PHP documentation}.
      * Event handler example:
@@ -3508,7 +3508,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
      * @triggered /phproad/modules/db/classes/db_sqlbase.php
      * @param     string $query  Specifies the SQL query string.
      * @param     mixed  $result Specifies the query result value.
-     * @author    LemonStand eCommerce Inc.
+     * @author    LSAPP
      * @see       core:onBeforeDatabaseQuery
      * @package   core.events
      */
@@ -3526,7 +3526,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
      * @param     Db\MySQLiDriver $driver Specifies MySQL driver object.
      * @return    mixed Returns the MySQL connection resource.
      * @package   core.events
-     * @author    LemonStand eCommerce Inc.
+     * @author    LSAPP
      */
     private function event_onBeforeDatabaseConnect($driver)
     {

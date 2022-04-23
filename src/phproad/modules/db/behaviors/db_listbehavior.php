@@ -19,11 +19,11 @@
  * should be defined in the model in order to be displayed in a list.
  *
  * To configure the extension, its properties should be defined in the extended controller class. Only the {@link Db_ListBehavior::$list_model_class $list_model_class}
- * property is required. Please read the {@link http://lemonstand.com/docs/administration_area_lists/ Administration Area Lists} article for the usage examples and details.
+ * property is required. Please read the {@link http://https://damanic.github.io/ls1-documentation/docs/administration_area_lists/ Administration Area Lists} article for the usage examples and details.
  *
  * @documentable
- * @see          http://lemonstand.com/docs/administration_area_lists/ Administration Area Lists
- * @author       LemonStand eCommerce Inc.
+ * @see          http://https://damanic.github.io/ls1-documentation/docs/administration_area_lists/ Administration Area Lists
+ * @author       LSAPP
  * @package      core.classes
  * @see          Db_FormBehavior
  * @see          Db_FilterBehavior
@@ -1421,7 +1421,7 @@ class Db_ListBehavior extends Phpr\ControllerBehavior
      *
      * @event   core:onBeforeListExport
      * @param   Backend_Controller $controller The Administration Area controller object.
-     * @author  LemonStand eCommerce Inc.
+     * @author  LSAPP
      * @package core.events
      */
     private function event_onBeforeListExport($controller)
@@ -1436,7 +1436,7 @@ class Db_ListBehavior extends Phpr\ControllerBehavior
      * @param   Backend_Controller $controller  The Administration Area controller object.
      * @param   string             $model_class Specifies class of a model being rendered by the list.
      * @param   Db_ActiveRecord    $model       Specifies a model object being rendered in the current list row.
-     * @author  LemonStand eCommerce Inc.
+     * @author  LSAPP
      * @package core.events
      */
     private function event_onBeforeListRecordDisplay($controller, $model_class, $model)
@@ -1450,7 +1450,7 @@ class Db_ListBehavior extends Phpr\ControllerBehavior
      * @triggered /phproad/modules/db/behaviors/db_listbehavior/partials/_list.htm
      * @param     Backend_Controller $controller The Administration Area controller object.
      * @package   core.events
-     * @author    LemonStand eCommerce Inc.
+     * @author    LSAPP
      * @see       core:onAfterRenderListPagination
      */
     private function event_onAfterRenderListTable($controller)
@@ -1464,7 +1464,7 @@ class Db_ListBehavior extends Phpr\ControllerBehavior
      * @triggered /phproad/modules/db/behaviors/db_listbehavior/partials/_list.htm
      * @param     Backend_Controller $controller The Administration Area controller object.
      * @package   core.events
-     * @author    LemonStand eCommerce Inc.
+     * @author    LSAPP
      * @see       core:onAfterRenderListTable
      */
     private function event_onAfterRenderListPagination($controller)

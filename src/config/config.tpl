@@ -124,7 +124,7 @@
 	$CONFIG['CACHE_SHIPPING_METHODS'] = true;
 	$CONFIG['ENABLE_BACKEND_TOUR'] = true;
 
-	$CONFIG['UPDATE_CENTER'] = 'v1.lemonstand.com/lemonstand_update_gateway';
-	$CONFIG['LS_EULA_GATEWAY'] = 'https://v1.lemonstand.com/lemonstand_eula/';
+	$CONFIG['UPDATE_CENTER'] = 'v1.lsdomainexpired.mjman.net/lsapp_update_gateway';
+	$CONFIG['LS_EULA_GATEWAY'] = 'https://v1.lsdomainexpired.mjman.net/lsapp_eula/';
 
 ?>

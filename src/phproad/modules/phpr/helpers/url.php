@@ -11,7 +11,7 @@ use Phpr;
 class Url
 {
     /**
-     * Returns an URL of a specified resource relative to the LemonStand domain root
+     * Returns an URL of a specified resource relative to the PHPR applications domain root
      */
     public static function rootUrl($resource, $add_host_name_and_protocol = false, $protocol = null)
     {

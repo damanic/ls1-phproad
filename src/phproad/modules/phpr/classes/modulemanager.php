@@ -23,7 +23,7 @@ class ModuleManager
     public static function getModules($allowCaching = true, $returnDisabledOnly = false)
     {
         if ($allowCaching && !$returnDisabledOnly) {
-            if (self::$moduleObjects != null) {
+            if (self::$moduleObjects !== null) {
                 return self::$moduleObjects;
             }
         }
@@ -64,13 +64,18 @@ class ModuleManager
                         continue;
                     }
 
-                    $modulePath = $dirPath . DS . 'classes' . DS . $moduleId . "_module.php";
+                    $modulePath = $dirPath . DS . 'classes' . DS;
+                    $fileName =  "module.php";
+                    $LegacyFileName =  $moduleId . "_module.php";
+                    if (!file_exists($modulePath.$fileName) && file_exists($modulePath.$LegacyFileName)) {
+                        $fileName = $LegacyFileName;
+                    }
 
-                    if (!file_exists($modulePath)) {
+                    if (!file_exists($modulePath.$fileName)) {
                         continue;
                     }
 
-                    if (Phpr::$classLoader->load($className = $moduleId . "_Module", true)) {
+                    if (Phpr::$classLoader->load($className = $moduleId . "\Module", true)) {
                         if ($disabled) {
                             $disabledModuleList[$moduleId] = new $className($returnDisabledOnly);
                             $disabledModuleList[$moduleId]->dir_path = $dirPath;
@@ -93,7 +98,7 @@ class ModuleManager
         uasort($result, array('\Phpr\ModuleManager', 'sortModules'));
 
         // Add sorted collection back to cache
-        if (!$returnDisabledOnly) {
+        if (!$returnDisabledOnly && count($result)) {
             self::$moduleObjects = $result;
         }
 

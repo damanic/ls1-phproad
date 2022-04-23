@@ -1,7 +1,7 @@
 <?php namespace Db;
 
 use Phpr;
-use Phpr\PhprDateTime;
+use Phpr\DateTime as PhprDateTime;
 use Db\Helper as DbHelper;
 
 class RecordLock extends ActiveRecord

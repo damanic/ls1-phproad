@@ -9,7 +9,7 @@ use Phpr\SystemException;
  * the {@link ActiveRecord} class.
  *
  * @documentable
- * @author       LemonStand eCommerce Inc.
+ * @author       LSAPP
  * @package      core.classes
  */
 class FormPartial extends FormElement
