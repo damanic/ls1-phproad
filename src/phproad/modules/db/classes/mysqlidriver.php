@@ -217,7 +217,7 @@ class MySQLiDriver extends Driver_Base
      * Returns the index descriptions for a table.
      * @return array
      */
-    public function describe_index($table)
+    public function describeIndex($table)
     {
         $sql = 'SHOW INDEX FROM ' . $table;
         Phpr::$traceLog->write($sql, 'SQL');
@@ -241,7 +241,6 @@ class MySQLiDriver extends Driver_Base
 
         return $result_array;
     }
-
 
     /* Service routines */
 
@@ -312,4 +311,15 @@ class MySQLiDriver extends Driver_Base
     {
         return mysqli_insert_id($this->get_connection());
     }
+
+
+    /**
+     * @deprecated
+     */
+    public function describe_index($table)
+    {
+        return $this->describeIndex($table);
+    }
+
+
 }

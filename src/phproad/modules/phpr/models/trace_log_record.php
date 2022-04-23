@@ -10,7 +10,7 @@ use Phpr\DateTime as PhprDateTime;
 
 class Trace_Log_Record extends ActiveRecord
 {
-    public $table_name = "trace_log";
+    public $table_name = "phpr_trace_log";
 
     /**
      * Creates a log record

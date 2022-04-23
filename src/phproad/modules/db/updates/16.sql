@@ -1,1 +1,0 @@
-create index file_name on db_files(name);

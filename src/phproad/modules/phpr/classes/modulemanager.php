@@ -14,73 +14,78 @@ class ModuleManager
 {
     protected static $moduleObjects = null;
 
-    // Returns all available modules as an array
-    public static function getModules($allow_caching = true, $return_disabled_only = false)
+    /**
+     * Returns an array of moduleObjects
+     * @param bool $allowCaching
+     * @param bool $returnDisabledOnly
+     * @return array|null
+     */
+    public static function getModules($allowCaching = true, $returnDisabledOnly = false)
     {
-        if ($allow_caching && !$return_disabled_only) {
+        if ($allowCaching && !$returnDisabledOnly) {
             if (self::$moduleObjects != null) {
                 return self::$moduleObjects;
             }
         }
 
-        if (!$return_disabled_only) {
+        if (!$returnDisabledOnly) {
             self::$moduleObjects = array();
         }
 
-        $disabled_module_list = array();
+        $disabledModuleList = array();
 
-        $disabled_modules = Phpr::$config->get('DISABLE_MODULES', array());
-        $application_paths = Phpr::$config->get('APPLICATION_PATHS', array(PATH_APP, PATH_SYSTEM));
+        $disabledModules = Phpr::$config->get('DISABLE_MODULES', array());
+        $applicationPaths = Phpr::$config->get('APPLICATION_PATHS', array(PATH_APP, PATH_SYSTEM));
 
-        foreach ($application_paths as $app_path) {
-            if ($app_path == PATH_SYSTEM) {
+        foreach ($applicationPaths as $appPath) {
+            if ($appPath == PATH_SYSTEM) {
                 continue;
             }
 
-            $modules_path = $app_path . DS . PHPR_MODULES;
+            $modulesPath = $appPath . DS . PHPR_MODULES;
 
-            if (!file_exists($modules_path)) {
+            if (!file_exists($modulesPath)) {
                 continue;
             }
 
-            $iterator = new DirectoryIterator($modules_path);
+            $iterator = new DirectoryIterator($modulesPath);
             foreach ($iterator as $dir) {
                 if ($dir->isDir() && !$dir->isDot()) {
-                    $dir_path = $modules_path . DS . $dir->getFilename();
-                    $module_id = $dir->getFilename();
+                    $dirPath = $modulesPath . DS . $dir->getFilename();
+                    $moduleId = $dir->getFilename();
 
-                    $disabled = in_array($module_id, $disabled_modules);
+                    $disabled = in_array($moduleId, $disabledModules);
 
-                    if (($disabled && !$return_disabled_only) || (!$disabled && $return_disabled_only)) {
+                    if (($disabled && !$returnDisabledOnly) || (!$disabled && $returnDisabledOnly)) {
                         continue;
                     }
 
-                    if (isset(self::$moduleObjects[$module_id])) {
+                    if (isset(self::$moduleObjects[$moduleId])) {
                         continue;
                     }
 
-                    $module_path = $dir_path . DS . 'classes' . DS . $module_id . "_module.php";
+                    $modulePath = $dirPath . DS . 'classes' . DS . $moduleId . "_module.php";
 
-                    if (!file_exists($module_path)) {
+                    if (!file_exists($modulePath)) {
                         continue;
                     }
 
-                    if (Phpr::$classLoader->load($class_name = $module_id . "_Module", true)) {
+                    if (Phpr::$classLoader->load($className = $moduleId . "_Module", true)) {
                         if ($disabled) {
-                            $disabled_module_list[$module_id] = new $class_name($return_disabled_only);
-                            $disabled_module_list[$module_id]->dir_path = $dir_path;
+                            $disabledModuleList[$moduleId] = new $className($returnDisabledOnly);
+                            $disabledModuleList[$moduleId]->dir_path = $dirPath;
                         } else {
-                            self::$moduleObjects[$module_id] = new $class_name($return_disabled_only);
-                            self::$moduleObjects[$module_id]->dir_path = $dir_path;
-                            self::$moduleObjects[$module_id]->subscribe_events();
+                            self::$moduleObjects[$moduleId] = new $className($returnDisabledOnly);
+                            self::$moduleObjects[$moduleId]->dir_path = $dirPath;
+                            self::$moduleObjects[$moduleId]->subscribeEvents();
                         }
                     }
                 }
             }
         }
 
-        if ($return_disabled_only) {
-            $result = $disabled_module_list;
+        if ($returnDisabledOnly) {
+            $result = $disabledModuleList;
         } else {
             $result = self::$moduleObjects;
         }
@@ -88,64 +93,87 @@ class ModuleManager
         uasort($result, array('\Phpr\ModuleManager', 'sortModules'));
 
         // Add sorted collection back to cache
-        if (!$return_disabled_only) {
+        if (!$returnDisabledOnly) {
             self::$moduleObjects = $result;
         }
 
         return $result;
     }
 
-    // Returns a module object by its identifier
-    public static function getModule($module_id)
+    /**
+     * Returns the moduleObject for the given module Id
+     * @param string $moduleId
+     * @return object|null
+     */
+    public static function getModule($moduleId)
     {
         $modules = self::getModules();
 
-        if (isset($modules[$module_id])) {
-            return $modules[$module_id];
+        if (isset($modules[$moduleId])) {
+            return $modules[$moduleId];
         }
 
         return null;
     }
 
-    // Returns a module directory as an absolute path or null if not found
-    public static function getModulePath($module_id)
+    /**
+     * Returns the module directory for the given module ID as an absolute path or null if not found
+     * @param string $moduleId
+     * @return string|null Absolute path to module directory
+     */
+    public static function getModulePath($moduleId)
     {
-        $module_id = strtolower($module_id);
+        $moduleId = strtolower($moduleId);
 
-        $application_paths = Phpr::$config->get('APPLICATION_PATHS', array(PATH_APP, PATH_SYSTEM));
+        $applicationPaths = Phpr::$config->get('APPLICATION_PATHS', array(PATH_APP, PATH_SYSTEM));
 
-        foreach ($application_paths as $base_path) {
-            $module_path = $base_path . DS . PHPR_MODULES . DS . $module_id;
+        foreach ($applicationPaths as $basePath) {
+            $modulePath = $basePath . DS . PHPR_MODULES . DS . $moduleId;
 
-            if (file_exists($module_path)) {
-                return $module_path;
+            if (file_exists($modulePath)) {
+                return $modulePath;
             }
         }
 
         return null;
     }
 
-    // Checks the existence of a module
-    public static function moduleExists($module_id)
+    /**
+     * Checks the existence of a module
+     * @param string $moduleId
+     * @return bool
+     */
+    public static function moduleExists($moduleId)
     {
-        return (bool)self::getModule($module_id);
+        return (bool) self::getModule($moduleId);
     }
 
     // Helper methods
     //
 
+    /**
+     * Sort function for module update order
+     * @param object $a
+     * @param object $b
+     * @return int
+     */
     private static function sortModules($a, $b)
     {
-        return strcasecmp($a->get_module_info()->name, $b->get_module_info()->name);
+        return strcasecmp($a->getModuleInfo()->name, $b->getModuleInfo()->name);
     }
 
-    // @deprecated
-    //
-    public static function findById($module_id)
+
+    /**
+     * @deprecated
+     */
+    public static function findById($moduleId)
     {
-        return self::getModule($module_id);
+        return self::getModule($moduleId);
     }
 
+    /**
+     * @deprecated
+     */
     public static function findModules()
     {
         return self::getModules();

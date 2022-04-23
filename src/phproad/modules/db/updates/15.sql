@@ -1,1 +1,0 @@
-alter table db_files add column title varchar(255);
