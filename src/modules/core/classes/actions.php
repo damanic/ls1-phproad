@@ -1,8 +1,9 @@
 <?php
-
 namespace Core;
 
-class Actions extends Cms\ActionScope
+use Cms\ActionScope;
+
+class Actions extends ActionScope
 {
     /**
      * This handler does nothing on the server side.
