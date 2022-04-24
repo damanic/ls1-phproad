@@ -3,6 +3,7 @@ namespace Phpr;
 
 use DateTimeZone;
 
+use Db\DataCollection;
 use Phpr;
 use Phpr\DateTime as PhprDateTime;
 use Phpr\SystemException;
@@ -10,11 +11,26 @@ use Db\ActiveRecord;
 
 /**
  * Represents a set of validation rules.
- * Objects of this class are usually created by {@link Phpr\Validation::add()} and {@link Db\ColumnDefinition::validation()} methods.
- * Almost all methods of this class return the updated object. It allows to define rules as a chain:
- * <pre>$this->define_column('name', 'Name')->order('asc')->validation()->fn('trim')->required("Please specify the theme name.");</pre>
- * Rules are executed in the order they added. Some rules, like fn() can update the input value, instead of performing the actual
- * validation. The updated value then used in other rules. If the validation object is used with {@link Db\ActiveRecord models},
+ * Objects of this class are usually created by
+ * {@link Validation::add()}
+ * and
+ * {@link \Db\ColumnDefinition::validation()}
+ *
+ * Almost all methods of this class return the updated object.
+ * It allows to define rules as a chain:
+ *
+ *  <pre>
+ *      $this->define_column('name', 'Name')
+ *      ->order('asc')
+ *      ->validation()
+ *      ->fn('trim')
+ *      ->required("Please specify the theme name.");
+ *  </pre>
+ *
+ * Rules are executed in the order they added.
+ * Some rules, like fn() can update the input value, instead of performing the actual
+ * validation. The updated value id then used in other rules.
+ * If the validation object is used with {@link ActiveRecord models},
  * the updated field values are assigned to the model properties before it is saved to the database.
  */
 class ValidationRules
@@ -60,10 +76,10 @@ class ValidationRules
     protected $validation;
 
     /**
-     * Creates a new Phpr\ValidationRules instance. Do not instantiate this class directly -
+     * Creates a new ValidationRules instance. Do not instantiate this class directly -
      * the controller Validation property: $this->validation->addRule("FirstName").
      *
-     * @param Phpr\Validation $Validation Specifies the validation class instance.
+     * @param Validation $Validation Specifies the validation class instance.
      * @param bool            $Focusable  Specifies whether the field is focusable.
      * @param string          $FieldName  Specifies a field name.
      */
@@ -84,7 +100,7 @@ class ValidationRules
      *
      * @documentable
      * @param        string $name Specifies a PHP function name.
-     * @return       Phpr\ValidationRules Returns the updated rule set.
+     * @return       ValidationRules Returns the updated rule set.
      */
     public function fn($Name)
     {
@@ -96,7 +112,7 @@ class ValidationRules
      * Sets an identifier of a element that should be focused in case of error
      *
      * @param  string $Id Specifies an element identifier
-     * @return Phpr\ValidationRules
+     * @return ValidationRules
      */
     public function focusId($Id)
     {
@@ -106,10 +122,10 @@ class ValidationRules
 
     /**
      * Adds a rule that validates a value with an owner class' method.
-     * Use this method with {@link Db\ActiveRecord ActiveRecord} models. The model class should
+     * Use this method with {@link ActiveRecord ActiveRecord} models. The model class should
      * contain a public method with the specified name. The should accept two parameters -
      * the field name and value, and return a string or boolean value. Alternatively you can use
-     * {@link Phpr\Validation::setError() setError()} method of the validation object to throw an exception.
+     * {@link Validation::setError() setError()} method of the validation object to throw an exception.
      * <pre>
      * public function define_columns($context = null)
      * {
@@ -128,7 +144,7 @@ class ValidationRules
      *
      * @documentable
      * @param        string $name Specifies the method name.
-     * @return       Phpr\ValidationRules Returns the updated rule set.
+     * @return       ValidationRules Returns the updated rule set.
      */
     public function method($Name)
     {
@@ -144,7 +160,7 @@ class ValidationRules
      * @return mixed
      * @ignore
      * Evaluates the internal validation rule.
-     * This method is used by the Phpr\Validation class internally.
+     * This method is used by the Validation class internally.
      */
     public function evalInternal($Rule, $Name, $Value, &$Params, $CustomMessage, &$DataSrc, $deferred_session_key)
     {
@@ -190,7 +206,7 @@ class ValidationRules
      * @documentable
      * @param        string $custom_message Specifies an error message to display if the validation fails.
      *                                      Can contain <em>%s</em> placeholder which is replaced with the actual field name.
-     * @return       Phpr\ValidationRules Returns the updated rule set.
+     * @return       ValidationRules Returns the updated rule set.
      */
     public function numeric($CustomMessage = null)
     {
@@ -235,7 +251,7 @@ class ValidationRules
      * @documentable
      * @param        string $custom_message Specifies an error message to display if the validation fails.
      *                                      Can contain <em>%s</em> placeholder which is replaced with the actual field name.
-     * @return       Phpr\ValidationRules Returns the updated rule set.
+     * @return       ValidationRules Returns the updated rule set.
      */
     public function float($CustomMessage = null)
     {
@@ -294,7 +310,7 @@ class ValidationRules
      * @param        int    $length         Specifies the minimum value length.
      * @param        string $custom_message Specifies an error message to display if the validation fails.
      *                                      Can contain <em>%s</em> placeholder which is replaced with the actual field name.
-     * @return       Phpr\ValidationRules Returns the updated rule set.
+     * @return       ValidationRules Returns the updated rule set.
      */
     public function minLength($Length, $CustomMessage = null)
     {
@@ -338,7 +354,7 @@ class ValidationRules
      * @param        int    $length         Specifies the maximum value length.
      * @param        string $custom_message Specifies an error message to display if the validation fails.
      *                                      Can contain <em>%s</em> placeholder which is replaced with the actual field name.
-     * @return       Phpr\ValidationRules Returns the updated rule set.
+     * @return       ValidationRules Returns the updated rule set.
      */
     public function maxLength($Length, $CustomMessage = null)
     {
@@ -381,7 +397,7 @@ class ValidationRules
      * @param        int    $length         Specifies the required value length.
      * @param        string $custom_message Specifies an error message to display if the validation fails.
      *                                      Can contain <em>%s</em> placeholder which is replaced with the actual field name.
-     * @return       Phpr\ValidationRules Returns the updated rule set.
+     * @return       ValidationRules Returns the updated rule set.
      */
     public function length($Length, $CustomMessage = null)
     {
@@ -448,7 +464,7 @@ class ValidationRules
      *                                                 actual field name.
 
      * @param  callback $checker_filter_callback Specifies the required value length.
-     * @return Phpr\ValidationRules Returns the updated rule set.
+     * @return ValidationRules Returns the updated rule set.
      */
     public function unique($CustomMessage = null, $CheckerFilterCallback = null)
     {
@@ -466,7 +482,7 @@ class ValidationRules
      */
     protected function evalUnique($Name, $Value, &$Params, $CustomMessage, &$obj)
     {
-        if (!($obj instanceof \Db\ActiveRecord) || !strlen($Value)) {
+        if (!($obj instanceof ActiveRecord) || !strlen($Value)) {
             return true;
         }
 
@@ -504,7 +520,7 @@ class ValidationRules
      * @documentable
      * @param        string $custom_message Specifies an error message to display if the validation fails.
      *                                      Can contain <em>%s</em> placeholder which is replaced with the actual field name.
-     * @return       Phpr\ValidationRules Returns the updated rule set.
+     * @return       ValidationRules Returns the updated rule set.
      */
     public function required($CustomMessage = null)
     {
@@ -522,9 +538,9 @@ class ValidationRules
      */
     protected function evalRequired($Name, $Value, &$Params, $CustomMessage)
     {
-        if (!is_array($Value) && !($Value instanceof Db_DataCollection)) {
+        if (!is_array($Value) && !($Value instanceof DataCollection)) {
             $result = trim($Value) != '' ? true : false;
-        } elseif ($Value instanceof \Db\DataCollection) {
+        } elseif ($Value instanceof DataCollection) {
             $result = $Value->count() ? true : false;
         } else {
             $result = count($Value) ? true : false;
@@ -549,7 +565,7 @@ class ValidationRules
      * Makes the field optional.
      *
      * @documentable
-     * @return       Phpr\ValidationRules Returns the updated rule set.
+     * @return       ValidationRules Returns the updated rule set.
      */
     public function optional()
     {
@@ -580,7 +596,7 @@ class ValidationRules
      * @documentable
      * @param        string $custom_message Specifies an error message to display if the validation fails.
      *                                      Can contain <em>%s</em> placeholder which is replaced with the actual field name.
-     * @return       Phpr\ValidationRules Returns the updated rule set.
+     * @return       ValidationRules Returns the updated rule set.
      */
     public function alpha($CustomMessage = null)
     {
@@ -620,7 +636,7 @@ class ValidationRules
      * @documentable
      * @param        string $custom_message Specifies an error message to display if the validation fails.
      *                                      Can contain <em>%s</em> placeholder which is replaced with the actual field name.
-     * @return       Phpr\ValidationRules Returns the updated rule set.
+     * @return       ValidationRules Returns the updated rule set.
      */
     public function alphanum($CustomMessage = null)
     {
@@ -663,7 +679,7 @@ class ValidationRules
      *                                       Can contain <em>%s</em> placeholder which is replaced with the
      *                                       actual field name.
 
-     * @return Phpr\ValidationRules Returns the updated rule set.
+     * @return ValidationRules Returns the updated rule set.
      */
     public function email($AllowEmpty = false, $CustomMessage = null)
     {
@@ -708,7 +724,7 @@ class ValidationRules
      * @documentable
      * @param        string $custom_message Specifies an error message to display if the validation fails.
      *                                      Can contain <em>%s</em> placeholder which is replaced with the actual field name.
-     * @return       Phpr\ValidationRules Returns the updated rule set.
+     * @return       ValidationRules Returns the updated rule set.
      */
     public function url($CustomMessage = null)
     {
@@ -756,7 +772,7 @@ class ValidationRules
      * @documentable
      * @param        string $custom_message Specifies an error message to display if the validation fails.
      *                                      Can contain <em>%s</em> placeholder which is replaced with the actual field name.
-     * @return       Phpr\ValidationRules Returns the updated rule set.
+     * @return       ValidationRules Returns the updated rule set.
      */
     public function ip($CustomMessage = null)
     {
@@ -794,7 +810,7 @@ class ValidationRules
      * Adds a rule that determines whether a value matches another field value.
      *
      * @param  string $Field Specifies a name of field this field value must match
-     * @return Phpr\ValidationRules
+     * @return ValidationRules
      */
     public function matches($Field, $errorMessage = null)
     {
@@ -814,19 +830,18 @@ class ValidationRules
     {
         $fieldToMatch = $Params[0];
         $errorMessage = $Params[1];
-        if (!isset($this->validation->fields[$fieldToMatch])) {
+        $validation = $this->validation;
+        if (!$validation->hasRuleFor($fieldToMatch)) {
             throw new SystemException("Unknown validation field: $fieldToMatch");
         }
 
-        $valueToMatch = isset($this->validation->fieldValues[$fieldToMatch]) ? $this->validation->fieldValues[$fieldToMatch] : Phpr::$request->postField(
-            $fieldToMatch
-        );
-
-        $result = $Value == $valueToMatch ? true : false;
+        $postedValue = Phpr::$request->postField($fieldToMatch);
+        $valueToMatch = $validation->fieldValues[$fieldToMatch] ?? $postedValue;
+        $result = $Value == $valueToMatch;
 
         if (!$result) {
             if (!strlen($errorMessage)) {
-                $fieldToMatchName = $this->validation->fields[$fieldToMatch]->fieldName;
+                $fieldToMatchName = $this->validation->getRule($fieldToMatch)->fieldName;
                 $this->validation->setError(
                     sprintf(Phpr::$lang->mod('phpr', 'matches', 'validation'), $this->fieldName, $fieldToMatchName),
                     $Name
@@ -853,7 +868,7 @@ class ValidationRules
      *                                       Can contain <em>%s</em> placeholder which
      *                                       is replaced with the actual field name.
 
-     * @return Phpr\ValidationRules Returns the updated rule set.
+     * @return ValidationRules Returns the updated rule set.
      */
     public function regexp($Pattern, $errorMessage = null, $AllowEmpty = false)
     {
@@ -903,7 +918,7 @@ class ValidationRules
      *                             for en_US).
 
      * @param  string $errorMessage Optional error message.
-     * @return Phpr\ValidationRules
+     * @return ValidationRules
      */
     public function dateTime($Format = "%x %X", $errorMessage = null, $dateAsIs = false)
     {
@@ -973,7 +988,7 @@ class ValidationRules
      *                             for en_US).
 
      * @param  string $errorMessage Optional error message.
-     * @return Phpr\ValidationRules
+     * @return ValidationRules
      */
     public function date($Format = "%x", $errorMessage = null)
     {
@@ -1021,7 +1036,7 @@ class ValidationRules
     /**
      * Cleans HTML preventing XSS code.
      * @param string $value Specifies a controller method name.
-     * @return Phpr\Validation_Rules
+     * @return ValidationRules
      */
     public function cleanHtml()
     {
