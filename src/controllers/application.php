@@ -157,7 +157,12 @@ class Application extends Phpr_Controller
                 $payment_types = Core_ModuleManager::findById('shop')->listPaymentTypes();
                 foreach ( $payment_types as $type ) {
                     $obj    = new $type();
-                    $points = $obj->register_access_points();
+                    $points = $obj->subscribeAccessPoints();
+                    if(empty($points) && method_exists($obj,'register_access_points')){
+                        //try deprecated method
+                        $points = $obj->register_access_points();
+                    }
+
                     if (is_array($points) ) {
                         foreach ( $points as $url => $method ) {
                             if ($url == $action ) {
@@ -174,7 +179,13 @@ class Application extends Phpr_Controller
             */
             $modules = Core_ModuleManager::listModules();
             foreach ( $modules as $module ) {
-                $points = $module->register_access_points();
+                $points = $module->subscribeAccessPoints();
+                //Maintain deprecated method
+                if(empty($points) && method_exists($module,'register_access_points')){
+                    //try deprecated method
+                    $points = $module->register_access_points();
+                }
+
                 if (is_array($points) ) {
                     foreach ( $points as $url => $method ) {
                         if ($url == $action ) {
