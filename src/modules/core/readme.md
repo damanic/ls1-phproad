@@ -16,7 +16,7 @@ In any module add the function subscribe_crontab(). Eg.
 class xCustom_Module{
 
 	protected function createModuleInfo (){
-		return new Core_ModuleInfo(
+		return new Phpr\ModuleInfo(
 		'Module',
 		'Example for you',
 		'The dude');

@@ -10,14 +10,14 @@ abstract class ModuleBase
 {
     // Absolute path to module
     public $dir_path;
-    private $moduleInfo = null;
+    protected $moduleInfo = null;
 
     public function getModuleInfo()
     {
         if ($this->moduleInfo !== null)
             return $this->moduleInfo;
 
-        $this->moduleInfo = $this->setModuleInfo();
+        $this->moduleInfo = $this->createModuleInfo();
         $this->moduleInfo->id = basename($this->getModulePath());
 
         return $this->moduleInfo;
@@ -35,7 +35,7 @@ abstract class ModuleBase
         return $this->getModuleInfo()->id;
     }
 
-    abstract protected function setModuleInfo();
+    abstract protected function createModuleInfo();
 
     //
     // Subscribe to core events

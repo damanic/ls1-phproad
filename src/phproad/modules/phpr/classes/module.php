@@ -8,9 +8,9 @@ namespace Phpr;
  */
 class Module extends ModuleBase
 {
-    public function setModuleInfo()
+    public function createModuleInfo()
     {
-        return new ModuleDetail(
+        return new ModuleInfo(
             "PHPR",
             "Core framework",
             "PHPRoad",
