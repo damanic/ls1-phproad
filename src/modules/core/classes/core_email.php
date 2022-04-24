@@ -147,7 +147,7 @@ use PHPMailer\PHPMailer\PHPMailer as PHPMailer;
 				self::send($moduleId, $view, $viewData, $subject, $user->short_name, $user->email);
 				return true;
 			}
-			catch (Exception $ex)
+			catch (\Exception $ex)
 			{
 			}
 			
@@ -166,7 +166,7 @@ use PHPMailer\PHPMailer\PHPMailer as PHPMailer;
 				
 				self::send($moduleId, $view, $viewData, $subject, null, null, $recipients, $settingsObj, $replyTo);
 			}
-			catch (Exception $ex)
+			catch (\Exception $ex)
 			{
 				if ($throw)
 					throw $ex;

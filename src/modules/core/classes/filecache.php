@@ -74,7 +74,7 @@ class FileCache extends CacheBase
             @fclose($fp);
             @chmod($dest_path, Phpr_Files::getFilePermissions());
             return true;
-        } catch (exception $ex) {
+        } catch (\Exception $ex) {
             @close($fp);
             return false;
         }
