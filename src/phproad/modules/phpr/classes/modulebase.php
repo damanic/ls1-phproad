@@ -25,7 +25,7 @@ abstract class ModuleBase
 
     public function getModulePath()
     {
-        $reflect = new ReflectionObject($this);
+        $reflect = new \ReflectionObject($this);
         $path = dirname(dirname($reflect->getFileName()));
         return $path;
     }

@@ -101,7 +101,7 @@ class ConfigurationRecord extends ActiveRecord
     {
         $this->validate_config_on_save($this);
 
-        $document = new SimpleXMLElement('<settings></settings>');
+        $document = new \SimpleXMLElement('<settings></settings>');
         foreach ($this->added_fields as $code => $form_field) {
             $field_element = $document->addChild('field');
             $field_element->addChild('id', $code);
@@ -121,7 +121,7 @@ class ConfigurationRecord extends ActiveRecord
             return;
         }
 
-        $object = new SimpleXMLElement($this->config_data);
+        $object = new \SimpleXMLElement($this->config_data);
         foreach ($object->children() as $child) {
             $code = $child->id;
             $this->$code = unserialize($child->value);

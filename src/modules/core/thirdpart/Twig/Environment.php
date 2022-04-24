@@ -343,7 +343,7 @@ class Twig_Environment
     public function isTemplateFresh($name, $time)
     {
         foreach ($this->extensions as $extension) {
-            $r = new ReflectionObject($extension);
+            $r = new \ReflectionObject($extension);
             if (filemtime($r->getFileName()) > $time) {
                 return false;
             }

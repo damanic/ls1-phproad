@@ -28,7 +28,7 @@ class FormWidget
 
     public function __construct($controller, $model, $column_name, $configuration)
     {
-        $ref_object = new ReflectionObject($this);
+        $ref_object = new \ReflectionObject($this);
         $widget_root_dir = str_replace("\\", "/", dirname($ref_object->getFileName())) . '/' . strtolower(
                 get_class($this)
             );

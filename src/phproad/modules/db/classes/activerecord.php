@@ -904,7 +904,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
         $fields = array_keys($this->fields());
         $dataUpdated = false;
         $newRecord = $this->new_record;
-        $reflection = new ReflectionObject($this);
+        $reflection = new \ReflectionObject($this);
 
         foreach ($reflection->getProperties() as $property) {
             if (!in_array($property->name, $fields)) {
@@ -2600,7 +2600,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
         // Serialize fields
         $record = array('fields' => array());
         $fields = array_keys($this->fields());
-        $reflection = new ReflectionObject($this);
+        $reflection = new \ReflectionObject($this);
 
         foreach ($reflection->getProperties() as $property) {
             if (!in_array($property->name, $fields)) {

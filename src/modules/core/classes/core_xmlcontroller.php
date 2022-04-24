@@ -21,7 +21,7 @@
 		 */
 		public function format_xml_template($template_name, $params = array(), $add_xml_header = true)
 		{
-			$class_info = new ReflectionObject($this);
+			$class_info = new \ReflectionObject($this);
 			$path = dirname($class_info->getFileName()).'/'.strtolower(get_class($this)).'/'.$template_name;
 			if (!file_exists($path))
 				throw new Phpr_SystemException('XML template not found: '.$template_name);

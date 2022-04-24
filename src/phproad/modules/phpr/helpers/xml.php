@@ -62,7 +62,7 @@ class Xml
         }
 
         $xml_string = '<' . $root_node . '></' . $root_node . '>';
-        $document = new SimpleXMLElement($xml_string);
+        $document = new \SimpleXMLElement($xml_string);
 
         if (!is_array($params)) {
             return $document;
@@ -95,7 +95,7 @@ class Xml
 
         if ($document === null) {
             $xml_string = '<' . $root_node . '></' . $root_node . '>';
-            $document = new SimpleXMLElement($xml_string);
+            $document = new \SimpleXMLElement($xml_string);
         }
 
         foreach ($params as $key => $value) {

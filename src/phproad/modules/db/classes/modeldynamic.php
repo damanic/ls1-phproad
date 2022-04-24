@@ -65,7 +65,7 @@ class ModelDynamic extends Extension
 
     public function setDynamicData()
     {
-        $document = new SimpleXMLElement('<data></data>');
+        $document = new \SimpleXMLElement('<data></data>');
         foreach ($this->added_dynamic_columns as $field_id => $value) {
             $value = serialize($this->model->{$field_id});
             $field_element = $document->addChild('field');
@@ -85,7 +85,7 @@ class ModelDynamic extends Extension
             return;
         }
 
-        $object = new SimpleXMLElement($this->model->{$dynamic_field});
+        $object = new \SimpleXMLElement($this->model->{$dynamic_field});
         foreach ($object->children() as $child) {
             $field_id = (string)$child->id;
             try {
