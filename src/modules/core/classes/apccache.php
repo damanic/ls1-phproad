@@ -1,13 +1,15 @@
 <?php
+
 namespace Core;
 
 /**
+ * @TODO move to PHPR
  * APC caching class
  */
 class ApcCache extends CacheBase
 {
     protected $ttl = 0;
-        
+
     /**
      * Creates the caching class instance.
      * @param mixed $Params Specifies the class configuration options
@@ -20,7 +22,7 @@ class ApcCache extends CacheBase
 
         $this->ttl = isset($params['TTL']) ? $params['TTL'] : 0;
     }
-        
+
     /**
      * Adds or updates value to the cache
      * @param string $key The key that will be associated with the item.
@@ -36,7 +38,7 @@ class ApcCache extends CacheBase
         if ($ttl === null) {
             $ttl = $this->ttl;
         }
-            
+
         return apc_store($key, $value, $ttl);
     }
 
