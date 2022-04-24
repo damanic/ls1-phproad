@@ -4,16 +4,14 @@ namespace Core;
 use Phpr;
 use FileSystem\Zip as ZipHelper;
 use Phpr\Date;
+use Phpr\ModuleInfo;
 
 /**
  * @has_documentable_methods
  */
 class Module extends ModuleBase
 {
-    /**
-     * Creates the module information object
-     * @return ModuleInfo
-     */
+
     protected function createModuleInfo()
     {
         return new ModuleInfo(
@@ -27,6 +25,13 @@ class Module extends ModuleBase
     {
         Phpr::$events->addEvent('onLogin', $this, 'onUserLogin');
         Phpr::$events->addEvent('core:onAfterSoftwareUpdate', $this, 'onAfterSoftwareUpdate');
+
+        $deprecatedCron = new Cron();
+        Phpr::$events->add_event('phpr:on_execute_cron_exception', $deprecatedCron, 'onExecuteCronException');
+        Phpr::$events->add_event('phpr:on_execute_crontab_exception', $deprecatedCron, 'onExecuteCrontabException');
+        Phpr::$events->add_event('phpr:on_execute_cronjob_exception', $deprecatedCron, 'onExecuteCronjobException');
+        Phpr::$events->add_event('phpr:on_cronjob_shutdown', $deprecatedCron, 'onCronjobShutdown');
+        Phpr::$events->add_event('phpr:on_cronjob_exceeded_max_duration', $deprecatedCron, 'onCronjobExceededMaxDuration');
     }
         
     public function onUserLogin()
