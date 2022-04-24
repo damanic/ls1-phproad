@@ -11,7 +11,7 @@ use Cms\Module as CmsModule;
 use Blog\Module as BlogModule;
 
 /**
- * @TODO move to PHPR
+ * @TODO extend from PHPR
  *
  * Incapsulates LSAPP caching API features.
  * This is an interface class for the caching API. The caching API supports 3 caching providers -
