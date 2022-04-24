@@ -1,5 +1,6 @@
 <?php
 namespace Core;
+
 use Phpr\Version as Version;
 
 /**
