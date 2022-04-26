@@ -1,11 +1,7 @@
 <?php
-
 namespace Net;
 
-require_once(PATH_SYSTEM . "/modules/net/vendor/phpmailer/PHPMailerAutoload.php");
-
-use PHPMailer;
-
+use PHPMailer\PHPMailer\PHPMailer;
 use Phpr\SystemException;
 
 /**
@@ -16,17 +12,24 @@ class Email
 {
     protected $options;
     protected $mailer;
+    protected $recipients = [];
+    protected $attachments = [];
 
     /**
      * Constructor
      * @param array $params Parameters
      *  - set_default: optional (default true). Sets default options as in {@link set_defaults}
      */
-    public function __construct($params = array('set_default' => true))
+    public function __construct(array $params = [])
     {
+        $defaultParams = [
+          'set_default' => true,
+        ];
+        $params = array_merge($defaultParams, $params);
+
         $this->resetMailer();
 
-        if (isset($params['set_default']) && $params['set_default']) {
+        if ($params['set_default']) {
             $this->setDefault();
         }
     }
@@ -36,7 +39,7 @@ class Email
      * @param array $params Parameters
      * @return object Net_Email
      */
-    public static function create($params = array('set_default' => true))
+    public static function create(array $params = [])
     {
         return new self($params);
     }
@@ -72,54 +75,57 @@ class Email
         return $this;
     }
 
+    public function getOption($key)
+    {
+        if (isset($this->options[$key])) {
+            return $this->options[$key];
+        }
+        return null;
+    }
+
     public function send()
     {
-        extract($this->options);
+        $mailer = $this->mailer;
+        $mailer->From = $this->getOption('sender_email');
+        $mailer->FromName = $this->getOption('sender_name');
+        $mailer->Sender = $this->getOption('sender_email');
+        $mailer->Subject = $this->getOption('subject');
+        $mailer->isHTML(true);
 
-        $mail = $this->mailer;
-        $mail->From = $sender_email;
-        $mail->FromName = $sender_name;
-        $mail->Sender = $sender_email;
-        $mail->Subject = $subject;
-        $mail->isHTML(true);
-
-        if (isset($reply_to) && is_array($reply_to)) {
-            foreach ($reply_to as $address => $name) {
-                $mail->addReplyTo($address, $name);
+        $reply_to = $this->getOption('reply_to');
+        if (is_array($reply_to)) {
+            foreach ($reply_to as $emailAddress => $name) {
+                $mailer->addReplyTo($emailAddress, $name);
             }
         }
 
-        if (isset($attachments) && is_array($attachments)) {
+        $attachments = $this->getAttachments();
+        if (is_array($attachments)) {
             foreach ($attachments as $file_path => $file_name) {
-                $mail->addAttachment($file_path, $file_name);
+                $mailer->addAttachment($file_path, $file_name);
             }
         }
 
-        $mail->clearAddresses();
-
+        $mailer->clearAddresses();
         $external_recipients = array();
-
-        foreach ($recipients as $recipient => $email) {
-            if (is_object($email) && isset($email->email)) {
-                $mail->addAddress($email->email, $email->name);
-                $external_recipients[$email->email] = $email->name;
-            } else {
-                $mail->addAddress($email, $recipient);
-                $external_recipients[$email] = $recipient;
-            }
+        $recipients = $this->getRecipients();
+        foreach ($recipients as $emailAddress => $name) {
+            $mailer->addAddress($emailAddress, $name);
+            $external_recipients[$emailAddress] = $name;
         }
 
         // Basic content parsing
+        $content = $this->getOption('content');
         $html_body = $content;
         $html_body = str_replace('{recipient_email}', implode(', ', array_keys($external_recipients)), $html_body);
         $text_body = trim(strip_tags(preg_replace('|\<style\s*[^\>]*\>[^\<]*\</style\>|m', '', $html_body)));
 
-        $mail->Body = $html_body;
-        $mail->AltBody = $text_body;
+        $mailer->Body = $html_body;
+        $mailer->AltBody = $text_body;
 
 
-        if (!$mail->send()) {
-            throw new SystemException('Error sending message ' . $subject . ': ' . $mail->ErrorInfo);
+        if (!$mailer->send()) {
+            throw new SystemException('Error sending message ' . $this->getOption('subject') . ': ' . $mailer->ErrorInfo);
         }
     }
 
@@ -136,22 +142,27 @@ class Email
     }
 
     // Attachments
-    // 
+    //
 
     public function resetAttachments()
     {
-        $this->options['attachments'] = array();
+        $this->attachments = array();
         return $this;
     }
 
     public function addAttachment($file_path, $file_name)
     {
-        $this->options['attachments'][] = array($file_path => $file_name);
+        $this->attachments[$file_path] = $file_name;
         return $this;
     }
 
+    public function getAttachments()
+    {
+        return $this->attachments;
+    }
+
     // Sender / Reply to
-    // 
+    //
 
     public function resetReplyTo()
     {
@@ -161,7 +172,7 @@ class Email
 
     public function addReplyTo($email, $name = null)
     {
-        $this->options['reply_to'][] = array($email => $name);
+        $this->options['reply_to'][$email] = $name;
         return $this;
     }
 
@@ -173,7 +184,7 @@ class Email
     }
 
     // Send modes
-    // 
+    //
 
     public function setModeMail()
     {
@@ -229,34 +240,40 @@ class Email
     // Recipient handling
     //
 
-    public function addReceipient($recipient)
+    public function addRecipient($email, $name)
     {
-        $this->options['recipients'][] = $recipient;
+        $this->recipients[$email] = $name;
         return $this;
     }
 
-    public function addRecipients($recipients)
+    public function addRecipients(array $recipients)
     {
-        if (!is_array($recipients)) {
-            $this->addReceipient($recipients);
-        }
-
         foreach ($recipients as $recipient) {
-            $this->addReceipient($recipient);
+            $email = null;
+            $name = null;
+            if (is_object($recipient)) {
+                $email = $recipient->email;
+                $name = $recipient->name;
+            }
+            if (is_array($recipient)) {
+                $email = $recipient['email'] ?? null;
+                $name = $recipient['name'] ?? null;
+            }
+            if ($email) {
+                $this->addRecipient($email, $name);
+            }
         }
-
         return $this;
     }
 
     public function resetRecipients()
     {
-        $this->options['recipients'] = array();
+        $this->recipients = array();
         return $this;
     }
 
     public function getRecipients()
     {
-        return $this->options['recipients'];
+        return $this->recipients;
     }
-
 }
