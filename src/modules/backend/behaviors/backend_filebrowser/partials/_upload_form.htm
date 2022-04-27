@@ -1,0 +1,85 @@
+<div id="upload_popup">
+	<h2>Upload file(s)</h2>
+	<div class="content">
+		<div class="form300">
+			<?= Phpr_Form::openTag() ?>
+
+			<p>You can upload multiple files at a time.</p>
+
+			<div class="form">
+				<ul class="formElements">
+					<li class="field checkbox full">
+						<label for="uploader_override_files">
+							Overwrite existing files
+						</label>
+
+						<div class="fieldContainer">
+							<input type="checkbox" class="checkbox" value="1" name="override_files" id="uploader_override_files"/>
+						</div>
+						<div class="clear"/>
+					</li>
+				</ul>
+			</div>
+
+			<div id="file_upload_drop" style="padding:2rem; border:1px dashed grey; margin-bottom:1rem;">
+				DROP FILES HERE OR CLICK LINK BELOW
+			</div>
+
+
+			<div class="uploader" id="file_upload_container">
+
+				<!-- Upload file link -->
+				<a class="uploader-link" href="javascript:;" id="file_upload_link">
+					<i class="uploader-icon"></i> Upload File(s)
+				</a>
+				<!-- Progress bar -->
+				<div class="uploader-progress progress progress-striped">
+					Uploading
+					<div class="bar"></div>
+				</div>
+			</div>
+			<script type="text/javascript">
+
+				var fa_helperBackendFileBrowser = {
+					uploader_initialized : false,
+					init_file_attachments : function(){
+						jQuery('#file_upload_container').uploader({
+							url: jQuery('#file_browser_current_url').val(),
+							trigger: '#file_upload_link',
+							extraData: false,
+							dropContainer: '#file_upload_drop',
+							onUploadComplete: function() {
+								cancelPopup();
+								$('file_browser').getForm().sendPhpr($('file_browser_navigate_handler').value,
+									{extraFields: {path: $('file_browser_current_path').value},
+										update: 'multi',
+										onBeforePost: LightLoadingIndicator.show.pass('Loading...'),
+										onComplete: LightLoadingIndicator.hide,
+										loadIndicator: {show: false}});
+							}
+						});
+						this.uploader_initialized = true;
+					}
+				};
+
+
+				jQuery(document).ready(function(jQuery) {
+					fa_helperBackendFileBrowser.init_file_attachments();
+				});
+				jQuery(window).on('popupLoaded', function(){
+					if(!fa_helperBackendFileBrowser.uploader_initialized){
+						fa_helperBackendFileBrowser.init_file_attachments();
+					}
+				});
+			</script>
+
+			<div class="offsetTop">
+				<?= backend_button('Cancel', array('onclick'=>'return cancelPopup()')) ?>
+			</div>
+			<input type="hidden" id="rename_file_path" name="file_path" value="<?= h($file_path) ?>"/>
+
+			<div class="clear"></div>
+			</form>
+		</div>
+	</div>
+</div>

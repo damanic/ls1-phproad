@@ -1,0 +1,30 @@
+<?
+	$reports_list = Backend_Reports::listReports();
+	$first_header = true;
+	$current_module_id = strtolower(Phpr::$router->param('module'));
+	$currentReport = $this->viewDataElement('report');
+	foreach ($reports_list as $report_group_name => $module_reports):
+
+		if (!count($module_reports))
+			continue;
+	?>
+
+		<h2 class="section-title <? if ($first_header): ?>first<? endif ?>">
+			<?= h($report_group_name) ?>
+		</h2>
+		<div class="clear"></div>
+
+			<ul class="sidebar-selector list-section">
+				<? foreach($module_reports as $module_id => $report_group):?>
+					<? foreach($report_group['reports'] as $id=>$report): ?>
+					<li class=" <?= $currentReport == $id && $current_module_id == $module_id ? 'current' : null ?>" ><div><a href="<?= url($module_id.'/'.$id.'_report').'?'.uniqid() ?>"><?= h($report) ?></a></div></li>
+					<?
+						endforeach;
+					?>
+				<? endforeach; ?>
+			</ul>
+
+	<?
+	$first_header = false;
+	endforeach
+	?>

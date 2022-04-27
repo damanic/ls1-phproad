@@ -1,0 +1,46 @@
+<? 
+	$this->onBeforeChartRender();
+	$chartType = $this->getChartType();
+	$chartTypes = $this->getChartTypes();
+	$chartData = $this->getChartData();
+?>
+
+<div class="report_controls">
+	<?= Phpr_Form::openTag(array('id'=>'chart_form')) ?>
+		<? $this->renderPartial(PATH_APP.'/modules/'.$this->getModuleId().'/controllers/'.strtolower(get_class($this)).'/_chart_controls.htm') ?>
+		<ul class="chart_selector">
+			<li class="label">Chart:</li>
+			<? foreach ($chartTypes as $type): ?>
+				<li class="button <?= $type ?>">
+					<a href="#" onclick="return $('chart_form').sendPhpr('index_onSetChartType', {extraFields: {chart_type: '<?= $type ?>'}, update: $('report_chart'), loadIndicator: {element: $('report_chart'), hideOnSuccess: 1}});
+					" class="<?= $type == $chartType ? 'current' : null ?>">Chart type</a>
+				</li>
+			<? endforeach ?>
+		</ul>
+
+		<div class="clear"></div>
+	</form>
+	
+	<? if ($this->viewDataElement('chartNote')): ?>
+		<p class="chartNote"><?= h($this->viewData['chartNote']) ?></p>
+	<? endif ?>
+</div>
+
+
+<? if (!Phpr::$config->get('ENABLE_HTML5_CHARTS', true)):?>
+
+	<? $this->renderPartial(PATH_APP.'/modules/backend/controllers/partials/_swf-chart.htm', array(
+		'chartType' => $chartType,
+		'chartTypes' => $chartTypes
+	)); ?>
+
+
+<? else:?>
+
+	<? $this->renderPartial(PATH_APP.'/modules/backend/controllers/partials/_html-chart.htm', array(
+		'chartType' => $chartType,
+		'chartTypes' => $chartTypes,
+		'chartData' => $chartData,
+	)); ?>
+
+<? endif;?>
