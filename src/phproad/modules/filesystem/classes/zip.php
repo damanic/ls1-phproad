@@ -1,13 +1,7 @@
 <?php
-
 namespace FileSystem;
 
-if (!defined('PATH_INSTALL')) {
-    require_once(PATH_SYSTEM . "/modules/file/vendor/pclzip/pclzip.lib.php");
-}
-
 use PclZip;
-
 use Phpr\SystemException;
 use FileSystem\File;
 use FileSystem\Directory;
