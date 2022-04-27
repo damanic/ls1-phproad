@@ -6,7 +6,7 @@ use Phpr\ApplicationException;
 
 class ViewLicenseAgreement extends SettingsController
 {
-    public $implement = 'Db\FormBehavior';
+    public $implement = 'Db_FormBehavior';
         
     public function index()
     {

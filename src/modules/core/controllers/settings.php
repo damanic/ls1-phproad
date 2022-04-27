@@ -7,7 +7,7 @@ use Backend\Controller;
 
 class Settings extends Controller
 {
-    public $implement = 'Db\FormBehavior';
+    public $implement = 'Db_FormBehavior';
 
     public function edit($module_id, $form_id)
     {
