@@ -261,7 +261,7 @@ class ClassLoader
     public function load_controller($className, $controllerDirectory = null)
     {
         foreach ($this->paths['application'] as $path) {
-            $controllerDirectory = $controllerDirectory ? $controllerDirectory : 'controller';
+            $controllerDirectory = $controllerDirectory ? $controllerDirectory : 'controllers';
             $controllerPath = realpath($path . DS . $controllerDirectory);
 
             if (!strlen($controllerPath)) {
