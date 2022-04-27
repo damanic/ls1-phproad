@@ -141,7 +141,7 @@ class ClassLoader
         //
         if ($namespace_pos === false) {
             $class_alias = $class;
-            $class = preg_replace('/\\_/', '\\', $class, 1);
+            $class = $this->convertLegacyClassName($class);
             $namespace_pos = strpos($class, '\\');
 
             //
@@ -254,50 +254,39 @@ class ClassLoader
     /**
      * Loads an application controller by the class name and returns the controller instance.
      *
-     * @param string $class_name Specifies a name of the controller to load.
+     * @param string $className Specifies a name of the controller to load.
      * @param string $controller_path Specifies a path to the controller directory.
      * @return Phpr\Controller The controller instance or null.
      */
-    public function load_controller($class_name, $controller_directory = null)
+    public function load_controller($className, $controllerDirectory = null)
     {
         foreach ($this->paths['application'] as $path) {
-            $controller_path = ($controller_directory != null) ? $path . DS . $controller_directory : $path . DS . 'controllers';
-            $controller_path = realpath($controller_path . DS . strtolower($class_name) . '.' . PHPR_EXT);
+            $controllerDirectory = $controllerDirectory ? $controllerDirectory : 'controller';
+            $controllerPath = realpath($path . DS . $controllerDirectory);
 
-            if (!strlen($controller_path)) {
+            if (!strlen($controllerPath)) {
                 continue;
             }
 
-            if (!class_exists($class_name)) {
-                include_once $controller_path;
-
-                if (!class_exists($class_name)) {
+            if (!class_exists($className)) {
+                $className = $this->convertLegacyClassName($className);
+                if (!class_exists($className)) {
                     continue;
                 }
-
-                Controller::$current = new $class_name();
-
-                Phpr::$events->fire_event(
-                    'phpr:on_configure_' . Inflector::underscore($class_name) . '_controller',
-                    Controller::$current
-                );
-
-                return Controller::$current;
             }
 
             // Make sure the class requested is in the application controllers directory
-            $class_info = new ReflectionClass($class_name);
-            if ($class_info->getFileName() !== $controller_path) {
+            $class_info = new ReflectionClass($className);
+            $classDir = realpath(dirname($class_info->getFileName()));
+            if ($classDir !== $controllerPath) {
                 continue;
             }
 
-            Controller::$current = new $class_name();
-
+            Controller::$current = new $className();
             Phpr::$events->fire_event(
-                'phpr:on_configure_' . Inflector::underscore($class_name) . '_controller',
+                'phpr:on_configure_' . Inflector::underscore($className) . '_controller',
                 Controller::$current
             );
-
             return Controller::$current;
         }
     }
@@ -440,6 +429,15 @@ class ClassLoader
         }
     }
 
+    private function convertLegacyClassName($className)
+    {
+        $namespaced = strpos($className, '\\');
+        if (!$namespaced) {
+            $className = preg_replace('/\\_/', '\\', $className, 1);
+        }
+        return $className;
+    }
+
     /**
      * @deprecated
      */
@@ -455,5 +453,4 @@ class ClassLoader
     {
         return $this->load_controller($class_name, $controller_path);
     }
-
 }
