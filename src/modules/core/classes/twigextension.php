@@ -32,18 +32,18 @@ class TwigExtension extends TwigAbstractExtension
     public function getFilters()
     {
         return array(
-            'currency' => new TwigFilter($this, 'currency_filter'),
-            'unescape' => new TwigFilter($this, 'unescape_filter', array('is_safe' => array('html'))),
-            'unset' => new TwigFilter($this, 'unset_filter'),
-            'repeat' => new TwigFilter($this, 'repeat_filter')
+            'currency' => new TwigFilter('currency_filter', [$this, 'currency_filter']),
+            'unescape' => new TwigFilter('unescape_filter', [$this, 'unescape_filter'], array('is_safe' => array('html'))),
+            'unset' => new TwigFilter('unset_filter', [$this, 'unset_filter']),
+            'repeat' => new TwigFilter('repeat_filter', [$this, 'repeat_filter'])
         );
     }
         
     public function getTests()
     {
         return array(
-            'instance_of' => new TwigFilter($this, 'instance_of_test'),
-            'array' => new TwigFilter($this, 'array_test'),
+            'instance_of' => new TwigFilter('instance_of_test', [$this, 'instance_of_test']),
+            'array' => new TwigFilter('array_test', [$this, 'array_test']),
         );
     }
         

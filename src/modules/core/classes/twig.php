@@ -2,7 +2,7 @@
 namespace Core;
 
 use Twig\Environment;
-use FileSystem\Files;
+use FileSystem\Directory;
 use Phpr\ApplicationException;
 use Twig\TwigFunction;
 
@@ -26,7 +26,7 @@ class Twig
         $cache_dir = PATH_APP.'/temp/twig_cache';
             
         if (!file_exists($cache_dir) || !is_dir($cache_dir)) {
-            if (!@mkdir($cache_dir, Files::getFolderPermissions())) {
+            if (!@mkdir($cache_dir, Directory::getPermissions())) {
                 throw new ApplicationException('Error creating Twig cache directory (temp/twig_cache)');
             }
         }
@@ -45,18 +45,18 @@ class Twig
     {
         $html_safe = array('is_safe' => array('html'));
 
-        $this->environment->addFunction('resource_url', new TwigFunction('resource_url'));
-        $this->environment->addFunction('site_url', new TwigFunction('site_url'));
-        $this->environment->addFunction('open_form', new TwigFunction('open_form', $html_safe));
-        $this->environment->addFunction('close_form', new TwigFunction('close_form', $html_safe));
-        $this->environment->addFunction('root_url', new TwigFunction('root_url', $html_safe));
-        $this->environment->addFunction('traceLog', new TwigFunction('traceLog'));
-        $this->environment->addFunction('trace_log', new TwigFunction('traceLog'));
-        $this->environment->addFunction('format_currency', new TwigFunction('format_currency'));
-        $this->environment->addFunction('uniqid', new TwigFunction('uniqid'));
-        $this->environment->addFunction('post', new TwigFunction('post'));
-        $this->environment->addFunction('post_array_item', new TwigFunction('post_array_item'));
-        $this->environment->addFunction('zebra', new TwigFunction('zebra', $html_safe));
+        $this->environment->addFunction('resource_url', new TwigFunction('resource_url', array(null,'resource_url')));
+        $this->environment->addFunction('site_url', new TwigFunction('site_url', array(null,'site_url')));
+        $this->environment->addFunction('open_form', new TwigFunction('open_form', array(null,'open_form'), $html_safe));
+        $this->environment->addFunction('close_form', new TwigFunction('close_form', array(null,'close_form'), $html_safe));
+        $this->environment->addFunction('root_url', new TwigFunction('root_url', array(null,'root_url'), $html_safe));
+        $this->environment->addFunction('traceLog', new TwigFunction('traceLog', array(null,'traceLog')));
+        $this->environment->addFunction('trace_log', new TwigFunction('traceLog',array(null,'traceLog')));
+        $this->environment->addFunction('format_currency', new TwigFunction('format_currency',array(null,'format_currency')));
+        $this->environment->addFunction('uniqid', new TwigFunction('uniqid',array(null,'uniqid')));
+        $this->environment->addFunction('post', new TwigFunction('post',array(null,'post')));
+        $this->environment->addFunction('post_array_item', new TwigFunction('post_array_item',array(null,'post_array_item')));
+        $this->environment->addFunction('zebra', new TwigFunction('zebra', array(null,'zebra'), $html_safe));
 
         $core_extension = new TwigExtension();
         $this->environment->addExtension($core_extension);
