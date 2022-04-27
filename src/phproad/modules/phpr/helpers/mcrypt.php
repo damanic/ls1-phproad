@@ -1,6 +1,9 @@
 <?php
 namespace Phpr;
 
+use \phpseclib3\Crypt\Random;
+use \phpseclib3\Crypt\Rijndael;
+
 /*
  * Mcrypt helper to help resolve compatibility issues when upgrading older PHP installs
  */
@@ -86,9 +89,10 @@ class Mcrypt implements EncryptionHandler
 
     protected function encryptCompat($data, $key)
     {
+        traceLog(Rijndael::MODE_CBC);
         //MCRYPT_MODE_CBC
-        $rijndael = new \phpseclib\Crypt\Rijndael(\phpseclib\Crypt\Rijndael::MODE_CBC);
-        $random_string = \phpseclib\Crypt\Random::string($this->ivSize);
+        $rijndael = new Rijndael('cbc');
+        $random_string = Random::string($this->ivSize);
         $rijndael->setBlockLength($this->getKeySize());
         $rijndael->setKey($key);
         $rijndael->setIV($random_string);
@@ -115,10 +119,11 @@ class Mcrypt implements EncryptionHandler
 
     protected function decryptCompat($data, $key)
     {
-        $rijndael = new \phpseclib\Crypt\Rijndael(\phpseclib\Crypt\Rijndael::MODE_CBC);
+        $random_string = Random::string($this->ivSize);
+        $rijndael = new Rijndael('cbc');
         $rijndael->setBlockLength($this->getKeySize());
         $rijndael->setKey($key);
-        $rijndael->setIV($this->ivSize);
+        $rijndael->setIV($random_string);
         $rijndael->disablePadding();
         return substr($rijndael->decrypt($data), $this->ivSize);
     }
