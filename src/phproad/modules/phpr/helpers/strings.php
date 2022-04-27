@@ -3,6 +3,7 @@ namespace Phpr;
 
 use Phpr;
 use Phpr\Inflector;
+use \Behat\Transliterator\Transliterator as Transliterator;
 
 class Strings
 {
@@ -298,6 +299,21 @@ class Strings
         $return[] = $end;
         $return[] = '</span>';
         return implode(PHP_EOL, $return);
+    }
+
+    /**
+     * Converts international UTF-8 characters into ASCII equivalents.
+     * @param string $string String to process.
+     * @return string Returns the processed string.
+     */
+    public static function transliterate($str)
+    {
+        if (preg_match('/[\x80-\xff]/', $str) && Transliterator::validUtf8($str)) {
+            $str = Transliterator::utf8ToAscii($str);
+        } else {
+            $str = Transliterator::unaccent($str);
+        }
+        return $str;
     }
 
 
