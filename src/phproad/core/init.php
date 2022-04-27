@@ -85,7 +85,7 @@ spl_autoload_register('Phpr_InternalAutoload');
 /*
  * Add vendor autoload
  */
-require PATH_SYSTEM . '/modules/phpr/vendor/autoload.php';
+require PATH_SYSTEM . '/vendor/autoload.php';
 
 // Exception handling
 require_once 'exceptions.php';

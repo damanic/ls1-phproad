@@ -10,8 +10,8 @@ class PDF
     {
         $request = new Request;
         define('K_TCPDF_EXTERNAL_CONFIG', true);
-        define('K_PATH_MAIN', PATH_SYSTEM . '/modules/file/vendor/tcpdf/');
-        define('K_PATH_URL', $request->get_hostname() . '/framework/modules/file/vendor/tcpdf/');
+        define('K_PATH_MAIN', PATH_SYSTEM . '/vendor/tcpdf/');
+        define('K_PATH_URL', $request->get_hostname() . '/phproad/vendor/tcpdf/');
         define('K_PATH_FONTS', K_PATH_MAIN . 'fonts/');
         define('K_PATH_CACHE', sys_get_temp_dir() . '/');
         define('K_TCPDF_THROW_EXCEPTION_ERROR', true);
