@@ -21,7 +21,7 @@ class User_Parameters
         self::initCache();
 
         if ($user_id == null) {
-            $user = Phpr::$security->get_user();
+            $user = Phpr::$security->getUser();
             if (!$user) {
                 return $default;
             }
@@ -48,7 +48,7 @@ class User_Parameters
         self::initCache();
 
         if ($user_id == null) {
-            $user = Phpr::$security->get_user();
+            $user = Phpr::$security->getUser();
             if (!$user) {
                 return;
             }
