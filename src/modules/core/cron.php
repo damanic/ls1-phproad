@@ -19,10 +19,12 @@ $APP_CONF = array();
 $Phpr_InitOnly = true;
 include '../../index.php';
 
+use Phpr\Cron;
+
 //Defaults
 $process_tabs = true;
 $process_que = true;
-Core_Cron::$execute_cron_time_limit_seconds = 4500;
+Cron::$execute_cron_time_limit_seconds = 4500;
 
 //Command line params
 $params = getopt("j:s:q:t:");
@@ -33,10 +35,10 @@ $tabs = isset($params['t']) ? $params['t'] : null;
 
 
 if(is_numeric($job_limit)) {
-	Core_Cron::$cronjob_batch_size = $job_limit;
+    Cron::$cronjob_batch_size = $job_limit;
 }
 if(is_numeric($time_limit) ) {
-	Core_Cron::$execute_cron_time_limit_seconds = $time_limit;
+    Cron::$execute_cron_time_limit_seconds = $time_limit;
 	@set_time_limit($time_limit);  // script limit
 }
 if($tabs !== null) {
@@ -46,7 +48,7 @@ if($que !== null){
 	$process_que = $que ? $que : false;
 }
 
-Core_Cron::execute_cron($process_tabs,$process_que);
+Cron::execute_cron($process_tabs,$process_que);
 
 
 /*
@@ -66,31 +68,31 @@ Core_Cron::execute_cron($process_tabs,$process_que);
  * EXECUTE CRON JOBS ONLY
  */
 
-//Core_Cron::$cronjob_batch_size = 10;
-//Core_Cron::$cronjob_batch_shuffle = false;
-//Core_Cron::$tracelog_events = true;
+//Cron::$cronjob_batch_size = 10;
+//Cron::$cronjob_batch_shuffle = false;
+//Cron::$tracelog_events = true;
 //$process_tabs = false;
 //$process_que = true;
-//Core_Cron::execute_cron($process_tabs, $process_que);
+//Cron::execute_cron($process_tabs, $process_que);
 
 
 /*
  * EXECUTE CRON JOBS IN SPECIFIC QUE NAME
  */
 
-//Core_Cron::$cronjob_batch_size = 100;
-//Core_Cron::$cronjob_batch_shuffle = true;
-//Core_Cron::$tracelog_events = true;
+//Cron::$cronjob_batch_size = 100;
+//Cron::$cronjob_batch_shuffle = true;
+//Cron::$tracelog_events = true;
 //$process_tabs = false;
 //$process_que = 'notifications';
-//Core_Cron::execute_cron($process_tabs, $process_que);
+//Cron::execute_cron($process_tabs, $process_que);
 
 
 /*
  * EXECUTE CRON TAB ONLY
  */
 
-//Core_Cron::$tracelog_events = true;
+//Cron::$tracelog_events = true;
 //$process_tabs = true;
 //$process_jobs = false;
-//Core_Cron::execute_cron($process_tabs, $process_jobs);
+//Cron::execute_cron($process_tabs, $process_jobs);
