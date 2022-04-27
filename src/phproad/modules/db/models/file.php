@@ -363,8 +363,12 @@ class File extends ActiveRecord
      * @param array $params A list of parameters.
      * @return       string Returns the image URL relative to the website root.
      */
-    public function getThumbnailPath($width, $height, $returnJpeg = true, $params = array('mode' => 'keep_ratio'))
+    public function getThumbnailPath($width, $height, $returnJpeg = true, $params = array())
     {
+        $default_params = array(
+            'mode' => 'keep_ratio'
+        );
+        $params = array_merge($default_params,$params);
         $processed_images = Phpr::$events->fireEvent(
             'core:onProcessImage',
             $this,
