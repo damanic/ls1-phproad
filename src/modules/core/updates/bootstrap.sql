@@ -1,0 +1,1 @@
+insert into core_metrics(id, total_amount, total_order_num, page_views, updated) values (1, 0, 0, 0, CURRENT_DATE()) ON DUPLICATE KEY UPDATE id = id;
