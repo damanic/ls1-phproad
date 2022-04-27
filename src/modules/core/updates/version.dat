@@ -1,4 +1,4 @@
-#1 Created universal configuration features
+#1 Init|@bootstrap
 #2 Better error handling in ZIP operations
 #3 Minor fix in the IP address detection code
 #4 Minor fix in the table structure caching code
@@ -517,3 +517,4 @@
 #1.14.0 Framework Update: Requires PHP version >= 5.4
 #1.14.1 Framework Update: Requires PHP version >= 5.4
 #1.14.2 PHPMailer Update: Requires PHP version >= 5.5
+#2.0.0 LSAPP

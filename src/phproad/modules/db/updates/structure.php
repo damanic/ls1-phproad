@@ -46,7 +46,7 @@ $table->addKey('record_index', array('record_id', 'record_class'));
 
 $table = Db\Structure::table('db_session_data');
 $table->primaryKey('id');
-$table->column('client_ip', db_varchar, 15);
+$table->column('client_ip', db_varchar, 45);
 $table->column('session_id', db_varchar, 100);
 $table->column('session_data', db_text);
 $table->column('created_at', db_datetime);
