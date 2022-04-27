@@ -63,7 +63,7 @@
 	 * @documentable
 	 * @param string $url Specifies an URL.
 	 * @return Returns an URL converted to the Administration Area URL.
-	 * @author LemonStand eCommerce Inc.
+	 * @author LSAPP - MJMAN
 	 * @package core.functions
 	 */
 	function url($url)

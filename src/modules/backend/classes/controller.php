@@ -306,7 +306,7 @@ class Controller extends PhprController
      * @event backend:onBeforeRemoteEvent
      * @package backend.events
      * @see backend:onAfterRemoteEvent
-     * @author LemonStand eCommerce Inc.
+     * @author LSAPP - MJMAN
      * @param Controller $controller Specifies the Administration Area controller object.
      * @param string $event_name Specifies the AJAX event name.
      */
@@ -332,7 +332,7 @@ class Controller extends PhprController
      * @event backend:onAfterRemoteEvent
      * @package backend.events
      * @see backend:onBeforeRemoteEvent
-     * @author LemonStand eCommerce Inc.
+     * @author LSAPP - MJMAN
      * @param Controller $controller Specifies the Administration Area controller object.
      * @param string $event_name Specifies the AJAX event name.
      */
@@ -356,7 +356,7 @@ class Controller extends PhprController
      * @event backend:onControllerReady
      * @see backend:onControllerInit
      * @package backend.events
-     * @author LemonStand eCommerce Inc.
+     * @author LSAPP - MJMAN
      * @param Controller $controller Specifies the Administration Area controller object.
      */
     private function event_onControllerReady($controller)
@@ -379,7 +379,7 @@ class Controller extends PhprController
      * @event backend:onControllerInit
      * @see backend:onControllerReady
      * @package backend.events
-     * @author LemonStand eCommerce Inc.
+     * @author LSAPP - MJMAN
      * @param Controller $controller Specifies the Administration Area controller object.
      */
     private function event_onControllerInit($controller)
@@ -408,7 +408,7 @@ class Controller extends PhprController
      * @see backend:onBeforeRenderPartial
      * @see backend:onBeforeRenderLayout
      * @package backend.events
-     * @author LemonStand eCommerce Inc.
+     * @author LSAPP - MJMAN
      * @param Controller $controller Specifies the Administration Area controller object.
      * @param string $view_path Specifies a path to the page's view document.
      */
@@ -439,7 +439,7 @@ class Controller extends PhprController
      * @see backend:onBeforeRenderPage
      * @see backend:onBeforeRenderLayout
      * @package backend.events
-     * @author LemonStand eCommerce Inc.
+     * @author LSAPP - MJMAN
      * @param Controller $controller Specifies the Administration Area controller object.
      * @param string $view Specifies a name of the partial's view document.
      * @param array $params Specifies the partial parameters array.
@@ -466,7 +466,7 @@ class Controller extends PhprController
      * @see backend:onBeforeRenderPage
      * @see backend:onBeforeRenderPartial
      * @package backend.events
-     * @author LemonStand eCommerce Inc.
+     * @author LSAPP - MJMAN
      * @param Controller $controller Specifies the Administration Area controller object.
      * @param string $name Specifies a name of the layout document.
      */
@@ -490,7 +490,7 @@ class Controller extends PhprController
      * @event backend:onExtendFooter
      * @triggered /modules/backend/layouts/footer.htm
      * @package backend.events
-     * @author LemonStand eCommerce Inc.
+     * @author LSAPP - MJMAN
      * @param Controller $controller Specifies the Administration Area controller object.
      */
     private function event_onExtendFooter($controller)

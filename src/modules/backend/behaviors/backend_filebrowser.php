@@ -521,7 +521,7 @@
 		 * @event backend:onAfterFileBrowserUpload
 		 * @see cms:onAfterResourceFileUpload
 		 * @package backend.events
-		 * @author LemonStand eCommerce Inc.
+		 * @author LSAPP - MJMAN
 		 * @param string $dest_path Specifies the file path on the server
 		 */
 		private function event_onAfterFileBrowserUpload($dest_path) {}
@@ -531,7 +531,7 @@
 		 * @event backend:onAddAdditionalCmsFiles
 		 * @see cms:onAddAdditionalCmsFiles
 		 * @package backend.events
-		 * @author LemonStand eCommerce Inc.
+		 * @author LSAPP - MJMAN
 		 * @param string folder_path References the folder being displayed
 		 * @return array The handler should return a array of objects with the following fields: type, name, path, size, time
 		 */
