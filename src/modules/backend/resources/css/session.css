@@ -63,22 +63,29 @@
 /* End hide from IE-mac */
 /* @end */
 #wrapper {
-  width: 514px;
-  margin: 10em auto 0 auto;
+  display: flex;
+  align-items: center;
+  max-width: 514px;
+  margin: auto;
 }
 #wrapper_content {
-  padding-right: 117px;
+  text-align: center;
+}
+.loginLogo {
+  max-width: 267px;
+  margin: auto;
+  padding-bottom: 1rem;
 }
 h1 {
   text-indent: -1000000em;
   background: transparent url('../images/lsapp_header.png') no-repeat left top;
-  width: 397px;
-  height: 110px;
+  width: 100%;
+  max-width: 397px;
 }
 #form_wrapper {
-  margin-top: -25px;
-  width: 267px;
-  float: right;
+  text-align: left;
+  margin: auto;
+  max-width: 267px;
 }
 .formContainer {
   padding: 10px 15px 14px;
@@ -113,6 +120,7 @@ a img {
 p.copyright {
   font-size: 1.1em;
   color: #999999;
+  text-align: center;
 }
 p.copyright a {
   color: #5b8bba;
@@ -180,3 +188,4 @@ div.ie_message ul li {
   background: transparent url(../images/bullet_small.gif) no-repeat left 50%;
   font-weight: bold;
 }
+/*# sourceMappingURL=session.css.map */

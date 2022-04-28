@@ -17,7 +17,7 @@ class ChartData extends DashboardController
 
     public static function get_unique_visits_data()
     {
-        $_this = new Backend_ChartData();
+        $_this = new ChartData();
         $start = $_this->get_interval_start(true);
         $end = $_this->get_interval_end(true);
         $data = array(

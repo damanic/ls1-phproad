@@ -173,7 +173,7 @@ class ReportingController extends Controller
 
     protected function check_report_dates()
     {
-        $ok = DbHelper::scalar('SELECT backend_report_dates FROM report_dates WHERE report_date = CURDATE()');
+        $ok = DbHelper::scalar('SELECT report_date FROM backend_report_dates WHERE report_date = CURDATE()');
         if ($ok) {
             return;
         }
