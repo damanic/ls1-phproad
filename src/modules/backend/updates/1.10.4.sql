@@ -1,1 +1,0 @@
-UPDATE report_dates SET month_start = DATE_FORMAT(report_date ,'%Y-%m-01') WHERE month_start NOT LIKE '%-01';

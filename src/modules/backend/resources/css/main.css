@@ -2661,10 +2661,10 @@ div.pagination span.numbers .current {
 #header .container a {
   text-decoration: none;
 }
-#header .lemonStandLogo {
+#header .lsappLogo {
   float: left;
 }
-#header .lemonStandName {
+#header .lsappName {
   display: none;
 }
 #header .customLogo {

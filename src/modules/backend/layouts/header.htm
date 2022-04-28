@@ -6,8 +6,8 @@
 				$theme = System_ColorThemeParams::get();
 				if (!$theme->logo->count):
 			?>
-				<img class="lemonStandLogo" src="modules/backend/resources/images/header_logo.png" alt="LemonStand"/>
-				<span class="lemonStandName <? if (!strlen($theme->header_text)): ?>noHeaderText<? endif ?>">LemonStand</span>
+				<img class="lsappLogo" src="modules/backend/resources/images/header_logo.png" alt="LSAPP"/>
+				<span class="lsappName <? if (!strlen($theme->header_text)): ?>noHeaderText<? endif ?>">LSAPP</span>
 			<? else: ?>
 				<img class="customLogo <?= $theme->logo_border ? 'border' : null ?>" src="<?= $theme->get_logo_url() ?>" alt="Logo"/>
 			<? endif ?>
@@ -21,7 +21,7 @@
 			<p class="header_text"><a href="<?= url('backend') ?>"><?= h($theme->header_text) ?></a></p>
 		<? else: ?>
 			<? if ($theme->logo->count): ?>
-				<p class="header_text"><a href="<?= url('backend') ?>">LemonStand</a></p>
+				<p class="header_text"><a href="<?= url('backend') ?>">LSAPP</a></p>
 			<? endif ?>
 		<? endif ?>
 		

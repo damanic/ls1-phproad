@@ -27,11 +27,11 @@ class ReportsData
 					year_start as start, 
 					year_end as end
 				from 
-					report_dates
+					backend_report_dates
 				where 
-					report_dates.report_date >= :start_date
-					and report_dates.report_date <= :now_date
-				order by report_dates.report_date
+					backend_report_dates.report_date >= :start_date
+					and backend_report_dates.report_date <= :now_date
+				order by backend_report_dates.report_date
 			', array('now_date'=>$date, 'start_date'=>$startDate));
 
         foreach ($records as $record) {
@@ -56,11 +56,11 @@ class ReportsData
 					month_start as start, 
 					month_end as end
 				from 
-					report_dates
+					backend_report_dates
 				where 
-					report_dates.report_date >= :start_date
-					and report_dates.report_date <= :now_date
-				order by report_dates.report_date
+					backend_report_dates.report_date >= :start_date
+					and backend_report_dates.report_date <= :now_date
+				order by backend_report_dates.report_date
 			', array('now_date'=>$date, 'start_date'=>$startDate));
             
         foreach ($records as $record) {

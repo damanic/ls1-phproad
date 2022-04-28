@@ -71,21 +71,21 @@ body {
   height: 48px;
   background-color: #252525;
 }
-#header .lemonStandLogo {
+#header .lsappLogo {
   display: none;
 }
-#header .lemonStandName {
+#header .lsappName {
   display: block;
   margin: 5px 10px 0 8px;
   padding: 8px 12px 8px 40px;
-  background: transparent url(../images/lemonstand_logo.png) no-repeat left 4px;
+  background: transparent url(../images/lsapp_logo.png) no-repeat left 4px;
   border-right: 1px solid #333;
   font-size: 21px;
   font-weight: bold;
   color: white;
   float: left;
 }
-#header .lemonStandName.noHeaderText {
+#header .lsappName.noHeaderText {
   border-right: none;
 }
 #header .header_separator {
@@ -304,12 +304,12 @@ body {
 #header_elements #header .container {
   background-color: #E6E6E6;
 }
-#header_elements #header .lemonStandName {
-  background: transparent url(../images/lemonstand_logo.png) no-repeat left 4px;
+#header_elements #header .lsappName {
+  background: transparent url(../images/lsapp_logo.png) no-repeat left 4px;
   border-right: 1px solid #bbb;
   color: #666666;
 }
-#header_elements #header .lemonStandName.noHeaderText {
+#header_elements #header .lsappName.noHeaderText {
   border-right: none;
 }
 #header_elements #header .header_text {

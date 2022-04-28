@@ -173,7 +173,7 @@ class ReportingController extends Controller
 
     protected function check_report_dates()
     {
-        $ok = DbHelper::scalar('SELECT report_date FROM report_dates WHERE report_date = CURDATE()');
+        $ok = DbHelper::scalar('SELECT backend_report_dates FROM report_dates WHERE report_date = CURDATE()');
         if ($ok) {
             return;
         }
@@ -186,7 +186,7 @@ class ReportingController extends Controller
      */
     protected function generate_report_dates()
     {
-        $last_date = DbHelper::scalar('select report_date from report_dates order by report_date desc limit 0, 1');
+        $last_date = DbHelper::scalar('select report_date from backend_report_dates order by report_date desc limit 0, 1');
         $date = PhprDateTime::parse($last_date, PhprDateTime::universalDateFormat)->addDays(1);
 
         $interval = new PhprDateTimeInterval(1);
@@ -227,7 +227,7 @@ class ReportingController extends Controller
             }
 
             DbHelper::query(
-                "insert into report_dates(report_date, year, month, day, 
+                "insert into backend_report_dates(report_date, year, month, day, 
 							month_start, month_code, month_end, year_start, year_end) 
 							values (:report_date, :year, :month, :day, 
 							:month_start, :month_code, :month_end,

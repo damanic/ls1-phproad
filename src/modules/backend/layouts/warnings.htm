@@ -43,7 +43,7 @@
 					<li>Directory <strong>/resources</strong> or its subdirectories is not writable for PHP. Please set corresponding permissions for Apache user on this directory.</li>
 				<? endif ?>
 				<? if ($invalid_enc_key): ?>
-					<li>The encryption key used to encrypt data in the database do not match the encryption key used in your copy of LemonStand. Please log into the Configuration Tool and change the encryption key immediately, to prevent possible data loss.</li>
+					<li>The encryption key used to encrypt data in the database do not match the encryption key used in your copy of LSAPP. Please log into the Configuration Tool and change the encryption key immediately, to prevent possible data loss.</li>
 				<? endif ?>
 				<? if (!$shipping_configured): ?>
 					<li>Shipping parameters are not configured. Please <a href="<?= url('/shop/shipping_settings/') ?>">click here</a> to open the Shipping Configuration page and set the shipping origin location and the weight and dimension units.</li>

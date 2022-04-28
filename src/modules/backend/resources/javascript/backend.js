@@ -808,7 +808,7 @@ var InputChangeTracker = new Class({
 });
 
 /*
- * LemonStand Scroller controls
+ * LSAPP Scroller controls
  */
 
 var BackendVScroller = new Class({

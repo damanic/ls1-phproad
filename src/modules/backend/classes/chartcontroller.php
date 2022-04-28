@@ -454,7 +454,7 @@ abstract class ChartController extends ReportingController
 
     protected function timeSeriesValueField()
     {
-        return 'report_dates.report_date';
+        return 'backend_report_dates.report_date';
     }
 
     protected function timeSeriesDateFrameFields()
