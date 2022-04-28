@@ -80,7 +80,7 @@
 			return {
 				longname : 'LSAPP Wiki insert link plugin',
 				author : 'LSAPP',
-				authorurl : 'http://lsdomainexpired.mjman.net',
+				authorurl : 'https://lsdomainexpired.mjman.net',
 				version : "1.0"
 			};
 		}

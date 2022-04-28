@@ -56,8 +56,8 @@
 			return {
 				longname : 'Paste code plugin',
 				author : 'LSAPP',
-				authorurl : 'http://lsdomainexpired.mjman.net',
-				infourl : 'http://lsdomainexpired.mjman.net',
+				authorurl : 'https://lsdomainexpired.mjman.net',
+				infourl : 'https://lsdomainexpired.mjman.net',
 				version : "1.0"
 			};
 		}
