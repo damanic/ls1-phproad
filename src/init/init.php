@@ -36,6 +36,9 @@ if (substr($backend_url, 0, 1) == '/' ) {
     $backend_url = substr($backend_url, 1);
 }
 
+/*
+ * Backend Files
+ */
 $route = Phpr::$router->addRule('backend_file_get/:param1/:param2/:param3/:param4');
 $route->folder('modules/backend/controllers');
 $route->controller('backend_files');
@@ -45,11 +48,33 @@ $route->def('param2', null);
 $route->def('param3', null);
 $route->def('param4', null);
 
+/*
+ * Backend Reports
+ */
 $route = Phpr::$router->addRule($backend_url . '/backend/reports');
 $route->folder('modules/backend/controllers');
 $route->controller('backend_reportscontroller');
 $route->action('index');
 
+
+/*
+ * Backend Session (login)
+ */
+$route = Phpr::$router->addRule( $backend_url . "/session/:param1" );
+$route->folder( 'modules/backend/controllers' );
+$route->controller( 'backend_session' );
+$route->def( 'param1', null );
+$route->check('param1', '/^$/ ');
+
+$route = Phpr::$router->addRule( $backend_url . "/session/handle/:action/:param1" );
+$route->folder( 'modules/backend/controllers' );
+$route->controller( 'backend_session' );
+$route->def( 'action', 'index' );
+$route->def( 'param1', null );
+
+/*
+ * Backend Module Controllers
+ */
 $route = Phpr::$router->addRule($backend_url . '/:module/:controller/:action/:param1/:param2/:param3/:param4');
 $route->folder('modules/:module/controllers');
 $route->def('module', 'backend');
@@ -62,7 +87,7 @@ $route->def('param4', null);
 $route->convert('controller', '/^.*$/', ':module_$0');
 
 /*
- * Configuration tool routes
+ * Configuration Tool
  */
 
 if (isset($CONFIG) && isset($CONFIG['CONFIG_URL']) ) {
@@ -84,10 +109,10 @@ $route->def('param3', null);
 $route->def('param4', null);
 $route->controller('LemonStand_ConfigController');
 
-/*
- * Default routes
- */
 
+/*
+ * Public routes
+ */
 $route = Phpr::$router->addRule('download_product_file/:param1/:param2/:param3/:param4/:param5');
 $route->def('param1', null);
 $route->def('param2', null);

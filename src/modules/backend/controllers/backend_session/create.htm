@@ -1,0 +1,69 @@
+<?
+$theme = System_ColorThemeParams::get();
+?>
+<? Phpr_View::beginBlock("head") ?>
+	<script type="text/javascript" src="modules/backend/resources/javascript/login.js"></script>
+<? Phpr_View::endBlock() ?>
+
+<? Phpr_View::beginBlock("view") ?>
+	<?= Phpr_Form::openTag(array('onsubmit'=>null, 'action'=>url('session/handle/create'))) ?>
+		<div class="form">
+			
+			<div id="wrapper">
+				<div id="wrapper_content">
+
+					<? if (!$theme->logo->count): ?>
+						<img class="loginLogo" src="modules/backend/resources/images/header_logo.png" alt="LSAPP"/>
+					<? else: ?>
+						<img class="loginLogo <?= $theme->logo_border ? 'border' : null ?>" src="<?= $theme->get_logo_url() ?>" alt="Logo"/>
+					<? endif ?>
+					
+					<? if (!$is_ie): ?>
+					<div id="form_wrapper">
+						<h2>Login</h2>
+						<div class="formContainer round">
+							<div id="formContent" class="relative">
+								<? if (Phpr::$config->get('LOGIN_MESSAGE')): ?>
+									<p class="warning"><?= Phpr::$config->get('LOGIN_MESSAGE') ?></p>
+								<? endif ?>
+					
+								<div class="formFlash"><?= flash() ?></div>
+					
+								<ul class="formElements">
+									<li class="field text full">
+										<label for="login">User Name</label>
+										<div class="fieldContainer"><input type="text" id="login" name="login" value="<?= h(Phpr::$config->get('DEFAULT_LOGIN_USER', post('login'))) ?>"/></div>
+									</li>
+
+									<li class="field text full">
+										<label for="password">Password</label>
+										<div class="fieldContainer"><input value="<?= Phpr::$config->get('DEFAULT_LOGIN_PASSWORD') ?>" type="password" id="password" name="password"/></div>
+									</li>
+
+									<li class="buttons">
+										<p class="login_links">
+											<a href="<?= url('/session/handle/restore') ?>">Forgot your password?</a>
+										</p>
+
+										<input type="submit" class="fancy_button login" value="Login »"/>
+							
+										<div class="clear"></div>
+									</li>
+								</ul>
+							</div>
+							<div class="lb"></div>
+							<div class="rb"></div>
+						</div>
+						<div class="clear"></div>
+						<p class="copyright"><?=  Phpr::$config->get('APP_NAME', 'Website') ?> Copyright &copy; <?= date('Y') ?>. All Rights Reserved.</p>
+					</div>
+					<? else: ?>
+						<? $this->renderPartial('ie_message') ?>
+					<? endif ?>
+				</div>
+			</div>
+		</div>
+		<input type="hidden" name="postback" value="1"/>
+		<input type="hidden" name="return_path" value="<?= h(post('return_path', $return_path)) ?>"/>
+	</form>
+<? Phpr_View::endBlock() ?>
