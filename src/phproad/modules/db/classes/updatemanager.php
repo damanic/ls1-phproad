@@ -162,8 +162,10 @@ class UpdateManager
             'module_id' => $moduleId,
             'version_str' => $versionStr
         );
-        return (DbHelper::scalar('select count(*) from phpr_module_update_history where module_id=:module_id and version_str=:version_str',
-                $bind) > 0);
+        return (DbHelper::scalar(
+            'select count(*) from phpr_module_update_history where module_id=:module_id and version_str=:version_str',
+            $bind
+        ) > 0);
     }
 
     // Updates a single module
@@ -185,8 +187,11 @@ class UpdateManager
 
         foreach ($dat_versions as $index => $update_info) {
             if ($update_info['type'] == 'update-reference') {
-                $db_update_result = self::applyDbUpdate($basePath, $moduleId,
-                        $update_info['reference']) || $db_update_result;
+                $db_update_result = self::applyDbUpdate(
+                    $basePath,
+                    $moduleId,
+                    $update_info['reference']
+                ) || $db_update_result;
             } elseif ($update_info['type'] == 'version-update') {
                 // Apply updates from references specified in the version string
                 foreach ($update_info['references'] as $reference) {
@@ -196,11 +201,17 @@ class UpdateManager
                 // Apply updates with names matching the version number
                 if ($index > $last_db_version_index && $last_db_version_index !== -2) {
                     if (strlen($update_info['build'])) {
-                        $db_update_result = self::applyDbUpdate($basePath, $moduleId,
-                                $update_info['build']) || $db_update_result;
+                        $db_update_result = self::applyDbUpdate(
+                            $basePath,
+                            $moduleId,
+                            $update_info['build']
+                        ) || $db_update_result;
                     } else {
-                        $db_update_result = self::applyDbUpdate($basePath, $moduleId,
-                                $update_info['version']) || $db_update_result;
+                        $db_update_result = self::applyDbUpdate(
+                            $basePath,
+                            $moduleId,
+                            $update_info['version']
+                        ) || $db_update_result;
                     }
                 }
             }
@@ -299,8 +310,10 @@ class UpdateManager
             'date' => gmdate('Y-m-d h:i:s')
         );
 
-        DbHelper::query('insert into phpr_module_versions(module_id, date, `version`) values (:module_id, :date, 0)',
-            $bind);
+        DbHelper::query(
+            'insert into phpr_module_versions(module_id, date, `version`) values (:module_id, :date, 0)',
+            $bind
+        );
 
         return 0;
     }
@@ -322,8 +335,10 @@ class UpdateManager
         //
 
         $bind = array('version_str' => $last_dat_version, 'module_id' => $moduleId);
-        DbHelper::query('update phpr_module_versions set `version`=null, version_str=:version_str where module_id=:module_id',
-            $bind);
+        DbHelper::query(
+            'update phpr_module_versions set `version`=null, version_str=:version_str where module_id=:module_id',
+            $bind
+        );
 
         self::$versions[$moduleId] = $last_dat_version;
 
