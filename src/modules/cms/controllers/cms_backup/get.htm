@@ -1,0 +1,15 @@
+<? Phpr_View::beginBlock("head") ?>
+<? Phpr_View::endBlock() ?>
+
+<? Phpr_View::beginBlock("view") ?>
+	<ul class="breadcrumbs">
+		<li><a href="<?= url('cms/backup') ?>">Import or Export CMS Objects</a></li>
+		<li><?= $this->app_page_title ?></li>
+	</ul>
+	
+	<?= flash() ?>
+
+	<? if (isset($fatalError)): ?>
+		<p><a href="<?= url('cms/backup') ?>">Return to the Export or Import page</a></p>
+	<? endif ?>
+<? Phpr_View::endBlock() ?>

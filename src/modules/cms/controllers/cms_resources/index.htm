@@ -1,0 +1,8 @@
+<? Phpr_View::beginBlock("head") ?>
+	<link rel="stylesheet" href="modules/cms/resources/css/resources.css?<?= module_build('cms') ?>" type="text/css"/>
+	<script type="text/javascript" src="modules/cms/resources/javascript/resources.js"></script>
+<? Phpr_View::endBlock() ?>
+
+<? Phpr_View::beginBlock("view") ?>
+	<div id="resources_page_content"><? $this->renderPartial('resources_page_content') ?></div>
+<? Phpr_View::endBlock() ?>
