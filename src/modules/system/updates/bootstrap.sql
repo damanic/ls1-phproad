@@ -1,0 +1,25 @@
+INSERT INTO system_colortheme_settings(`id`, `theme_id`) VALUES (1, 'blue') ON DUPLICATE KEY UPDATE `id` = 1;
+INSERT INTO system_backup_status(`id`, `name`) VALUES (1, 'In progress...') ON DUPLICATE KEY UPDATE `id` = 1;
+INSERT INTO system_backup_status(`id`, `name`) VALUES (2, 'OK') ON DUPLICATE KEY UPDATE `id` = 2;
+INSERT INTO system_backup_status(`id`, `name`) VALUES (3, 'Error') ON DUPLICATE KEY UPDATE `id` = 3;
+INSERT INTO system_backup_settings(`id`) VALUES (1) ON DUPLICATE KEY UPDATE `id` = 1;
+UPDATE system_backup_settings SET `backup_on_login` = if (backup_interval <> 0, 1, 0) WHERE `id` = 1;
+
+
+INSERT INTO system_email_templates(`code`, `subject`, `content`, `description`)
+VALUES(
+       'shop:registration_confirmation',
+       'Confirmation',
+       '<p>Dear {customer_name}!</p> <p>Thank you for registering. Please use the following email and password to login:
+        <br /> email:&nbsp;{customer_email}<br /> password: {customer_password}</p>',
+       'This message is sent to a customer after successful registration.'
+)
+ON DUPLICATE KEY UPDATE `code` = 'shop:registration_confirmation';
+
+INSERT INTO `system_email_layouts` (`id`,`code`,`content`,`css`,`name`)
+VALUES ('1','system','<html xmlns=\"http://www.w3.org/1999/xhtml\">\n  <head>\n    <title></title>\n    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\n    <meta http-equiv=\"Content-Language\" content=\"en-us\"/>\n    <style type=\"text/css\" media=\"screen\">\n      <?= $this->css ?>\n    </style>\n  </head>\n  <body>\n    <?= $message ?>\n    <hr/>\n    <p>This is an automatic message. Do not reply to it.</p>\n  </body>\n</html>\n','table.simpleList\n{\n  font: normal 11px/150% Arial, Verdana, sans-serif;\n  border-collapse: collapse;\n  width: 100%;\n}\n\ntable.simpleList th, table.simpleList td\n{\n  padding: 0.4em 0.5em;\n  text-align: left;\n  border-right: 1px solid #ddd;\n  vertical-align: top;\n}\n\ntable.simpleList tr td.last,\ntable.simpleList tr th.last\n{\n  border-right: none!important;\n}\n\ntable.simpleList tbody tr:last-child td\n{\n  border-bottom: 1px solid #ccc;\n}\n\ntable.simpleList thead th, table.simpleList thead td\n{\n  background: #e5e5e5;\n  font-weight: normal;\n  color: #000;\n  border-right-color: #d0d0d0;\n  border-top: 2px solid #666;\n  border-bottom: 1px solid #d0d0d0;\n  white-space: nowrap;\n}\n\ntable.simpleList tbody td, table.simpleList tbody th\n{\n  border-bottom: 1px solid #eaeaea;\n  color: #333;\n  background-color: #fff;\n}\n\ntable.simpleList tr.even td, table.simpleList tr.even th\n{\n  background-color: #f5f5f5;\n}\n\ntable.simpleList th.number, table.simpleList td.number, \ntable.simpleList th.float, table.simpleList td.float, \ntable.simpleList th.datetime, table.simpleList td.datetime, \ntable.simpleList th.date, table.simpleList td.date, \ntable.simpleList th.bool, table.simpleList td.bool, \ntable.simpleList th.time, table.simpleList td.time\n{\n  text-align: right!important;\n  white-space: nowrap;\n}\n\n/*\n *\n */','System')
+ON DUPLICATE KEY UPDATE `id` = 1;
+
+INSERT INTO `system_email_layouts` (`id`,`code`,`content`,`css`,`name`)
+VALUES ('2','external','<html xmlns=\"http://www.w3.org/1999/xhtml\">\n  <head>\n    <title></title>\n    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\n    <meta http-equiv=\"Content-Language\" content=\"en-us\"/>\n    <style type=\"text/css\" media=\"screen\">\n      <?= $this->css ?>\n    </style>\n  </head>\n  <body>\n    <?= $message ?>\n  </body>\n</html>\n','table.simpleList\n{\n  font: normal 11px/150% Arial, Verdana, sans-serif;\n  border-collapse: collapse;\n  width: 100%;\n}\n\ntable.simpleList th, table.simpleList td\n{\n  padding: 0.4em 0.5em;\n  text-align: left;\n  border-right: 1px solid #ddd;\n  vertical-align: top;\n}\n\ntable.simpleList tr td.last,\ntable.simpleList tr th.last\n{\n  border-right: none!important;\n}\n\ntable.simpleList tbody tr:last-child td\n{\n  border-bottom: 1px solid #ccc;\n}\n\ntable.simpleList thead th, table.simpleList thead td\n{\n  background: #e5e5e5;\n  font-weight: normal;\n  color: #000;\n  border-right-color: #d0d0d0;\n  border-top: 2px solid #666;\n  border-bottom: 1px solid #d0d0d0;\n  white-space: nowrap;\n}\n\ntable.simpleList tbody td, table.simpleList tbody th\n{\n  border-bottom: 1px solid #eaeaea;\n  color: #333;\n  background-color: #fff;\n}\n\ntable.simpleList tr.even td, table.simpleList tr.even th\n{\n  background-color: #f5f5f5;\n}\n\ntable.simpleList th.number, table.simpleList td.number, \ntable.simpleList th.float, table.simpleList td.float, \ntable.simpleList th.datetime, table.simpleList td.datetime, \ntable.simpleList th.date, table.simpleList td.date, \ntable.simpleList th.bool, table.simpleList td.bool, \ntable.simpleList th.time, table.simpleList td.time\n{\n  text-align: right!important;\n  white-space: nowrap;\n}\n\n/*\n *\n */','External')
+ON DUPLICATE KEY UPDATE `id` = 2;

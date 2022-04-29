@@ -1,1 +1,0 @@
-ALTER TABLE `system_login_log` CHANGE `ip` `ip` VARCHAR(45);

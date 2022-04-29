@@ -1,1 +1,0 @@
-alter table system_htmleditor_config add column valid_elements text;

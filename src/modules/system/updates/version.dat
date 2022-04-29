@@ -86,15 +86,15 @@
 #1.3.2 Added inline code documentation
 #1.3.3 Technology update
 #1.3.4 Minor improvement in the email template management
-#1.3.5 Added new API event: core:onAfterEmailSendToCustomer
+#1.3.5 Added new API event: system:onAfterEmailSendToCustomer
 #1.3.6 Minor improvement in the user management
 #1.3.7 Minor fix in the compound email variables implementation
-#1.3.8 Added new API event: core:onAfterEmailSendToTeam
+#1.3.8 Added new API event: system:onAfterEmailSendToTeam
 #1.3.9 Added new API events
 #1.3.10 Minor updates in the API
 #1.3.11 Minor update in the email API
 #1.3.12 Minor update in the email API
-#1.3.13 Added new API event: core:onAfterArchiveCreate
+#1.3.13 Added new API event: system:onAfterArchiveCreate
 #1.4.0 github:damanic takeover | Added new API event system:onGetHtmlEditorConfigControls
 #1.4.1 Support for user permission access to items in system settings
 #1.4.2 IPV6 Support
@@ -104,3 +104,4 @@
 #1.4.6 Minor update in the email API
 #1.4.7 Adds file attachment support to email templates
 #1.4.8 Improved file attachment support for email templates
+#2.0.0|@bootstrap
