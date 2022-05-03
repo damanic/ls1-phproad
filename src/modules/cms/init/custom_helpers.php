@@ -21,7 +21,7 @@
 	 * @documentable
 	 * @package cms.helpers
 	 * @see close_form()
-	 * @author LemonStand eCommerce Inc.
+	 * @author LSAPP - MJMAN
 	 * @param array $attributes an optional associative array of attributes for the <em>form</em> tag.
 	 * @return string returns HTML markup for the form element.
 	 */
@@ -55,7 +55,7 @@
 		 * @documentable
 		 * @package cms.helpers
 		 * @see open_form()
-		 * @author LemonStand eCommerce Inc.
+		 * @author LSAPP - MJMAN
 		 * @return string returns HTML markup for the closing form tag.
 		 */
 		function close_form() {
@@ -76,7 +76,7 @@
 	 * 
 	 * If the <em>flash_partial</em> variable is presented in the POST array, the function renders a partial 
 	 * instead of returning the message string. Please read the 
-	 * {@link http://lemonstand.com/docs/lemonstand_front_end_javascript_framework LemonStand front-end JavaScript framework} article 
+	 * {@link https://lsdomainexpired.mjman.net/docs/lemonstand_front_end_javascript_framework LSAPP front-end JavaScript framework} article 
 	 * to learn about the flash_partial feature.
 	 *
 	 * The following code outputs the form tag and a flash message.
@@ -87,9 +87,9 @@
 	* </pre>
 	 * @documentable
 	 * @package cms.helpers
-	 * @see http://lemonstand.com/docs/handling_errors/ Handling errors
-	 * @see http://lemonstand.com/docs/lemonstand_front_end_javascript_framework LemonStand front-end JavaScript framework
-	 * @author LemonStand eCommerce Inc.
+	 * @see https://lsdomainexpired.mjman.net/docs/handling_errors/ Handling errors
+	 * @see https://lsdomainexpired.mjman.net/docs/lemonstand_front_end_javascript_framework LSAPP front-end JavaScript framework
+	 * @author LSAPP - MJMAN
 	 * @return string returns the flash message HTML markup or empty string.
 	 */
 	function flash_message()
@@ -115,7 +115,7 @@
 	
 	/**
 	 * Inserts WYSIWYG content block into a page. 
-	 * Use it for creating editable areas on pages. Please read {@link http://lemonstand.com/docs/creating_editable_blocks/ Creating editable blocks}
+	 * Use it for creating editable areas on pages. Please read {@link https://lsdomainexpired.mjman.net/docs/creating_editable_blocks/ Creating editable blocks}
 	 * article for details about the function usage.
 	 * The following code creates two content blocks on a page.
 	 * <pre>
@@ -124,13 +124,13 @@
 	 * </pre>
 	 * @documentable
 	 * @package cms.helpers
-	 * @author LemonStand eCommerce Inc.
-	 * @param string $code specifies a content block code. This parameter used by LemonStand for identifying code blocks. 
+	 * @author LSAPP - MJMAN
+	 * @param string $code specifies a content block code. This parameter used by LSAPP for identifying code blocks. 
 	 * Content block codes can contain only digits, Latin letters and underscore characters.
 	 * @param string $name specifies a content block name. Name is used as a title for WYSIWYG editor on the Edit Page Content page.
 	 * @see content_block()
 	 * @see text_content_block()
-	 * @see http://lemonstand.com/docs/creating_editable_blocks/ Creating editable blocks
+	 * @see https://lsdomainexpired.mjman.net/docs/creating_editable_blocks/ Creating editable blocks
 	 */
 	function content_block($code, $name)
 	{
@@ -139,7 +139,7 @@
 	
 	/**
 	 * Inserts plain text content block into a page. 
-	 * Use it for creating editable areas on pages. Please read {@link http://lemonstand.com/docs/creating_editable_blocks/ Creating editable blocks}
+	 * Use it for creating editable areas on pages. Please read {@link https://lsdomainexpired.mjman.net/docs/creating_editable_blocks/ Creating editable blocks}
 	 * article for details about the function usage.
 	 * The following code creates a plain text content block on a page.
 	 * <pre>
@@ -147,13 +147,13 @@
 	 * </pre>
 	 * @documentable
 	 * @package cms.helpers
-	 * @author LemonStand eCommerce Inc.
-	 * @param string $code specifies a content block code. This parameter used by LemonStand for identifying code blocks. 
+	 * @author LSAPP - MJMAN
+	 * @param string $code specifies a content block code. This parameter used by LSAPP for identifying code blocks. 
 	 * Content block codes can contain only digits, Latin letters and underscore characters.
 	 * @param string $name specifies a content block name. Name is used as a title for a text area on the Edit Page Content page.
 	 * @see content_block()
 	 * @see global_content_block()
-	 * @see http://lemonstand.com/docs/creating_editable_blocks/ Creating editable blocks
+	 * @see https://lsdomainexpired.mjman.net/docs/creating_editable_blocks/ Creating editable blocks
 	 */
 	function text_content_block($code, $name)
 	{
@@ -163,16 +163,16 @@
 	/**
 	 * Inserts global WYSIWYG content block into a page, layout or partial. 
 	 * You can manage global content blocks on the CMS/Content page. Please read the 
-	 * {@link http://lemonstand.com/docs/global_content_blocks Global content blocks} article for usage details.
+	 * {@link https://lsdomainexpired.mjman.net/docs/global_content_blocks Global content blocks} article for usage details.
 	 * @documentable
 	 * @package cms.helpers
-	 * @author LemonStand eCommerce Inc.
+	 * @author LSAPP - MJMAN
 	 * @param string $code Specifies the content block code.
 	 * Block code can contain only latin characters, numbers and signs <nobr><em>_, -, /,</em> :, and <em>.</em></nobr>
 	 * @param boolean $return_content Indicates that the function should return the block content instead of outputting it to the browser.
 	 * @return mixed Returns the block content if $return_content parameter value is TRUE.
 	 * @see content_block()
-	 * @see http://lemonstand.com/docs/global_content_blocks Global content blocks
+	 * @see https://lsdomainexpired.mjman.net/docs/global_content_blocks Global content blocks
 	 */
 	function global_content_block($code, $return_content = false)
 	{
@@ -183,9 +183,9 @@
 	{
 		/**
 		 * Returns an absolute URL to a site page specified with the parameter.
-		 * <span class="note">LemonStand defines this function only if it has not been defined by another 
+		 * <span class="note">LSAPP defines this function only if it has not been defined by another 
 		 * application (for example WordPress). If the function is defined by another application, you access 
-		*  LemonStand's version of the function with Cms_Html helper class: Cms_Html::site_url().</span>
+		*  LSAPP's version of the function with Cms_Html helper class: Cms_Html::site_url().</span>
 		 * The function is similar to the {@link root_url()} function with the default TRUE value of $add_host_name_and_protocol
 		 * parameter.
 		 * The following code outputs an absolute URL of the Contacts page:
@@ -194,7 +194,7 @@
 		 * <pre>Contacts page: <?= root_url('/contacts', true) ?></pre>
 		 * @documentable
 		 * @package cms.helpers
-		 * @author LemonStand eCommerce Inc.
+		 * @author LSAPP - MJMAN
 		 * @see root_url()
 		 * @param string $url Specifies the URL to process.
 		 * @param boolean Indicates whether the URL should contain the host name and protocol.
@@ -207,13 +207,13 @@
 	}
 
 	/**
-	 * Outputs HTML links to the JavaScript and CSS files required for the LemonStand front-end framework. 
-	 * Call this function inside the HEAD element of pages where you are going to use LemonStand AJAX calls.
+	 * Outputs HTML links to the JavaScript and CSS files required for the LSAPP front-end framework. 
+	 * Call this function inside the HEAD element of pages where you are going to use LSAPP AJAX calls.
 	 * @documentable
 	 * @package cms.helpers
-	 * @author LemonStand eCommerce Inc.
+	 * @author LSAPP - MJMAN
 	 * @deprecated Use {@link Cms_Controller::js_combine()} and {@link Cms_Controller::css_combine()} methods instead.
-	 * @see http://lemonstand.com/docs/combining_and_minifying_javascript_and_css_files/ Combining and minifying JavaScript and CSS resources.
+	 * @see https://lsdomainexpired.mjman.net/docs/combining_and_minifying_javascript_and_css_files/ Combining and minifying JavaScript and CSS resources.
 	 * @see Cms_Controller::js_combine()
 	 * @see Cms_Controller::css_combine()
 	 * @param string $src_mode Specifies whether resource files should be included in the source code mode (not minified and not combined).
@@ -246,12 +246,12 @@
 	 * 
 	 * @documentable
 	 * @package cms.helpers
-	 * @author LemonStand eCommerce Inc.
+	 * @author LSAPP - MJMAN
 	 * @see resource_url()
 	 * @see Cms_Controller::js_combine()
 	 * @see Cms_Controller::css_combine()
 	 * @param string $path Specifies a path to the file in the theme resources directory.
-	 * @param boolean $root_url Determines whether the returned URL should be relative to the LemonStand domain root.
+	 * @param boolean $root_url Determines whether the returned URL should be relative to the LSAPP domain root.
 	 * @param string $add_host_name_and_protocol Indicates whether the URL should contain the host name and protocol. 
 	 * This parameter works only if the $root_url parameter is true.
 	 * @return string Returns the resource file URL.
@@ -270,13 +270,13 @@
 	 * The following example outputs an image tag with <em>src</em> attribute pointing
 	 * to a file in the resources directory. Using the resource_url() function guarantees
 	 * that the image is displayed even if the resources directory location is changed.
-	 * <pre><img src="<?= resource_url('i/lemonstand_logo.png') ?>"/></pre>
+	 * <pre><img src="<?= resource_url('i/lsapp_logo.png') ?>"/></pre>
 	 * @documentable
 	 * @package cms.helpers
-	 * @author LemonStand eCommerce Inc.
+	 * @author LSAPP - MJMAN
 	 * @see theme_resource_url()
 	 * @param string $path Specifies a path to the file in the resources directory.
-	 * @param boolean $root_url Determines whether the returned URL should be relative to the LemonStand domain root.
+	 * @param boolean $root_url Determines whether the returned URL should be relative to the LSAPP domain root.
 	 * @param string $add_host_name_and_protocol Indicates whether the URL should contain the host name and protocol. 
 	 * This parameter works only if the $root_url parameter is true.
 	 * @return string Returns the resource file URL.
