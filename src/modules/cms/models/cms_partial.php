@@ -1,7 +1,7 @@
 <?php
 
 	/**
-	 * Represents a CMS {@link http://lemonstand.com/docs/creating_a_partial/ partial}.
+	 * Represents a CMS {@link https://lsdomainexpired.mjman.net/docs/creating_a_partial/ partial}.
 	 * Cms_Partial class represents CMS partial - a part of a front-end website page.
 	 *
 	 * @documentable
@@ -9,10 +9,10 @@
 	 * @property integer $id Specifies the partial identifier in the database.
 	 * @see cms:onBeforeRenderPartial
 	 * @see cms:onAfterRenderPartial
-	 * @author LemonStand eCommerce Inc.
+	 * @author LSAPP - MJMAN
 	 * @package cms.models
 	 */
-	class Cms_Partial extends Cms_Object
+	class Cms_Partial extends Cms_CmsObject
 	{
 		public $table_name = 'partials';
 		
@@ -102,7 +102,7 @@
 		
 		/**
 		 * Finds a partial by its name.
-		 * Please note that the method finds partials in context of the currently active {@link http://lemonstand.com/docs/themes/ theme}.
+		 * Please note that the method finds partials in context of the currently active {@link https://lsdomainexpired.mjman.net/docs/themes/ theme}.
 		 * @documentable
 		 * @param string $name Specifies the partial name.
 		 * @return Cms_Partial Returns the partial object or NULL if the partial is not found.
@@ -536,9 +536,9 @@
 		 * @package cms.events
 		 * @see cms:onExtendPartialForm
 		 * @see cms:onGetPartialFieldOptions
-		 * @see http://lemonstand.com/docs/extending_existing_models Extending existing models
-		 * @see http://lemonstand.com/docs/creating_and_updating_database_tables Creating and updating database tables
-		 * @author LemonStand eCommerce Inc.
+		 * @see https://lsdomainexpired.mjman.net/docs/extending_existing_models Extending existing models
+		 * @see https://lsdomainexpired.mjman.net/docs/creating_and_updating_database_tables Creating and updating database tables
+		 * @author LSAPP - MJMAN
 		 * @param Cms_Partial $partial Specifies the partial object to extend.
 		 * @param string $context Specifies the execution context.
 		 */
@@ -571,9 +571,9 @@
 		 * @package cms.events
 		 * @see cms:onExtendPartialModel
 		 * @see cms:onGetPartialFieldOptions
-		 * @see http://lemonstand.com/docs/extending_existing_models Extending existing models
-		 * @see http://lemonstand.com/docs/creating_and_updating_database_tables Creating and updating database tables
-		 * @author LemonStand eCommerce Inc.
+		 * @see https://lsdomainexpired.mjman.net/docs/extending_existing_models Extending existing models
+		 * @see https://lsdomainexpired.mjman.net/docs/creating_and_updating_database_tables Creating and updating database tables
+		 * @author LSAPP - MJMAN
 		 * @param Cms_Partial $partial Specifies the partial object to extend.
 		 * @param string $context Specifies the execution context.
 		 */
@@ -582,7 +582,7 @@
 		/**
 		 * Allows to populate drop-down, radio- or checkbox list fields, which have been added with {@link cms:onExtendPartialModel} event.
 		 * Usually you do not need to use this event for fields which represent 
-		 * {@link http://lemonstand.com/docs/extending_models_with_related_columns data relations}. But if you want a standard 
+		 * {@link https://lsdomainexpired.mjman.net/docs/extending_models_with_related_columns data relations}. But if you want a standard 
 		 * field (corresponding an integer-typed database column, for example), to be rendered as a drop-down list, you should 
 		 * handle this event.
 		 *
@@ -629,9 +629,9 @@
 		 * @package cms.events
 		 * @see cms:onExtendPartialModel
 		 * @see cms:onExtendPartialForm
-		 * @see http://lemonstand.com/docs/extending_existing_models Extending existing models
-		 * @see http://lemonstand.com/docs/creating_and_updating_database_tables Creating and updating database tables
-		 * @author LemonStand eCommerce Inc.
+		 * @see https://lsdomainexpired.mjman.net/docs/extending_existing_models Extending existing models
+		 * @see https://lsdomainexpired.mjman.net/docs/creating_and_updating_database_tables Creating and updating database tables
+		 * @author LSAPP - MJMAN
 		 * @param string $db_name Specifies the field name.
 		 * @param string $field_value Specifies the field value.
 		 * @return mixed Returns a list of options or a specific option label.
@@ -655,7 +655,7 @@
 		 * </pre>
 		 * @event cms:onDeletePartial
 		 * @package cms.events
-		 * @author LemonStand eCommerce Inc.
+		 * @author LSAPP - MJMAN
 		 * @param Cms_Partial $partial Specifies the partial object to be deleted.
 		 */
 		private function event_onDeletePartial($partial) {}
@@ -666,8 +666,8 @@
 		 * <ul>
 		 * <li><em>name</em> - the partial name.</li>
 		 * <li><em>content</em> - the partial content string.</li>
-		 * <li><em>file_name</em> - path to the partial file (if {@link http://lemonstand.com/docs/using_file_based_templates/ file-based templates mode} is enabled).</li>
-		 * <li><em>file_based</em> - boolean, determines whether {@link http://lemonstand.com/docs/using_file_based_templates/ file-based templates mode} is enabled.</li>
+		 * <li><em>file_name</em> - path to the partial file (if {@link https://lsdomainexpired.mjman.net/docs/using_file_based_templates/ file-based templates mode} is enabled).</li>
+		 * <li><em>file_based</em> - boolean, determines whether {@link https://lsdomainexpired.mjman.net/docs/using_file_based_templates/ file-based templates mode} is enabled.</li>
 		 * </ul>
 		 * The event handler should return an array with at least a single element <em>content</em> containing the updated content.
 		 * <pre>
@@ -691,7 +691,7 @@
 		 * </pre>
 		 * @event cms:onGetPartialContent
 		 * @package cms.events
-		 * @author LemonStand eCommerce Inc.
+		 * @author LSAPP - MJMAN
 		 * @param array $data Specifies a list of input parameters.
 		 * @return array Returns an array containing the <em>content</em> element.
 		 */
@@ -720,7 +720,7 @@
 		 * @triggered /modules/cms/controllers/cms_partials/_control_panel.htm
 		 * @event cms:onExtendPartialsToolbar
 		 * @package cms.events
-		 * @author LemonStand eCommerce Inc.
+		 * @author LSAPP - MJMAN
 		 * @param Backend_Controller $controller The back-end controller object.
 		 */
 		private function event_onExtendPartialsToolbar($controller) {}
@@ -752,7 +752,7 @@
 		 * </pre>
 		 * @event cms:onPreparePartialListData
 		 * @package cms.events
-		 * @author LemonStand eCommerce Inc.
+		 * @author LSAPP - MJMAN
 		 * @param Backend_Controller $controller The back-end controller object.
 		 * @return Cms_Partial configured CMS Partial object.
 		 */

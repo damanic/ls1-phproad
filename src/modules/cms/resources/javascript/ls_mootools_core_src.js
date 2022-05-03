@@ -1,6 +1,6 @@
 /*
  *
- * LemonStand MooTools-specific front-end library
+ * LSAPP MooTools-specific front-end library
  *
  */
 

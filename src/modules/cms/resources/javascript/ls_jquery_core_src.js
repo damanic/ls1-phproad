@@ -1,6 +1,6 @@
 /**
  * @file
- * jQuery front-end for the LemonStand platform.
+ * jQuery front-end for the LSAPP platform.
  * ls_frontend re-implements prototypes and methods to match
  * the MooTools AJAX implementation. Credit: stilbuero for $.cookie plugin.
  */

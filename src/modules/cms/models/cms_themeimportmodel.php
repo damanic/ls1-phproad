@@ -47,7 +47,7 @@
 			$pathInfo = pathinfo($file->name);
 			$ext = strtolower($pathInfo['extension']);
 			if (!isset($pathInfo['extension']) || !($ext == 'lca' || $ext == 'zip'))
-				$this->validation->setError( 'Uploaded file is not a valid LemonStand theme archive.', 'file', true );
+				$this->validation->setError( 'Uploaded file is not a valid LSAPP theme archive.', 'file', true );
 				
 			$export_manager = Cms_ExportManager::create();
 			$export_manager->import(PATH_APP.$file->getPath(), $this->theme_id);

@@ -1,14 +1,14 @@
 <?php
 
 	/**
-	 * Represents a CMS {@link http://lemonstand.com/docs/adding_a_template/ layout}.
+	 * Represents a CMS {@link https://lsdomainexpired.mjman.net/docs/adding_a_template/ layout}.
 	 * Cms_Template class represents a front-end page layout.
 	 * @documentable
 	 * @property integer $id Specifies the layout identifier in the database.
-	 * @author LemonStand eCommerce Inc.
+	 * @author LSAPP - MJMAN
 	 * @package cms.models
 	 */
-	class Cms_Template extends Cms_Object
+	class Cms_Template extends Cms_CmsObject
 	{
 		public $table_name = 'templates';
 		
@@ -418,9 +418,9 @@
 		 * @package cms.events
 		 * @see cms:onExtendTemplateForm
 		 * @see cms:onGetTemplateFieldOptions
-		 * @see http://lemonstand.com/docs/extending_existing_models Extending existing models
-		 * @see http://lemonstand.com/docs/creating_and_updating_database_tables Creating and updating database tables
-		 * @author LemonStand eCommerce Inc.
+		 * @see https://lsdomainexpired.mjman.net/docs/extending_existing_models Extending existing models
+		 * @see https://lsdomainexpired.mjman.net/docs/creating_and_updating_database_tables Creating and updating database tables
+		 * @author LSAPP - MJMAN
 		 * @param Cms_Template $layout Specifies the layout object to extend.
 		 * @param string $context Specifies the execution context.
 		 */
@@ -453,9 +453,9 @@
 		 * @package cms.events
 		 * @see cms:onExtendTemplateModel
 		 * @see cms:onGetTemplateFieldOptions
-		 * @see http://lemonstand.com/docs/extending_existing_models Extending existing models
-		 * @see http://lemonstand.com/docs/creating_and_updating_database_tables Creating and updating database tables
-		 * @author LemonStand eCommerce Inc.
+		 * @see https://lsdomainexpired.mjman.net/docs/extending_existing_models Extending existing models
+		 * @see https://lsdomainexpired.mjman.net/docs/creating_and_updating_database_tables Creating and updating database tables
+		 * @author LSAPP - MJMAN
 		 * @param Cms_Template $layout Specifies the layout object to extend.
 		 * @param string $context Specifies the execution context.
 		 */
@@ -464,7 +464,7 @@
 		/**
 		 * Allows to populate drop-down, radio- or checkbox list fields, which have been added with {@link cms:onExtendTemplateForm} event.
 		 * Usually you do not need to use this event for fields which represent 
-		 * {@link http://lemonstand.com/docs/extending_models_with_related_columns data relations}. But if you want a standard 
+		 * {@link https://lsdomainexpired.mjman.net/docs/extending_models_with_related_columns data relations}. But if you want a standard 
 		 * field (corresponding an integer-typed database column, for example), to be rendered as a drop-down list, you should 
 		 * handle this event.
 		 *
@@ -511,9 +511,9 @@
 		 * @package cms.events
 		 * @see cms:onExtendTemplateModel
 		 * @see cms:onExtendTemplateForm
-		 * @see http://lemonstand.com/docs/extending_existing_models Extending existing models
-		 * @see http://lemonstand.com/docs/creating_and_updating_database_tables Creating and updating database tables
-		 * @author LemonStand eCommerce Inc.
+		 * @see https://lsdomainexpired.mjman.net/docs/extending_existing_models Extending existing models
+		 * @see https://lsdomainexpired.mjman.net/docs/creating_and_updating_database_tables Creating and updating database tables
+		 * @author LSAPP - MJMAN
 		 * @param string $db_name Specifies the field name.
 		 * @param string $field_value Specifies the field value.
 		 * @return mixed Returns a list of options or a specific option label.
@@ -537,7 +537,7 @@
 		 * </pre>
 		 * @event cms:onDeleteTemplate
 		 * @package cms.events
-		 * @author LemonStand eCommerce Inc.
+		 * @author LSAPP - MJMAN
 		 * @param Cms_Template $template Specifies the layout object to be deleted.
 		 */
 		private function event_onDeleteTemplate($template) {}
@@ -548,8 +548,8 @@
 		 * <ul>
 		 * <li><em>name</em> - the layout name.</li>
 		 * <li><em>content</em> - the layout content string.</li>
-		 * <li><em>file_name</em> - path to the layout file (if {@link http://lemonstand.com/docs/using_file_based_templates/ file-based templates mode} is enabled).</li>
-		 * <li><em>file_based</em> - boolean, determines whether {@link http://lemonstand.com/docs/using_file_based_templates/ file-based templates mode} is enabled.</li>
+		 * <li><em>file_name</em> - path to the layout file (if {@link https://lsdomainexpired.mjman.net/docs/using_file_based_templates/ file-based templates mode} is enabled).</li>
+		 * <li><em>file_based</em> - boolean, determines whether {@link https://lsdomainexpired.mjman.net/docs/using_file_based_templates/ file-based templates mode} is enabled.</li>
 		 * </ul>
 		 * The event handler should return an array with at least a single element <em>content</em> containing the updated content.
 		 * <pre>
@@ -572,7 +572,7 @@
 		 * </pre>
 		 * @event cms:onGetTemplateContent
 		 * @package cms.events
-		 * @author LemonStand eCommerce Inc.
+		 * @author LSAPP - MJMAN
 		 * @param array $data Specifies a list of input parameters.
 		 * @return array Returns an array containing the <em>content</em> element.
 		 */
@@ -601,7 +601,7 @@
 		 * @triggered /modules/cms/controllers/cms_templates/_control_panel.htm
 		 * @event cms:onExtendTemplatesToolbar
 		 * @package cms.events
-		 * @author LemonStand eCommerce Inc.
+		 * @author LSAPP - MJMAN
 		 * @param Backend_Controller $controller The back-end controller object.
 		 */			
 		private function event_onExtendTemplatesToolbar($controller) {}
@@ -632,7 +632,7 @@
 		 * </pre>
 		 * @event cms:onPrepareTemplateListData
 		 * @package cms.events
-		 * @author LemonStand eCommerce Inc.
+		 * @author LSAPP - MJMAN
 		 * @param Backend_Controller $controller The back-end controller object.
 		 * @return Cms_Template configured CMS Layout object.
 		 */

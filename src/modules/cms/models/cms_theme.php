@@ -1,5 +1,5 @@
 <?php
-
+use Phpr\Module_Parameters as ModuleParameters;
 	/**
 	 * Represents a CMS theme.
 	 * Cms_Page class represents a front-end website theme.
@@ -18,10 +18,10 @@
 	 * @property string $agent_list Specifies a list of user agent for the <em>built-in</em> agent detection.
 	 * @property string $agent_detection_code Specifies the user agent detection PHP code for the <em>custom</em> agent detection mode.
 	 * @property integer $id Specifies the theme identifier in the database.
-	 * @author LemonStand eCommerce Inc.
+	 * @author LSAPP - MJMAN
 	 * @package cms.models
 	 */
-	class Cms_Theme extends Cms_Object
+	class Cms_Theme extends Cms_CmsObject
 	{
 		public $table_name = 'cms_themes';
 		public $is_enabled = 1;
@@ -734,7 +734,7 @@
 		 */
 		
 		/**
-		 * Triggered when LemonStand determines an active CMS theme. 
+		 * Triggered when LSAPP determines an active CMS theme. 
 		 * Use this event to force a specific theme to be used, ignoring the currently default CMS theme.
 		 * The handler should return a {@link Cms_Theme} object representing a theme which should be used.
 		 * <pre>
@@ -750,7 +750,7 @@
 		 * </pre>
 		 * @event cms:onGetActiveTheme
 		 * @package cms.events
-		 * @author LemonStand eCommerce Inc.
+		 * @author LSAPP - MJMAN
 		 * @return Cms_Theme Returns the theme object. Returns NULL if the default theme should be used.
 		 */
 		private function event_onGetActiveTheme() {}
@@ -772,7 +772,7 @@
 		 * </pre>
 		 * @event cms:onSetDefaultTheme
 		 * @package cms.events
-		 * @author LemonStand eCommerce Inc.
+		 * @author LSAPP - MJMAN
 		 * @param Cms_Theme $old_theme The old default theme object.
 		 * @param Cms_Theme $new_theme The new default theme object.
 		 */

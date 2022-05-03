@@ -113,6 +113,6 @@ function update_browser_title()
 	if(name_field = $(update_browser_title_field))
 	{
 		new_title = update_browser_title_text + ' "' + name_field.value +'"';
-		document.title = new_title + ' | LemonStand';
+		document.title = new_title + ' | LSAPP';
 	}
 }

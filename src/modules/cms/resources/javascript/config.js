@@ -28,8 +28,8 @@ function onSaveSettings()
 		return true;
 
 	var message = new_value ?
-	 	'You just enabled the file-based CMS templates. LemonStand is going to transfer pages, partials and templates from the database to files. This operation will override existing files. Continue?' : 
-		'You just disabled the file-based CMS templates. LemonStand is going to transfer pages, partials and templates from files to the database. This operation will override existing CMS objects which are bound to files. Continue?';
+	 	'You just enabled the file-based CMS templates. LSAPP is going to transfer pages, partials and templates from the database to files. This operation will override existing files. Continue?' : 
+		'You just disabled the file-based CMS templates. LSAPP is going to transfer pages, partials and templates from files to the database. This operation will override existing CMS objects which are bound to files. Continue?';
 		
 	return confirm(message);
 }

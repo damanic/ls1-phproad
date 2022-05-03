@@ -19,7 +19,7 @@
 		}
 	}
 	
-	$invalid_enc_key = Phpr_SecurityFramework::create()->salted_hash('lemonstand') != Db_ModuleParameters::get('core', 'enc_test');
+	$invalid_enc_key = Phpr_SecurityFramework::create()->salted_hash('lemonstand') != Phpr\Module_Parameters::get('core', 'enc_test');
 ?>
 
 <? if (!$shipping_configured || !$email_configured || !$uploaded_writable || !$temp_writable || !$resources_writable || $invalid_enc_key): ?>

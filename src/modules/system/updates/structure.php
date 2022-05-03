@@ -47,7 +47,7 @@ $table->column('subject', db_varchar);
 $table->column('content', db_text);
 $table->column('description', db_text);
 $table->column('is_system', db_bool);
-$table->column('reply_to_mode', db_varchar, 10)->default('default');
+$table->column('reply_to_mode', db_varchar, 10)->defaults('default');
 $table->column('reply_to_address', db_varchar, 100);
 $table->column('allow_recipient_block', db_bool);
 

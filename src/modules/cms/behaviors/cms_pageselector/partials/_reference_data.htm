@@ -2,9 +2,9 @@
 	if (!isset($update))
 	{
 		$references = Cms_PageReference::list_page_references($model, $reference);
-		$field_name = get_class($model).'[cms_page_selector]['.$reference.']';
+		$field_name = get_class_id($model).'[cms_page_selector]['.$reference.']';
 		$references = array_keys($references);
-		$original_field_name = get_class($model).'['.$reference.']';
+		$original_field_name = get_class_id($model).'['.$reference.']';
 		$reference_value = $model->$reference;
 	} else 
 		$original_field_name = $model_class.'['.$reference_name.']';

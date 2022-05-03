@@ -1,5 +1,5 @@
 /*
- * LemonStand front-end JavaScript library source code
+ * LSAPP front-end JavaScript library source code
  */
 
 function script_params_parser()

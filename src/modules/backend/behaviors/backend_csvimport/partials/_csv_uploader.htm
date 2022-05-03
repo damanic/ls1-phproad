@@ -15,7 +15,7 @@
 	</ul>
 </div>
 
-<input name="edit_session_key" id="<?= $this->formGetElementId('form_session_key', get_class($form_model)) ?>" type="hidden" value="<?= $form_session_key ?>"/>
+<input name="edit_session_key" id="<?= $this->formGetElementId('form_session_key', get_class_id($form_model)) ?>" type="hidden" value="<?= $form_session_key ?>"/>
 <input type="hidden" name="form_unique_prefix" class="form_unique_prefix" value="<?= $this->formGetUniquePrefix() ?>"/>
 <input type="hidden" name="phpr_uploader_model_class" value="<?= $this->csv_import_config_model_class ?>"/>
 <input type="hidden" value="<?= $this->getEventHandler('')?>" id="csv_import_handler_name"/>

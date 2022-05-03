@@ -1,10 +1,10 @@
 <? 
-	$listContainerId = $this->formGetElementId('form_attachments_container_'.get_class($form_model).'_'.$form_field->dbName);
-	$uploaderContainerId = $this->formGetElementId('form_uploader_container_'.get_class($form_model).'_'.$form_field->dbName);
-	$uploaderLinkId = $this->formGetElementId('form_uploader_link_'.get_class($form_model).'_'.$form_field->dbName);
-	$uploaderId = $this->formGetElementId('form_attachments_uploader_'.get_class($form_model).'_'.$form_field->dbName);
-	$upload_link_container = $this->formGetElementId('form_uploader_link_container_'.get_class($form_model).'_'.$form_field->dbName);
-	$upload_loading_indicator = $this->formGetElementId('form_uploader_indicator_'.get_class($form_model).'_'.$form_field->dbName);
+	$listContainerId = $this->formGetElementId('form_attachments_container_'.get_class_id($form_model).'_'.$form_field->dbName);
+	$uploaderContainerId = $this->formGetElementId('form_uploader_container_'.get_class_id($form_model).'_'.$form_field->dbName);
+	$uploaderLinkId = $this->formGetElementId('form_uploader_link_'.get_class_id($form_model).'_'.$form_field->dbName);
+	$uploaderId = $this->formGetElementId('form_attachments_uploader_'.get_class_id($form_model).'_'.$form_field->dbName);
+	$upload_link_container = $this->formGetElementId('form_uploader_link_container_'.get_class_id($form_model).'_'.$form_field->dbName);
+	$upload_loading_indicator = $this->formGetElementId('form_uploader_indicator_'.get_class_id($form_model).'_'.$form_field->dbName);
 ?>
 
 <div id="<?= $listContainerId ?>">

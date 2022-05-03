@@ -1,5 +1,5 @@
 /*
- * LemonStand JavaScript framework
+ * LSAPP JavaScript framework
  * This file includes the following scripts mootools_src.js, mootools_more_src.js, phproad.js, frontend_src.js
  */
 

@@ -79,7 +79,7 @@ class Cms_Stats_Settings extends Backend_SettingsRecord
 //			$this->add_form_custom_area('ga_captcha')->tab('Google Analytics');
 
 		$extraFieldClass = $this->enable_builtin_statistics ? 'separatedField' : null;
-		$this->add_form_field('enable_builtin_statistics')->comment('Turn off the built-in statistics if you don\'t want LemonStand to store traffic information in the database.', 'below', true)->tab('Built-in Statistics')->renderAs(frm_onoffswitcher)->cssClassName($extraFieldClass);
+		$this->add_form_field('enable_builtin_statistics')->comment('Turn off the built-in statistics if you don\'t want LSAPP to store traffic information in the database.', 'below', true)->tab('Built-in Statistics')->renderAs(frm_onoffswitcher)->cssClassName($extraFieldClass);
 
 		$extraFieldClass = $this->enable_builtin_statistics ? null : 'hidden';
 		$this->add_form_field('keep_pageviews')->comment('How many pageviews to keep in the database. Large number of pageviews may slowdown the Dashboard page loading.', 'above')->tab('Built-in Statistics')->renderAs(frm_dropdown)->cssClassName($extraFieldClass);;
@@ -139,7 +139,7 @@ class Cms_Stats_Settings extends Backend_SettingsRecord
 
 		$company_name = Shop_CompanyInformation::get()->name;
 		if (!strlen($company_name))
-			$company_name = 'LemonStand';
+			$company_name = 'LSAPP';
 
 		$company_name = Core_String::js_encode($company_name);
 

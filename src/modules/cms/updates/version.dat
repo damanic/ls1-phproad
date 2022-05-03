@@ -55,7 +55,7 @@
 #55 Improved session handling 
 #56 Updated the CMS Export and Import icons
 #57 Minor fix in the Google Analytics integration code
-#58 Improved the URL parameter handling when LemonStand automatically redirects between HTTP and HTTPS protocols
+#58 Improved the URL parameter handling when LSAPP automatically redirects between HTTP and HTTPS protocols
 #59 The Import CMS objects feature now exports page labels correctly
 #60 Fixed file sorting on the CMS/Resources page
 #61 Improved resources file and folder permission management
@@ -63,7 +63,7 @@
 #63 Automatic navigation menu generation now takes into account page security settings
 #64 Minor fix in the dashboard report
 #65 Fixed a bug in the CMS Export feature
-#66 Added the cms:onBeforeDisplay event. It is triggered before LemonStand renders a page
+#66 Added the cms:onBeforeDisplay event. It is triggered before LSAPP renders a page
 #67 Added the batch deletion feature for partials and templates
 #68 Minor update in the  cms:onBeforeDisplay event behavior.
 #69 Fixed a bug on the CMS/Pages/Reorder Pages page
@@ -81,7 +81,7 @@
 #81 Added the "Disable Google Analytics tracking" checkbox to the Create/Edit Page form
 #82 Updated front-end JavaScript framework - added the RatingSelector class
 #83 Minor improvements in the CMS API
-#84 LemonStand now returns the HTTP/1.0 404 Not Found header for the 404 page
+#84 LSAPP now returns the HTTP/1.0 404 Not Found header for the 404 page
 #85 Minor improvements in the default HTML editor stylesheet
 #86 CMS API update: added the content_by_url() method to the Cms_Page class
 #87 Added the Head field to the Create/Edit Page form
@@ -89,7 +89,7 @@
 #89 Added the Maintenance Session feature
 #90 Updated Google Analytics eCommerce Tracking code
 #91 Security system update - added the login auto-return feature
-#92 LemonStand front-end JavaScript libraries are compressed and combined into a single library
+#92 LSAPP front-end JavaScript libraries are compressed and combined into a single library
 #93 Technology update
 #94 Minor update in the documentation
 #95 API update: the $this->render_block() method now can be called from partials
@@ -169,7 +169,7 @@
 #169|1.1.69 Minor improvement in the back-end user interface
 #170|1.1.70 Added the Manage Resources user permission
 #171|1.1.71 Added Enable option for the built-in CMS statistics
-#172|1.1.72 The file-based template engine now supports {APP} path specifier which allows to configure template paths relative to LemonStand root directory
+#172|1.1.72 The file-based template engine now supports {APP} path specifier which allows to configure template paths relative to LSAPP root directory
 #173|1.1.73 Edit Page, Edit Template and Edit Partial pages now display the object name being edited in the browser title. Minor fix in the automatic navigation generating code.
 #174|1.1.74 Page URLs now allow dots.
 #175|1.1.75 Minor fix in CMS pages.

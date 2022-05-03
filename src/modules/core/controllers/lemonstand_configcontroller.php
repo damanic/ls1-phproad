@@ -1,4 +1,5 @@
 <?
+use Phpr\Module_Parameters as ModuleParameters;
 
 	class LemonStand_ConfigController extends Phpr_Controller
 	{

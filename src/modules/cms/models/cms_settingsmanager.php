@@ -34,19 +34,19 @@
 				$this->add_form_field('default_templating_engine')->tab('Template Engine')->renderAs(frm_dropdown);
 
 			$extraFieldClass = $this->enable_filebased_templates ? 'separatedField' : null;
-			$this->add_form_field('enable_filebased_templates')->renderAs(frm_onoffswitcher)->comment('Enable file-based templates if you want LemonStand to store pages, partials and templates in files instead of the database.', 'above')->cssClassName($extraFieldClass)->tab('Template Engine');
+			$this->add_form_field('enable_filebased_templates')->renderAs(frm_onoffswitcher)->comment('Enable file-based templates if you want LSAPP to store pages, partials and templates in files instead of the database.', 'above')->cssClassName($extraFieldClass)->tab('Template Engine');
 			
 			$extraFieldClass = 'filebased_field';
 			if (!$this->enable_filebased_templates)
 				$extraFieldClass .= ' hidden';
 				
-			$field = $this->add_form_field('templates_dir_path')->cssClassName($extraFieldClass)->tab('Template Engine')->comment('Please specify an absolute path to the directory on the server, where you want to store LemonStand templates. The directory should exist and be writable for PHP.', 'above', true);
+			$field = $this->add_form_field('templates_dir_path')->cssClassName($extraFieldClass)->tab('Template Engine')->comment('Please specify an absolute path to the directory on the server, where you want to store LSAPP templates. The directory should exist and be writable for PHP.', 'above', true);
 			
 			$field->titlePartial('path_hint');
 			
 			$this->add_form_field('content_file_extension')->cssClassName($extraFieldClass)->tab('Template Engine')->comment('Please choose a file extension to use for partial, template and page content files. PHP-specific page files (pre- and post- action code, AJAX declarations, etc.) always have .php extension.', 'above')->renderAs(frm_dropdown);
 			
-			$field = $this->add_form_field('resources_dir_path')->tab('Resources directory')->comment('Please specify path to the website resources directory relative to your LemonStand installation root. The directory should exist and be writable for PHP.', 'above', true);
+			$field = $this->add_form_field('resources_dir_path')->tab('Resources directory')->comment('Please specify path to the website resources directory relative to your LSAPP installation root. The directory should exist and be writable for PHP.', 'above', true);
 		}
 		
 		public function get_default_templating_engine_options($key_value = -1)

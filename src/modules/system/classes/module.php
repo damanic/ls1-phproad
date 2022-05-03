@@ -5,6 +5,7 @@ use Phpr;
 use Phpr\ModuleInfo;
 use Core\ModuleBase;
 use Core\UpdateManager;
+use Core\ModuleManager;
 
 class Module extends ModuleBase
 {

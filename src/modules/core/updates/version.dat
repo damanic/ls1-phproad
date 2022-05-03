@@ -1,4 +1,4 @@
-#1 Init|@bootstrap
+#1|@bootstrap Init
 #2 Better error handling in ZIP operations
 #3 Minor fix in the IP address detection code
 #4 Minor fix in the table structure caching code
