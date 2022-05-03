@@ -1,6 +1,9 @@
 <?php
 namespace Cms;
 
+use Google_Client;
+use Google_Auth_AssertionCredentials;
+use Google_Service_Analytics;
 use Phpr\ApplicationException;
 use Phpr\SystemException;
 
@@ -26,7 +29,6 @@ class GoogleAnalytics
 
     public function __construct()
     {
-        require_once PATH_APP.'/modules/cms/thirdpart/google-api/autoload.php';
         $settings = Stats_Settings::get();
         $this->siteId = $settings->ga_siteid;
 
