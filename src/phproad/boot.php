@@ -80,18 +80,6 @@ defined('PATH_PUBLIC') ? null : define('PATH_PUBLIC', realpath(dirname(PATH_BOOT
 defined('PHPR_EXT') ? null : define('PHPR_EXT', pathinfo(__FILE__, PATHINFO_EXTENSION));
 defined('PHPR_MODULES') ? null : define('PHPR_MODULES', $modules_name);
 
-// ------------------------------------------------------------------------
-// Handle asset requests
-// ------------------------------------------------------------------------
-
-if (array_key_exists('q', $_GET) && ( strpos($_GET['q'], 'javascript_combine/') !== false || strpos(
-    $_GET['q'],
-    'css_combine/'
-) !== false ) 
-) {
-    include PATH_SYSTEM . DS . 'core' . DS . 'combine_assets.php';
-    die();
-}
 
 // ------------------------------------------------------------------------
 // Load PHPR
