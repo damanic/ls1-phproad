@@ -1,6 +1,6 @@
 <? 
 	$row_indexes = array_keys($grid_data); 
-	$class_name = get_class($form_model);
+	$class_name = get_class_id($form_model);
 	$scrollable = $grid_widget->scrollable && !$grid_widget->use_data_source;
 	
 	$has_column_groups = $grid_widget->has_column_groups();

@@ -390,6 +390,17 @@ class Form
         return '<label' . $for . $extra . '>' . $text . '</label>';
     }
 
+    /**
+     * Returns a form field compatible class name for given model object
+     * Converts namespaces to underscore
+     * @param $object
+     * @return array|string|string[]
+     */
+    public static function formModelClass($object)
+    {
+        return str_replace('\\', '_', get_class($object));
+    }
+
 
 
 
@@ -436,5 +447,4 @@ class Form
         Phpr::$deprecate->setFunction('close_tag', 'closeTag');
         return self::closeTag();
     }
-
 }

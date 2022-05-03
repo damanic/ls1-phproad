@@ -36,10 +36,10 @@
 
 			</div>
 	
-			<input type="hidden" name="widget_model_class" value="<?= get_class($form_model) ?>"/>
+			<input type="hidden" name="widget_model_class" value="<?= get_class_id($form_model) ?>"/>
 			<input name="edit_session_key" type="hidden" value="<?= $this->formGetEditSessionKey() ?>"/>
 
-			<input name="phpr_uploader_model_class" type="hidden" value="<?= get_class($form_model) ?>"/>
+			<input name="phpr_uploader_model_class" type="hidden" value="<?= get_class_id($form_model) ?>"/>
 			<input name="phpr_uploader_model_id" type="hidden" value="<?= $form_model->id ?>"/>
 			<input name="phpr_grid_column" type="hidden" value="<?= $grid_column ?>"/>
 			<input name="phpr_row_index" type="hidden" value="<?= $row_index ?>"/>

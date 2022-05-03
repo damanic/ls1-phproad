@@ -8,10 +8,10 @@
 	$commentText = $this->form_preview_mode ? Phpr_Util::any($form_field->previewComment, $form_field->comment) : $form_field->comment;
 	$commentTolTip = $form_field->commentTooltip;
  ?>
-<li id="<?= $this->formGetElementId('form_field_'.$dbName, get_class($form_model)) ?>" class="field <?= $renderMode ?> <?= $form_field->formSide ?> <?= $this->form_preview_mode ? 'preview' : null ?> <?= $columnDefinition->isReference ? 'reference' : null ?> <?= $columnDefinition->isReference && $form_field->previewNoRelation ? 'previewNoRelation' : null ?> <?= $form_field->cssClassName ?>">
+<li id="<?= $this->formGetElementId('form_field_'.$dbName, get_class_id($form_model)) ?>" class="field <?= $renderMode ?> <?= $form_field->formSide ?> <?= $this->form_preview_mode ? 'preview' : null ?> <?= $columnDefinition->isReference ? 'reference' : null ?> <?= $columnDefinition->isReference && $form_field->previewNoRelation ? 'previewNoRelation' : null ?> <?= $form_field->cssClassName ?>">
 	
 	<? if (!$form_field->noLabel): ?>
-		<label for="<?= $this->formGetElementId(get_class($form_model).'_'.$dbName) ?>">
+		<label for="<?= $this->formGetElementId(get_class_id($form_model).'_'.$dbName) ?>">
 			<?= h($form_field->getColDefinition()->displayName) ?>
 			<? if ($required && !$this->form_preview_mode): ?><span class="required">*</span><? endif ?>
 	
@@ -26,7 +26,7 @@
 			$this->renderPartial($form_field->titlePartial);
 	?>
 
-	<div id="<?= $this->formGetElementId('form_field_container_'.$dbName, get_class($form_model)) ?>" class="<?= $this->form_preview_mode ? 'previewContainer' : 'fieldContainer '.$form_field->cssClasses ?>">
+	<div id="<?= $this->formGetElementId('form_field_container_'.$dbName, get_class_id($form_model)) ?>" class="<?= $this->form_preview_mode ? 'previewContainer' : 'fieldContainer '.$form_field->cssClasses ?>">
 	<?
 		$this->formRenderFieldPartial($form_model, $form_field);
 	?>

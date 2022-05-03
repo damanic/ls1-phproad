@@ -453,11 +453,11 @@ class Db_FilterBehavior extends Phpr\ControllerBehavior
 
     private function getFiltersName( $property_set = null )
     {
-        return get_class($this->_controller) . '_filters' . $property_set;
+        return get_class_id($this->_controller) . '_filters' . $property_set;
     }
 
     public function filterListName( $model )
     {
-        return get_class($this->_controller) . '_filterlist_' . get_class($model);
+        return get_class_id($this->_controller) . '_filterlist_' . get_class_id($model);
     }
 }

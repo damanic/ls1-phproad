@@ -7,10 +7,10 @@
 
 	<? if ($form_has_tabs && !$this->form_report_layout_mode): ?>
 		<div class="<?= $form_tabs_type ?>">
-			<div class="scrollable-tabs" id="<?= $scroller_id = str_replace('.', '-', uniqid(get_class($form_model).'tab-scroller', true)) ?>">
+			<div class="scrollable-tabs" id="<?= $scroller_id = str_replace('.', '-', uniqid(get_class_id($form_model).'tab-scroller', true)) ?>">
 				<div class="scrollable-tabs-outer">
 					<div class="scrollable-tabs-inner">
-						<ul id="<?= $this->formGetElementId('form_tabs', get_class($form_model)) ?>" class="<?= $form_tabs_type.'_tabs' ?>">
+						<ul id="<?= $this->formGetElementId('form_tabs', get_class_id($form_model)) ?>" class="<?= $form_tabs_type.'_tabs' ?>">
 							<? 
 								$index = 0;
 								foreach ($form_elements as $tabCaption=>$elements): 
@@ -29,7 +29,7 @@
 				<div class="scroll-button right">Scroll right</div>
 			</div>
 		
-			<ul id="<?= $this->formGetElementId('form_pages', get_class($form_model)) ?>" class="<?= $form_tabs_type.'_pages' ?>">
+			<ul id="<?= $this->formGetElementId('form_pages', get_class_id($form_model)) ?>" class="<?= $form_tabs_type.'_pages' ?>">
 	<? endif ?>
 		<? 
 			$page_class = $this->form_preview_mode ? 'form_page_preview' : 'form_page';
@@ -86,8 +86,8 @@
 					$trackTab = $trackTab ? 'true' : 'false';
 			?>
 				window.addEvent('domready', function(){
-					new TabManager('<?= $this->formGetElementId('form_tabs', get_class($form_model)) ?>', 
-					  	'<?= $this->formGetElementId('form_pages', get_class($form_model)) ?>', 
+					new TabManager('<?= $this->formGetElementId('form_tabs', get_class_id($form_model)) ?>', 
+					  	'<?= $this->formGetElementId('form_pages', get_class_id($form_model)) ?>', 
 					  	{trackTab: <?= $trackTab ?>});
 					
 					new Backend_ScrollabeTabbar('<?= $scroller_id ?>');
@@ -98,6 +98,6 @@
 	<? endif ?>
 </div>
 <div class="clear"></div>
-<input name="edit_session_key" id="<?= $this->formGetElementId('form_session_key', get_class($form_model)) ?>" type="hidden" value="<?= $form_session_key ?>"/>
+<input name="edit_session_key" id="<?= $this->formGetElementId('form_session_key', get_class_id($form_model)) ?>" type="hidden" value="<?= $form_session_key ?>"/>
 <input type="hidden" name="form_context" value="<?= $this->formGetContext() ?>"/>
 <input type="hidden" name="form_unique_prefix" class="form_unique_prefix" value="<?= $this->formGetUniquePrefix() ?>"/>

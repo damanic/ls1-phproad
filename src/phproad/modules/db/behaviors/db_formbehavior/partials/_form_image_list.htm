@@ -1,6 +1,6 @@
 <? 
-	$listContainerId = $this->formGetElementId('form_attachments_container_'.get_class($form_model).'_'.$dbName); 
-	$listId = $this->formGetElementId('form_image_list_'.get_class($form_model).'_'.$dbName); 
+	$listContainerId = $this->formGetElementId('form_attachments_container_'.get_class_id($form_model).'_'.$dbName); 
+	$listId = $this->formGetElementId('form_image_list_'.get_class_id($form_model).'_'.$dbName); 
 	
 	$field_definition = $form_model->find_form_field($dbName);
 	$baseUrl = root_url('/uploaded/public/');

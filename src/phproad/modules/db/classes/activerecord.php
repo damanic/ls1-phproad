@@ -379,7 +379,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
 
         if (!$this->get_model_option('no_validation')) {
             $this->validation = new Validation($this);
-            $this->validation->focusPrefix = get_class($this) . "_";
+            $this->validation->focusPrefix = get_class_id($this) . "_";
         }
 
         // Fill with data
@@ -418,7 +418,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
         );
 
         if (!isset($this->table_name)) {
-            $this->table_name = Inflector::tableize(get_class($this));
+            $this->table_name = Inflector::tableize(get_class_id($this));
         }
 
         $fields = array_keys($this->fields());

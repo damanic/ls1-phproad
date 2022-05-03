@@ -1,5 +1,5 @@
 <?
-	$listContainerId = $this->formGetElementId('form_attachments_container_'.get_class($form_model).'_'.$dbName); 
+	$listContainerId = $this->formGetElementId('form_attachments_container_'.get_class_id($form_model).'_'.$dbName); 
 	$baseUrl = $form_field->fileDownloadBaseUrl ? $form_field->fileDownloadBaseUrl : '/ls_backend/files/get/';
 ?>
 

@@ -7,6 +7,7 @@ use Phpr;
 
 class Directory
 {
+    public static $copiedFileCount = 0;
 
     public static function getPermissions()
     {
@@ -53,6 +54,7 @@ class Directory
                 if (!is_dir($dir_path)) {
                     $dest_path = $destination . '/' . $file;
                     if ($overwrite_files || !file_exists($dest_path)) {
+                        self::$copiedFileCount++;
                         copy($dir_path, $dest_path);
                     }
                 } else {
@@ -62,9 +64,11 @@ class Directory
 
             $dir_obj->close();
         } else {
+            self::$copiedFileCount++;
             copy($source, $destination);
         }
     }
+
 
     public static function delete($path)
     {

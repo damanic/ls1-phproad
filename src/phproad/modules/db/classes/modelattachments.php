@@ -78,7 +78,7 @@ class ModelAttachments extends Extension
         $file->is_public = true;
 
         $file->from_post($file_info);
-        $file->master_object_class = get_class_id($this->_model);
+        $file->master_object_class = get_class($this->_model);
         $file->master_object_id = $this->_model->id;
         $file->field = $field;
         $file->save(null, $session_key);

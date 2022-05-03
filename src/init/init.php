@@ -126,10 +126,6 @@ $route = Phpr::$router->addRule('backend_theme_styles_hidden_url');
 $route->controller('application');
 $route->action('backend_theme_styles_hidden_url');
 
-$route = Phpr::$router->addRule('ls_javascript_combine');
-$route->controller('application');
-$route->action('javascript_combine');
-
 $route = Phpr::$router->addRule('/:param1/:param2/:param3/:param4/:param5/:param6');
 $route->def('param1', null);
 $route->def('param2', null);

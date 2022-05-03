@@ -321,7 +321,7 @@ class Db_FormBehavior extends Phpr\ControllerBehavior
             $partialName,
             array(
             'form_field' => $form_field,
-            'form_model_class' => get_class($form_model)
+            'form_model_class' => get_class_id($form_model)
             )
         );
     }
@@ -586,12 +586,12 @@ class Db_FormBehavior extends Phpr\ControllerBehavior
             return $this->_edit_session_key = post('edit_session_key');
         }
 
-        return $this->_edit_session_key = uniqid($this->_controller->form_model_class, true);
+        return $this->_edit_session_key = uniqid(get_class_id($this->_controller->form_model_class), true);
     }
 
     public function resetFormEditSessionKey()
     {
-        return $this->_edit_session_key = uniqid($this->_controller->form_model_class, true);
+        return $this->_edit_session_key = uniqid(get_class_id($this->_controller->form_model_class), true);
     }
 
     public function formUpdateGridTable($model, $field)

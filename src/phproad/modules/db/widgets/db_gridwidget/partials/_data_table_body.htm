@@ -2,7 +2,7 @@
 	$columns = $grid_widget->get_plain_column_list();
 	
 	$row_indexes = array_keys($grid_data); 
-	$class_name = get_class($form_model);
+	$class_name = get_class_id($form_model);
 	
 	$process_checked_classes = false;
 	foreach ($columns as $field_name=>$column)

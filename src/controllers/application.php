@@ -258,22 +258,4 @@ class Application extends Phpr_Controller
             }
         }
     }
-
-    public function javascript_combine()
-    {
-        header('Content-type: text/javascript; charset: UTF-8');
-        header('Cache-Control: must-revalidate');
-        $expires = 'Expires: ' . gmdate('D, d M Y H:i:s', time() + 3600) . ' GMT';
-        header($expires);
-
-        $files = Phpr::$request->getField('file');
-        foreach ( $files as $file ) {
-            $file = urldecode($file);
-            $file = str_replace(chr(0), '', $file);
-
-            if (strtolower(substr($file, -3)) == '.js' ) {
-                Phpr_Files::readFile(PATH_APP . $file);
-            }
-        }
-    }
 }

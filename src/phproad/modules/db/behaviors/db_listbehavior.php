@@ -337,7 +337,7 @@ class Db_ListBehavior extends Phpr\ControllerBehavior
             return $this->_controller->list_name;
         }
 
-        return get_class($this->_controller) . '_' . Phpr::$router->action . '_list';
+        return get_class_id($this->_controller) . '_' . Phpr::$router->action . '_list';
     }
 
     public function listGetFormId()

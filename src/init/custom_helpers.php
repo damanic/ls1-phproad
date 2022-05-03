@@ -88,7 +88,7 @@ function flash()
  * This function is a shortcut for {@link Phpr_Request::post()} method.
  *
  * @documentable
- * @param        $name    specifies the POST element name.
+ * @param        string $name  the POST element name.
  * @param        mixed $default specifies a default value. Optional parameter, the default value is NULL.
  * @return       mixed Returns the POST array value or the default value.
  * @package      core.helpers
