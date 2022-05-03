@@ -6,6 +6,10 @@ namespace Composer\Autoload;
 
 class ComposerStaticInit313166f72dc0a99b5c7cc29465f4bbcd
 {
+    public static $files = array (
+        'cf150f72bd303a2ff07711c9a70f2d53' => __DIR__ . '/..' . '/google/apiclient/src/Google/autoload.php',
+    );
+
     public static $prefixLengthsPsr4 = array (
         'M' => 
         array (
