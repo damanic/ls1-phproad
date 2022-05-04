@@ -44,14 +44,16 @@ class Page extends CmsObject
 
     /**
      * @var string Determines whether the page is visible in the site maps and generated menus.
-     * @see https://lsdomainexpired.mjman.net/docs/creating_site_maps_dynamic_menus_and_breadcrumbs/ Creating site maps, dynamic menus and breadcrumbs
+     * @see https://lsdomainexpired.mjman.net/docs/creating_site_maps_dynamic_menus_and_breadcrumbs/
+     *  Creating site maps, dynamic menus and breadcrumbs
      * @documentable
      */
     public $navigation_visible = 1;
 
     /**
      * @var string Specifies the page navigation label for site maps and generated menus.
-     * @see https://lsdomainexpired.mjman.net/docs/creating_site_maps_dynamic_menus_and_breadcrumbs/ Creating site maps, dynamic menus and breadcrumbs
+     * @see https://lsdomainexpired.mjman.net/docs/creating_site_maps_dynamic_menus_and_breadcrumbs/
+     *  Creating site maps, dynamic menus and breadcrumbs
      * @documentable
      */
     public $navigation_label;
@@ -65,13 +67,13 @@ class Page extends CmsObject
 
     /**
      * @var string Specifies a protocol the page can be accessed by.
-     * By default all pages can be accessed by any protocol. The propety
+     * By default all pages can be accessed by any protocol. The property
      * accepts the following values:
      * <ul>
      *   <li><em>any</em> - HTTP or HTTPS protocol</li>
      *   <li><em>http</em> - HTTP only</li>
      *   <li><em>https</em> - HTTPS only</li>
-     *   <li><em>none</em> - None - requests are always redirected to the page specified in the <em>Redirect</em> field.</li>
+     *   <li><em>none</em> - None - requests are denied or redirected
      * </ul>
      * @documentable
      */
@@ -117,7 +119,7 @@ class Page extends CmsObject
     protected $block_cache = null;
     public $no_file_copy = false;
     public $act_as_tree_sql_filter = null;
-    private static $_cache = array();
+    private static $cache = array();
 
     public $has_and_belongs_to_many = array(
         'customer_groups' => array(
@@ -130,10 +132,21 @@ class Page extends CmsObject
     );
 
     public $belongs_to = array(
-        'template' => array('class_name' => 'Cms\Template'),
-        'security_mode' => array('class_name' => 'Cms\SecurityMode', 'foreign_key' => 'security_mode_id'),
-        'security_redirect' => array('class_name' => 'Cms\Page', 'foreign_key' => 'security_redirect_page_id'),
-        'parent' => array('class_name' => 'Cms\Page', 'foreign_key' => 'parent_id')
+        'template' => array(
+            'class_name' => 'Cms\Template'
+        ),
+        'security_mode' => array(
+            'class_name' => 'Cms\SecurityMode',
+            'foreign_key' => 'security_mode_id'
+        ),
+        'security_redirect' => array(
+            'class_name' => 'Cms\Page',
+            'foreign_key' => 'security_redirect_page_id'
+        ),
+        'parent' => array(
+            'class_name' => 'Cms\Page',
+            'foreign_key' => 'parent_id'
+        )
     );
 
     /*
@@ -243,7 +256,7 @@ class Page extends CmsObject
             '@name'
         )->defaultInvisible();
 
-        $this->define_relation_column(
+        $col = $this->define_relation_column(
             'security_redirect',
             'security_redirect',
             'Redirect',
@@ -477,7 +490,7 @@ class Page extends CmsObject
             $this->add_form_field('security_redirect', 'right')
                 ->referenceSort('title')->comment(
                     "Select a page to redirect to when the 'None' protocol is selected 
-                    or when the visitor has no rights to access this page.", 
+                    or when the visitor has no rights to access this page.",
                     'above'
                 )
                 ->emptyOption('<select>')
@@ -489,7 +502,7 @@ class Page extends CmsObject
             $this->add_form_field('customer_groups')
                 ->tab('Visibility')
                 ->comment(
-                    'Please select customer groups the page should be visible for.', 
+                    'Please select customer groups the page should be visible for.',
                     'above'
                 );
         } else {
@@ -498,10 +511,22 @@ class Page extends CmsObject
             $can_manage_static_pages = $user->get_permission('cms', 'manage_static_pages');
 
             if ($can_edit_pages || $can_manage_static_pages) {
-                $this->add_form_field('is_published')->tab('Content')->collapsable();
-                $this->add_form_field('template')->tab('Content')->emptyOption('<please select a layout>')->collapsable();
-                $this->add_form_field('title', 'left')->tab('Content')->collapsable();
-                $this->add_form_field('url', 'right')->tab('Content')->collapsable();
+                $this->add_form_field('is_published')
+                    ->tab('Content')
+                    ->collapsable();
+
+                $this->add_form_field('template')
+                    ->tab('Content')
+                    ->emptyOption('<please select a layout>')
+                    ->collapsable();
+
+                $this->add_form_field('title', 'left')
+                    ->tab('Content')
+                    ->collapsable();
+
+                $this->add_form_field('url', 'right')
+                    ->tab('Content')
+                    ->collapsable();
             }
 
             $blocks = $this->list_content_blocks();
@@ -532,15 +557,26 @@ class Page extends CmsObject
             $this->add_form_field('keywords')->tab('Meta');
         }
 
-        $this->add_form_field('parent')->tab('Navigation')->emptyOption('<none>')->optionsHtmlEncode(false)->comment(
-            'Please specify a parent page for this page. The parent page information will be used for the navigation menus generating only.',
-            'above'
-        );
-        $this->add_form_field('navigation_visible')->tab('Navigation')->comment('Display this page in automatically generated navigation menus.');
-        $this->add_form_field('navigation_label')->tab('Navigation')->comment(
-            'A label to represent this page in automatically generated navigation menus.',
-            'above'
-        );
+        $this->add_form_field('parent')
+            ->tab('Navigation')
+            ->emptyOption('<none>')
+            ->optionsHtmlEncode(false)
+            ->comment(
+                'Please specify a parent page for this page. 
+                The parent page information will be used for the navigation menus generating only.',
+                'above'
+            );
+
+        $this->add_form_field('navigation_visible')
+            ->tab('Navigation')
+            ->comment('Display this page in automatically generated navigation menus.');
+
+        $this->add_form_field('navigation_label')
+            ->tab('Navigation')
+            ->comment(
+                'A label to represent this page in automatically generated navigation menus.',
+                'above'
+            );
 
         Backend::$events->fireEvent('cms:onExtendPageForm', $this, $context);
         foreach ($this->api_added_columns as $column_name) {
@@ -710,7 +746,8 @@ class Page extends CmsObject
     /**
      * Returns a page by its URL.
      * Resolves an URL and returns the page object corresponding that URL.
-     * Please note that the method finds pages in context of the currently active {@link https://lsdomainexpired.mjman.net/docs/themes/ theme}.
+     * Please note that the method finds pages in context of the currently active
+     * {@link https://lsdomainexpired.mjman.net/docs/themes/ theme}.
      *
      * The following code example tries to find a page with URL <em>/categories/computers</em>.
      * If there was a page with URL <em>/categories</em> it would be returned and the $params
@@ -770,17 +807,19 @@ class Page extends CmsObject
             return null;
         }
 
-        if (array_key_exists($id, self::$_cache)) {
-            return self::$_cache[$id];
+        if (array_key_exists($id, self::$cache)) {
+            return self::$cache[$id];
         }
 
-        return self::$_cache[$id] = self::create()->find($id);
+        return self::$cache[$id] = self::create()->find($id);
     }
 
     /**
      * Finds a page by action name.
-     * This method allows to find a page which uses a specific {@link https://lsdomainexpired.mjman.net/docs/actions/ action}.
-     * Please note that the method finds pages in context of the currently active {@link https://lsdomainexpired.mjman.net/docs/themes/ theme}.
+     * This method allows to find a page which uses a specific
+     * {@link https://lsdomainexpired.mjman.net/docs/actions/ action}.
+     * Please note that the method finds pages in context of the currently active
+     * {@link https://lsdomainexpired.mjman.net/docs/themes/ theme}.
      * The following example finds the product page:
      * <pre>$page = Page::find_by_action_reference('shop:product');</pre>
      * @documentable
@@ -847,7 +886,9 @@ class Page extends CmsObject
         );
 
         if ($isInUse) {
-            throw new ApplicationException("Unable to delete the page: it is used as a security redirect page for other page.");
+            throw new ApplicationException(
+                "Unable to delete the page: it is used as a security redirect page for other page."
+            );
         }
 
         $isInUse = DbHelper::scalar(
@@ -987,9 +1028,11 @@ class Page extends CmsObject
         foreach ($blocks as $block) {
             $block->delete();
         }
-
         $settings_manager = SettingsManager::get();
-        if ($settings_manager->enable_filebased_templates && $settings_manager->templates_directory_is_writable() && $this->directory_name) {
+        if ($settings_manager->enable_filebased_templates
+            && $settings_manager->templates_directory_is_writable()
+            && $this->directory_name
+        ) {
             $this->delete_page_dir();
         }
     }
@@ -1095,7 +1138,8 @@ class Page extends CmsObject
     /**
      * Returns a list of navigation root pages.
      * @documentable
-     * @see https://lsdomainexpired.mjman.net/docs/creating_site_maps_dynamic_menus_and_breadcrumbs/ Creating site maps, dynamic menus and breadcrumbs
+     * @see https://lsdomainexpired.mjman.net/docs/creating_site_maps_dynamic_menus_and_breadcrumbs/
+     * Creating site maps, dynamic menus and breadcrumbs
      * @return array Returns an array of the {@link PageNavigationNode} objects
      */
     public static function navigation_root_pages()
@@ -1118,7 +1162,8 @@ class Page extends CmsObject
      * Returns the navigation menu label.
      * If the navigation menu label was not specified for this page, the function returns the page title.
      * @documentable
-     * @see https://lsdomainexpired.mjman.net/docs/creating_site_maps_dynamic_menus_and_breadcrumbs/ Creating site maps, dynamic menus and breadcrumbs
+     * @see https://lsdomainexpired.mjman.net/docs/creating_site_maps_dynamic_menus_and_breadcrumbs/
+     * Creating site maps, dynamic menus and breadcrumbs
      * @return string Returns the page navigation menu label or page title.
      */
     public function navigation_label()
@@ -1136,7 +1181,8 @@ class Page extends CmsObject
     /**
      * Returns a list of pages grouped under this page.
      * @documentable
-     * @see https://lsdomainexpired.mjman.net/docs/creating_site_maps_dynamic_menus_and_breadcrumbs/ Creating site maps, dynamic menus and breadcrumbs
+     * @see https://lsdomainexpired.mjman.net/docs/creating_site_maps_dynamic_menus_and_breadcrumbs/
+     * Creating site maps, dynamic menus and breadcrumbs
      * @return array Returns an array of the {@link PageNavigationNode} objects
      */
     public function navigation_subpages()
@@ -1155,7 +1201,8 @@ class Page extends CmsObject
      * Returns a list of the page navigation parents.
      * You can use this method for generating bread crumb navigation.
      * @documentable
-     * @see https://lsdomainexpired.mjman.net/docs/creating_site_maps_dynamic_menus_and_breadcrumbs/ Creating site maps, dynamic menus and breadcrumbs
+     * @see https://lsdomainexpired.mjman.net/docs/creating_site_maps_dynamic_menus_and_breadcrumbs/
+     * Creating site maps, dynamic menus and breadcrumbs
      * @param boolean $include_this Determines whether the current page should be included to the result.
      * @return array Returns an array of the {@link PageNavigationNode} objects.
      */
@@ -1220,17 +1267,30 @@ class Page extends CmsObject
             $controller = Controller::get_instance();
             $customer_group_id = Controller::get_customer_group_id();
 
-            $pages = DbHelper::objectArray("select 
-					id,
-					title, 
-					parent_id, 
-					url,
-					navigation_visible,
-					is_published,
-					navigation_label, 
-					security_mode_id,
-					if (enable_page_customer_group_filter is null or enable_page_customer_group_filter = 0, 1, (select count(*) from page_customer_groups where page_id=pages.id and customer_group_id='$customer_group_id')) as visible_for_group
-				from pages $theme_filter order by navigation_sort_order");
+            $sql = "SELECT 
+                id,
+                title,
+                parent_id,
+                url,
+                navigation_visible,
+                is_published,
+                navigation_label,
+                security_mode_id,
+                IF(enable_page_customer_group_filter IS NULL
+                        OR enable_page_customer_group_filter = 0,
+                    1,
+                    (SELECT 
+                            COUNT(*)
+                        FROM
+                            page_customer_groups
+                        WHERE
+                            page_id = pages.id
+                                AND customer_group_id = '$customer_group_id')) AS visible_for_group
+            FROM
+                pages $theme_filter
+            ORDER BY navigation_sort_order";
+
+            $pages = DbHelper::objectArray($sql);
 
             $full_reference_list = array();
             $id_cache = array();
@@ -1269,10 +1329,12 @@ class Page extends CmsObject
                     $reference->parent_id = -1;
                 }
 
-                while (array_key_exists(
-                    $reference->parent_id,
-                    $id_cache
-                ) && (!$id_cache[$reference->parent_id]->navigation_visible || !$id_cache[$reference->parent_id]->visible_for_group)) {
+                while (array_key_exists($reference->parent_id, $id_cache)
+                    && (
+                        !$id_cache[$reference->parent_id]->navigation_visible
+                        || !$id_cache[$reference->parent_id]->visible_for_group
+                    )
+                ) {
                     if (array_key_exists($reference->parent_id, $id_cache)) {
                         $reference->parent_id = $id_cache[$reference->parent_id]->parent_id;
                     }
@@ -1680,7 +1742,9 @@ class Page extends CmsObject
     }
 
     /**
-     * Returns content of a {@link https://lsdomainexpired.mjman.net/docs/creating_editable_blocks/ content block} content by its code.
+     * Returns content of a
+     * {@link https://lsdomainexpired.mjman.net/docs/creating_editable_blocks/ content block}
+     * content by its code.
      * Behavior of this method can be affected by {@link cms:onGetPageBlockContent} event handler.
      * @documentable
      * @param string $code Specifies the content block code.
@@ -1987,7 +2051,9 @@ class Page extends CmsObject
         }
 
         if (!preg_match('/^[a-z_0-9-]*$/i', $directory_name)) {
-            throw new ApplicationException('Directory name can only contain latin characters, numbers, dashes and underscores.');
+            throw new ApplicationException(
+                'Directory name can only contain latin characters, numbers, dashes and underscores.'
+            );
         }
 
         $current_theme = null;
@@ -1997,9 +2063,17 @@ class Page extends CmsObject
 
         $theme_filter = $current_theme ? ' and theme_id=' . $current_theme->id : null;
 
+
         $in_use = DbHelper::scalar(
-            'select count(*) from pages where id <> :id and lower(directory_name)=:directory_name and ifnull(theme_id, 0)=ifnull(:theme_id, 0)' . $theme_filter,
-            array('id' => $this->id, 'directory_name' => $directory_name, 'theme_id' => $this->theme_id)
+            "select count(*) from pages
+                  where id <> :id 
+                  and lower(directory_name)=:directory_name 
+                  and ifnull(theme_id, 0)=ifnull(:theme_id, 0)" . $theme_filter,
+            array(
+                'id' => $this->id,
+                'directory_name' => $directory_name,
+                'theme_id' => $this->theme_id
+            )
         );
 
         if ($in_use) {
@@ -2117,8 +2191,9 @@ class Page extends CmsObject
     /**
      * Allows to define new columns in the page model.
      * The event handler should accept two parameters - the page object and the form execution context string.
-     * To add new columns to the page model, call the  {@link Db_ActiveRecord::define_column() define_column()} method of
-     * the page object.
+     * To add new columns to the page model, call the
+     * {@link Db_ActiveRecord::define_column() define_column()}
+     * method of the page object.
      * Before you add new columns to the model, you should add them to the database (the <em>pages</em> table).
      * <pre>
      * public function subscribeEvents()
@@ -2143,7 +2218,8 @@ class Page extends CmsObject
      * @param string $context Specifies the execution context.
      * @see cms:onGetPageFieldOptions
      * @see https://lsdomainexpired.mjman.net/docs/extending_existing_models Extending existing models
-     * @see https://lsdomainexpired.mjman.net/docs/creating_and_updating_database_tables Creating and updating database tables
+     * @see https://lsdomainexpired.mjman.net/docs/creating_and_updating_database_tables
+     *  Creating and updating database tables
      * @author LSAPP - MJMAN
      * @package cms.events
      * @see cms:onExtendPageForm
@@ -2181,7 +2257,8 @@ class Page extends CmsObject
      * @param string $context Specifies the execution context.
      * @see cms:onGetPageFieldOptions
      * @see https://lsdomainexpired.mjman.net/docs/extending_existing_models Extending existing models
-     * @see https://lsdomainexpired.mjman.net/docs/creating_and_updating_database_tables Creating and updating database tables
+     * @see https://lsdomainexpired.mjman.net/docs/creating_and_updating_database_tables
+     *  Creating and updating database tables
      * @author LSAPP - MJMAN
      * @package cms.events
      * @see cms:onExtendPageModel
@@ -2191,11 +2268,12 @@ class Page extends CmsObject
     }
 
     /**
-     * Allows to populate drop-down, radio- or checkbox list fields, which have been added with {@link cms:onExtendPageForm} event.
+     * Allows to populate drop-down, radio- or checkbox list fields,
+     * which have been added with {@link cms:onExtendPageForm} event.
      * Usually you do not need to use this event for fields which represent
-     * {@link https://lsdomainexpired.mjman.net/docs/extending_models_with_related_columns data relations}. But if you want a standard
-     * field (corresponding an integer-typed database column, for example), to be rendered as a drop-down list, you should
-     * handle this event.
+     * {@link https://lsdomainexpired.mjman.net/docs/extending_models_with_related_columns data relations}.
+     * But if you want a standard field (corresponding an integer-typed database column, for example),
+     * to be rendered as a drop-down list, you shoul handle this event.
      *
      * The event handler should accept 2 parameters - the field name and a current field value. If the current
      * field value is -1, the handler should return an array containing a list of options. If the current
@@ -2242,7 +2320,8 @@ class Page extends CmsObject
      * @param string $field_value Specifies the field value.
      * @return mixed Returns a list of options or a specific option label.
      * @see https://lsdomainexpired.mjman.net/docs/extending_existing_models Extending existing models
-     * @see https://lsdomainexpired.mjman.net/docs/creating_and_updating_database_tables Creating and updating database tables
+     * @see https://lsdomainexpired.mjman.net/docs/creating_and_updating_database_tables
+     *  Creating and updating database tables
      * @author LSAPP - MJMAN
      * @package cms.events
      * @see cms:onExtendPageModel
@@ -2282,11 +2361,14 @@ class Page extends CmsObject
     }
 
     /**
-     * Allows to hide a page from {@link https://lsdomainexpired.mjman.net/docs/creating_site_maps_dynamic_menus_and_breadcrumbs automatically generated menus and site maps}.
+     * Allows to hide a page from
+     * {@link https://lsdomainexpired.mjman.net/docs/creating_site_maps_dynamic_menus_and_breadcrumbs
+     * automatically generated menus and site maps}.
      * The handler function should return FALSE if the page should not be visible and TRUE
      * if it should be visible. If the event is handled by different modules, a page would
      * not be visible if any handler returned FALSE.
-     * The event handler should accept a single argument - the page object (stdClass). The object has the following properties:
+     * The event handler should accept a single argument - the page object (stdClass).
+     * The object has the following properties:
      * <ul>
      *   <li><em>id</em> - specifies the page identifier</li>
      *   <li><em>title</em> - specifies the page title</li>
@@ -2316,7 +2398,8 @@ class Page extends CmsObject
     }
 
     /**
-     * Triggered after a page has been duplicated with Duplicate {@link https://lsdomainexpired.mjman.net/docs/themes/ Theme} feature.
+     * Triggered after a page has been duplicated with Duplicate
+     * {@link https://lsdomainexpired.mjman.net/docs/themes/ Theme} feature.
      * @event cms:onAfterPageDuplicate
      * @param Page $original Specifies the original CMS page object.
      * @param Page $new Specifies the duplicated CMS page object.
@@ -2333,10 +2416,15 @@ class Page extends CmsObject
      * <ul>
      * <li><em>url</em> - the page URL.</li>
      * <li><em>content</em> - the page content string.</li>
-     * <li><em>path</em> - path to the page file (if {@link https://lsdomainexpired.mjman.net/docs/using_file_based_templates/ file-based templates mode} is enabled).</li>
-     * <li><em>file_based</em> - boolean, determines whether {@link https://lsdomainexpired.mjman.net/docs/using_file_based_templates/ file-based templates mode} is enabled.</li>
+     * <li><em>path</em> - path to the page file (if
+     * {@link https://lsdomainexpired.mjman.net/docs/using_file_based_templates/ file-based templates mode}
+     * is enabled).</li>
+     * <li><em>file_based</em> - boolean, determines whether
+     * {@link https://lsdomainexpired.mjman.net/docs/using_file_based_templates/ file-based templates mode}
+     * is enabled.</li>
      * </ul>
-     * The event handler should return an array with at least a single element <em>content</em> containing the updated content.
+     * The event handler should return an array with at least a single element <em>content</em>
+     * containing the updated content.
      * <pre>
      * public function subscribeEvents()
      * {
@@ -2373,12 +2461,17 @@ class Page extends CmsObject
      * <ul>
      * <li><em>url</em> - the page URL.</li>
      * <li><em>content</em> - the page content string.</li>
-     * <li><em>path</em> - path to the page file (if {@link https://lsdomainexpired.mjman.net/docs/using_file_based_templates/ file-based templates mode} is enabled).</li>
-     * <li><em>file_based</em> - boolean, determines whether {@link https://lsdomainexpired.mjman.net/docs/using_file_based_templates/ file-based templates mode} is enabled.</li>
+     * <li><em>path</em> - path to the page file (if
+     * {@link https://lsdomainexpired.mjman.net/docs/using_file_based_templates/ file-based templates mode}
+     * is enabled).</li>
+     * <li><em>file_based</em> - boolean, determines whether
+     * {@link https://lsdomainexpired.mjman.net/docs/using_file_based_templates/ file-based templates mode}
+     * is enabled.</li>
      * <li><em>code</em> - the content block code.</li>
      * <li><em>page_id</em> - the page identifier.</li>
      * </ul>
-     * The event handler should return an array with at least a single element <em>content</em> containing the updated content.
+     * The event handler should return an array with at least a single element <em>content</em>
+     * containing the updated content.
      * @event cms:onGetPageBlockContent
      * @param array $data Specifies a list of input parameters.
      * @return array Returns an array containing the <em>content</em> element.
@@ -2546,9 +2639,11 @@ class Page extends CmsObject
     }
 
     /**
-     * Allows to add new buttons to the toolbar above the Edit Content form (CMS/Pages/Edit page content) in the Administration Area.
-     * The event handler should accept two parameters - the back-end controller object and the page object. Use the controller's
-     * renderPartial() method to render new toolbar elements.
+     * Allows to add new buttons to the toolbar above the Edit Content form
+     * (CMS/Pages/Edit page content) in the Administration Area.
+     * The event handler should accept two parameters -
+     * the back-end controller object and the page object.
+     * Use the controller's renderPartial() method to render new toolbar elements.
      * <pre>
      * public function subscribeEvents()
      * {
@@ -2579,8 +2674,10 @@ class Page extends CmsObject
 
     /**
      * Allows to add new items to the list context menu on the CMS/Pages page in the Administration Area.
-     * The event handler should accept two parameters - the back-end controller object and the page object. Use the controller's
-     * renderPartial() method to render menu item elements. Each item should be presented with a LI and A elements. Example:
+     * The event handler should accept two parameters -
+     * the back-end controller object and the page object.
+     * Use the controller's renderPartial() method to render menu item elements.
+     * Each item should be presented with a LI and A elements. Example:
      * <pre>
      * public function subscribeEvents()
      * {
