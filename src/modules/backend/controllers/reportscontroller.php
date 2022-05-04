@@ -12,7 +12,7 @@ class ReportsController extends Controller
             Phpr::$response->redirect(url());
         }
 
-        $first_report_info = Backend_Reports::getFirstReportInfo();
+        $first_report_info = Reports::getFirstReportInfo();
         if ($first_report_info) {
             $url = url($first_report_info['module_id'].'/'.$first_report_info['report_id'].'_report');
             Phpr::$response->redirect($url);
