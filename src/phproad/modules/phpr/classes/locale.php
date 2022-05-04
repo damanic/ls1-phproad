@@ -389,6 +389,11 @@ class Locale
      */
     public function getDefinition($locale, $container, $source, $variation = 1)
     {
+        $locale = trim(strtolower($locale));
+        $container = trim(strtolower($container));
+        $source = trim(strtolower($source));
+        $variation = trim(strtolower($variation));
+
         if (!$this->definitionExists($locale, $container, $source, $variation)) {
             $this->load($locale);
         }
@@ -408,11 +413,19 @@ class Locale
 
     public function definitionExists($locale, $container, $source, $variation = 1)
     {
+        $locale = trim(strtolower($locale));
+        $container = trim(strtolower($container));
+        $source = trim(strtolower($source));
+        $variation = trim(strtolower($variation));
         return isset($this->definitions[$locale][$container][$source][$variation]);
     }
 
     public function setDefinition($locale, $container, $source, $value, $variation = 1)
     {
+        $locale = trim(strtolower($locale));
+        $container = trim(strtolower($container));
+        $source = trim(strtolower($source));
+        $variation = trim(strtolower($variation));
         $this->definitions[$locale][$container][$source][$variation] = $value;
     }
 
@@ -428,8 +441,6 @@ class Locale
 
     public function getPluralization($locale)
     {
-        traceLog('Getting Pluralizxation '.$locale);
-        traceLog($this->getPluralizations());
         // attempt to load the locale if pluralization doesn't exist
         if (!$this->pluralizationExists($locale)) {
             $this->load($locale);
@@ -675,11 +686,6 @@ class Locale
                         $destination = $row[2];
                     }
 
-                    $locale = trim($locale);
-                    $container = trim($container);
-                    $source = trim($source);
-                    $variation = trim($variation);
-
                     if (!$this->definitionExists($locale, $container, $source, $variation)) {
                         $this->setDefinition($locale, $container, $source, $destination, $variation);
                     }
@@ -688,7 +694,6 @@ class Locale
                 if ($handle) {
                     @fclose($handle);
                 }
-
                 throw $ex;
             }
         }
@@ -727,7 +732,7 @@ class Locale
      */
     public function getLanguage()
     {
-        Phpr::$deprecate->setFunction('getLanguage', 'getLocale');
+        Phpr::$deprecate->setFunction('getLanguage', 'getLocaleCode');
         return $this->getLocaleCode();
     }
 
