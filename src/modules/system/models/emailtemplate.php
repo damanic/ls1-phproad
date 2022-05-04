@@ -24,7 +24,7 @@ class EmailTemplate extends ActiveRecord
         'file_attachments' => array(
             'class_name'  => 'Db\File',
             'foreign_key' => 'master_object_id',
-            'conditions'  => "master_object_class='System\EmailTemplate'",
+            'conditions'  => "master_object_class='System_EmailTemplate'",
             'order'       => 'id',
             'delete'      => true
         ),

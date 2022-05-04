@@ -25,7 +25,7 @@ class RecordLock extends ActiveRecord
 
         if (is_object($obj)) {
             $record_id = $obj->get_primary_key_value();
-            $record_class = get_class($obj);
+            $record_class = get_class_id($obj);
             $obj = self::create()->where('record_id=?', $record_id)->where('record_class=?', $record_class);
         } else {
             $obj = self::create()->where('non_db_hash=?', $obj);
@@ -65,7 +65,7 @@ class RecordLock extends ActiveRecord
         $lock = new self();
         if (is_object($obj)) {
             $record_id = $obj->get_primary_key_value();
-            $record_class = get_class($obj);
+            $record_class = get_class_id($obj);
 
             $lock->record_id = $record_id;
             $lock->record_class = $record_class;
@@ -83,7 +83,7 @@ class RecordLock extends ActiveRecord
     {
         if (is_object($obj)) {
             $record_id = $obj->get_primary_key_value();
-            $record_class = get_class($obj);
+            $record_class = get_class_id($obj);
 
             DbHelper::query(
                 'delete from db_record_locks where record_id=:record_id and record_class=:record_class',

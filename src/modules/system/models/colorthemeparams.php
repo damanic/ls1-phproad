@@ -10,9 +10,9 @@ class ColorThemeParams extends ActiveRecord
         
     public $has_many = array(
         'logo'=>array(
-            'class_name'=>'Db_File',
+            'class_name'=>'Db\File',
             'foreign_key'=>'master_object_id',
-            'conditions'=>"master_object_class='System\ColorThemeParams'",
+            'conditions'=>"master_object_class='System_ColorThemeParams'",
             'order'=>'id',
             'delete'=>true
         )

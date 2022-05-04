@@ -9,7 +9,7 @@ class CsvFileImport extends ActiveRecord
         'csv_file' => array(
             'class_name' => 'Db\File',
             'foreign_key' => 'id',
-            'conditions' => "master_object_class='Db\CsvFileImport'",
+            'conditions' => "master_object_class='Db_CsvFileImport'",
             'order' => 'id',
             'delete' => true
         )

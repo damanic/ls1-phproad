@@ -1767,7 +1767,7 @@ class Db_FormBehavior extends Phpr\ControllerBehavior
             $file = Db_File::create();
             $file->is_public = $field_definition->fileIsPublic;
             $file->fromPost($_FILES['file']);
-            $file->master_object_class = get_class($model);
+            $file->master_object_class = get_class_id($model);
             $file->field = $dbName;
 
             $this->_controller->formBeforeFileUploadSave($model, $dbName, $file, $sessionKey);

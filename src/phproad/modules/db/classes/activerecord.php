@@ -743,17 +743,17 @@ class ActiveRecord extends Sql implements IteratorAggregate
         $deffered_where = "(exists 
 				(select * from db_deferred_bindings where 
 					detail_key_value={$object->table_name}.{$object->primary_key} 
-					and master_relation_name=:relation_name and master_class_name='{$this->className}' 
+					and master_relation_name=:relation_name and master_class_name=:master_class_name 
 					and is_bind=1 and session_key=:session_key))";
 
         $deffered_deletion_where = "(exists 
 					(select * from db_deferred_bindings where 
 						detail_key_value={$object->table_name}.{$object->primary_key} 
-						and master_relation_name=:relation_name and master_class_name='{$this->className}' 
+						and master_relation_name=:relation_name and master_class_name=:master_class_name 
 						and is_bind=0 and session_key=:session_key
 						and id > ifnull((select max(id) from db_deferred_bindings where 
 							detail_key_value={$object->table_name}.{$object->primary_key} 
-							and master_relation_name=:relation_name and master_class_name='{$this->className}' 
+							and master_relation_name=:relation_name and master_class_name=:master_class_name 
 							and is_bind=1 and session_key=:session_key), 0)
 						))";
 
@@ -761,7 +761,8 @@ class ActiveRecord extends Sql implements IteratorAggregate
             'foreign_key' => $this->{$options['primary_key']},
             'bind' => 1,
             'session_key' => $deferred_session_key,
-            'relation_name' => $name
+            'relation_name' => $name,
+            'master_class_name' => get_class_id($this->className)
         );
 
         if (!$this->is_new_record()) {
@@ -2249,7 +2250,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
     {
         if ($deferred_session_key) {
             $bindings = DeferredBinding::create();
-            $bindings->where('master_class_name=?', $this->className);
+            $bindings->where('master_class_name=?', get_class_id($this->className));
             $bindings->where('session_key=?', $deferred_session_key);
 
             $bindings = $bindings->find_all_internal();
@@ -2468,8 +2469,8 @@ class ActiveRecord extends Sql implements IteratorAggregate
             return $this->change_relation($relation, $record, 'bind');
         } else {
             $binding = DeferredBinding::create();
-            $binding->master_class_name = $this->className;
-            $binding->detail_class_name = get_class($record);
+            $binding->master_class_name = get_class_id($this->className);
+            $binding->detail_class_name = get_class_id($record);
             $binding->master_relation_name = $relation;
             $binding->is_bind = 1;
             $binding->detail_key_value = $record->get_primary_key_value();
@@ -2502,8 +2503,8 @@ class ActiveRecord extends Sql implements IteratorAggregate
             return $this->change_relation($relation, $record, 'unbind');
         } else {
             $binding = DeferredBinding::create();
-            $binding->master_class_name = $this->className;
-            $binding->detail_class_name = get_class($record);
+            $binding->master_class_name = get_class_id($this->className);
+            $binding->detail_class_name = get_class_id($record);
             $binding->master_relation_name = $relation;
             $binding->is_bind = 0;
             $binding->detail_key_value = $record->get_primary_key_value();

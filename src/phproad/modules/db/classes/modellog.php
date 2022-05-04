@@ -262,7 +262,7 @@ class ModelLog extends Extension
     {
         $primary_key = $this->_model->primary_key;
         $records = ModelLogRecord::create();
-        $records->where('master_object_class=?', get_class($this->_model));
+        $records->where('master_object_class=?', get_class_id($this->_model));
         $records->where('master_object_id=?', $this->_model->$primary_key);
         return $records;
     }
@@ -275,7 +275,7 @@ class ModelLog extends Extension
     {
         $primaryKey = $this->_model->primary_key;
         $record = new ModelLogRecord();
-        $record->master_object_class = get_class($this->_model);
+        $record->master_object_class = get_class_id($this->_model);
         $record->master_object_id = $this->_model->$primaryKey;
         $record->param_data = $content;
         $record->type = $type;
@@ -298,7 +298,10 @@ class ModelLog extends Extension
 
         $primary_key = $this->_model->primary_key;
         $where = 'master_object_class=:class AND master_object_id=:id';
-        $bind = array('class' => get_class($this->_model), 'id' => $this->_model->$primary_key);
+        $bind = array(
+            'class' => get_class_id($this->_model),
+            'id' => $this->_model->$primary_key
+        );
 
         $count = DbHelper::scalar('select count(*) from db_model_logs where ' . $where, $bind);
         $offset = $count - $number_to_keep;

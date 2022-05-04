@@ -39,8 +39,8 @@ class DeferredBinding extends ActiveRecord
     protected function findBindingRecord($isBind)
     {
         $obj = self::create();
-        $obj->where('master_class_name=?', $this->master_class_name);
-        $obj->where('detail_class_name=?', $this->detail_class_name);
+        $obj->where('master_class_name=?', get_class_id($this->master_class_name));
+        $obj->where('detail_class_name=?', get_class_id($this->detail_class_name));
         $obj->where('master_relation_name=?', $this->master_relation_name);
         $obj->where('is_bind=?', $isBind);
         $obj->where('detail_key_value=?', $this->detail_key_value);
@@ -52,7 +52,7 @@ class DeferredBinding extends ActiveRecord
     public static function cancelDeferredActions($masterClassName, $sessionKey)
     {
         $records = self::create()->
-        where('master_class_name=?', $masterClassName)
+        where('master_class_name=?', get_class_id($masterClassName))
             ->where('session_key=?', $sessionKey)
             ->find_all();
 
@@ -66,7 +66,7 @@ class DeferredBinding extends ActiveRecord
         $len = strlen($sessionKey);
 
         $records = self::create()->
-        where('master_class_name=?', $masterClassName)
+        where('master_class_name=?', get_class_id($masterClassName))
             ->where('substring(session_key, 1, ' . $len . ')=? ', $sessionKey)
             ->find_all();
 
@@ -145,14 +145,14 @@ class DeferredBinding extends ActiveRecord
             if (!$relatedObj->{$options['foreign_key']}) {
                 $relatedObj->delete();
             }
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
         }
     }
 
     public static function reset_object_field_bindings($master, $detail, $relation_name, $session_key)
     {
-        $master_class_name = get_class($master);
-        $detail_class_name = get_class($detail);
+        $master_class_name = get_class_id($master);
+        $detail_class_name = get_class_id($detail);
         $detail_key_value = $detail->get_primary_key_value();
 
         DbHelper::query(
