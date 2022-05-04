@@ -31,7 +31,7 @@ class Db_GridDateEditor extends Db_GridEditor
                 'selected_date' => $selected_date
                 )
             );
-        } catch (exception $ex) {
+        } catch (\Exception $ex) {
             Phpr::$response->ajaxReportException($ex, true, true);
         }
     }

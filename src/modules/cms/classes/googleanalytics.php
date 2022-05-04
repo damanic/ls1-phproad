@@ -89,7 +89,7 @@ class GoogleAnalytics
             $this->client = $client;
 
             $this->isLoggedIn = true;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new SystemException('Error connecting to Google Analytics. Google error: '.$e->getMessage());
         }
     }

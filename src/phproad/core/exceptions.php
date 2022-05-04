@@ -42,7 +42,7 @@ class Exception extends \Exception
                     $this->log_id = $result['id'] ?? null;
                     $this->log_status = $result['status'] ?? null;
                 }
-            } catch (Exception $ex) {
+            } catch (\Exception $ex) {
                 // Prevent the looping
             }
         }
@@ -500,7 +500,7 @@ function SysErrorHandler($errno, $errstr, $errfile, $errline)
     try {
         //Log and catch
         throw new PhpException($errstr, $errno, $errfile, $errline);
-    } catch (Exception $e) {
+    } catch (\Exception $e) {
         // Do nothing
     }
 }

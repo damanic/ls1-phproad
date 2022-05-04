@@ -98,7 +98,7 @@ class SecurityFramework
             if ($unserialized !== false) {
                 $res = $unserialized;
             }
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
         }
 
         if (Phpr::$config->get('ENABLE_SECURE_DATA_CACHING', false)) {
@@ -254,7 +254,7 @@ class SecurityFramework
                 Phpr::$config->get('CONFIG_KEY1', '@#$7as23'),
                 Phpr::$config->get('CONFIG_KEY2', '#0qw4-3dk')
             );
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             throw new SystemException('Error loading configuration file.');
         }
 

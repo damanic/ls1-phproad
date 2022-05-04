@@ -417,7 +417,7 @@ class Partial extends CmsObject
             );
 
             return (object)$result;
-        } catch (exception $ex) {
+        } catch (\Exception $ex) {
         }
 
         return null;
@@ -484,7 +484,7 @@ class Partial extends CmsObject
                     ) {
                         try {
                             self::create_from_file($dir . '/' . $file, $partial_name);
-                        } catch (exception $ex) {
+                        } catch (\Exception $ex) {
                         }
                     }
                 }

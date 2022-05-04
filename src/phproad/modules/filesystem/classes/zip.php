@@ -192,7 +192,7 @@ function zip_helper_post_extract($p_event, &$p_header)
             $mode = $is_folder ? Directory::getPermissions() : File::getPermissions();
             try {
                 @chmod($p_header['filename'], $mode);
-            } catch (Exception $ex) {
+            } catch (\Exception $ex) {
                 Zip::$chmodError = true;
             }
         }

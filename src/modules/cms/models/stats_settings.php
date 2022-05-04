@@ -318,7 +318,7 @@ class Stats_Settings extends SettingsRecord
                 $ga = new GoogleAnalytics();
                 $ga->load_keyfile($key_file_path);
                 $ga->login();
-            } catch (Exception $ex) {
+            } catch (\Exception $ex) {
                 if ($ex instanceof GaCaptchaException) {
                     throw $ex;
                 }

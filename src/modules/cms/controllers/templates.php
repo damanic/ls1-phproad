@@ -195,7 +195,7 @@ class Templates extends Controller
                 Phpr::$session->flash['success'] = $this->form_edit_delete_flash;
                 Phpr::$response->redirect(url('cms/templates/'));
             }
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             Phpr::$response->ajaxReportException($ex, true, true);
         }
     }

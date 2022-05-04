@@ -115,7 +115,7 @@ class Content extends Controller
                 $item->delete();
                 $items_deleted++;
                 $items_processed++;
-            } catch (Exception $ex) {
+            } catch (\Exception $ex) {
                 if (!$item) {
                     $msg = $ex->getMessage();
                 } else {

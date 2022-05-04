@@ -27,7 +27,7 @@ class CodeEditorSettings extends Controller
                 
             Phpr::$session->flash['success'] = 'Code editor settings have been saved.';
             Phpr::$response->redirect(url('system/mysettings'));
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             Phpr::$response->ajaxReportException($ex, true, true);
         }
     }

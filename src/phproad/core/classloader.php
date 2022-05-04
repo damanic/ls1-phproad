@@ -404,7 +404,7 @@ class ClassLoader
                     ? scandir($dir)
                     : array();
             }
-        } catch (exception $ex) {
+        } catch (\Exception $ex) {
             // Debug
             echo $path . ' ' . $ex->getMessage();
         }

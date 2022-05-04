@@ -947,7 +947,7 @@ class ValidationRules
         $timeZone = Phpr::$config->get('TIMEZONE');
         try {
             $timeZoneObj = new DateTimeZone($timeZone);
-        } catch (Exception $Ex) {
+        } catch (\Exception $Ex) {
             throw new SystemException(
                 'Invalid time zone specified in config.php: ' . $timeZone . '. Please refer this document for the list of correct time zones: http://docs.php.net/timezones.'
             );

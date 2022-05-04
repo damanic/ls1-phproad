@@ -870,7 +870,7 @@ class Page extends CmsObject
             eval('?>' . $page->content);
 
             $_cms_current_page_object = $prev_page;
-        } catch (exception $ex) {
+        } catch (\Exception $ex) {
             $_cms_current_page_object = $prev_page;
             @ob_end_clean();
         }
@@ -1418,7 +1418,7 @@ class Page extends CmsObject
 
         try {
             $this->save_to_files($this->get_file_path($file_name));
-        } catch (exception $ex) {
+        } catch (\Exception $ex) {
             throw new ApplicationException('Error saving page ' . $this->name . ' to file. ' . $ex->getMessage());
         }
 

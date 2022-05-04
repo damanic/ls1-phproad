@@ -42,7 +42,7 @@ class Module_Parameters
 
         try {
             return @unserialize(self::$cache[$module_id][$name]);
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             return $default;
         }
     }

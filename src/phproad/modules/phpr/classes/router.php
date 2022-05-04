@@ -159,7 +159,7 @@ class Router
                 }
 
                 break;
-            } catch (Exception $ex) {
+            } catch (\Exception $ex) {
                 throw new SystemException("Error routing rule [{$Rule->URI}]: " . $ex->getMessage());
             }
         }

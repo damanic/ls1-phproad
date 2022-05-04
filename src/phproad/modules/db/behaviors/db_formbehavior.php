@@ -1057,7 +1057,7 @@ class Db_FormBehavior extends Phpr\ControllerBehavior
             @unlink($path);
 
             $this->_controller->suppressView();
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             $this->_controller->handlePageError($ex);
         }
     }

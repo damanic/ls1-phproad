@@ -359,7 +359,7 @@ class Theme extends CmsObject
         if (strlen($agent_list)) {
             try {
                 return @unserialize($agent_list);
-            } catch (exception $ex) {
+            } catch (\Exception $ex) {
             }
         }
             

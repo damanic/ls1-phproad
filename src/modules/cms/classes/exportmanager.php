@@ -201,7 +201,7 @@ class ExportManager
             Directory::deleteRecursive($tmpDirPath);
 
             return $archiveName;
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             if (strlen($tmpDirPath) && @file_exists($tmpDirPath)) {
                 Directory::deleteRecursive($tmpDirPath);
             }
@@ -610,7 +610,7 @@ class ExportManager
             }
 
             Directory::deleteRecursive($tmpDirPath);
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             if (strlen($tmpDirPath) && @file_exists($tmpDirPath)) {
                 Directory::deleteRecursive($tmpDirPath);
             }

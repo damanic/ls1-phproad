@@ -172,7 +172,7 @@ class Template extends CmsObject
                 $this->html_code,
                 $this->get_file_path($file_name)
             );
-        } catch (exception $ex) {
+        } catch (\Exception $ex) {
             throw new ApplicationException('Error saving template '.$this->name.' to file. '.$ex->getMessage());
         }
             
