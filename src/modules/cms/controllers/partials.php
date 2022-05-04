@@ -3,7 +3,9 @@ namespace Cms;
 
 use Phpr;
 use Phpr\ApplicationException;
+use Backend;
 use Backend\Controller;
+use Shop\PaymentMethod;
 
 class Partials extends Controller
 {
@@ -57,13 +59,13 @@ class Partials extends Controller
         $this->app_page_title = 'Partials';
             
         Partial::auto_create_from_files();
-        Shop_PaymentMethod::create_partials();
+        PaymentMethod::create_partials();
     }
         
     protected function index_onRefresh()
     {
         Partial::auto_create_from_files();
-        Shop_PaymentMethod::create_partials();
+        PaymentMethod::create_partials();
 
         $this->renderPartial('partials_page_content');
     }

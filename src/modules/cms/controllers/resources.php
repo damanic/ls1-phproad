@@ -1,5 +1,5 @@
 <?php
-namespace Phpr;
+namespace Cms;
 
 use Phpr;
 use Phpr\ApplicationException;
