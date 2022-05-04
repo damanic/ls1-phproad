@@ -89,7 +89,6 @@ class Mcrypt implements EncryptionHandler
 
     protected function encryptCompat($data, $key)
     {
-        traceLog(Rijndael::MODE_CBC);
         //MCRYPT_MODE_CBC
         $rijndael = new Rijndael('cbc');
         $random_string = Random::string($this->ivSize);
