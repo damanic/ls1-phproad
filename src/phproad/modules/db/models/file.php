@@ -406,7 +406,7 @@ class File extends ActiveRecord
                 $params['mode'],
                 $returnJpeg
             );
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             @copy(PATH_APP . '/phproad/resources/images/thumbnail_error.gif', $thumbFile);
         }
 

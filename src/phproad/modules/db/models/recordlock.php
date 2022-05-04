@@ -132,7 +132,7 @@ class RecordLock extends ActiveRecord
                 'delete from db_record_locks where date_add(last_ping, interval ' . (self::lock_timeout * 2) . ' second) < :now',
                 array('now' => PhprDateTime::now())
             );
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
         }
     }
 }

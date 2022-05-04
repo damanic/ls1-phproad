@@ -95,7 +95,7 @@ class ModelDynamic extends Extension
                 
                 $this->model->$field_id = unserialize($child->value);
                 $this->model->fetched[$field_id] = unserialize($child->value);
-            } catch (Exception $ex) {
+            } catch (\Exception $ex) {
                 $this->model->$field_id = "NaN";
                 $this->model->fetched[$field_id] = "NaN";
                 traceLog(sprintf('Db\ModelDynamic was unable to parse %s in %s', $field_id, get_class($this->model)));

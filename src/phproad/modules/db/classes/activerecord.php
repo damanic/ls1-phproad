@@ -762,7 +762,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
             'bind' => 1,
             'session_key' => $deferred_session_key,
             'relation_name' => $name,
-            'master_class_name' => get_class_id($this->className)
+            'master_class_name' => get_class_id($this->className),
         );
 
         if (!$this->is_new_record()) {
@@ -770,7 +770,11 @@ class ActiveRecord extends Sql implements IteratorAggregate
                 $object->where("({$object->table_name}.{$foreignKey}=:foreign_key) or ($deffered_where)", $bind);
             } else {
                 $this_key = $this->get_primary_key_value();
-                $existing_m2m_records = "(exists (select * from {$options['join_table']} where {$options['primary_key']}='{$this_key}' and {$options['foreign_key']}={$object->table_name}.{$object->primary_key}))";
+                $existing_m2m_records = "
+                (exists (select * from {$options['join_table']} 
+                where {$options['primary_key']}='{$this_key}' 
+                and {$options['foreign_key']}={$object->table_name}.{$object->primary_key}))
+                ";
 
                 $object->where("({$existing_m2m_records}) or ($deffered_where)", $bind);
             }
@@ -1050,49 +1054,50 @@ class ActiveRecord extends Sql implements IteratorAggregate
             }
 
             switch ($type) {
-            case 'has_one':
-                $related = $this->{$name};
-                if (isset($related)) {
-                    $related->delete();
-                }
-                break;
-            case 'has_many':
-                $related = $this->{$name};
-                foreach ($related as $item) {
-                    $item->delete();
-                }
-                break;
-            case 'has_and_belongs_to_many':
-                if (!is_array($relation_info)) {
-                    $relation_info = array(
+                case 'has_one':
+                    $related = $this->{$name};
+                    if (isset($related)) {
+                        $related->delete();
+                    }
+                    break;
+                case 'has_many':
+                    $related = $this->{$name};
+                    foreach ($related as $item) {
+                        $item->delete();
+                    }
+                    break;
+                case 'has_and_belongs_to_many':
+                    if (!is_array($relation_info)) {
+                        $relation_info = array(
                         'class_name' => Inflector::classify($relation_info)
+                        );
+                    } elseif (!isset($relation_info['class_name'])) {
+                        $relation_info['class_name'] = Inflector::classify($name);
+                    }
+
+                    // Create model
+                    $object = new $relation_info['class_name']();
+                    if (is_null($object)) {
+                        throw new SystemException('Class not found: ' . $relation_info['class_name']);
+                    }
+
+                    $options = array_merge(
+                        array(
+                        'join_table' => $this->get_join_table_name($this->table_name, $object->table_name),
+                        'primary_key' => Inflector::foreignKey($this->table_name, $this->primary_key),
+                        'foreign_key' => Inflector::foreignKey($object->table_name, $object->primary_key)
+                        ),
+                        Util::splat($relation_info)
                     );
-                } elseif (!isset($relation_info['class_name'])) {
-                    $relation_info['class_name'] = Inflector::classify($name);
-                }
 
-                // Create model
-                $object = new $relation_info['class_name']();
-                if (is_null($object)) {
-                    throw new SystemException('Class not found: ' . $relation_info['class_name']);
-                }
-
-                $options = array_merge(
-                    array(
-                    'join_table' => $this->get_join_table_name($this->table_name, $object->table_name),
-                    'primary_key' => Inflector::foreignKey($this->table_name, $this->primary_key),
-                    'foreign_key' => Inflector::foreignKey($object->table_name, $object->primary_key)
-                    ), Util::splat($relation_info)
-                );
-
-                DB::select()->sql_delete(
-                    $options['join_table'],
-                    DB::where(
-                        $options['join_table'] . '.' . $options['primary_key'] . ' = ?',
-                        $this->{$this->primary_key}
-                    )
-                );
-                break;
+                    DB::select()->sql_delete(
+                        $options['join_table'],
+                        DB::where(
+                            $options['join_table'] . '.' . $options['primary_key'] . ' = ?',
+                            $this->{$this->primary_key}
+                        )
+                    );
+                    break;
             }
         }
 
@@ -1136,7 +1141,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
                             $security_framework->use_legacy_encryption_handler();
                         }
                         $val = $security_framework->decrypt($val);
-                    } catch (Exception $ex) {
+                    } catch (\Exception $ex) {
                         $val = null;
                     }
                 }
@@ -1210,27 +1215,27 @@ class ActiveRecord extends Sql implements IteratorAggregate
             $value = $this->type_cast_date($value, $field);
         } elseif (isset($field_info['type'])) {
             switch ($field_info['type']) {
-            case 'decimal':
-            case 'int':
-                //case 'tinyint':
-            case 'smallint':
-            case 'mediumint':
-            case 'bigint':
-            case 'double':
-            case 'float':
-                $value = $value;
-                break;
-            case 'bool':
-            case 'tinyint':
-                $value = $value;
-                break;
-            case 'time':
-                $value = $value;
-                break;
-            case 'datetime':
-            case 'date':
-                $value = $this->type_cast_date($value);
-                break;
+                case 'decimal':
+                case 'int':
+                    //case 'tinyint':
+                case 'smallint':
+                case 'mediumint':
+                case 'bigint':
+                case 'double':
+                case 'float':
+                    $value = $value;
+                    break;
+                case 'bool':
+                case 'tinyint':
+                    $value = $value;
+                    break;
+                case 'time':
+                    $value = $value;
+                    break;
+                case 'datetime':
+                case 'date':
+                    $value = $this->type_cast_date($value);
+                    break;
             }
         }
 
@@ -1467,7 +1472,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
                 if (is_array($descriptions) && array_key_exists($this->table_name, $descriptions)) {
                     return self::$describe_cache[$this->table_name] = $descriptions[$this->table_name];
                 }
-            } catch (exception $ex) {
+            } catch (\Exception $ex) {
             }
 
             // DESCRIBE and save cache
@@ -1722,7 +1727,6 @@ class ActiveRecord extends Sql implements IteratorAggregate
     public function __call($method_name, $parameters = null)
     {
         if (method_exists($this, $method_name)) { // If the method exists, just call it
-
             return call_user_func_array(array($this, $method_name), $parameters);
         }
 
@@ -1749,7 +1753,6 @@ class ActiveRecord extends Sql implements IteratorAggregate
                 11
             ) == "find_all_by"
             ) { //$result = $this->find_all_by(substr($method_name, 12), $parameters);
-
                 return call_user_func_array(
                     array($this, 'find_all_by'),
                     array_merge(array(substr($method_name, 12)), $parameters)
@@ -1763,7 +1766,6 @@ class ActiveRecord extends Sql implements IteratorAggregate
                 7
             ) == "find_by"
             ) { //$result = $this->find_by(substr($method_name, 8), $parameters);
-
                 return call_user_func_array(
                     array($this, 'find_by'),
                     array_merge(array(substr($method_name, 8)), $parameters)
@@ -2031,66 +2033,66 @@ class ActiveRecord extends Sql implements IteratorAggregate
             return $object->find_by_sql($options['finder_sql']);
         } else {
             switch ($type) {
-            case 'has_one':
-                //$object->where($object->primary_key . ' = ?', $this->{$options['foreign_key']});
-                if (!$has_foreign_key) {
-                    $options['foreign_key'] = Inflector::foreignKey($this->table_name, $object->primary_key);
-                }
+                case 'has_one':
+                    //$object->where($object->primary_key . ' = ?', $this->{$options['foreign_key']});
+                    if (!$has_foreign_key) {
+                        $options['foreign_key'] = Inflector::foreignKey($this->table_name, $object->primary_key);
+                    }
 
-                $object->where($options['foreign_key'] . ' = ?', $this->{$options['primary_key']});
-                break;
-            case 'has_many':
-                if (!$has_foreign_key) {
-                    $options['foreign_key'] = Inflector::foreignKey($this->table_name, $object->primary_key);
-                }
+                    $object->where($options['foreign_key'] . ' = ?', $this->{$options['primary_key']});
+                    break;
+                case 'has_many':
+                    if (!$has_foreign_key) {
+                        $options['foreign_key'] = Inflector::foreignKey($this->table_name, $object->primary_key);
+                    }
 
-                if (!$has_primary_key) {
-                    $options['primary_key'] = Inflector::foreignKey($this->table_name, $this->primary_key);
-                }
+                    if (!$has_primary_key) {
+                        $options['primary_key'] = Inflector::foreignKey($this->table_name, $this->primary_key);
+                    }
 
-                $object->where($options['foreign_key'] . ' = ?', $this->get_primary_key_value());
-                break;
-            case 'has_and_belongs_to_many':
-                if (!isset($options['join_table'])) {
-                    $options['join_table'] = $this->get_join_table_name($this->table_name, $object->table_name);
-                }
+                    $object->where($options['foreign_key'] . ' = ?', $this->get_primary_key_value());
+                    break;
+                case 'has_and_belongs_to_many':
+                    if (!isset($options['join_table'])) {
+                        $options['join_table'] = $this->get_join_table_name($this->table_name, $object->table_name);
+                    }
 
-                if (!$has_primary_key) {
-                    $options['primary_key'] = Inflector::foreignKey($this->table_name, $this->primary_key);
-                }
+                    if (!$has_primary_key) {
+                        $options['primary_key'] = Inflector::foreignKey($this->table_name, $this->primary_key);
+                    }
 
-                if (isset($options['join_primary_key'])) {
-                    $options['primary_key'] = $options['join_primary_key'];
-                }
+                    if (isset($options['join_primary_key'])) {
+                        $options['primary_key'] = $options['join_primary_key'];
+                    }
 
-                if (!$has_foreign_key) {
-                    $options['foreign_key'] = Inflector::foreignKey(
-                        $object->table_name,
-                        $object->primary_key
+                    if (!$has_foreign_key) {
+                        $options['foreign_key'] = Inflector::foreignKey(
+                            $object->table_name,
+                            $object->primary_key
+                        );
+                    }
+
+                    $object->join(
+                        $options['join_table'],
+                        $object->table_name . '.' . $object->primary_key . ' = ' . $options['join_table'] . '.' . $options['foreign_key']
+                    )->where(
+                        $options['join_table'] . '.' . $options['primary_key'] . ' = ?',
+                        $this->{$this->primary_key}
                     );
-                }
 
-                $object->join(
-                    $options['join_table'],
-                    $object->table_name . '.' . $object->primary_key . ' = ' . $options['join_table'] . '.' . $options['foreign_key']
-                )->where(
-                    $options['join_table'] . '.' . $options['primary_key'] . ' = ?',
-                    $this->{$this->primary_key}
-                );
+                    if (isset($options['use_straight_join'])) {
+                        $object->use_straight_join = $options['use_straight_join'];
+                    }
 
-                if (isset($options['use_straight_join'])) {
-                    $object->use_straight_join = $options['use_straight_join'];
-                }
+                    break;
+                case 'belongs_to':
+                    if (!$has_foreign_key) {
+                        $options['foreign_key'] = Inflector::foreignKey($object->table_name, $this->primary_key);
+                    }
 
-                break;
-            case 'belongs_to':
-                if (!$has_foreign_key) {
-                    $options['foreign_key'] = Inflector::foreignKey($object->table_name, $this->primary_key);
-                }
-
-                $object->where($options['primary_key'] . ' = ?', $this->{$options['foreign_key']});
-                //$object->where($options['primary_key'] . ' = ?', $this->{$options['foreign_key']});
-                break;
+                    $object->where($options['primary_key'] . ' = ?', $this->{$options['foreign_key']});
+                    //$object->where($options['primary_key'] . ' = ?', $this->{$options['foreign_key']});
+                    break;
             }
         }
 
@@ -2292,139 +2294,139 @@ class ActiveRecord extends Sql implements IteratorAggregate
         foreach ($this->changed_relations as $action => $relation) {
             foreach ($relation as $name => $info) {
                 switch ($info['type']) {
-                case 'has_many':
-                    $defaults = array(
+                    case 'has_many':
+                        $defaults = array(
                         'class_name' => Inflector::classify($name),
                         'foreign_key' => Inflector::foreignKey($this->table_name, $this->primary_key)
-                    );
-
-                    if (is_array($info['relation'])) {
-                        $options = array_merge($defaults, $info['relation']);
-                    } else {
-                        $options = array_merge(
-                            $defaults,
-                            array('class_name' => Inflector::classify($info['relation']))
                         );
-                    }
 
-                    // Create model
-                    $object = new $options['class_name']();
-                    if (is_null($object)) {
-                        throw new SystemException('Class not found: ' . $options['class_name']);
-                    }
-
-                    foreach ($info['values'] as $record) {
-                        $related_record = $this->find_related_record($name, $record);
-
-                        if (isset($info['relation']['primary_key'])) {
-                            $primary_key = $this->{$info['relation']['primary_key']};
+                        if (is_array($info['relation'])) {
+                            $options = array_merge($defaults, $info['relation']);
                         } else {
-                            $primary_key = $this->{$this->primary_key};
+                            $options = array_merge(
+                                $defaults,
+                                array('class_name' => Inflector::classify($info['relation']))
+                            );
+                        }
+
+                        // Create model
+                        $object = new $options['class_name']();
+                        if (is_null($object)) {
+                            throw new SystemException('Class not found: ' . $options['class_name']);
+                        }
+
+                        foreach ($info['values'] as $record) {
+                            $related_record = $this->find_related_record($name, $record);
+
+                            if (isset($info['relation']['primary_key'])) {
+                                $primary_key = $this->{$info['relation']['primary_key']};
+                            } else {
+                                $primary_key = $this->{$this->primary_key};
+                            }
+
+                            if ($action == 'bind') {
+                                if (!$related_record) {
+                                    $this->sql_update(
+                                        $object->table_name,
+                                        array($options['foreign_key'] => $primary_key),
+                                        DB::where($object->primary_key . ' IN (?)', $record)
+                                    );
+                                    $this->after_has_many_bind($record, $name);
+                                    $result = true;
+                                }
+                            } elseif ($action == 'unbind') {
+                                if ($related_record) {
+                                    $this->sql_update(
+                                        $object->table_name,
+                                        array($options['foreign_key'] => null),
+                                        DB::where($object->primary_key . ' IN (?)', $record)
+                                    );
+                                    $this->after_has_many_unbind($related_record, $name);
+
+                                    if (array_key_exists('delete', $info['relation']) && $info['relation']['delete']) {
+                                        $related_record->delete();
+                                    }
+                                    $result = true;
+                                }
+                            }
+                        }
+
+                        break;
+                    case 'has_and_belongs_to_many':
+                        $defaults = array(
+                        'class_name' => Inflector::classify($name)
+                        );
+                        if (is_array($info['relation'])) {
+                            $options = array_merge($defaults, $info['relation']);
+                        } else {
+                            $options = array_merge(
+                                $defaults,
+                                array('class_name' => Inflector::classify($info['relation']))
+                            );
+                        }
+
+                        // Create model
+                        $object = new $options['class_name']();
+                        if (is_null($object)) {
+                            throw new SystemException('Class not found: ' . $options['class_name']);
+                        }
+
+                        if (!isset($options['primary_key'])) {
+                            $options['primary_key'] = Inflector::foreignKey(
+                                $this->table_name,
+                                $this->primary_key
+                            );
+                        }
+
+                        if (!isset($options['foreign_key'])) {
+                            $options['foreign_key'] = Inflector::foreignKey(
+                                $object->table_name,
+                                $object->primary_key
+                            );
+                        }
+
+                        if (!isset($options['join_table'])) {
+                            $options['join_table'] = $this->get_join_table_name($this->table_name, $object->table_name);
                         }
 
                         if ($action == 'bind') {
-                            if (!$related_record) {
-                                $this->sql_update(
-                                    $object->table_name,
-                                    array($options['foreign_key'] => $primary_key),
-                                    DB::where($object->primary_key . ' IN (?)', $record)
-                                );
-                                $this->after_has_many_bind($record, $name);
-                                $result = true;
-                            }
-                        } elseif ($action == 'unbind') {
-                            if ($related_record) {
-                                $this->sql_update(
-                                    $object->table_name,
-                                    array($options['foreign_key'] => null),
-                                    DB::where($object->primary_key . ' IN (?)', $record)
-                                );
-                                $this->after_has_many_unbind($related_record, $name);
+                            $bind = array();
+                            $bind['model_id'] = $this->{$this->primary_key};
+                            $bind['bind_ids'] = $info['values'];
 
-                                if (array_key_exists('delete', $info['relation']) && $info['relation']['delete']) {
-                                    $related_record->delete();
-                                }
-                                $result = true;
-                            }
-                        }
-                    }
-
-                    break;
-                case 'has_and_belongs_to_many':
-                    $defaults = array(
-                        'class_name' => Inflector::classify($name)
-                    );
-                    if (is_array($info['relation'])) {
-                        $options = array_merge($defaults, $info['relation']);
-                    } else {
-                        $options = array_merge(
-                            $defaults,
-                            array('class_name' => Inflector::classify($info['relation']))
-                        );
-                    }
-
-                    // Create model
-                    $object = new $options['class_name']();
-                    if (is_null($object)) {
-                        throw new SystemException('Class not found: ' . $options['class_name']);
-                    }
-
-                    if (!isset($options['primary_key'])) {
-                        $options['primary_key'] = Inflector::foreignKey(
-                            $this->table_name,
-                            $this->primary_key
-                        );
-                    }
-
-                    if (!isset($options['foreign_key'])) {
-                        $options['foreign_key'] = Inflector::foreignKey(
-                            $object->table_name,
-                            $object->primary_key
-                        );
-                    }
-
-                    if (!isset($options['join_table'])) {
-                        $options['join_table'] = $this->get_join_table_name($this->table_name, $object->table_name);
-                    }
-
-                    if ($action == 'bind') {
-                        $bind = array();
-                        $bind['model_id'] = $this->{$this->primary_key};
-                        $bind['bind_ids'] = $info['values'];
-
-                        $bound_sql = "SELECT " . $options['foreign_key'] . " 
+                            $bound_sql = "SELECT " . $options['foreign_key'] . " 
 											  FROM " . $options['join_table'] . " 
 											  WHERE " . $options['foreign_key'] . " IN(:bind_ids) 
 											  AND " . $options['primary_key'] . " = :model_id";
-                        $bound_ids = DbHelper::scalarArray($bound_sql, $bind);
+                            $bound_ids = DbHelper::scalarArray($bound_sql, $bind);
 
-                        if ($bound_ids) {
-                            foreach ($info['values'] as $key => $bind_id) {
-                                if (in_array($bind_id, $bound_ids)) {
-                                    unset($info['values'][$key]);
+                            if ($bound_ids) {
+                                foreach ($info['values'] as $key => $bind_id) {
+                                    if (in_array($bind_id, $bound_ids)) {
+                                        unset($info['values'][$key]);
+                                    }
                                 }
                             }
-                        }
 
-                        if (count($info['values'])) {
-                            $this->sql_insert(
+                            if (count($info['values'])) {
+                                $this->sql_insert(
+                                    $options['join_table'],
+                                    array($options['primary_key'], $options['foreign_key']),
+                                    Util::pairs($this->{$this->primary_key}, $info['values'])
+                                );
+                                $result = true;
+                            }
+                        } elseif ($action == 'unbind') {
+                            $this->sql_delete(
                                 $options['join_table'],
-                                array($options['primary_key'], $options['foreign_key']),
-                                Util::pairs($this->{$this->primary_key}, $info['values'])
+                                Db::where($options['primary_key'] . ' = ?', $this->{$this->primary_key})->where(
+                                    $options['foreign_key'] . ' IN (?)',
+                                    array($info['values'])
+                                )
                             );
                             $result = true;
                         }
-                    } elseif ($action == 'unbind') {
-                        $this->sql_delete(
-                            $options['join_table'],
-                            Db::where($options['primary_key'] . ' = ?', $this->{$this->primary_key})->where(
-                                $options['foreign_key'] . ' IN (?)',
-                                array($info['values'])
-                            )
-                        );
-                        $result = true;
-                    }
-                    break;
+                        break;
                 }
 
                 // If the relation has already been assigned to the model as a property it is effectively cached,

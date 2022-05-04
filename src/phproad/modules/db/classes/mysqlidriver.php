@@ -55,7 +55,7 @@ class MySQLiDriver extends Driver_Base
                     $this->config['database'],
                     $port ? $port : ini_get("mysqli.default_port"),
                 ));
-            } catch (Exception $ex) {
+            } catch (\Exception $ex) {
                 throw new DatabaseException('Error connecting to the database.');
             }
 
@@ -77,7 +77,7 @@ class MySQLiDriver extends Driver_Base
             mysqli_query($this->get_connection(), 'SET sql_mode=""');
 
             ErrorLog::$disable_db_logging = false;
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             $exception               = new DatabaseException($ex->getMessage());
             $exception->hint_message = 'This problem could be caused by the MySQL connection configuration errors. Review the database connection parameters, and make sure that MySQL server is running.';
             throw $exception;

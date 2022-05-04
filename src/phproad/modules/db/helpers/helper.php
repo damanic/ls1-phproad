@@ -167,7 +167,7 @@ class Helper
 
             @fclose($file_handle);
             @chmod($path, File::getPermissions());
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             @fclose($file_handle);
             throw $ex;
         }

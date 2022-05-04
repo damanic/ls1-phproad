@@ -446,7 +446,7 @@ class Db_GridWidget extends Db_FormWidget
                 $widget_model_class
             );
             Phpr::$response->redirect($url);
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             Phpr::$response->ajaxReportException($ex, true, true);
         }
     }
@@ -502,7 +502,7 @@ class Db_GridWidget extends Db_FormWidget
 
             @unlink($path);
             die();
-        } catch (exception $ex) {
+        } catch (\Exception $ex) {
             die($ex->getMessage());
         }
     }
