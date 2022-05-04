@@ -51,7 +51,8 @@ class Email extends SettingsController
     {
         try {
             $obj = EmailParams::get();
-            $form_data = post($this->form_model_class, array());
+            $classId = get_class_id($this->form_model_class);
+            $form_data = post($classId, array());
                 
             if (array_key_exists('smtp_password', $form_data) && strlen($form_data['smtp_password'])) {
                 $form_data['smtp_password'] = base64_encode($form_data['smtp_password']);

@@ -1100,8 +1100,8 @@ class Db_FormBehavior extends Phpr\ControllerBehavior
             $this->_controller->formBeforeCreateSave($obj, $this->formGetEditSessionKey());
 
             Phpr::$events->fireEvent('core:onBeforeFormRecordCreate', $this->_controller, $obj);
-
-            $obj->save(post($this->_controller->form_model_class, array()), $this->formGetEditSessionKey());
+            $classId = get_class_id($this->_controller->form_model_class);
+            $obj->save(post($classId, array()), $this->formGetEditSessionKey());
 
             Phpr::$events->fireEvent('core:onAfterFormRecordCreate', $this->_controller, $obj);
 
@@ -1152,7 +1152,8 @@ class Db_FormBehavior extends Phpr\ControllerBehavior
             Phpr::$events->fireEvent('core:onBeforeFormRecordUpdate', $this->_controller, $obj);
 
             $flash_set = false;
-            $obj->save(post($this->_controller->form_model_class, array()), $this->formGetEditSessionKey());
+            $classId = get_class_id($this->_controller->form_model_class);
+            $obj->save(post($classId, array()), $this->formGetEditSessionKey());
 
             Phpr::$events->fireEvent('core:onAfterFormRecordUpdate', $this->_controller, $obj);
 

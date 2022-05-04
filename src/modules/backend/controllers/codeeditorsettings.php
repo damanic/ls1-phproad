@@ -22,7 +22,8 @@ class CodeEditorSettings extends Controller
     {
         try {
             $obj = CodeEditorConfiguration::create();
-            $obj->save(post($this->form_model_class, array()), $this->formGetEditSessionKey());
+            $classId = get_class_id($this->form_model_class);
+            $obj->save(post($classId, array()), $this->formGetEditSessionKey());
                 
             Phpr::$session->flash['success'] = 'Code editor settings have been saved.';
             Phpr::$response->redirect(url('system/mysettings'));

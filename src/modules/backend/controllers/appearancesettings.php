@@ -21,7 +21,8 @@ class AppearanceSettings extends Controller
     {
         try {
             $obj = AppearanceConfiguration::create();
-            $obj->save(post($this->form_model_class, array()), $this->formGetEditSessionKey());
+            $classId = get_class_id($this->form_model_class);
+            $obj->save(post($classId, array()), $this->formGetEditSessionKey());
                 
             Phpr::$session->flash['success'] = 'Appearance settings have been saved.';
             Phpr::$response->redirect(url('system/mysettings'));

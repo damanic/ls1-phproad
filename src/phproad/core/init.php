@@ -8,12 +8,13 @@ ini_set('xdebug.max_nesting_level', 300);
 //
 
 // Creates a unified class id
-if (! function_exists('get_class_id') ) {
-    function get_class_id( $obj )
+if (! function_exists('get_class_id')) {
+    function get_class_id($obj)
     {
-        if (is_string($obj) ) {
+        $class_name = '';
+        if (is_string($obj)) {
             $class_name = $obj;
-        } else {
+        } elseif (is_object($obj)) {
             $class_name = get_class($obj);
         }
 
@@ -23,16 +24,16 @@ if (! function_exists('get_class_id') ) {
 }
 
 // Obtains an object class name without namespaces
-if (! function_exists('get_real_class') ) {
-    function get_real_class( $obj )
+if (! function_exists('get_real_class')) {
+    function get_real_class($obj)
     {
-        if (! is_string($obj) ) {
+        if (! is_string($obj)) {
             $class_name = get_class($obj);
         } else {
             $class_name = $obj;
         }
 
-        if (preg_match('@\\\\([\w]+)$@', $class_name, $matches) ) {
+        if (preg_match('@\\\\([\w]+)$@', $class_name, $matches)) {
             $class_name = $matches[1];
         }
 
@@ -40,7 +41,7 @@ if (! function_exists('get_real_class') ) {
     }
 }
 
-if (! strlen(trim($applicationRoot)) ) {
+if (! strlen(trim($applicationRoot))) {
     $applicationRoot = dirname($bootstrapPath);
 }
 
@@ -51,7 +52,7 @@ $path_app = str_replace('\\', '/', realpath($applicationRoot));
 //
 
 // Load initial configuration. This is included again below.
-if ($path = realpath(PATH_APP . '/config/config.php') ) {
+if ($path = realpath(PATH_APP . '/config/config.php')) {
     include $path;
 }
 
@@ -73,9 +74,9 @@ Phpr::$classLoader = new Phpr\ClassLoader();
  *
  * @param string $class_name Specifies the class name to load
  */
-function Phpr_InternalAutoload( $name )
+function Phpr_InternalAutoload($name)
 {
-    if (! Phpr::$classLoader->load($name) && function_exists('Phpr_autoload') ) {
+    if (! Phpr::$classLoader->load($name) && function_exists('Phpr_autoload')) {
         Phpr_autoload($name);
     }
 }
@@ -121,17 +122,17 @@ Phpr\Deprecate::$suppressReported = true;
  * Configure the application and initialize the request object
  */
 
-if (Phpr::$router === null ) {
+if (Phpr::$router === null) {
     Phpr::$router = new Phpr\Router();
 }
 
 // Load config for usage
-if ($path = realpath(PATH_APP . '/config/config.php') ) {
+if ($path = realpath(PATH_APP . '/config/config.php')) {
     include $path;
 }
 
 // Initialize script
-if ($path = Phpr::$classLoader->find_path('init/init.php') ) {
+if ($path = Phpr::$classLoader->find_path('init/init.php')) {
     include_once $path;
 }
 
@@ -141,7 +142,7 @@ Phpr::$request = new Phpr\Request();
 
 require PATH_SYSTEM . '/core/class_functions.php';
 
-if (file_exists(PATH_APP . '/' . 'init/custom_helpers.php') ) {
+if (file_exists(PATH_APP . '/' . 'init/custom_helpers.php')) {
     include PATH_APP . '/' . 'init/custom_helpers.php';
 }
 
@@ -149,10 +150,10 @@ if (file_exists(PATH_APP . '/' . 'init/custom_helpers.php') ) {
  * Initialize the core objects
  */
 
-if (Phpr::$errorLog === null ) {
+if (Phpr::$errorLog === null) {
     Phpr::$errorLog = new Phpr\ErrorLog();
 }
-if (Phpr::$traceLog === null ) {
+if (Phpr::$traceLog === null) {
     Phpr::$traceLog = new Phpr\TraceLog();
 }
 
@@ -166,11 +167,11 @@ function init_phpr_modules()
 {
     $paths = Phpr::$classLoader->find_paths('modules');
 
-    foreach ( $paths as $path ) {
+    foreach ($paths as $path) {
         $iterator = new DirectoryIterator($path);
 
-        foreach ( $iterator as $directory ) {
-            if (! $directory->isDir() || $directory->isDot() ) {
+        foreach ($iterator as $directory) {
+            if (! $directory->isDir() || $directory->isDot()) {
                 continue;
             }
 
@@ -179,25 +180,25 @@ function init_phpr_modules()
                     $module_file = $directory->getPathname() . '/classes/' . basename(
                         $directory->getPathname()
                     ) . '_module.php'
-                ) 
+                )
             ) {
                 continue;
             }
 
-            if (! file_exists($init_dir = $directory->getPathname() . '/init') ) {
+            if (! file_exists($init_dir = $directory->getPathname() . '/init')) {
                 continue;
             }
 
             $file_iterator = new DirectoryIterator($init_dir);
 
-            foreach ( $file_iterator as $file ) {
-                if (! $file->isFile() ) {
+            foreach ($file_iterator as $file) {
+                if (! $file->isFile()) {
                     continue;
                 }
 
                 $info = pathinfo($file->getPathname());
 
-                if (isset($info['extension']) && $info['extension'] == PHPR_EXT ) {
+                if (isset($info['extension']) && $info['extension'] == PHPR_EXT) {
                     include $file->getPathname();
                 }
             }

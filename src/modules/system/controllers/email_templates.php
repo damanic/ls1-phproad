@@ -104,7 +104,8 @@ class Email_Templates extends SettingsController
     {
         try {
             $obj = strlen($id) ? $this->formFindModelObject($id) : $this->formCreateModelObject();
-            $obj->validate_data(post($this->form_model_class, array()));
+            $classId = get_class_id($this->form_model_class);
+            $obj->validate_data(post($classId, array()));
             $obj->send_test_message();
                 
             echo Html::flash_message('The test message has been successfully sent.');

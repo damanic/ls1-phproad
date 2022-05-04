@@ -40,8 +40,8 @@ class Maintenance extends SettingsController
         try {
             $obj = new MaintenanceParams();
             $obj = $obj->load();
-
-            $obj->save(post($this->form_model_class, array()), $this->formGetEditSessionKey());
+            $classId = get_class_id($this->form_model_class);
+            $obj->save(post($classId, array()), $this->formGetEditSessionKey());
                 
             $this->cms_page_selector_save_model_data($this, $obj);
                 
