@@ -1,2 +1,0 @@
-ALTER TABLE cms_stats_settings CHANGE ga_enabled ga_service_enabled TINYINT;
-ALTER TABLE cms_stats_settings CHANGE ga_enable_tracking ga_enabled TINYINT;

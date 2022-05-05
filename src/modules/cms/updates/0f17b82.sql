@@ -1,1 +1,0 @@
-alter table cms_stats_settings add column ga_enable_doubleclick_remarketing tinyint(4);

@@ -1,1 +1,0 @@
-create index navigation_sort_order on pages(navigation_sort_order);

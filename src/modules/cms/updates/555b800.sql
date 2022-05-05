@@ -1,2 +1,0 @@
-alter table cms_stats_settings add column ga_site_speed_sample_rate int;
-update cms_stats_settings set ga_site_speed_sample_rate=1;

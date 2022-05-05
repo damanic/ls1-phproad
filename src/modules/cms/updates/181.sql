@@ -1,1 +1,0 @@
-alter table cms_stats_settings add column ga_track_page_speed tinyint(4);

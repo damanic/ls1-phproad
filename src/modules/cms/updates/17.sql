@@ -1,1 +1,0 @@
-create index title on pages(title);

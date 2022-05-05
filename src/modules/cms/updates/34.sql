@@ -1,1 +1,0 @@
-alter table pages add column navigation_label varchar(255);
