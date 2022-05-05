@@ -769,11 +769,11 @@ class Page extends CmsObject
 
             if (Theme::is_theming_enabled() && ($theme = Theme::get_active_theme())) {
                 $pages = DbHelper::objectArray(
-                    "select id, url from pages where theme_id=:theme_id",
+                    "select id, url from cms_pages where theme_id=:theme_id",
                     array('theme_id' => $theme->id)
                 );
             } else {
-                $pages = DbHelper::objectArray("select id, url from pages");
+                $pages = DbHelper::objectArray("select id, url from cms_pages");
             }
 
             foreach ($pages as $page) {
@@ -881,7 +881,7 @@ class Page extends CmsObject
     public function before_delete($id = null)
     {
         $isInUse = DbHelper::scalar(
-            'select count(*) from pages where security_redirect_page_id=:id',
+            'select count(*) from cms_pages where security_redirect_page_id=:id',
             array('id' => $this->id)
         );
 
@@ -892,7 +892,7 @@ class Page extends CmsObject
         }
 
         $isInUse = DbHelper::scalar(
-            'select count(*) from pages where parent_id=:id',
+            'select count(*) from cms_pages where parent_id=:id',
             array('id' => $this->id)
         );
 
@@ -1039,7 +1039,7 @@ class Page extends CmsObject
 
     public function after_create()
     {
-        DbHelper::query('update pages set navigation_sort_order=:navigation_sort_order where id=:id', array(
+        DbHelper::query('update cms_pages set navigation_sort_order=:navigation_sort_order where id=:id', array(
             'navigation_sort_order' => $this->id,
             'id' => $this->id
         ));
@@ -1063,7 +1063,7 @@ class Page extends CmsObject
         $counter = 1;
         $url = $base;
         while (DbHelper::scalar(
-            "select count(*) from pages where url=:url $theme_filter",
+            "select count(*) from cms_pages where url=:url $theme_filter",
             array('url' => $url, 'theme_id' => $theme_id)
         )) {
             $url = $base . '_' . $counter;
@@ -1088,8 +1088,8 @@ class Page extends CmsObject
 
         return DbHelper::object(
             "select
-					(select count(*) from pages where id=id $theme_filter) as page_num,
-					(select count(*) from pages where security_mode_id='customers' $theme_filter) as protected_page_num
+					(select count(*) from cms_pages where id=id $theme_filter) as page_num,
+					(select count(*) from cms_pages where security_mode_id='customers' $theme_filter) as protected_page_num
 				",
             array('theme_id' => $theme_id)
         );
@@ -1382,7 +1382,7 @@ class Page extends CmsObject
 
         foreach ($item_ids as $index => $id) {
             $order = $item_orders[$index];
-            DbHelper::query('update pages set navigation_sort_order=:navigation_sort_order where id=:id', array(
+            DbHelper::query('update cms_pages set navigation_sort_order=:navigation_sort_order where id=:id', array(
                 'navigation_sort_order' => $order,
                 'id' => $id
             ));
@@ -1545,7 +1545,7 @@ class Page extends CmsObject
     {
         $file_name = pathinfo($file_name, PATHINFO_FILENAME);
         DbHelper::query(
-            'update pages set directory_name=:file_name where id=:id',
+            'update cms_pages set directory_name=:file_name where id=:id',
             array('file_name' => $file_name, 'id' => $this->id)
         );
     }
@@ -1978,7 +1978,7 @@ class Page extends CmsObject
 
         if ($files) {
             $theme_filter = $current_theme ? ' where theme_id=' . $current_theme->id : null;
-            $existing_files = DbHelper::scalarArray('select directory_name from pages' . $theme_filter);
+            $existing_files = DbHelper::scalarArray('select directory_name from cms_pages' . $theme_filter);
 
             foreach ($files as $file) {
                 $file_path = $path . '/' . $file;
@@ -2027,7 +2027,7 @@ class Page extends CmsObject
 
         $dir = $settings_manager->get_templates_dir_path($current_theme) . '/pages';
         $theme_filter = $current_theme ? ' where theme_id=' . $current_theme->id : null;
-        $pages = DbHelper::objectArray('select id, directory_name from pages' . $theme_filter);
+        $pages = DbHelper::objectArray('select id, directory_name from cms_pages' . $theme_filter);
         if (file_exists($dir) && is_dir($dir)) {
             $directories = @scandir($dir);
 
@@ -2065,7 +2065,7 @@ class Page extends CmsObject
 
 
         $in_use = DbHelper::scalar(
-            "select count(*) from pages
+            "select count(*) from cms_pages
                   where id <> :id 
                   and lower(directory_name)=:directory_name 
                   and ifnull(theme_id, 0)=ifnull(:theme_id, 0)" . $theme_filter,

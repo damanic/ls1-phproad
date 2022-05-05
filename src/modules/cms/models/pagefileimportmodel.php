@@ -97,11 +97,11 @@ class PageFileImportModel extends ActiveRecord
 
         if ($current_theme_id) {
             $existing_urls = DbHelper::scalarArray(
-                'select url from pages where theme_id=:id',
+                'select url from cms_pages where theme_id=:id',
                 ['id'=>$current_theme_id]
             );
         } else {
-            $existing_urls = DbHelper::scalarArray('select url from pages');
+            $existing_urls = DbHelper::scalarArray('select url from cms_pages');
         }
 
         foreach ($page_parameters as $directory => $row) {

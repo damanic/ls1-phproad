@@ -11,7 +11,7 @@ use Db\Helper as DbHelper;
 *            This class was used to compile usage data and
 *            submit a report to developers.
 *
-*            The server(s) that received this data are
+*            The server(s) that received this data is
  *           no longer active.
  */
 class Metrics

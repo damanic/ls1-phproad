@@ -47,7 +47,7 @@ class ContentBlock extends ActiveRecord
             $user = Phpr::$security->getUser();
             if ($user) {
                 DbHelper::query(
-                    'update pages set updated_user_id=:user_id, updated_at=:updated_at where id=:id',
+                    'update cms_pages set updated_user_id=:user_id, updated_at=:updated_at where id=:id',
                     array(
                     'user_id'=> $user->id,
                     'id'=>$this->page_id,
@@ -56,7 +56,7 @@ class ContentBlock extends ActiveRecord
                 );
             } else {
                 DbHelper::query(
-                    'update pages set updated_at=:updated_at where id=:id',
+                    'update cms_pages set updated_at=:updated_at where id=:id',
                     array(
                         'updated_at'=>PhprDateTime::gmtNow(),
                         'id'=>$this->page_id)

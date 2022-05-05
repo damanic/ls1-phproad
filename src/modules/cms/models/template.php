@@ -130,7 +130,7 @@ class Template extends CmsObject
     public function before_delete($id = null)
     {
         $isInUse = DbHelper::scalar(
-            'select count(*) from pages where template_id=:id',
+            'select count(*) from cms_pages where template_id=:id',
             array('id'=>$this->id)
         );
             
@@ -185,7 +185,7 @@ class Template extends CmsObject
     {
         $file_name = pathinfo($file_name, PATHINFO_FILENAME);
         DbHelper::query(
-            'update templates set file_name=:file_name where id=:id',
+            'update cms_templates set file_name=:file_name where id=:id',
             array(
                 'file_name'=>$file_name,
                 'id'=>$this->id
@@ -348,7 +348,7 @@ class Template extends CmsObject
             $theme_filter = $current_theme ? ' where theme_id='.$current_theme->id : null;
                 
             $existing_templates = DbHelper::objectArray(
-				'select file_name, lower(name) as name from templates'.$theme_filter
+				'select file_name, lower(name) as name from cms_templates'.$theme_filter
 			);
             $existing_names = array();
             $existing_files = array();
@@ -408,7 +408,7 @@ class Template extends CmsObject
         $file_name = $this->validate_file_name($file_name);
             
         $in_use = DbHelper::scalar(
-            'select count(*) from templates 
+            'select count(*) from cms_templates 
 			 where id <> :id 
 			   and lower(file_name)=:file_name 
 			   and ifnull(theme_id, 0)=ifnull(:theme_id, 0)',
@@ -430,7 +430,7 @@ class Template extends CmsObject
     {
         $path = $this->get_file_path($this->file_name);
         if ($path && file_exists($path)) {
-            DbHelper::query('update templates set html_code=:content where id=:id', array(
+            DbHelper::query('update cms_templates set html_code=:content where id=:id', array(
                 'content'=>file_get_contents($path),
                 'id'=>$this->id
             ));

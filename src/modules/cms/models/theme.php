@@ -331,9 +331,9 @@ class Theme extends CmsObject
                        and pages.theme_id=:id',
                 $bind
             );
-            DbHelper::query('delete from pages where theme_id=:id', $bind);
-            DbHelper::query('delete from partials where theme_id=:id', $bind);
-            DbHelper::query('delete from templates where theme_id=:id', $bind);
+            DbHelper::query('delete from cms_pages where theme_id=:id', $bind);
+            DbHelper::query('delete from cms_partials where theme_id=:id', $bind);
+            DbHelper::query('delete from cms_templates where theme_id=:id', $bind);
         }
     }
         
@@ -847,9 +847,9 @@ class Theme extends CmsObject
             $sm->copy_templates_to_db();
         }
             
-        DbHelper::query('update pages set theme_id=:id', $bind);
-        DbHelper::query('update partials set theme_id=:id', $bind);
-        DbHelper::query('update templates set theme_id=:id', $bind);
+        DbHelper::query('update cms_pages set theme_id=:id', $bind);
+        DbHelper::query('update cms_partials set theme_id=:id', $bind);
+        DbHelper::query('update cms_templates set theme_id=:id', $bind);
             
         ModuleParameters::set('cms', 'enable_theming', true);
 

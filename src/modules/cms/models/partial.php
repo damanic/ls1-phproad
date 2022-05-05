@@ -147,11 +147,11 @@ class Partial extends CmsObject
                 
             if (Theme::is_theming_enabled() && ($theme = Theme::get_active_theme())) {
                 $partials = DbHelper::objectArray(
-                    "select * from partials where theme_id=:theme_id",
+                    "select * from cms_partials where theme_id=:theme_id",
                     array('theme_id'=>$theme->id)
                 );
             } else {
-                $partials = DbHelper::objectArray("select * from partials");
+                $partials = DbHelper::objectArray("select * from cms_partials");
             }
 
             foreach ($partials as $partial) {
@@ -269,7 +269,7 @@ class Partial extends CmsObject
     {
         $file_name = pathinfo($file_name, PATHINFO_FILENAME);
         DbHelper::query(
-            'update partials set file_name=:file_name where id=:id',
+            'update cms_partials set file_name=:file_name where id=:id',
             array('file_name'=>$file_name, 'id'=>$this->id)
         );
     }
@@ -400,7 +400,7 @@ class Partial extends CmsObject
             return null;
         }
 
-        $existing_files = DbHelper::scalarArray('select file_name as name from partials');
+        $existing_files = DbHelper::scalarArray('select file_name as name from cms_partials');
         if (in_array($file_name, $existing_files)) {
             return null;
         }
@@ -462,7 +462,7 @@ class Partial extends CmsObject
             $theme_filter = $current_theme ? ' where theme_id='.$current_theme->id : null;
                 
             $existing_partials = DbHelper::objectArray(
-                'select file_name, lower(name) as name from partials'.$theme_filter
+                'select file_name, lower(name) as name from cms_partials'.$theme_filter
             );
             $existing_names = array();
             $existing_files = array();
@@ -525,7 +525,7 @@ class Partial extends CmsObject
         $dir = $settings_manager->get_templates_dir_path($current_theme).'/partials';
         if (file_exists($dir) && is_dir($dir)) {
             $files = @scandir($dir);
-            $partials = DbHelper::objectArray('select id, file_name from partials');
+            $partials = DbHelper::objectArray('select id, file_name from cms_partials');
             foreach ($partials as $partial) {
                 $result =  in_array($partial->file_name.'.'.self::get_content_extension(), $files);
                 self::$file_existence_cache[$partial->id] = $result;
@@ -541,7 +541,7 @@ class Partial extends CmsObject
         $file_name = $this->validate_file_name($file_name);
                 
         $in_use = DbHelper::scalar(
-            'select count(*) from partials 
+            'select count(*) from cms_partials 
 				  where id <> :id 
 				    and lower(file_name)=:file_name 
 				    and ifnull(theme_id, 0)=ifnull(:theme_id, 0)',
@@ -563,7 +563,7 @@ class Partial extends CmsObject
     {
         $path = $this->get_file_path($this->file_name);
         if ($path && file_exists($path)) {
-            DbHelper::query('update partials set html_code=:content where id=:id', array(
+            DbHelper::query('update cms_partials set html_code=:content where id=:id', array(
                 'content'=>file_get_contents($path),
                 'id'=>$this->id
             ));

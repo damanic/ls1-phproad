@@ -902,7 +902,7 @@ class ExportManager
                 if (array_key_exists($redirect_id, $id_correlations)) {
                     $db_page->redirect_id = $id_correlations[$redirect_id];
 
-                    DbHelper::query('update pages set security_redirect_page_id=:redirect_id where id=:id', array(
+                    DbHelper::query('update cms_pages set security_redirect_page_id=:redirect_id where id=:id', array(
                         'redirect_id'=>$id_correlations[$redirect_id],
                         'id'=>$db_page->id
                     ));
@@ -912,7 +912,7 @@ class ExportManager
                 if (strlen($parent_id) && array_key_exists($parent_id, $id_correlations)) {
                     $db_page->parent_id = $id_correlations[$parent_id];
 
-                    DbHelper::query('update pages set parent_id=:parent_id where id=:id', array(
+                    DbHelper::query('update cms_pages set parent_id=:parent_id where id=:id', array(
                         'parent_id'=>$id_correlations[$parent_id],
                         'id'=>$db_page->id
                     ));

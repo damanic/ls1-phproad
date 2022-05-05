@@ -54,7 +54,7 @@ class MaintenanceParams extends ConfigurationRecord
         $obj = self::create();
         if ($obj->maintenance_page) {
             $original_page_url = DbHelper::scalar(
-                'select url from pages where id=:id',
+                'select url from cms_pages where id=:id',
                 array(
                     'id'=>$obj->maintenance_page
                 )
@@ -62,7 +62,7 @@ class MaintenanceParams extends ConfigurationRecord
 
             if ($original_page_url) {
                 $new_page_id = DbHelper::scalar(
-                    'select id from pages where url=:url and theme_id=:theme_id',
+                    'select id from cms_pages where url=:url and theme_id=:theme_id',
                     array(
                         'url'=>$original_page_url,
                         'theme_id'=>$theme->id)
