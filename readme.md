@@ -45,3 +45,7 @@ PHP supported versions: 7.4+
 #### Code Analysis (PSALM)
 `composer psalm-check`
 
+
+##Migration notes
+
+- Review all event subscriptions, some have changed. Eg. core: -> system:
