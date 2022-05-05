@@ -28,7 +28,7 @@ class Page extends CmsObject
     const default_static_page_name = 'Static Page';
     const default_static_page_url = '/static_page';
 
-    public $table_name = 'pages';
+    public $table_name = 'cms_pages';
 
     /**
      * @var string Specifies the page URL relative to the application root.
@@ -107,7 +107,7 @@ class Page extends CmsObject
 
     public $calculated_columns = array(
         'protocol_name' => array(
-            'sql' => "if(pages.protocol='any', 'Any', if(pages.protocol='none', 'None (redirect)', if(pages.protocol='https', 'HTTPS only', 'HTTP only')))",
+            'sql' => "if(cms_pages.protocol='any', 'Any', if(cms_pages.protocol='none', 'None (redirect)', if(cms_pages.protocol='https', 'HTTPS only', 'HTTP only')))",
             'type' => db_text
         )
     );
@@ -124,7 +124,7 @@ class Page extends CmsObject
     public $has_and_belongs_to_many = array(
         'customer_groups' => array(
             'class_name' => 'Shop\CustomerGroup',
-            'join_table' => 'page_customer_groups',
+            'join_table' => 'cms_page_customer_groups',
             'order' => 'name',
             'foreign_key' => 'customer_group_id',
             'primary_key' => 'page_id'
@@ -642,7 +642,7 @@ class Page extends CmsObject
             }
 
             $this->listParentIdOptions(
-                $obj->list_root_children('pages.navigation_sort_order'),
+                $obj->list_root_children('cms_pages.navigation_sort_order'),
                 $result,
                 0,
                 $this->id,
@@ -684,7 +684,7 @@ class Page extends CmsObject
 
             $result[$key] = str_repeat("&nbsp;", $level * 3) . h($item->title) . ' [' . h($item->url) . ']';
             $this->listParentIdOptions(
-                $item->list_children('pages.navigation_sort_order'),
+                $item->list_children('cms_pages.navigation_sort_order'),
                 $result,
                 $level + 1,
                 $ignore,
@@ -1282,12 +1282,12 @@ class Page extends CmsObject
                     (SELECT 
                             COUNT(*)
                         FROM
-                            page_customer_groups
+                            cms_page_customer_groups
                         WHERE
-                            page_id = pages.id
+                            page_id = cms_pages.id
                                 AND customer_group_id = '$customer_group_id')) AS visible_for_group
             FROM
-                pages $theme_filter
+                cms_pages $theme_filter
             ORDER BY navigation_sort_order";
 
             $pages = DbHelper::objectArray($sql);
@@ -1362,7 +1362,7 @@ class Page extends CmsObject
         }
 
         return DbHelper::scalar(
-            'select count(*) from page_customer_groups where page_id=:page_id and customer_group_id=:group_id',
+            'select count(*) from cms_page_customer_groups where page_id=:page_id and customer_group_id=:group_id',
             array(
                 'page_id' => $this->id,
                 'group_id' => $group_id
@@ -1906,7 +1906,7 @@ class Page extends CmsObject
             $index++;
         }
 
-        $this->sql_update('pages', $page_fields, 'id=' . $this->id);
+        $this->sql_update('cms_pages', $page_fields, 'id=' . $this->id);
 
         /*
          * Set content blocks

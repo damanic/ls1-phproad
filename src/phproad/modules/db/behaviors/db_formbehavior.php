@@ -19,10 +19,10 @@
  * and {@link Db_ActiveRecord::define_form_fields() form fields} should be defined in the model in order to be displayed in a form.
  *
  * To configure the extension, its properties should be defined in the extended controller class. Only the {@link Db_FormBehavior::$form_model_class $form_model_class}
- * property is required. Please read the {@link http://https://damanic.github.io/ls1-documentation/docs/administration_area_forms/ Administration Area Forms} article for the usage examples and details.
+ * property is required. Please read the {@link https://damanic.github.io/ls1-documentation/docs/administration_area_forms/ Administration Area Forms} article for the usage examples and details.
  *
  * @documentable
- * @see          http://https://damanic.github.io/ls1-documentation/docs/administration_area_forms/ Administration Area Forms
+ * @see          https://damanic.github.io/ls1-documentation/docs/administration_area_forms/ Administration Area Forms
  * @author       LSAPP
  * @package      core.classes
  * @see          Db_ListBehavior

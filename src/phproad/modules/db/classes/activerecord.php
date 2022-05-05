@@ -55,7 +55,7 @@ $activerecord_no_columns_info = false;
  *   $customer->save();
  * </pre>
  *
- * @see          http://https://damanic.github.io/ls1-documentation/docs/working_with_the_database/ Working with the database
+ * @see          https://damanic.github.io/ls1-documentation/docs/working_with_the_database/ Working with the database
  * @documentable
  * @author       LSAPP
  * @package      core.classes
@@ -96,7 +96,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
 
     /**
      * @var          array Contains a list of <em>Has One</em> relations.
-     * Please read {@link http://https://damanic.github.io/ls1-documentation/docs/creating_data_relations/ Creating data relations}
+     * Please read {@link https://damanic.github.io/ls1-documentation/docs/creating_data_relations/ Creating data relations}
      * article for details.
      * @documentable
      */
@@ -104,7 +104,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
 
     /**
      * @var          array Contains a list of <em>Has Many</em> relations.
-     * Please read {@link http://https://damanic.github.io/ls1-documentation/docs/creating_data_relations/ Creating data relations}
+     * Please read {@link https://damanic.github.io/ls1-documentation/docs/creating_data_relations/ Creating data relations}
      * article for details.
      * @documentable
      */
@@ -112,7 +112,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
 
     /**
      * @var          array Contains a list of <em>Has and Belongs To Many</em> relations.
-     * Please read {@link http://https://damanic.github.io/ls1-documentation/docs/creating_data_relations/ Creating data relations}
+     * Please read {@link https://damanic.github.io/ls1-documentation/docs/creating_data_relations/ Creating data relations}
      * article for details.
      * @documentable
      */
@@ -120,7 +120,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
 
     /**
      * @var          array Contains a list of <em>Belongs To</em> Many relations.
-     * Please read {@link http://https://damanic.github.io/ls1-documentation/docs/creating_data_relations/ Creating data relations}
+     * Please read {@link https://damanic.github.io/ls1-documentation/docs/creating_data_relations/ Creating data relations}
      * article for details.
      * @documentable
      */
@@ -694,7 +694,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
     }
 
     /**
-     * Returns a list of {@link http://https://damanic.github.io/ls1-documentation/docs/creating_data_relations/ relation} objects, taking into account deferred relations.
+     * Returns a list of {@link https://damanic.github.io/ls1-documentation/docs/creating_data_relations/ relation} objects, taking into account deferred relations.
      * Use this method to obtain a list of relation records, before the record is saved to the database.
      *
      * @documentable
@@ -3022,7 +3022,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
     }
 
     /**
-     * Adds column definition for <em>has_on</em> or <em>belongs_to</em> {@link http://https://damanic.github.io/ls1-documentation/docs/creating_data_relations/ relation} field.
+     * Adds column definition for <em>has_on</em> or <em>belongs_to</em> {@link https://damanic.github.io/ls1-documentation/docs/creating_data_relations/ relation} field.
      * You should define columns for a relation field if you want the field to be displayed in lists or forms. The method
      * returns {@link Db\ColumnDefinition column definition object} object which you can use to configure the column presentation and validation parameters.
      * Example:
@@ -3086,7 +3086,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
     }
 
     /**
-     * Adds column definition for <em>has_and_belongs_to_many</em> or <em>has_many</em> {@link http://https://damanic.github.io/ls1-documentation/docs/creating_data_relations/ relation} field.
+     * Adds column definition for <em>has_and_belongs_to_many</em> or <em>has_many</em> {@link https://damanic.github.io/ls1-documentation/docs/creating_data_relations/ relation} field.
      * You should define columns for a relation field if you want the field to be displayed in lists or forms. The method
      * returns a {@link Db\ColumnDefinition column definition object} which you can use to configure the column presentation and validation parameters.
      * Example:
@@ -3351,8 +3351,8 @@ class ActiveRecord extends Sql implements IteratorAggregate
      * }
      * </pre>
      *
-     * @see          http://https://damanic.github.io/ls1-documentation/docs/administration_area_lists/ Lists
-     * @see          http://https://damanic.github.io/ls1-documentation/docs/administration_area_forms/ Forms
+     * @see          https://damanic.github.io/ls1-documentation/docs/administration_area_lists/ Lists
+     * @see          https://damanic.github.io/ls1-documentation/docs/administration_area_forms/ Forms
      * @documentable
      * @param        string $context Specifies the execution context.
      */
@@ -3377,7 +3377,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
      * }
      * </pre>
      *
-     * @see          http://https://damanic.github.io/ls1-documentation/docs/administration_area_forms/ Forms
+     * @see          https://damanic.github.io/ls1-documentation/docs/administration_area_forms/ Forms
      * @documentable
      * @param        string $context Specifies the execution context.
      */
@@ -3447,7 +3447,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
     /**
      * Triggered before a SQL query is sent to the database.
      * <span class="note">This event is triggered only if the <em>ENABLE_DEVELOPER_TOOLS</em>
-     * {@link http://https://damanic.github.io/ls1-documentation/docs/lemonstand_configuration_options/ configuration option} is enabled. </span>
+     * {@link https://damanic.github.io/ls1-documentation/docs/lemonstand_configuration_options/ configuration option} is enabled. </span>
      * Event handler example:
      * <pre>
      * public function subscribeEvents()
@@ -3483,7 +3483,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
     /**
      * Triggered before a SQL query is executed by the database.
      * <span class="note">This event is triggered only if the <em>ENABLE_DEVELOPER_TOOLS</em>
-     * {@link http://https://damanic.github.io/ls1-documentation/docs/lemonstand_configuration_options/ configuration option} is enabled. </span>
+     * {@link https://damanic.github.io/ls1-documentation/docs/lemonstand_configuration_options/ configuration option} is enabled. </span>
      * The handler should accept two parameters - the SQL query string and MySQL query result value.
      * The result value depends on the query type and described in {@link http://ru.php.net/manual/en/function.mysql-query.php PHP documentation}.
      * Event handler example:

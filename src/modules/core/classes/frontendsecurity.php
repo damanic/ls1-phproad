@@ -185,7 +185,7 @@ class FrontEndSecurity extends Security
     /**
      * Triggered when a registered customer logs into the store.
      * @event onFrontEndLogin
-     * @see http://https://damanic.github.io/ls1-documentation/docs/customer_login_and_logout/ Customer login and logout
+     * @see https://damanic.github.io/ls1-documentation/docs/customer_login_and_logout/ Customer login and logout
      * @package core.events
      * @author LSAPP
      */
@@ -198,7 +198,7 @@ class FrontEndSecurity extends Security
      * Please note that this event is not triggered if a customer leaves the website or closes the browser tab.
      * The event is triggered before the customer session is destroyed.
      * @event onFrontEndLogout
-     * @see http://https://damanic.github.io/ls1-documentation/docs/customer_login_and_logout/ Customer login and logout
+     * @see https://damanic.github.io/ls1-documentation/docs/customer_login_and_logout/ Customer login and logout
      * @package core.events
      * @author LSAPP
      * @param Shop_Customer $customer The customer object.
@@ -210,7 +210,7 @@ class FrontEndSecurity extends Security
     /**
      * Triggered after a registered customer logs in.
      * @event onAfterFrontEndLogin
-     * @see http://https://damanic.github.io/ls1-documentation/docs/customer_login_and_logout/ Customer login and logout
+     * @see https://damanic.github.io/ls1-documentation/docs/customer_login_and_logout/ Customer login and logout
      * @package core.events
      * @author LSAPP
      * @param Shop_Customer $customer The customer object.

@@ -17,7 +17,7 @@ use Blog\Module as BlogModule;
  * This is an interface class for the caching API. The caching API supports 3 caching providers -
  * <em>file-based</em>, <em>memcached</em> and <em>APC</em>.
  * To learn more please read
- * {@link http://https://damanic.github.io/ls1-documentation/docs/caching_api Caching API documentation article}
+ * {@link https://damanic.github.io/ls1-documentation/docs/caching_api Caching API documentation article}
  * about LSAPP caching features and configuration. The following example demonstrates a typical
  * usage of the class:
  * <pre>
@@ -39,7 +39,7 @@ use Blog\Module as BlogModule;
  * }
  * </pre>
  * @documentable
- * @see http://https://damanic.github.io/ls1-documentation/docs/caching_api Caching API
+ * @see https://damanic.github.io/ls1-documentation/docs/caching_api Caching API
  * @author LSAPP
  * @package core.classes
  */

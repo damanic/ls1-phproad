@@ -19,7 +19,7 @@ use Phpr\ApplicationException;
      */
 class Partial extends CmsObject
 {
-    public $table_name = 'partials';
+    public $table_name = 'cms_partials';
         
     public $implement = 'Db_AutoFootprints';
     public $auto_footprints_visible = true;

@@ -10,7 +10,7 @@ use Backend;
 
 class PageFileImportModel extends ActiveRecord
 {
-    public $table_name = 'pages';
+    public $table_name = 'cms_pages';
 
     public $custom_columns = array('page_parameters'=>db_text);
         

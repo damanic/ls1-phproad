@@ -8,7 +8,7 @@ use Countable;
 /**
  * Represents a collection of ActiveRecord objects.
  * Objects of this class are returned by {@link \Db\ActiveRecord::find_all()} method
- * and some other methods and {@link http://https://damanic.github.io/ls1-documentation/docs/creating_data_relations/ relations}.
+ * and some other methods and {@link https://damanic.github.io/ls1-documentation/docs/creating_data_relations/ relations}.
  *
  * @documentable
  * @author       LSAPP

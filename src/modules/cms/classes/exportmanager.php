@@ -746,7 +746,7 @@ class ExportManager
         
     protected function set_page_customer_groups($page_id, $customer_groups)
     {
-        DbHelper::query('delete from page_customer_groups where page_id=:page_id', array('page_id'=>$page_id));
+        DbHelper::query('delete from cms_page_customer_groups where page_id=:page_id', array('page_id'=>$page_id));
             
         if ($this->customer_groups === null) {
             $group_objects = DbHelper::objectArray('select * from shop_customer_groups');
@@ -766,7 +766,7 @@ class ExportManager
             $customer_group = mb_strtoupper($customer_group);
             if (array_key_exists($customer_group, $this->customer_groups)) {
                 DbHelper::query(
-                    'insert into page_customer_groups(page_id, customer_group_id) values (:page_id, :customer_group_id)',
+                    'insert into cms_page_customer_groups(page_id, customer_group_id) values (:page_id, :customer_group_id)',
                     array(
                     'page_id'=>$page_id,
                     'customer_group_id'=>$this->customer_groups[$customer_group]

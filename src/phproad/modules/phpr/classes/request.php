@@ -585,7 +585,7 @@ class Request
 
     /**
      * Returns HTTP port number.
-     * If <em>STANDARD_HTTP_PORTS</em> parameter is set to TRUE in {@link http://https://damanic.github.io/ls1-documentation/docs/lemonstand_configuration_options/ config.php file},
+     * If <em>STANDARD_HTTP_PORTS</em> parameter is set to TRUE in {@link https://damanic.github.io/ls1-documentation/docs/lemonstand_configuration_options/ config.php file},
      * the method returns NULL.
      *
      * @documentable

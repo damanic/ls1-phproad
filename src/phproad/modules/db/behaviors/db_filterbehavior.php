@@ -15,10 +15,10 @@
  * </pre>
  * To configure the extension, its properties should be defined in the extended controller class.
  * Filter classes should be defined separately and be inherited from the Db_DataFilter class. Please refer to the
- * {@link http://https://damanic.github.io/ls1-documentation/docs/list_filters/ Administration Area Filters} article for the usage examples and details.
+ * {@link https://damanic.github.io/ls1-documentation/docs/list_filters/ Administration Area Filters} article for the usage examples and details.
  *
  * @documentable
- * @see          http://https://damanic.github.io/ls1-documentation/docs/list_filters/ Administration Area Filters
+ * @see          https://damanic.github.io/ls1-documentation/docs/list_filters/ Administration Area Filters
  * @author       LSAPP
  * @package      core.classes
  * @see          Db_FormBehavior

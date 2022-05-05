@@ -16,7 +16,7 @@ use Phpr\Inflector;
      */
 class Template extends CmsObject
 {
-    public $table_name = 'templates';
+    public $table_name = 'cms_templates';
         
     public $implement = 'Db_AutoFootprints';
     public $auto_footprints_visible = true;

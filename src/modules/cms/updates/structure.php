@@ -2,6 +2,7 @@
 
 //pages -> cms_pages
 $table = Db\Structure::table('cms_pages');
+$table->safeMode = true; //do not delete undefined columns
 $table->primaryKey('id');
 $table->column('title', db_varchar)->index();
 $table->column('url', db_varchar)->index();
@@ -45,6 +46,7 @@ $table->column('theme_id', db_number)->index();
 
 //templates -> cms_templates
 $table = Db\Structure::table('cms_templates');
+$table->safeMode = true;
 $table->primaryKey('id');
 $table->column('name', db_varchar, 100);
 $table->column('description', db_varchar);
@@ -58,6 +60,7 @@ $table->column('theme_id', db_number)->index();
 
 //partials -> cms_partials
 $table = Db\Structure::table('cms_partials');
+$table->safeMode = true;
 $table->primaryKey('id');
 $table->column('name', db_varchar, 100)->index();
 $table->column('description', db_varchar);

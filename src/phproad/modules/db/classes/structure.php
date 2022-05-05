@@ -68,7 +68,7 @@ use Db\Helper as DbHelper;
  *
  * Manually update a module:
  *
- * Db\Update_Manager::applyDbStructure(PATH_APP, 'user');
+ * Db\UpdateManager::applyDbStructure(PATH_APP, 'user');
  * Db\Structure::saveAll();
  *
  */

@@ -326,9 +326,9 @@ class Theme extends CmsObject
              */
             $bind = array('id'=>$this->id);
             DbHelper::query(
-                'delete content_blocks from content_blocks, pages 
-                     where content_blocks.page_id=pages.id 
-                       and pages.theme_id=:id',
+                'delete content_blocks from content_blocks, cms_pages 
+                     where content_blocks.page_id=cms_pages.id 
+                       and cms_pages.theme_id=:id',
                 $bind
             );
             DbHelper::query('delete from cms_pages where theme_id=:id', $bind);

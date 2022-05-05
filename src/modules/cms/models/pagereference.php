@@ -150,19 +150,19 @@ class PageReference
         self::$cache = array();
         $references = DbHelper::objectArray(
             'select 
-				pages.id as page_id,
+				cms_pages.id as page_id,
 				cms_page_references.*, 
-				pages.title, 
-				pages.url, 
+				cms_pages.title, 
+				cms_pages.url, 
 				cms_themes.id as theme_id, 
 				cms_themes.name as theme_name 
 			from 
 				cms_page_references, 
-				pages, 
+				cms_pages, 
 				cms_themes 
 			where 
-				pages.id=cms_page_references.page_id
-				and cms_themes.id=pages.theme_id
+				cms_pages.id=cms_page_references.page_id
+				and cms_themes.id=cms_pages.theme_id
 			order by cms_page_references.id'
         );
 

@@ -19,10 +19,10 @@
  * should be defined in the model in order to be displayed in a list.
  *
  * To configure the extension, its properties should be defined in the extended controller class. Only the {@link Db_ListBehavior::$list_model_class $list_model_class}
- * property is required. Please read the {@link http://https://damanic.github.io/ls1-documentation/docs/administration_area_lists/ Administration Area Lists} article for the usage examples and details.
+ * property is required. Please read the {@link https://damanic.github.io/ls1-documentation/docs/administration_area_lists/ Administration Area Lists} article for the usage examples and details.
  *
  * @documentable
- * @see          http://https://damanic.github.io/ls1-documentation/docs/administration_area_lists/ Administration Area Lists
+ * @see          https://damanic.github.io/ls1-documentation/docs/administration_area_lists/ Administration Area Lists
  * @author       LSAPP
  * @package      core.classes
  * @see          Db_FormBehavior

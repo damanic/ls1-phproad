@@ -210,7 +210,7 @@ function radio_state( $value )
  * is installed into a subdirectory or to a domain root directory. It is highly recommended to use
  * this function for creating links, because it can save you lots of time if you decide to move
  * your LSAPP installation from a subdirectory to the domain root directory. <span class="note">Using this function
- * is required in {@link http://https://damanic.github.io/ls1-documentation/docs/creating_themes_for_marketplace LSAPP Marketplace themes}.</span>
+ * is required in {@link https://damanic.github.io/ls1-documentation/docs/creating_themes_for_marketplace LSAPP Marketplace themes}.</span>
  * For example, if you installed LSAPP into the shop subdirectory of <em>http://my_host.com</em> domain, the following call
  * will return <em>/shop/cart</em> URL:
  * <pre>root_url('/cart')</pre>

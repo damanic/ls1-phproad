@@ -9,5 +9,5 @@ class SecurityMode extends ActiveRecord
     const customers = 'customers';
     const guests = 'guests';
         
-    public $table_name = 'page_security_modes';
+    public $table_name = 'cms_page_security_modes';
 }
