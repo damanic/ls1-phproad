@@ -93,7 +93,7 @@ class ReportsData
             return self::$startReportingDate;
         }
 
-        $result = DbHelper::scalar('select date(order_datetime) from shop_orders order by id limit 0,1');
+        $result = DbHelper::scalar('select report_date from backend_report_dates order by report_date ASC limit 1');
             
         $api_dates = Backend::$events->fireEvent('shop:onGetStartReportingDate', $result);
         foreach ($api_dates as $api_date) {

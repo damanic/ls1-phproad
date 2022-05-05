@@ -11,7 +11,6 @@ use Backend;
 use Db\ActiveRecord;
 use Shop\CustomerGroup;
 use Twig\Error\Error as TwigError;
-use Core\Metrics;
 use Core\CacheBase;
 use Core\Configuration;
 use Users\User;
@@ -532,7 +531,6 @@ class Controller
     protected function logVisit($page)
     {
         Analytics::logVisit($page, Phpr::$request->getCurrentUri());
-        Metrics::log_pageview();
     }
 
     protected function reset_cache_request()

@@ -18,7 +18,7 @@ class XmlController
      * automatically if the $add_header parameter value is true
      * @param array $params Array of parameters to pass to the template
      * @param bool $add_xml_header Add XML header in the beginning of the document
-     * @return Returns processed document as string
+     * @return string Returns processed document as string
      */
     public function format_xml_template($template_name, $params = array(), $add_xml_header = true)
     {

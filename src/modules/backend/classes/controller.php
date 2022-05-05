@@ -12,7 +12,6 @@ use Phpr\Controller as PhprController;
 use Phpr\SystemException;
 use FileSystem\Directory;
 use Core\ModuleManager;
-use Core\Metrics;
 use Phpr\User_Parameters as UserParams;
 use Db\RecordLock;
 
@@ -116,9 +115,7 @@ class Controller extends PhprController
             }
         }
             
-        if (!Phpr::$request->isRemoteEvent()) {
-            Metrics::update_metrics();
-        } else {
+        if (Phpr::$request->isRemoteEvent()) {
             $event_name = isset($_SERVER['HTTP_PHPR_EVENT_HANDLER']) ? $_SERVER['HTTP_PHPR_EVENT_HANDLER'] : null;
             $event_name = substr($event_name, 3, -1);
             Backend::$events->fireEvent('backend:onBeforeRemoteEvent', $this, $event_name);
