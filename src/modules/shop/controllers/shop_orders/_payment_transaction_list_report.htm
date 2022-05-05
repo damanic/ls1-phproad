@@ -1,0 +1,49 @@
+
+<div class="scoreboardReport">
+	<ul>
+		<li>
+			<h3>
+				Total Paid
+			</h3>
+
+			<p><?= $form_model->format_currency(Shop_PaymentTransaction::get_order_total_paid($form_model, $include_pending=true)) ?></p>																</p>
+			<p class="description">Includes payments in process</p>
+		</li>
+		<li>
+			<h3>Total Received</h3>
+			<p><?= $form_model->format_currency(Shop_PaymentTransaction::get_order_total_paid($form_model, $include_pending=false)) ?></p>
+			<p class="description">Payments confirmed as settled/received</p>
+		</li>
+		<li>
+			<h3>Total Refunded</h3>
+			<p><?= $form_model->format_currency(Shop_PaymentTransaction::get_order_total_refunded($form_model, $include_pending=true)) ?></p>
+			<p class="description">Includes refunds in process</p>
+		</li>
+		<li>
+			<h3>Refunds Complete</h3>
+			<p><?= $form_model->format_currency(Shop_PaymentTransaction::get_order_total_refunded($form_model, $include_pending=false)) ?></p>
+			<p class="description">Refunds confirmed as settled</p>
+		</li>
+		<?
+		$due = $form_model->get_payment_due();
+		if($due <> 0):
+		?>
+		<li>
+			<?
+				if($due >= 0){
+					$title = 'Underpaid';
+					$description = 'Payment due';
+				} else {
+					$title = 'Overpaid';
+					$description = 'Refund available';
+				}
+			?>
+			<h3><?= $title ?></h3>
+			<p><?= $form_model->format_currency(abs($due)) ?></p>
+			<p class="description"><?= $description ?></p>
+			</p>
+		</li>
+		<? endif;?>
+	</ul>
+	<div class="clear"></div>
+</div>

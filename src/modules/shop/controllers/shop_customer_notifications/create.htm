@@ -1,0 +1,62 @@
+<? Phpr_View::beginBlock("head") ?>
+	<script type="text/javascript" src="modules/system/resources/javascript/emailtemplates.js?<?=module_build('system')?>"></script>
+	<script type="text/javascript" src="modules/backend/resources/javascript/unload_manager.js?<?=module_build('backend')?>"></script>
+	
+	<script type="text/javascript">
+		UnloadManager.unload_message = 'The message content has been changed.';
+	</script>
+<? Phpr_View::endBlock() ?>
+
+<? Phpr_View::beginBlock("view") ?>
+	<ul class="breadcrumbs">
+		<? if($customer_id): ?>
+			<li><a href="<?= url('/shop/customers') ?>">Customer List</a></li>
+			<li><a href="<?= url('/shop/customers/preview/'.$customer_id) ?>">Customer Preview</a></li>
+		<? else: ?>
+			<li><a href="<?= url('/shop/orders') ?>">Order List</a></li>
+			<li><a href="<?= url('/shop/orders/preview/'.$order_id) ?>">Order Preview</a></li>
+		<? endif; ?>
+		<li><?= $this->app_page_title ?></li>
+	</ul>
+
+	<?= flash() ?>
+
+	<? if (!isset($fatalError)): ?>
+		<table class="layoutTable">
+			<tr>
+				<td>
+					<?= Phpr_Form::openTag() ?>
+						<? $this->formRender() ?>
+						<input type="hidden" name="Shop_OrderNotification[is_system]" value="<?= $form_model->is_system ?>"/>
+
+						<?= backend_ajax_button('Send', 'create_onSave', array(), "onAfterUpdate: setupVariablesSize, onAfterError: setupVariablesSize, prepareFunction: function(){phprTriggerSave();}, onBeforeScriptEval: function(){UnloadManager.reset_changes()}") ?>
+						<?
+							$thisUserMail = $this->currentUser->email;
+							if (strlen($thisUserMail))
+								echo backend_ajax_button('Send test message', 'create_onTest', array(), "onAfterUpdate: setupVariablesSize, onAfterError: setupVariablesSize, confirm: 'Test message will be sent to your email address $thisUserMail. Continue?', loadIndicator: {hideOnSuccess: true}, hideErrorOnSuccess: false, update: $(this).getForm().getElement('.formFlash'), prepareFunction: function(){phprTriggerSave();}");
+							else
+								echo backend_ajax_button('Send test message', 'create_onTest', array(), "alert: 'Your email address is not defined. Please specify it in the user parameters.'");
+						?>
+
+					<? if($order_id): ?>
+						<?= backend_button('Cancel', url('/shop/orders/preview/'.$order_id)) ?>
+					<? else: ?>
+						<?= backend_button('Cancel', url('/shop/customers/preview/'.$customer_id)) ?>
+					<? endif; ?>
+						<div class="clear"></div>
+
+						<input type="hidden" name="order_id" value="<?=$order_id?>"/>
+						<input type="hidden" name="customer_id" value="<?=$customer_id?>"/>
+						<input type="hidden" name="notification_id" value="<?=$notification_id?>"/>
+						<input type="hidden" name="template_id" value="<?=$template_id?>"/>
+					</form>
+				</td>
+				<td class="rightFixedColumn infoBlock">
+					<? $this->renderPartial('template_variables') ?>
+				</td>
+			</tr>
+		</table>
+	<? else: ?>
+		<p><a href="<?= url('/shop/customers') ?>">Return to the customers list</a></p>
+	<? endif ?>
+<? Phpr_View::endBlock() ?>

@@ -1,0 +1,7 @@
+{
+    "platform-check": false,
+    "require": {
+        "dvdoug/boxpacker": "^3.9",
+        "dompdf/dompdf": "^1.2"
+    }
+}

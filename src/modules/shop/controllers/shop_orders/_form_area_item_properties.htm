@@ -1,0 +1,16 @@
+<?
+$item = $form_model;
+?>
+
+<? if($item->product->properties->count):?>
+		<table class="name_value_list">
+			<?
+			foreach ( $item->product->properties as $property):
+				?>
+				<tr>
+					<th><?= h($property->name) ?></th>
+					<td><?= h($property->value) ?></td>
+				</tr>
+			<? endforeach ?>
+		</table>
+<? endif;?>

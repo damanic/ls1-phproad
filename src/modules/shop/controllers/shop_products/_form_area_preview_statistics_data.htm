@@ -1,0 +1,31 @@
+<li>
+	<? $summary_data = Shop_ProductStatisticsData::sales_summary($form_model->id) ?>
+	<p class="minor-comment">The totals consider the shops entire order history, and includes orders regardless of order status.</p>
+
+	<div class="scoreboardReport no-offset-bottom">
+		<ul>
+			<li>
+				<h3>Total items ordered</h3>
+				<p><?= h($summary_data->quantity) ?></p>
+			</li>
+			<li class="last">
+				<h3>Total amount</h3>
+				<p><?= format_currency($summary_data->amount) ?></p>
+			</li>
+		</ul>
+		<div class="clear"></div>
+	</div>
+
+	<hr style="border:0; border-top:solid 1px #CCC; margin:2px; display: block;"/>
+	<p class="minor-comment">The graph shows the 12 month period prior to last order placed, regardless of order status. You can view more detailed data in the <a href="<?= url('shop/products_report') ?>">Products Report</a>.</p>
+
+	<? if (!Phpr::$config->get('ENABLE_HTML5_CHARTS', true)):?>
+			<? $this->renderPartial('chart_preview_statistics--swf') ?>
+		<? else :?>
+			<section style="height:275px">
+					<? $this->renderPartial('chart_preview_statistics',array(
+						'chartData' => $this->previewGetStatisticsChartData($form_model->id)
+					)) ?>
+			</section>
+		<? endif;?>
+</li>

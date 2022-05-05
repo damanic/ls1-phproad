@@ -1,0 +1,39 @@
+<?
+	$properties = $form_model->list_related_records_deferred('properties', $this->formGetEditSessionKey());
+?>
+
+<table class="simpleList">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Code</th>
+			<th>Required</th>
+			<th>Default Value</th>
+			<th class="<?= !$properties->count ? 'last' : null ?>">Validate</th>
+			<? if ($properties->count): ?>
+				<th class="iconCell last">&nbsp;</th>
+			<? endif ?>
+		</tr>
+	</thead>
+
+	<tbody id="properties_list_body<?= $this->formGetEditSessionKey() ?>">
+		<? if (!$properties->count): ?>
+			<tr class="noData">
+				<td colspan="5" class="last">There are no property fields.</td>
+			</tr>
+		<? else: ?>
+			<? foreach ( $properties as $property):
+				$onClick = "$('property_id').value = '{$property->id}'; new PopupForm('onLoadPropertyForm', {ajaxFields: $('property_id').getForm()}); return false;";
+			?>
+				<tr class="<?= Backend_Html::zebra('property_entry') ?>">
+					<td onclick="<?= $onClick ?>" class="link"><a href="#" onclick="<?= $onClick ?>"><?= h($property->name) ?></a></td>
+					<td onclick="<?= $onClick ?>" class="link"><a href="#" onclick="<?= $onClick ?>"><?= h($property->api_code) ?></a></td>
+					<td onclick="<?= $onClick ?>" class="link"><a href="#" onclick="<?= $onClick ?>"><?= $property->required ? '&#10004;' : null ?></a></td>
+					<td onclick="<?= $onClick ?>" class="link"><a href="#" onclick="<?= $onClick ?>"><?= h($property->value) ?></a></td>
+					<td onclick="<?= $onClick ?>" class="link"><a href="#" onclick="<?= $onClick ?>"><?= h($property->displayField('validate')) ?></a></td>
+					<td class="iconCell last"><a onclick="$('property_id').value = '<?= $property->id ?>'; return $(this).getForm().sendPhpr('onDeleteProperty', {confirm: 'Do you really want to delete this property?', update: 'properties_list<?= $this->formGetEditSessionKey() ?>', loadIndicator: {show: false}});" title="Delete property" class="deleteDocument" href="#">Delete</a></td>
+				</tr>
+			<? endforeach ?>
+		<? endif ?>
+	</tbody>
+</table>

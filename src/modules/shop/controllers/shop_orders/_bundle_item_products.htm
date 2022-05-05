@@ -1,0 +1,9 @@
+<select name="bundle_offer_item_id" id="bundle_offer_item_id" autocomplete="off">
+	<? if (!isset($items)): ?>
+		<option value="">&lt;please select bundle item&gt;</option>
+	<? else: ?>
+		<? foreach ($items as $item): ?>
+			<option value="<?= $item->id ?>"><?= h($item->product->name) ?></option>
+		<? endforeach ?>
+	<? endif ?>
+</select>

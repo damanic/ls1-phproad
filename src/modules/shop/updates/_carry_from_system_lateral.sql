@@ -1,0 +1,2 @@
+insert into system_email_templates(code, subject, content, description) values('shop:registration_confirmation', 'Confirmation', '<p>Dear {customer_name}!</p>
+<p>Thank you for registering. Please use the following email and password to login:<br /> email:&nbsp;{customer_email}<br /> password: {customer_password}</p>', 'This message is sent to a customer after successful registration.');

@@ -1,0 +1,32 @@
+<? Phpr_View::beginBlock("head") ?>
+	<link rel="stylesheet" href="modules/shop/resources/css/shop.css" type="text/css"/>
+<? Phpr_View::endBlock() ?>
+
+<? Phpr_View::beginBlock("view") ?>
+	<ul class="breadcrumbs">
+		<? if($form_model->customer_id): ?>
+			<li><a href="<?= url('/shop/customers') ?>">Customer List</a></li>
+			<li><a href="<?= url('/shop/customers/preview/'.$form_model->customer_id) ?>">Customer Preview</a></li>
+		<? else: ?>
+			<li><a href="<?= url('/shop/orders') ?>">Order List</a></li>
+			<li><a href="<?= url('/shop/orders/preview/'.$form_model->order_id) ?>">Order Preview</a></li>
+		<? endif; ?>
+		<li><?= $this->app_page_title ?></li>
+	</ul>
+
+	<? if (!isset($fatalError)): ?>
+		<div class="form700">
+			<?= Phpr_Form::openTag() ?>
+				<? $this->formRenderPreview() ?>
+
+				<?= $form_model->customer_id ? backend_button('Return to customer preview', url('/shop/customers/preview/'.$form_model->customer_id)) : null ?>
+				<?= $form_model->order_id ? backend_button('Return to order preview', url('/shop/orders/preview/'.$form_model->order_id)) : null ?>
+				<?= backend_button('Re-send message', array('href'=>url('/shop/customer_notifications/create/').'?notification_id='.$form_model->id, 'class'=>'right')) ?>
+				<div class="clear"></div>
+			</form>
+		</div>
+	<? else: ?>
+		<?= flash() ?>
+		<p><a href="<?= url('/shop/customers/')?>">Return to the customers list</a></p>
+	<? endif ?>
+<? Phpr_View::endBlock() ?>

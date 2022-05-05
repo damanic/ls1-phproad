@@ -1,0 +1,71 @@
+<ul>
+	<? if (!$form_model->is_new_record()): ?>
+		<li>
+			<h3>Order</h3>
+			<p>
+				# <?= $form_model->id ?>
+				<? if ($form_model->deleted_at): ?> | Deleted <? endif ?>
+			</p>
+			<p class="description">
+				Created: <?= $form_model->order_datetime->format('%x') ?>
+			</p>
+		</li>
+		<li>
+			<h3>Customer</h3>
+			<p><a href="<?= url('shop/customers/preview/'.$form_model->customer_id) ?>"><?= h($form_model->billing_first_name).' '.h($form_model->billing_last_name) ?></a></p>
+			<p class="description">
+				Email: <a href="mailto:<?= $form_model->billing_email ?>"><?= h($form_model->billing_email) ?></a>
+			</p>
+		</li>
+	<? endif ?>
+
+	<? if ($currency_code = $form_model->get_currency_code()): ?>
+	<li>
+		<h3>Order Currency</h3>
+		<p><?= strtoupper($currency_code) ?></p>
+	</li>
+	<? endif ?>
+	<li>
+		<h3>Subtotal</h3>
+		<p><?= $form_model->format_currency($form_model->subtotal_before_discounts ? $form_model->subtotal_before_discounts : 0) ?></p>
+		<p class="description">
+			Sales tax: <?= $form_model->format_currency($form_model->goods_tax ? $form_model->goods_tax : 0) ?>
+		</p>
+	</li>
+	<li>
+		<h3>Shipping Rate</h3>
+		<p><?= $form_model->format_currency($form_model->get_shipping_quote_no_discount()) ?></p>
+		<p class="description">
+			Shipping tax: <?= $form_model->format_currency($form_model->shipping_tax ? $form_model->shipping_tax : 0) ?>
+		</p>
+	</li>
+	<li>
+		<h3>Total discount applied</h3>
+		<p><?= $form_model->format_currency($form_model->get_total_discount_applied()) ?></p>
+		<p class="description">
+			<? $coupon = $form_model->coupon; ?>
+			Coupon: <?= h($coupon ? $coupon->code : '<no coupon used>') ?>
+		</p>
+	</li>
+	<li>
+		<h3>Total</h3>
+		<p><?= $form_model->format_currency($form_model->total ? $form_model->total : 0) ?></p>
+		<p class="description">
+			<?
+				$tax_total = $form_model->goods_tax + $form_model->shipping_tax;
+			?>
+			Total tax: <?= $form_model->format_currency($tax_total ? $tax_total : 0) ?>
+		</p>
+	</li>
+	<? if($payment_due = $form_model->get_payment_due()):?>
+	<li class="last">
+		<h3>Payment Due</h3>
+		<p><?= $form_model->format_currency($payment_due) ?></p>
+		<p class="description">
+			<a href="<?= url('/shop/orders/preview/'.$form_model->id).'#payment_transactions'; ?>">View Transactions</a>
+		</p>
+	</li>
+	<? endif;?>
+
+</ul>
+<div class="clear"></div>
