@@ -163,7 +163,7 @@ class Shop_Product extends Shop_ActiveRecord
 	);
 
 	public $calculated_columns = array(
-		'page_url'=>array('sql'=>"pages.url", 'type'=>db_text, 'join'=>array('pages'=>'shop_products.page_id=pages.id')),
+		'page_url'=>array('sql'=>"cms_pages.url", 'type'=>db_text, 'join'=>array('cms_pages'=>'shop_products.page_id=cms_pages.id')),
 		'items_ordered'=>array('sql'=>'0', 'type'=>db_number),
 		'grouped_name'=>array('sql'=>'if (shop_products.grouped = 1, concat(shop_products.name, " (", shop_products.grouped_option_desc,")"), shop_products.name)', 'type'=>db_text)
 	);

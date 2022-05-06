@@ -61,7 +61,7 @@
 		);
 
 		public $calculated_columns = array(
-			'page_url'=>array('sql'=>"pages.url", 'type'=>db_text, 'join'=>array('pages'=>'shop_categories.page_id=pages.id'))
+			'page_url'=>array('sql'=>"cms_pages.url", 'type'=>db_text, 'join'=>array('cms_pages'=>'shop_categories.page_id=cms_pages.id'))
 		);
 		
 		public $custom_columns = array('num_of_products'=>db_number);

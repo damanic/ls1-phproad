@@ -785,7 +785,7 @@
 		
 		public static function create_partials()
 		{
-			$partial_list = Db_DbHelper::objectArray('select name, theme_id from partials');
+			$partial_list = Db_DbHelper::objectArray('select name, theme_id from cms_partials');
 			$partials = array();
 			foreach ($partial_list as $partial)
 			{

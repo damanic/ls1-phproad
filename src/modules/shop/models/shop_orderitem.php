@@ -36,7 +36,7 @@
 	 * @package shop.models
 	 * @author LSAPP - MJMAN
 	 */
-	class Shop_OrderItem extends Shop_ActiveRecord implements Shop_RetailItem, Shop_BundleItem
+	class Shop_OrderItem extends Shop_ActiveRecord implements Shop_RetailItemInterface, Shop_BundleItemInterface
 	{
 		public $table_name = 'shop_order_items';
 
