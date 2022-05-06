@@ -86,6 +86,7 @@ $table->addKey('date_and_url', array('visit_date', 'url'));
 $table = Db\Structure::table('cms_stats_settings');
 $table->primaryKey('id');
 $table->column('keep_pageviews', db_number);
+$table->column('ip_filters', db_text);
 $table->column('dashboard_paid_only', db_bool);
 $table->column('dashboard_display_today', db_bool);
 $table->column('enable_builtin_statistics', db_bool);
