@@ -35,7 +35,7 @@ class Backup_Archive extends ActiveRecord
     public $archive_name_prefix = null;
         
     public $belongs_to = array(
-        'status'=>array('class_name'=>'System\Backup_Status')
+        'status'=>array('class_name'=>'System\Backup_Status', 'foreign_key' => 'status_id')
     );
 
     public $custom_columns = array('archive_uploaded_dir'=>db_bool);
