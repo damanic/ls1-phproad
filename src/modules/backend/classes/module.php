@@ -4,6 +4,7 @@ namespace Backend;
 use Phpr;
 use Core\ModuleBase;
 use Phpr\ModuleInfo;
+use Phpr\Strings;
 
 class Module extends ModuleBase
 {
@@ -77,5 +78,18 @@ class Module extends ModuleBase
                 'section'=>'System'
                 )
         );
+    }
+
+    /**
+     * Detect if current URL request is for backend
+     * @return bool True if backend
+     */
+    public static function isBackend() : bool
+    {
+        $target = Phpr::$config->get('BACKEND_URL', 'backend');
+        $q = Phpr::$request->get_fields['q'] ?? '';
+        $backendUrl = '/' . Strings::normalizeUri($target);
+        $currentUrl = '/' . Strings::normalizeUri($q);
+        return stristr($currentUrl, $backendUrl) !== false;
     }
 }
