@@ -62,7 +62,7 @@ class ClassLoader
         }
 
         // Class already exists, no need to reload
-        if (class_exists($class)) {
+        if ($this->structure_exists($class)) {
             $this->init_class($class);
             $loaded = true;
         }
@@ -111,7 +111,7 @@ class ClassLoader
 
             include $full_path;
 
-            if (class_exists($class)) {
+            if ($this->structure_exists($class)) {
                 $this->init_class($class);
                 return true;
             }
@@ -148,13 +148,13 @@ class ClassLoader
             // If we are calling an alias, check the spoofed class
             // hasn't already been loaded
             //
-            if (class_exists($class) && !class_exists($class_alias)) {
+            if ($this->structure_exists($class) && !$this->structure_exists($class_alias)) {
                 class_alias($class, $class_alias);
                 return true;
             }
         }
 
-        if (class_exists($class)) {
+        if ($this->structure_exists($class)) {
             return true;
         }
 
@@ -185,7 +185,7 @@ class ClassLoader
 
                 include_once $full_path;
 
-                if (class_exists($class)) {
+                if ($this->structure_exists($class)) {
                     $this->init_class($class);
                     return true;
                 }
@@ -234,9 +234,9 @@ class ClassLoader
 
                 include_once $full_path;
 
-                if (class_exists($classic_class_name)) {
+                if ($this->structure_exists($classic_class_name)) {
                     // Create a class alias for namespace compatibility
-                    if (!class_exists($class)) {
+                    if (!$this->structure_exists($class)) {
                         if (!in_array(strtolower($class), $this->reservedClassAliases)) {
                             class_alias($classic_class_name, $class);
                         }
@@ -268,9 +268,9 @@ class ClassLoader
                 continue;
             }
 
-            if (!class_exists($className)) {
+            if (!$this->structure_exists($className)) {
                 $className = $this->convertLegacyClassName($className);
-                if (!class_exists($className)) {
+                if (!$this->structure_exists($className)) {
                     continue;
                 }
             }
@@ -388,6 +388,20 @@ class ClassLoader
     }
 
     /**
+     * Checks if the class/trait/interface has been defined.
+     *
+     * @param string $name The case-insensitive name of class/trait/interface
+     * @param bool $autoload Whether to call spl_autoload()
+     * @return bool
+     */
+    private function structure_exists(string $name, bool $autoload = true): bool
+    {
+        return class_exists($name, $autoload)
+            || interface_exists($name, $autoload)
+            || trait_exists($name, $autoload);
+    }
+
+    /**
      * Check the existence of a file, whilst caching directories
      *
      * @param string $path Absolute path to file
@@ -420,9 +434,12 @@ class ClassLoader
      */
     protected function init_class($class)
     {
+        if (!class_exists($class)) {
+            return;
+        }
+
         if ($this->auto_init === $class) {
             $this->auto_init = null;
-
             if (method_exists($class, 'init') && is_callable($class . '::init')) {
                 call_user_func($class . '::init');
             }
