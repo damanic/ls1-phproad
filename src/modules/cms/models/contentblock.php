@@ -9,7 +9,7 @@ use Db\Helper as DbHelper;
 
 class ContentBlock extends ActiveRecord
 {
-    public $table_name = 'content_blocks';
+    public $table_name = 'cms_content_blocks';
         
     public static $page_blocks = array();
 
