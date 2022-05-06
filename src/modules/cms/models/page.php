@@ -133,7 +133,8 @@ class Page extends CmsObject
 
     public $belongs_to = array(
         'template' => array(
-            'class_name' => 'Cms\Template'
+            'class_name' => 'Cms\Template',
+            'foreign_key' => 'template_id'
         ),
         'security_mode' => array(
             'class_name' => 'Cms\SecurityMode',
