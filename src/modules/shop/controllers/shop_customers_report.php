@@ -223,7 +223,7 @@ class Shop_Customers_Report extends Shop_GenericReport {
 						{$seriesValueField} as series_value,
 						COUNT(DISTINCT(shop_customers.id)) as record_value
 					from 
-						report_dates
+						backend_report_dates
 					$report_join
 
 					where 
@@ -243,7 +243,7 @@ class Shop_Customers_Report extends Shop_GenericReport {
 					select
 						{$seriesIdField} as series_id,
 						{$seriesValueField} as series_value
-					from report_dates
+					from backend_report_dates
 					where 
 						$intervalLimit
 					order by report_date

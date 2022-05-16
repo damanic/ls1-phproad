@@ -420,7 +420,7 @@
 				if ($tax_class)
 				{
 					$this_item_price = 0;
-					if ($item instanceof Shop_CartItem)
+					if ($item instanceof Shop\CartItem)
 						$this_item_price = $item->get_offer_price();
 					else
 					{

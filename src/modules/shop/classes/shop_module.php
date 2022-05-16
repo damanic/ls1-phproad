@@ -719,7 +719,7 @@
 		 */
 		public static function generate_report_dates()
 		{
-			$last_date = Db_DbHelper::scalar('select report_date from report_dates order by report_date desc limit 0, 1');
+			$last_date = Db_DbHelper::scalar('select report_date from backend_report_dates order by report_date desc limit 0, 1');
 			
 			$date = Phpr_DateTime::parse($last_date, Phpr_DateTime::universalDateFormat)->addDays(1);
 
@@ -761,7 +761,7 @@
 				}
 
 				Db_DbHelper::query(
-					"insert into report_dates(report_date, year, month, day, 
+					"insert into backend_report_dates(report_date, year, month, day, 
 						month_start, month_code, month_end, year_start, year_end) 
 						values (:report_date, :year, :month, :day, 
 						:month_start, :month_code, :month_end,

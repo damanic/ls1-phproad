@@ -79,7 +79,7 @@
 					sum($amountField * shop_orders.shop_currency_rate) as record_value
 				from 
 					shop_order_statuses,
-					report_dates
+					backend_report_dates
 				left join shop_orders on report_date = shop_orders.order_date
 				left join shop_coupons on shop_coupons.id = shop_orders.coupon_id
 				left join shop_customers on shop_customers.id=shop_orders.customer_id
@@ -109,7 +109,7 @@
 						sum($amountField * shop_orders.shop_currency_rate) as record_value
 					from 
 						shop_order_statuses,
-						report_dates
+						backend_report_dates
 					left join shop_orders on report_date = shop_orders.order_date
 					left join shop_coupons on shop_coupons.id = shop_orders.coupon_id
 					left join shop_customers on shop_customers.id=shop_orders.customer_id
@@ -134,7 +134,7 @@
 					select
 						{$seriesIdField} as series_id,
 						{$seriesValueField} as series_value
-					from report_dates
+					from backend_report_dates
 					where 
 						$intervalLimit
 					order by report_date

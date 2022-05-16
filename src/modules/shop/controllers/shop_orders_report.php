@@ -63,7 +63,7 @@
 					$frameFields
 				from 
 					shop_order_statuses,
-					report_dates
+					backend_report_dates
 				left join shop_orders on report_date = shop_orders.order_date
 				left join shop_customers on shop_customers.id=shop_orders.customer_id
 		
@@ -86,7 +86,7 @@
 				select
 					{$seriesIdField} as series_id,
 					{$seriesValueField} as series_value
-				from report_dates
+				from backend_report_dates
 				where 
 					$intervalLimit
 				order by report_date
@@ -148,10 +148,10 @@
 					'amount' as graph_code,
 					'amount' as graph_name,
 					report_date as series_id,
-					report_dates.report_date as series_value,
+					backend_report_dates.report_date as series_value,
 					sum(shop_orders.total * shop_orders.shop_currency_rate) as record_value
 				from 
-					report_dates
+					backend_report_dates
 				left join shop_orders on report_date = shop_orders.order_date and shop_orders.deleted_at is null $status_filter
 				left join shop_order_statuses on shop_order_statuses.id = shop_orders.status_id 
 				left join shop_customers on shop_customers.id=shop_orders.customer_id

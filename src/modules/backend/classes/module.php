@@ -84,7 +84,7 @@ class Module extends ModuleBase
      * Detect if current URL request is for backend
      * @return bool True if backend
      */
-    public static function isBackend() : bool
+    public static function isRequestBackend() : bool
     {
         $target = Phpr::$config->get('BACKEND_URL', 'backend');
         $q = Phpr::$request->get_fields['q'] ?? '';

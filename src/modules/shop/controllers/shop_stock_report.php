@@ -185,7 +185,7 @@
 						$amountField as record_value
 			from 
 				shop_order_statuses,
-				report_dates
+				backend_report_dates
 				left join shop_orders on report_date = shop_orders.order_date
 				left join shop_order_items on shop_order_items.shop_order_id = shop_orders.id
 				left join shop_products on shop_products.id = shop_order_items.shop_product_id	   

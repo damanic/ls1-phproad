@@ -321,7 +321,7 @@ class Analytics
 					count(distinct ip) as record_value,
 					report_date as series_id
 				from 
-					report_dates
+					backend_report_dates
 				left join 
 					cms_page_visits on visit_date=report_date
 				where report_date >= :start and report_date <= :end

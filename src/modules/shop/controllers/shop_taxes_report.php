@@ -53,7 +53,7 @@
 						sales_taxes, shipping_tax_1, shipping_tax_2, shipping_tax_name_1, shipping_tax_name_2
 					from
 						shop_order_statuses,
-						report_dates
+						backend_report_dates
 					left join shop_orders on report_date = shop_orders.order_date
 					left join shop_customers on shop_customers.id=shop_orders.customer_id
 					left join shop_coupons on shop_coupons.id = shop_orders.coupon_id
@@ -105,7 +105,7 @@
 						sales_taxes, shipping_tax_1, shipping_tax_2, shipping_tax_name_1, shipping_tax_name_2, report_date
 					from
 						shop_order_statuses,
-						report_dates
+						backend_report_dates
 					left join shop_orders on report_date = shop_orders.order_date
 					left join shop_customers on shop_customers.id=shop_orders.customer_id
 					left join shop_coupons on shop_coupons.id = shop_orders.coupon_id
@@ -127,7 +127,7 @@
 						{$seriesIdField} as series_id,
 						{$seriesValueField} as series_value,
 						null as record_value
-					from report_dates
+					from backend_report_dates
 					where
 						$intervalLimit
 					order by report_date
@@ -273,7 +273,7 @@
 					sales_taxes, shipping_tax_1, shipping_tax_2, shipping_tax_name_1, shipping_tax_name_2
 				from
 					shop_order_statuses,
-					report_dates
+					backend_report_dates
 				left join shop_orders on report_date = shop_orders.order_date
 				left join shop_customers on shop_customers.id=shop_orders.customer_id
 				left join shop_coupons on shop_coupons.id = shop_orders.coupon_id
