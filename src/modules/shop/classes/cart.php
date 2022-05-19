@@ -5,6 +5,7 @@ use Phpr;
 use Backend;
 use Db\DataCollection;
 use Phpr\ApplicationException;
+use Phpr\SystemException as SystemException;
 use Cms\Exception as CmsException;
 
 /**
@@ -83,7 +84,7 @@ class Cart
      * {@link https://lsdomainexpired.mjman.net/docs/displaying_product_bundle_items/ bundle product data}.
      * </li>
      *   <li>
-     *      <em>uploaded_files</em> - a {@link Db\DataCollection collection}
+     *      <em>uploaded_files</em> - a {@link \Db\DataCollection collection}
      *      of {@link Db_File files} to assign with the item.
      *    </li>
      * </ul>
@@ -622,7 +623,8 @@ class Cart
      * @documentable
      * @param string $key Specifies the item key.
      * @param string $cart_name Specifies the cart name.
-     * @param boolean $auto_remove_items Determines whether cart items corresponding to disabled products should be removed from the cart automatically.
+     * @param boolean $auto_remove_items Determines whether cart items corresponding
+     *  to disabled products should be removed from the cart automatically.
      * @return CartItem Returns the cart item object. Returns NULL if the item cannot be found.
      */
     public static function find_item($key, $cart_name = 'main', $auto_remove_items = true)
@@ -659,7 +661,11 @@ class Cart
                     $bundle_offer = $item->get_bundle_offer();
                     if ($bundle_offer && $bundle_offer->is_required) {
                         throw new ApplicationException(
-                            sprintf('"%s" item is required. You cannot delete it from "%s" product.', $bundle_offer->name, $master_item->product->name)
+                            sprintf(
+                                '"%s" item is required. You cannot delete it from "%s" product.',
+                                $bundle_offer->name,
+                                $master_item->product->name
+                            )
                         );
                     }
                 }
@@ -683,7 +689,12 @@ class Cart
 
         self::set_item_quantity($key, $value, $cart_name, $item);
         foreach ($bundle_items as $bundle_offer) {
-            self::set_item_quantity($bundle_offer->key, $bundle_item_quantities[$bundle_offer->key], $cart_name, $bundle_offer);
+            self::set_item_quantity(
+                $bundle_offer->key,
+                $bundle_item_quantities[$bundle_offer->key],
+                $cart_name,
+                $bundle_offer
+            );
         }
     }
         
@@ -708,7 +719,9 @@ class Cart
     {
         foreach ($values as $value_key => $value) {
             if (!preg_match('/^x_/', $value_key)) {
-                throw new Phpr_SystemException('Invalid custom data key: '.$value_key.'. Custom data keys should have the x_ prefix.');
+                throw new SystemException(
+                    'Invalid custom data key: '.$value_key.'. Custom data keys should have the x_ prefix.'
+                );
             }
         }
 
@@ -826,8 +839,18 @@ class Cart
         $options = $options->where('product_id in (?)', array($product_ids))->find_all();
 
         $extra_options = new ExtraOption(null, array('no_timestamps'=>true));
-        $extra_options->where('(product_id in (?) and (option_in_set is null or option_in_set <> 1))', array($product_ids));
-        $extra_options->orWhere('exists(select * from shop_products_extra_sets where extra_option_set_id=shop_extra_options.product_id and extra_product_id in (?))', array($product_ids));
+        $extra_options->where(
+            '(product_id in (?) and (option_in_set is null or option_in_set <> 1))',
+            array($product_ids)
+        );
+        $extra_options->orWhere(
+            'exists(
+                select * from shop_products_extra_sets 
+                where extra_option_set_id=shop_extra_options.product_id 
+                and extra_product_id in (?)
+            )',
+            array($product_ids)
+        );
 
         $extra_options = $extra_options->find_all();
             
@@ -862,7 +885,6 @@ class Cart
             $product = array_key_exists($item->product_id, $products) ? $products[$item->product_id] : null;
             if (!$product) {
                 $to_remove[] = $item;
-//                  self::remove_item($item->key, $cart_name);
                 continue;
             }
 
@@ -875,7 +897,6 @@ class Cart
 
                 if (!array_key_exists($product_option_key, $options)) {
                     $to_remove[] = $item;
-//                      self::remove_item($item->key, $cart_name);
                     continue 2;
                 }
 
@@ -885,10 +906,10 @@ class Cart
 
             foreach ($item->extras as $key => $value) {
                 $product_option_key = $key.'|'.$product->id;
-
-                if (!array_key_exists($product_option_key, $extra_options) && !array_key_exists($key, $global_extra_option_list)) {
+                $has_extra_options = array_key_exists($product_option_key, $extra_options);
+                $has_global_extra_option_list = array_key_exists($key, $global_extra_option_list);
+                if (!$has_extra_options && !$has_global_extra_option_list) {
                     $to_remove[] = $item;
-//                      self::remove_item($item->key, $cart_name);
                     continue 2;
                 }
 
@@ -971,8 +992,8 @@ class Cart
      * Returns total price of all items in the cart without any taxes applied.
      * This method is identical to {@link Cart::total_price() total_price()} method, but it
      * never adds tax to the result regardless of whether the
-     * {@link https://lsdomainexpired.mjman.net/docs/configuring_lemonstand_for_tax_inclusive_environments/ Display catalog/cart prices including tax}
-     * feature is enabled.
+     * {@link https://lsdomainexpired.mjman.net/docs/configuring_lemonstand_for_tax_inclusive_environments/
+     * Display catalog/cart prices including tax} feature is enabled.
      * @documentable
      * @param string $cart_name Specifies the cart name.
      * @param boolean $apply_cart_discounts Determines whether discounts should be applied to the result.
@@ -996,8 +1017,8 @@ class Cart
     /**
      * Returns total price of all items in the cart.
      * Adds tax to the result if the
-     * {@link https://lsdomainexpired.mjman.net/docs/configuring_lemonstand_for_tax_inclusive_environments/ Display catalog/cart prices including tax}
-     * feature is enabled.
+     * {@link https://lsdomainexpired.mjman.net/docs/configuring_lemonstand_for_tax_inclusive_environments/
+     *  Display catalog/cart prices including tax} feature is enabled.
      * Pass FALSE value to the second parameter in order to get the cart total before discounts applied.
      * @documentable
      * @param string $cart_name Specifies the cart name.
@@ -1005,11 +1026,16 @@ class Cart
      * @param array $items An optional array to cart items.
      * If the array is provided its elements will be used instead of the items contained by the cart.
      * @param boolean $force_tax Determines whether the tax should be applied regardless of whether
-     * {@link https://lsdomainexpired.mjman.net/docs/configuring_lemonstand_for_tax_inclusive_environments/ front-end taxes} are enabled.
+     * {@link https://lsdomainexpired.mjman.net/docs/configuring_lemonstand_for_tax_inclusive_environments/
+     * front-end taxes} are enabled.
      * @return float Returns the total price.
      */
-    public static function total_price($cart_name = 'main', $apply_cart_discounts = true, $items = null, $force_tax = false)
-    {
+    public static function total_price(
+        $cart_name = 'main',
+        $apply_cart_discounts = true,
+        $items = null,
+        $force_tax = false
+    ) {
         $items = $items === null ? self::list_items($cart_name) : $items;
         $result = 0;
         foreach ($items as $item) {
@@ -1243,12 +1269,18 @@ class Cart
 
                             if ($customer_cart_item) {
                                 if ($item->postponed) {
-                                    self::change_postpone_status(array($customer_cart_item->item_key=>true), $cart_name);
+                                    self::change_postpone_status(
+                                        [$customer_cart_item->item_key => true],
+                                        $cart_name
+                                    );
                                 } else {
-                                    self::change_postpone_status(array($customer_cart_item->item_key=>false), $cart_name);
+                                    self::change_postpone_status(
+                                        [$customer_cart_item->item_key => false],
+                                        $cart_name
+                                    );
                                 }
                             }
-                        } elseif ($cart_behavior == 'move_and_max' || $cart_behavior == 'no_move_max' || $cart_behavior == 'override') {
+                        } elseif (in_array($cart_behavior, ['move_and_max','no_move_max','override'])) {
                             if ($cart_behavior == 'override') {
                                 $customer_cart_item = self::add_customer_cart_item($item, $in_memory_items);
                             } else {
@@ -1277,9 +1309,15 @@ class Cart
                                     self::set_quantity($customer_cart_item->item_key, $quantity, $cart_name);
 
                                     if ($item->postponed) {
-                                        self::change_postpone_status(array($customer_cart_item->item_key=>true), $cart_name);
+                                        self::change_postpone_status(
+                                            [$customer_cart_item->item_key => true],
+                                            $cart_name
+                                        );
                                     } else {
-                                        self::change_postpone_status(array($customer_cart_item->item_key=>false), $cart_name);
+                                        self::change_postpone_status(
+                                            [$customer_cart_item->item_key => false],
+                                            $cart_name
+                                        );
                                     }
                                 }
                             }
@@ -1353,15 +1391,17 @@ class Cart
     /**
      * The event allows you to modify custom (API) product parameters before product is added to the cart.
      * The event is triggered before product is placed to the cart and before the {@link shop:onBeforeAddToCart}
-     * event is triggered. Please read {@link https://lsdomainexpired.mjman.net/docs/allowing_visitors_to_customize_products/ this article} to
-     * learn about customizing products on the Product Details page. Usage example:
+     * event is triggered.
+     *
+     * Please read {@link https://lsdomainexpired.mjman.net/docs/allowing_visitors_to_customize_products/ this article}
+     * to learn about customizing products on the Product Details page. Usage example:
      * <pre>
      * public function subscribeEvents()
      * {
      *   Backend::$events->addEvent('shop:onPreProcessProductCustomData', $this, 'preprocess_custom_data');
      * }
      *
-     * public function preprocess_custom_data($cart_name, $product, $quantity, $options, $extra_options, $custom_data, $bundle_data, $master_bundle_data)
+     * public function preprocess_custom_data(...)
      * {
      *   $result = array();
      *   if (!isset($custom_data['x_engraving_text']))
@@ -1371,7 +1411,8 @@ class Cart
      * }
      * </pre>
      * @event shop:onPreProcessProductCustomData
-     * @see https://lsdomainexpired.mjman.net/docs/allowing_visitors_to_customize_products/ Allowing visitors to customize products
+     * @see https://lsdomainexpired.mjman.net/docs/allowing_visitors_to_customize_products/
+     *  Allowing visitors to customize products
      * @see shop:onBeforeAddToCart
      * @see shop:onAfterAddToCart
      * @package shop.events
@@ -1385,8 +1426,16 @@ class Cart
      * @param array $master_bundle_data Master bundle data associated with the product.
      * @return array The handler should return an associative array of modified custom fields.
      */
-    private function event_onPreProcessProductCustomData($cart_name, $product, $quantity, $options, $extra_options, $custom_data, $bundle_data, $master_bundle_data)
-    {
+    private function event_onPreProcessProductCustomData(
+        $cart_name,
+        $product,
+        $quantity,
+        $options,
+        $extra_options,
+        $custom_data,
+        $bundle_data,
+        $master_bundle_data
+    ) {
     }
 
     /**
@@ -1399,7 +1448,7 @@ class Cart
      *   Backend::$events->addEvent('shop:onBeforeAddToCart', $this, 'before_add');
      * }
      *
-     * public function before_add($cart_name, $product, $quantity, $options, $extra_options, $custom_data, $bundle_data, $master_bundle_data)
+     * public function before_add($cart_name, $product, ...)
      * {
      *   traceLog('Add '.$product->name);
      *   if ($product->sku == '123')
@@ -1407,7 +1456,8 @@ class Cart
      * }
      * </pre>
      * @event shop:onBeforeAddToCart
-     * @see https://lsdomainexpired.mjman.net/docs/allowing_customers_to_provide_order_item_specific_information/ Allowing customers to provide order item specific information
+     * @see https://lsdomainexpired.mjman.net/docs/allowing_customers_to_provide_order_item_specific_information/
+     *  Allowing customers to provide order item specific information
      * @see shop:onPreProcessProductCustomData
      * @see shop:onAfterAddToCart
      * @package shop.events
@@ -1417,12 +1467,22 @@ class Cart
      * @param integer $quantity Specifies the cart item quantity.
      * @param array $options An array of product options.
      * @param array $extra_options An array of product extra options.
-     * @param array $custom_data An associative array of {@link https://lsdomainexpired.mjman.net/docs/allowing_customers_to_provide_order_item_specific_information/ custom field} names and values.
+     * @param array $custom_data An associative array of
+     *  {@link https://lsdomainexpired.mjman.net/docs/allowing_customers_to_provide_order_item_specific_information/
+     *  custom field} names and values.
      * @param array $bundle_data Bundle data associated with the product.
      * @param array $master_bundle_data Master bundle data associated with the product.
      */
-    private function event_onBeforeAddToCart($cart_name, $product, $quantity, $options, $extra_options, $custom_data, $bundle_data, $master_bundle_data)
-    {
+    private function event_onBeforeAddToCart(
+        $cart_name,
+        $product,
+        $quantity,
+        $options,
+        $extra_options,
+        $custom_data,
+        $bundle_data,
+        $master_bundle_data
+    ) {
     }
         
     /**
@@ -1434,13 +1494,14 @@ class Cart
      *   Backend::$events->addEvent('shop:onAfterAddToCart', $this, 'after_add');
      * }
      *
-     * public function after_add($cart_name, $product, $quantity, $options, $extra_options, $item, $custom_data, $bundle_data, $master_bundle_data)
+     * public function after_add($cart_name, $product, ...)
      * {
      *   traceLog('Added '.$product->name);
      * }
      * </pre>
      * @event shop:onAfterAddToCart
-     * @see https://lsdomainexpired.mjman.net/docs/allowing_customers_to_provide_order_item_specific_information/ Allowing customers to provide order item specific information
+     * @see https://lsdomainexpired.mjman.net/docs/allowing_customers_to_provide_order_item_specific_information/
+     *  Allowing customers to provide order item specific information
      * @see shop:onPreProcessProductCustomData
      * @see shop:onBeforeAddToCart
      * @package shop.events
@@ -1451,12 +1512,24 @@ class Cart
      * @param array $options An array of product options.
      * @param array $extra_options An array of product extra options.
      * @param CartItem $item Specifies the cart item object.
-     * @param array $custom_data An associative array of {@link https://lsdomainexpired.mjman.net/docs/allowing_customers_to_provide_order_item_specific_information/ custom field} names and values.
+     * @param array $custom_data An associative array of
+     *  {@link https://lsdomainexpired.mjman.net/docs/allowing_customers_to_provide_order_item_specific_information/
+     *  custom field}
+     *  names and values.
      * @param array $bundle_data Bundle data associated with the product.
      * @param array $master_bundle_data Master bundle data associated with the product.
      */
-    private function event_onAfterAddToCart($cart_name, $product, $quantity, $options, $extra_options, $item, $custom_data, $bundle_data, $master_bundle_data)
-    {
+    private function event_onAfterAddToCart(
+        $cart_name,
+        $product,
+        $quantity,
+        $options,
+        $extra_options,
+        $item,
+        $custom_data,
+        $bundle_data,
+        $master_bundle_data
+    ) {
     }
         
     /**
