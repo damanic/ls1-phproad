@@ -38,13 +38,34 @@ class CurrencySettings extends SettingsRecord
         
     public function define_form_fields($context = null)
     {
-        $this->add_form_field('code')->comment('Please provide international currency code, e.g. USD. You can find currency codes here: <a href="http://en.wikipedia.org/wiki/ISO_4217" target="_blank">http://en.wikipedia.org/wiki/ISO_4217</a>', 'above', true)->tab('Currency');
-        $this->add_form_field('iso_4217_code')->comment('Three-digit currency code, for example 840 for USD.', 'above')->tab('Currency');
+        $this->add_form_field('code')
+            ->comment(
+                'Please provide international currency code, e.g. USD. You can find currency codes here: 
+                      <a href="https://en.wikipedia.org/wiki/ISO_4217" target="_blank">
+                      https://en.wikipedia.org/wiki/ISO_4217</a>',
+                'above',
+                true
+            )
+            ->tab('Currency');
 
-        $this->add_form_field('dec_point', 'left')->comment('Character to use as decimal point.', 'above')->tab('Formatting');
-        $this->add_form_field('thousands_sep', 'right')->comment('Character to separate thousands.', 'above')->tab('Formatting');
-        $this->add_form_field('sign', 'left')->comment('Sign to put beside number, e.g. $.', 'above')->tab('Formatting');
-        $this->add_form_field('sign_before', 'right')->tab('Formatting');
+        $this->add_form_field('iso_4217_code')
+            ->comment('Three-digit currency code, for example 840 for USD.', 'above')
+            ->tab('Currency');
+
+        $this->add_form_field('dec_point', 'left')
+            ->comment('Character to use as decimal point.', 'above')
+            ->tab('Formatting');
+
+        $this->add_form_field('thousands_sep', 'right')
+            ->comment('Character to separate thousands.', 'above')
+            ->tab('Formatting');
+
+        $this->add_form_field('sign', 'left')
+            ->comment('Sign to put beside number, e.g. $.', 'above')
+            ->tab('Formatting');
+
+        $this->add_form_field('sign_before', 'right')
+            ->tab('Formatting');
     }
 
     public static function format_currency($num, $decimals = 2)
