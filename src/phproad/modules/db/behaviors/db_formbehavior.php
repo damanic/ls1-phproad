@@ -320,8 +320,9 @@ class Db_FormBehavior extends Phpr\ControllerBehavior
         $this->formRenderPartial(
             $partialName,
             array(
-            'form_field' => $form_field,
-            'form_model_class' => get_class_id($form_model)
+                'form_field' => $form_field,
+                'form_model_class' => get_class($form_model),
+                'form_model_class_id' => get_class_id($form_model)
             )
         );
     }
@@ -340,8 +341,9 @@ class Db_FormBehavior extends Phpr\ControllerBehavior
         $this->formRenderPartial(
             $partialName,
             array(
-            'form_field' => $field_definition,
-            'form_model_class' => get_class($model)
+                 'form_field' => $field_definition,
+                'form_model_class' => get_class($model),
+                'form_model_class_id' => get_class_id($model)
             )
         );
     }
@@ -597,6 +599,7 @@ class Db_FormBehavior extends Phpr\ControllerBehavior
     public function formUpdateGridTable($model, $field)
     {
         $form_model_class = get_class($model);
+        $form_model_class_id = get_class_id($model);
 
         $field_definition = $model->find_form_field($field);
         if (!$field_definition) {
@@ -604,7 +607,7 @@ class Db_FormBehavior extends Phpr\ControllerBehavior
         }
 
         $form_field = $field_definition;
-        $fieldId = $this->formGetElementId($form_model_class . '_' . $form_field->dbName);
+        $fieldId = $this->formGetElementId($form_model_class_id . '_' . $form_field->dbName);
         $table_container_id = $fieldId . 'table_container';
 
         $this->_controller->preparePartialRender($table_container_id);
@@ -613,6 +616,7 @@ class Db_FormBehavior extends Phpr\ControllerBehavior
             array(
             'form_field' => $form_field,
             'form_model_class' => $form_model_class,
+                'form_model_class_id' => $form_model_class_id,
             'form_model' => $model,
             'dbName' => $field
             )
@@ -1455,7 +1459,8 @@ class Db_FormBehavior extends Phpr\ControllerBehavior
                 'db_name' => $db_name,
                 'form_model' => $model,
                 'form_field' => $field_definition,
-                'form_model_class' => get_class($model)
+                'form_model_class' => get_class($model),
+                'form_model_class_id' => get_class_id($model)
             )
         );
     }
@@ -1643,20 +1648,22 @@ class Db_FormBehavior extends Phpr\ControllerBehavior
                  */
 
                 $form_model_class = get_class($data_model);
+                $form_model_class_id = get_class_id($data_model);
 
                 $_POST['form_unique_prefix'] = '';
 
                 $form_field = $field_definition;
-                $fieldId = $this->formGetElementId($form_model_class . '_' . $form_field->dbName);
+                $fieldId = $this->formGetElementId($form_model_class_id . '_' . $form_field->dbName);
                 $table_container_id = $fieldId . 'table_container';
                 $this->_controller->preparePartialRender($table_container_id);
                 $this->formRenderPartial(
                     'form_grid_table',
                     array(
-                    'form_field' => $form_field,
-                    'form_model_class' => $form_model_class,
-                    'form_model' => $data_model,
-                    'dbName' => $grid_field,
+                        'form_field' => $form_field,
+                        'form_model_class' => $form_model_class,
+                        'form_model_class_id' => $form_model_class_id,
+                        'form_model' => $data_model,
+                        'dbName' => $grid_field,
                     )
                 );
             } catch (Exception $ex) {

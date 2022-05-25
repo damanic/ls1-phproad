@@ -1,7 +1,7 @@
 <? 
 	$dbName = $this->formGetFieldDbName($form_field->dbName, $this->viewData['form_model']);
 	
-	$id = $this->formGetElementId($form_model_class.'_'.$dbName);
+	$id = $this->formGetElementId($form_model_class_id.'_'.$dbName);
 	
 	$prompt = isset($form_field->renderOptions['prompt']) ? $form_field->renderOptions['prompt'] : 'Click the FInd button to find a record';
 	
@@ -17,7 +17,7 @@
 	}
 ?>
 
-<input type="hidden" id="<?= $id ?>" name="<?= $form_model_class ?>[<?= $dbName ?>]" value="<?= $form_model->$dbName ?>"/>
+<input type="hidden" id="<?= $id ?>" name="<?= $form_model_class_id ?>[<?= $dbName ?>]" value="<?= $form_model->$dbName ?>"/>
 
 <p class="recordReference <?= $target_record ? null : 'empty' ?>">
 	<? if ($target_record): ?>

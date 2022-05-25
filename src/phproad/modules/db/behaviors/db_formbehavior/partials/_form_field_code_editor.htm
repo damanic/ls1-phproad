@@ -1,10 +1,10 @@
 <?
-	$fieldId = $this->formGetElementId($form_model_class.'_'.$form_field->dbName.uniqid());
+	$fieldId = $this->formGetElementId($form_model_class_id.'_'.$form_field->dbName.uniqid());
 	$config = Backend_CodeEditorConfiguration::create()->render_settings();
 ?>
 
 <div class="code_wrapper <?= $form_field->size ?>">
-	<textarea class="<?= $form_field->size ?>" id="<?= $fieldId ?>" name="<?= $form_model_class ?>[<?= $form_field->dbName ?>]"><?= h($form_model->displayField($form_field->dbName)) ?></textarea>
+	<textarea class="<?= $form_field->size ?>" id="<?= $fieldId ?>" name="<?= $form_model_class_id ?>[<?= $form_field->dbName ?>]"><?= h($form_model->displayField($form_field->dbName)) ?></textarea>
 </div>
 
 <script type="text/javascript">

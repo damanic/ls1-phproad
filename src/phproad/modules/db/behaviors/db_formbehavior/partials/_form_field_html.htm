@@ -1,9 +1,9 @@
 <?
-	$fieldId = str_replace('-', '$', $this->formGetElementId($form_model_class.'_'.$form_field->dbName)).uniqid();
-	$resizeCookieName = 'TinyMce_'.$this->formGetElementId($form_model_class.'_'.$form_field->dbName).$this->formGetUniquePrefix().'_size';
+	$fieldId = str_replace('-', '$', $this->formGetElementId($form_model_class_id.'_'.$form_field->dbName)).uniqid();
+	$resizeCookieName = 'TinyMce_'.$this->formGetElementId($form_model_class_id.'_'.$form_field->dbName).$this->formGetUniquePrefix().'_size';
 ?>
 
-<textarea class="<?= $form_field->size ?> html_field" id="<?= $fieldId ?>" name="<?= $form_model_class ?>[<?= $form_field->dbName ?>]"><?= h($form_model->displayField($form_field->dbName)) ?></textarea>
+<textarea class="<?= $form_field->size ?> html_field" id="<?= $fieldId ?>" name="<?= $form_model_class_id ?>[<?= $form_field->dbName ?>]"><?= h($form_model->displayField($form_field->dbName)) ?></textarea>
 
 <script type="text/javascript">
 	var tinymceConfigs_<?= $fieldId ?> = {

@@ -1,11 +1,11 @@
 <?
 	$dbName = $this->formGetFieldDbName($form_field->dbName, $this->viewData['form_model']);
-	$form_model_class = get_class($form_model);
+	$form_model_class_id = get_class_id($form_model);
 	$options = $this->formFieldGetOptions($form_field->dbName, $this->viewData['form_model']); 
-	$control_id = $this->formGetElementId($form_model_class.'_'.$dbName);
+	$control_id = $this->formGetElementId($form_model_class_id.'_'.$dbName);
 ?>
 
-	<select id="<?= $control_id ?>" name="<?= $form_model_class ?>[<?= $dbName ?>]">
+	<select id="<?= $control_id ?>" name="<?= $form_model_class_id ?>[<?= $dbName ?>]">
 		<? if ($form_field->emptyOption !== null): ?>
 			<option value=""><?= h($form_field->emptyOption) ?></option>
 		<? endif ?>

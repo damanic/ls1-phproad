@@ -10,8 +10,8 @@
 	<input autocomplete="off" <?= $form_field->disabled ? 'disabled="disabled"' : null ?> <?=$block_arclight_js?> <?= $maxLength ?>
 		   value="<?= h($form_model->displayField($form_field->dbName)) ?>"
 		   class="<?= $columnDefinition->type ?> <?= $currency_enabled ? 'currency' : null ?>"
-		   type="text" id="<?= $this->formGetElementId($form_model_class.'_'.$form_field->dbName) ?>"
-		   name="<?= $form_model_class ?>[<?= $form_field->dbName ?>]"
+		   type="text" id="<?= $this->formGetElementId($form_model_class_id.'_'.$form_field->dbName) ?>"
+		   name="<?= $form_model_class_id ?>[<?= $form_field->dbName ?>]"
 		   placeholder="<?= h($form_field->getPlaceholder()) ?>">
 
 	<?
@@ -22,7 +22,7 @@
 	?>
 	<span class="shop-currency__clicker-wrapper">
 		<a class="shop-currency__clicker"
-		   data-model-class="<?=h($form_model_class)?>"
+		   data-model-class="<?=h($form_model_class_id)?>"
 		   data-model-id="<?=h($form_model->id)?>"
 		   data-model-field="<?=h($form_field->dbName)?>">
 			<?=$currency->code?>

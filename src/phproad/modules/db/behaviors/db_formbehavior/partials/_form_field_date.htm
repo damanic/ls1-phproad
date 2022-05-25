@@ -1,5 +1,5 @@
 <?
-	$inputId =  $this->formGetElementId($form_model_class.'_'.$form_field->dbName);
+	$inputId =  $this->formGetElementId($form_model_class_id.'_'.$form_field->dbName);
 	$dateFormat = $form_field->getColDefinition()->getDateFormat();
 	if($dateFormat != '%x')
 		$calendar_format = $dateFormat;
@@ -14,7 +14,7 @@
 ?>
 
 <div class="datePickerHolder">
-	<input <? if ($form_field->disabled) echo 'disabled="disabled"' ?> value="<?= h($form_model->displayField($form_field->dbName)) ?>" class="date" type="text" id="<?= $inputId ?>" name="<?= $form_model_class ?>[<?= $form_field->dbName ?>]" placeholder="<?= h($placeholder) ?>"/>
+	<input <? if ($form_field->disabled) echo 'disabled="disabled"' ?> value="<?= h($form_model->displayField($form_field->dbName)) ?>" class="date" type="text" id="<?= $inputId ?>" name="<?= $form_model_class_id ?>[<?= $form_field->dbName ?>]" placeholder="<?= h($placeholder) ?>"/>
 
 	<script type='text/javascript'>
 		window.addEvent('domready', function(){

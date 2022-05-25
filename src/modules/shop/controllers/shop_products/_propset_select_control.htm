@@ -3,7 +3,7 @@
 	$dbName = $this->formGetFieldDbName($form_field->dbName, $this->viewData['form_model']);
 ?>
 
-<select <? if ($form_field->disabled) echo 'disabled="disabled"' ?> id="<?= $this->formGetElementId($form_model_class.'_'.$dbName) ?>" name="<?= $form_model_class ?>[<?= $dbName ?>]">
+<select <? if ($form_field->disabled) echo 'disabled="disabled"' ?> id="<?= $this->formGetElementId($form_model_class_id.'_'.$dbName) ?>" name="<?= $form_model_class_id ?>[<?= $dbName ?>]">
 	<? if ($form_field->emptyOption !== null): ?>
 		<option value=""><?= h($form_field->emptyOption) ?></option>
 	<? endif ?>

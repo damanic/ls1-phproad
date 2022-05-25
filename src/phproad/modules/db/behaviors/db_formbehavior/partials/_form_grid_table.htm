@@ -1,11 +1,11 @@
 <?
-	$fieldId = $this->formGetElementId($form_model_class.'_'.$form_field->dbName);
+	$fieldId = $this->formGetElementId($form_model_class_id.'_'.$form_field->dbName);
 	$bodyId = $fieldId.'body';
 	$disabled_id = $fieldId.'_editing_disabled';
 
-	$fieldName = $form_model_class.'['.$form_field->dbName.'][%row%][%column%]';
-	$disabledFieldName = $form_model_class.'['.$form_field->dbName.'][disabled]';
-	$serializedFieldName = $form_model_class.'['.$form_field->dbName.'][serialized]';
+	$fieldName = $form_model_class_id.'['.$form_field->dbName.'][%row%][%column%]';
+	$disabledFieldName = $form_model_class_id.'['.$form_field->dbName.'][disabled]';
+	$serializedFieldName = $form_model_class_id.'['.$form_field->dbName.'][serialized]';
 
 	$data = $form_model->$dbName;
 	if (!is_array($data) || !count($data))

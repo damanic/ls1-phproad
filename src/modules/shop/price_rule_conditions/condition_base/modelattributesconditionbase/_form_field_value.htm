@@ -7,17 +7,17 @@
 	$condition_obj = $form_model->get_condition_obj();
 	$control_type = $condition_obj->get_value_control_type($form_model);
 	
-	$this->conditionsRregisterViewPaths($form_model);
+	$this->conditionsRegisterViewPaths($form_model);
 ?>
 <input name="prev_control_type" value="<?= h($control_type) ?>" type="hidden" />
 <input name="prev_attribute" value="<?= h($attribute) ?>" type="hidden" />
 <? if ($control_type == 'text'): ?>
-	<input value="<?= h($form_model->displayField($form_field->dbName)) ?>" class="<?= $columnDefinition->type ?>" type="text" id="<?= $this->formGetElementId($form_model_class.'_'.$form_field->dbName) ?>" name="<?= $form_model_class ?>[<?= $form_field->dbName ?>]"/>
+	<input value="<?= h($form_model->displayField($form_field->dbName)) ?>" class="<?= $columnDefinition->type ?>" type="text" id="<?= $this->formGetElementId($form_model_class_id.'_'.$form_field->dbName) ?>" name="<?= $form_model_class_id ?>[<?= $form_field->dbName ?>]"/>
 <? elseif ($control_type == 'dropdown'): 
 	$options = $condition_obj->get_value_dropdown_options($form_model, $this);
 	$dbName = $this->formGetFieldDbName($form_field->dbName, $this->viewData['form_model']);
 ?>
-	<select id="<?= $this->formGetElementId($form_model_class.'_'.$form_field->dbName) ?>" name="<?= $form_model_class ?>[<?= $form_field->dbName ?>]">
+	<select id="<?= $this->formGetElementId($form_model_class_id.'_'.$form_field->dbName) ?>" name="<?= $form_model_class_id ?>[<?= $form_field->dbName ?>]">
 		<? 
 			foreach ($options as $value=>$name): 
 				if (is_array($name))
@@ -67,6 +67,6 @@
 		</table>
 	</div>
 	
-	<input value="<?= h($form_model->displayField($form_field->dbName)) ?>" id="Shop_PriceRuleCondition_value" type="hidden" name="<?= $form_model_class ?>[<?= $form_field->dbName ?>]"/>
+	<input value="<?= h($form_model->displayField($form_field->dbName)) ?>" id="Shop_PriceRuleCondition_value" type="hidden" name="<?= $form_model_class_id ?>[<?= $form_field->dbName ?>]"/>
 	<input value="1" type="hidden" name="multiselect_control"/>
 <? endif ?>

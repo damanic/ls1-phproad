@@ -1,6 +1,6 @@
 <?
 	$dbName = $this->formGetFieldDbName($form_field->dbName, $this->viewData['form_model']);
-	$fieldId = $this->formGetElementId($form_model_class.'_'.$form_field->dbName);
+	$fieldId = $this->formGetElementId($form_model_class_id.'_'.$form_field->dbName);
 	
 	$table_container_id = $fieldId.'table_container';
 	$delete_btn_id = $fieldId.'delete_btn';
@@ -33,7 +33,7 @@
 	</div>
 <? endif ?>
 
-<input type="hidden" name="<?= $form_model_class.'['.$form_field->dbName.']' ?>" value=""/>
+<input type="hidden" name="<?= $form_model_class_id.'['.$form_field->dbName.']' ?>" value=""/>
 
 <div class="grid_container">
 	<table class="grid simpleList">
@@ -58,7 +58,7 @@
 	
 	<div class="backend_scroller" id="<?= $table_container_id ?>">
 		<? $this->formRenderPartial('form_grid_table', array(
-			'form_model_class'=>$form_model_class,
+			'form_model_class'=>$form_model_class_id,
 			'dbName'=>$dbName,
 		)) ?>
 	</div>

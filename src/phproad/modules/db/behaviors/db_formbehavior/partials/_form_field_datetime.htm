@@ -1,5 +1,5 @@
 <?
-	$inputId = $this->formGetElementId($form_model_class.'_'.$form_field->dbName);
+	$inputId = $this->formGetElementId($form_model_class_id.'_'.$form_field->dbName);
 	$field_name = $form_field->dbName;
 	
 	$date = h($form_model->displayField($form_field->dbName, 'date'));
@@ -31,7 +31,7 @@
 	}
 ?>
 
-<input type="hidden" id="<?= $inputId ?>" value="<?= $datetime ?>" name="<?= $form_model_class ?>[<?= $form_field->dbName ?>]">
+<input type="hidden" id="<?= $inputId ?>" value="<?= $datetime ?>" name="<?= $form_model_class_id ?>[<?= $form_field->dbName ?>]">
 
 <table>
 <tr>

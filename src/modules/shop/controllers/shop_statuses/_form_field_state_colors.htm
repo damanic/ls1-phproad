@@ -1,6 +1,6 @@
 <?
-$listId  = $form_model_class . '_' . $form_field->dbName . '_list';
-$fieldId = $form_model_class . '_' . $form_field->dbName;
+$listId  = $form_model_class_id . '_' . $form_field->dbName . '_list';
+$fieldId = $form_model_class_id . '_' . $form_field->dbName;
 ?>
 <ul id="<?= $listId ?>">
 	<?
@@ -17,7 +17,7 @@ $fieldId = $form_model_class . '_' . $form_field->dbName;
 </ul>
 
 <input value="<?= $selectedColor ?>" type="hidden" id="<?= $fieldId ?>"
-	   name="<?= $form_model_class ?>[<?= $form_field->dbName ?>]"/>
+	   name="<?= $form_model_class_id ?>[<?= $form_field->dbName ?>]"/>
 
 <script type="text/javascript">
 	window.addEvent('domready', function () {

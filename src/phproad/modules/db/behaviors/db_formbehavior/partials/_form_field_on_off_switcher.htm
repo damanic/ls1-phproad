@@ -2,11 +2,11 @@
 	$dbName = $this->formGetFieldDbName($form_field->dbName, $this->viewData['form_model']);
 	$state = $form_field->checkboxOnState == $form_model->$dbName ? h($form_field->checkboxOnState) : null;
 	
-	$fieldId = $this->formGetElementId($form_model_class.'_'.$form_field->dbName);
-	$hiddenFieldId = $this->formGetElementId($form_model_class.'_'.$form_field->dbName.'hidden');
+	$fieldId = $this->formGetElementId($form_model_class_id.'_'.$form_field->dbName);
+	$hiddenFieldId = $this->formGetElementId($form_model_class_id.'_'.$form_field->dbName.'hidden');
 ?>
 
-<input type="hidden" id="<?= $hiddenFieldId ?>" name="<?= $form_model_class ?>[<?= $dbName ?>]" value="<?= $state ?>"/>
+<input type="hidden" id="<?= $hiddenFieldId ?>" name="<?= $form_model_class_id ?>[<?= $dbName ?>]" value="<?= $state ?>"/>
 
 <div id="<?= $fieldId ?>" class="<?= $state === null ? 'off' : 'on' ?>"></div>
 
