@@ -198,7 +198,7 @@ class CustomerPreferences
 
     protected function generate_preference_hash($customer_id, $field_name)
     {
-        $string = get_class($this) . '_' . $customer_id . '_' . $field_name . '_' . rand(0, 1000);
+        $string = get_class_id($this) . '_' . $customer_id . '_' . $field_name . '_' . rand(0, 1000);
         return md5($string);
     }
 }
