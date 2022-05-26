@@ -48,7 +48,7 @@ class ModuleManager
                 continue;
             }
 
-            $iterator = new DirectoryIterator($modulesPath);
+            $iterator = new \DirectoryIterator($modulesPath);
             foreach ($iterator as $dir) {
                 if ($dir->isDir() && !$dir->isDot()) {
                     $dirPath = $modulesPath . DS . $dir->getFilename();
