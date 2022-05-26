@@ -272,11 +272,9 @@ class Controller extends PhprController
 
     protected function setViewPath()
     {
-        $classFolder = strtolower(str_replace('\\', '_', get_class($this)));
+        $classInfo = new \ReflectionClass(get_class($this));
+        $classFolder = strtolower($classInfo->getShortName());
         $directory = PATH_APP.'/modules/'.$this->getModuleId().'/controllers/'.$classFolder;
-        if (!Directory::exists($directory)) {
-            //@TODO Strip namespaces from get_class for $classFolder;
-        }
         $this->viewPath = $directory;
     }
         
