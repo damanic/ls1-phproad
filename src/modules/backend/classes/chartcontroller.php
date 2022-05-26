@@ -715,7 +715,7 @@ abstract class ChartController extends ReportingController
     {
         $module = Phpr::$router->param('module');
 
-        $reportName = strtolower(get_class($this));
+        $reportName = strtolower(get_class_id($this));
         $reportName = preg_replace('/^' . $module . '_/', '', $reportName);
 
         return url('/' . $module . '/' . $reportName . '/chart_data');
