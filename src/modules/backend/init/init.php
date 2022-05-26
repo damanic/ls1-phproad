@@ -1,11 +1,11 @@
 <?php
-define('frm_currency', 'frm_currency');
 use Core\ModuleManager;
+use Backend\Events;
 
 /*
  * Backend module events object
  */
-Backend::$events = new Backend_Events();
+Backend::$events = new Events();
 
 /*
  * Load and initialize modules

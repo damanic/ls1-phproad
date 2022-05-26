@@ -155,11 +155,6 @@ header('Content-type: text/html; charset=utf-8');
 
 mb_internal_encoding('UTF-8');
 
-Phpr::$classLoader->addDirectory(PATH_APP . '/modules/shop/currency_converters');
-Phpr::$classLoader->addDirectory(PATH_APP . '/modules/shop/price_rule_conditions');
-Phpr::$classLoader->addDirectory(PATH_APP . '/modules/shop/price_rule_conditions/base_classes');
-Phpr::$classLoader->addDirectory(PATH_APP . '/modules/shop/price_rule_actions');
-
 /*
  * Other configuration options
  */

@@ -1,7 +1,12 @@
 <?php
-namespace Shop;
 
 use Phpr;
+use Shop\CurrencySettings;
+use Shop\Order;
+use Shop\CheckoutData;
+use Shop\ConfigurationRecord;
+use Shop\CurrencyHelper;
+use Shop\ShippingOption;
 
 /**
  * Returns a currency representation of a number.
