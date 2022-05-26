@@ -47,9 +47,9 @@ abstract class ModuleBase
     }
 
     //
-    // Subscribe to public access points
+    // Register public access points
     //
-    public function subscribeAccessPoints()
+    public function registerAccessPoints()
     {
         // Usage:
         // return array('phpr_api_access_url'=>'local_module_method');
