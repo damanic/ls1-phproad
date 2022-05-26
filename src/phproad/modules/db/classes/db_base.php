@@ -2,6 +2,7 @@
 
 /**
  * @deprecated
+ * Use Sql_Base
  */
 
 class Db_Base extends Phpr_Validatable
