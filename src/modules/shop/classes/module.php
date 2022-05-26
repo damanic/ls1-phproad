@@ -485,7 +485,7 @@ class Module extends ModuleBase
         $typesPath = PATH_APP."/modules/shop/shipping_types";
         $iterator = new \DirectoryIterator($typesPath);
         foreach ($iterator as $file) {
-            if (!$file->isDir() && preg_match('/^shop_[^\.]*\.php$/i', $file->getFilename())) {
+            if (!$file->isDir() && $file->getExtension() == 'php') {
                 require_once($typesPath.'/'.$file->getFilename());
             }
         }
@@ -494,10 +494,10 @@ class Module extends ModuleBase
         foreach ($modules as $module_id => $module_info) {
             $class_path = PATH_APP."/modules/".$module_id."/shipping_types";
             if (file_exists($class_path)) {
-                $iterator = new DirectoryIterator($class_path);
+                $iterator = new \DirectoryIterator($class_path);
 
                 foreach ($iterator as $file) {
-                    if (!$file->isDir() && preg_match('/^'.$module_id.'_[^\.]*\.php$/i', $file->getFilename())) {
+                    if (!$file->isDir() && $file->getExtension() == 'php') {
                         require_once($class_path.'/'.$file->getFilename());
                     }
                 }
@@ -507,7 +507,10 @@ class Module extends ModuleBase
         $classes = get_declared_classes();
         $this->shippingTypes = array();
         foreach ($classes as $class) {
-            if (preg_match('/Shipping$/i', $class) && get_parent_class($class) == 'ShopShippingType') {
+            $parentClassName = get_parent_class($class);
+            $parentClassId = get_class_id($parentClassName);
+            $shippingTypeClassId = get_class_id('Shop\ShippingType');
+            if ($parentClassId == $shippingTypeClassId) {
                 $this->shippingTypes[] = $class;
             }
         }
@@ -522,9 +525,9 @@ class Module extends ModuleBase
         }
                 
         $typesPath = PATH_APP."/modules/shop/currency_converters";
-        $iterator = new DirectoryIterator($typesPath);
+        $iterator = new \DirectoryIterator($typesPath);
         foreach ($iterator as $file) {
-            if (!$file->isDir() && preg_match('/^shop_[^\.]*\.php$/i', $file->getFilename())) {
+            if (!$file->isDir() && $file->getExtension() == 'php') {
                 require_once($typesPath.'/'.$file->getFilename());
             }
         }
@@ -533,7 +536,10 @@ class Module extends ModuleBase
         $this->currencyConverters = array();
             
         foreach ($classes as $class) {
-            if (preg_match('/Converter$/i', $class) && get_parent_class($class) == 'Shop\CurrencyConverterBase') {
+            $parentClassName = get_parent_class($class);
+            $parentClassId = get_class_id($parentClassName);
+            $shippingTypeClassId = get_class_id('Shop\CurrencyConverterBase');
+            if ($parentClassId == $shippingTypeClassId) {
                 $this->currencyConverters[] = $class;
             }
         }
@@ -546,30 +552,14 @@ class Module extends ModuleBase
         if ($this->paymentTypes !== null) {
             return $this->paymentTypes;
         }
-
-        $typesPath = PATH_APP."/modules/shop/payment_types";
-        $iterator = new \DirectoryIterator($typesPath);
-        foreach ($iterator as $file) {
-            $file_name = $file->getFilename();
-            $file_path = $typesPath.'/'.$file_name;
-                
-            if (is_dir($file_path)) {
-                continue;
-            }
-                    
-            if (substr($file_name, 0, 5) == 'shop_' && substr($file_name, -4) == '.php') {
-                require_once($typesPath.'/'.$file->getFilename());
-            }
-        }
             
         $modules = ModuleManager::listModules();
         foreach ($modules as $module_id => $module_info) {
             $class_path = PATH_APP."/modules/".$module_id."/payment_types";
             if (file_exists($class_path)) {
                 $iterator = new \DirectoryIterator($class_path);
-
                 foreach ($iterator as $file) {
-                    if (!$file->isDir() && preg_match('/^'.$module_id.'_[^\.]*\.php$/i', $file->getFilename())) {
+                    if (!$file->isDir() && $file->getExtension() == 'php') {
                         require_once($class_path.'/'.$file->getFilename());
                     }
                 }
@@ -579,7 +569,10 @@ class Module extends ModuleBase
         $classes = get_declared_classes();
         $this->paymentTypes = array();
         foreach ($classes as $class) {
-            if (preg_match('/_Payment$/i', $class) && get_parent_class($class) == 'Shop\PaymentType') {
+            $parentClassName = get_parent_class($class);
+            $parentClassId = get_class_id($parentClassName);
+            $shippingTypeClassId = get_class_id('Shop\PaymentType');
+            if ($parentClassId == $shippingTypeClassId) {
                 $this->paymentTypes[] = $class;
             }
         }
