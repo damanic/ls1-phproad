@@ -375,8 +375,8 @@ class Pages extends Controller
         $this->list_no_pagination = true;
         $this->list_no_setup_link = true;
         $this->list_search_enabled = false;
-        $this->list_custom_head_cells = PATH_APP.'/modules/cms/controllers/cms_pages/_pages_handle_head_col.htm';
-        $this->list_custom_body_cells = PATH_APP.'/modules/cms/controllers/cms_pages/_pages_handle_body_col.htm';
+        $this->list_custom_head_cells = PATH_APP.'/modules/cms/controllers/pages/_pages_handle_head_col.htm';
+        $this->list_custom_body_cells = PATH_APP.'/modules/cms/controllers/pages/_pages_handle_body_col.htm';
     }
         
     protected function reorder_pages_onSetOrders()
