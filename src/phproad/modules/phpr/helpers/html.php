@@ -693,6 +693,7 @@ class Html
     }
 
     /**
+     * @TODO Uses Jquery, LS1 Uses MooTools!
      * Attaches the calendar control to a specified HTML field
      * @return string Returns java-script code string
      */
