@@ -35,7 +35,9 @@ class MemCache extends CacheBase
         foreach ($servers as $server) {
             $pos = strpos($server, ':');
             if ($pos === false) {
-                throw new SystemException('Invalid memcached server specifier. Please use the following format: 192.168.0.1:11211');
+                throw new SystemException(
+                    'Invalid memcached server specifier. Please use the following format: 127.0.0.1:11211'
+                );
             }
 
             $ip = substr($server, 0, $pos);
