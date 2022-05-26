@@ -27,7 +27,7 @@ abstract class GenericReport extends ChartController
 
         $user = Phpr::$security->getUser();
         if ($user && $user->get_permission('shop', 'manage_orders_and_customers')) {
-            $this->list_record_url = url('/shop/orders/preview/%s/') . mb_strtolower(get_class($this));
+            $this->list_record_url = url('/shop/orders/preview/%s/') . mb_strtolower(get_class_id($this));
         }
 
         $this->list_control_panel_partial = PATH_APP . '/modules/shop/controllers/partials/_reports_export_buttons.htm';
@@ -37,7 +37,7 @@ abstract class GenericReport extends ChartController
 
     public function refererUrl()
     {
-        return url('shop/' . preg_replace('/^shop_/', '', mb_strtolower(get_class($this))));
+        return url('shop/' . preg_replace('/^shop_/', '', mb_strtolower(get_class_id($this))));
     }
 
     public function listPrepareData()
@@ -52,7 +52,7 @@ abstract class GenericReport extends ChartController
 
     public function export_list($format = null, $file_name = 'report_list')
     {
-        $this->list_name = get_class($this) . '_index_list';
+        $this->list_name = get_class_id($this) . '_index_list';
         $options = array();
         $options['iwork'] = $format == 'iwork';
         $file_name = $file_name ? $file_name . '.csv' : 'report_list.csv';
@@ -66,7 +66,7 @@ abstract class GenericReport extends ChartController
 
     public function export_orders_and_products($format = null)
     {
-        $this->list_name = get_class($this) . '_index_list';
+        $this->list_name = get_class_id($this) . '_index_list';
         $options = array();
         $options['iwork'] = $format == 'iwork';
         $this->listExportCsv('orders.csv', $options, null, true, array(
