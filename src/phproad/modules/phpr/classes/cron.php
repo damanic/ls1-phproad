@@ -144,8 +144,9 @@ class Cron
 
             $module_id = $module->getId();
             $cronItems = $module->subscribeCrontab();
+
+            //try deprecated method
             if(empty($cronItems) && method_exists($module,'subscribe_crontab')){
-                //deprecated method
                 $cronItems = $module->subscribe_crontab();
             }
 
