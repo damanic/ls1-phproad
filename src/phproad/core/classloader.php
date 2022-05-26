@@ -41,8 +41,6 @@ class ClassLoader
                 'models',
                 'behaviors',
                 'controllers',
-                'shipping_types',
-                'payment_types',
             ),
         );
     }
