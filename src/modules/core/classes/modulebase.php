@@ -260,11 +260,11 @@ abstract class ModuleBase extends PhprModuleBase
 
     /**
      * @deprecated
-     * Use subscribeAccessPoints
+     * Use registerAccessPoints
      */
     public function register_access_points()
     {
-        return $this->subscribeAccessPoints();
+        return array();
     }
 
 
