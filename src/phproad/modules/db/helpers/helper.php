@@ -52,7 +52,7 @@ class Helper
 
     public static function fetch_next($resource)
     {
-        self::driver()->fetch($resource);
+        return self::driver()->fetch($resource);
     }
 
     public static function free_result($resource)
@@ -270,7 +270,7 @@ class Helper
      * Creates a SQL query string for searching specified fields for specified words or phrases
      *
      * @param  string      $query           Search query
-     * @param  array|array $fields          A list of fields to search in. A single field can be specified as a string
+     * @param  string|array $fields          A list of fields to search in. A single field can be specified as a string
      * @param  int         $min_word_length Allows to ignore words with length less than the specified
      * @return string Returns a string
      */
