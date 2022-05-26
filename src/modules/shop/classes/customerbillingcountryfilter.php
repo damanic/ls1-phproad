@@ -17,7 +17,7 @@ class CustomerBillingCountryFilter extends DataFilter
         } elseif ($model->belongs_to) {
             foreach ($model->belongs_to as $field => $belongs_to_info) {
                 $class_name = $belongs_to_info['class_name'] ?? null;
-                if (get_class($class_name) == 'Shop_Customer') {
+                if (get_class_id($class_name) == get_class_id('Shop\Customer')) {
                     $foreign_key = $belongs_to_info['foreign_key'];
                     if ($foreign_key) {
                         $model->where($field.'_calculated_join.billing_country_id IN (?)', array($keys));
