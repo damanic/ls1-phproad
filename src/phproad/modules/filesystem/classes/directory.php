@@ -126,7 +126,7 @@ class Directory
             return $result;
         }
 
-        $iterator = new DirectoryIterator($path);
+        $iterator = new \DirectoryIterator($path);
         foreach ($iterator as $file) {
             if ($file->isDir()) {
                 $result[] = $file->getPathname();
