@@ -40,11 +40,12 @@ class Boolean
                 'active',
                 'true'
             );
-            $str = trim($str);
+            $str = strtolower(trim($str));
             if (in_array($str, $trueValues)) {
                 return true;
             }
         }
         return false;
     }
+
 }
