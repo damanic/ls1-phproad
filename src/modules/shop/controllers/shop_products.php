@@ -501,7 +501,7 @@
 			try
 			{
 				$model = new Shop_GroupProductsModel();
-				$model->apply(post(get_class($model)), array());
+				$model->apply(post(get_class_id($model)), array());
 
 				Phpr::$session->flash['success'] = 'Products have been successfully grouped.';
 			}

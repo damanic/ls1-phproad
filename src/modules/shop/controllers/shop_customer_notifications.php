@@ -64,7 +64,7 @@
 
 				foreach ($src_message->files as $src_file) {
 					$new_file = $src_file->copy();
-					$new_file->master_object_class = get_class($model);
+					$new_file->master_object_class = get_class_id($model);
 					$new_file->field = 'files';
 					$new_file->save();
 					$model->files->add($new_file, $this->formGetEditSessionKey());

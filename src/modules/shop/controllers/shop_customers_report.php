@@ -77,7 +77,7 @@ class Shop_Customers_Report extends Shop_GenericReport {
 
 	public function export_customers($format = null)
 	{
-		$this->list_name = get_class($this).'_index_list';
+		$this->list_name = get_class_id($this).'_index_list';
 		$options = array();
 		$options['iwork'] = $format == 'iwork';
 		$this->listExportCsv('customers.csv', $options);
