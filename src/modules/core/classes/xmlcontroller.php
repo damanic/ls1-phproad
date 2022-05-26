@@ -1,6 +1,8 @@
 <?php
 namespace Core;
 
+use Phpr\SystemException;
+
     /**
      * This class helps in formatting XML documents with
      * templates contained in files
@@ -9,7 +11,7 @@ class XmlController
 {
     /**
      * Formats XML document
-     * @param string $template_name Specifies a name of XML document template
+     * @param string $templateName Specifies a name of XML document template
      * The XML template must be placed in the directory with name matching
      * the inherited class name. Example: class name is Shop_UpsShipping,
      * the directory is shop_upsshipping, in the same directory with the
@@ -20,12 +22,14 @@ class XmlController
      * @param bool $add_xml_header Add XML header in the beginning of the document
      * @return string Returns processed document as string
      */
-    public function format_xml_template($template_name, $params = array(), $add_xml_header = true)
+    public function format_xml_template($templateName, $params = array(), $add_xml_header = true)
     {
-        $class_info = new \ReflectionObject($this);
-        $path = dirname($class_info->getFileName()).'/'.strtolower(get_class($this)).'/'.$template_name;
+        $classInfo = new \ReflectionObject($this);
+        $baseDir = dirname($classInfo->getFileName());
+        $folderName = strtolower($classInfo->getShortName());
+        $path = $baseDir.'/'.$folderName.'/'.$templateName;
         if (!file_exists($path)) {
-            throw new Phpr_SystemException('XML template not found: '.$template_name);
+            throw new SystemException('XML template not found: '.$templateName);
         }
             
         extract($params);

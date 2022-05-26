@@ -62,7 +62,7 @@ class ReportingController extends Controller
 
     public function export_list($format = null, $file_name = 'report_list')
     {
-        $this->list_name = get_class($this).'_index_list';
+        $this->list_name = get_class_id($this).'_index_list';
         $options = array();
         $options['iwork'] = $format == 'iwork';
         $file_name = $file_name ? $file_name.'.csv' : 'report_list.csv';

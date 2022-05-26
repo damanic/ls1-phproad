@@ -442,13 +442,13 @@
 		
 		public function on_init_model($controller, $model)
 		{
-			if (get_class($model) == 'Shop_OptionMatrixRecord')
+			if (get_class_id($model) == get_class_id('Shop\OptionMatrixRecord'))
 				$this->init_matrix_columns($controller, $model);
 		}
 		
 		public function on_data_page($data_source, $data_page)
 		{
-			if (get_class($data_source->widget->model) != 'Shop_OptionMatrixRecord')
+			if (get_class_id($data_source->widget->model) != get_class_id('Shop\OptionMatrixRecord'))
 				return;
 				
 			$model = Shop_OptionMatrixRecord::create();

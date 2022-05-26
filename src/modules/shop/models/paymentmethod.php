@@ -949,10 +949,11 @@ class PaymentMethod extends ActiveRecord
 
         foreach ($payment_methods as $payment_method) {
             $class = $payment_method->class_name;
+            $class_id = get_class_id($class);
 
             if (preg_match('/_Payment$/i', $class) && get_parent_class($class) == 'Shop\PaymentType') {
-                $pos = strpos($class, '_');
-                $payment_type_file = strtolower(substr($class, $pos + 1, -8));
+                $pos = strpos($class_id, '_');
+                $payment_type_file = strtolower(substr($class_id, $pos + 1, -8));
                 $payment_partial_name = 'payment:' . $payment_type_file;
                 $payment_profile_partial_name = 'payment_profile:' . $payment_type_file;
                 $classInfo = null;
@@ -964,10 +965,8 @@ class PaymentMethod extends ActiveRecord
                         if ($theme->templating_engine == 'twig') {
                             $extension = 'twig';
                         }
-                    } else {
-                        if (SettingsManager::get()->default_templating_engine == 'twig') {
-                            $extension = 'twig';
-                        }
+                    } elseif (SettingsManager::get()->default_templating_engine == 'twig') {
+                        $extension = 'twig';
                     }
 
                     $payment_partial_exists = array_key_exists($payment_partial_name, $partial_list);
@@ -975,7 +974,7 @@ class PaymentMethod extends ActiveRecord
 
                     if (!$payment_partial_exists || !$payment_profile_partial_exists) {
                         $classInfo = $classInfo ? $classInfo : new \ReflectionClass($class);
-                        $dirPath = dirname($classInfo->getFileName()) . '/' . strtolower($class);
+                        $dirPath = dirname($classInfo->getFileName()) . '/' . strtolower($classInfo->getShortName());
 
                         if (!$payment_partial_exists) {
                             $file_path = $dirPath . '/front_end_partial.' . $extension;

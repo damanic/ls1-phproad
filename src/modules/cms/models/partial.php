@@ -814,7 +814,7 @@ class Partial extends CmsObject
      * <div class="separator">&nbsp;</div>
      * <?= backend_ctr_button('Some button', 'new_document', '#') ?>
      * </pre>
-     * @triggered /modules/cms/controllers/cms_partials/_control_panel.htm
+     * @triggered /modules/cms/controllers/partials/_control_panel.htm
      * @event cms:onExtendPartialsToolbar
      * @package cms.events
      * @author LSAPP - MJMAN

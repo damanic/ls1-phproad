@@ -12,7 +12,7 @@ class ZipHelper extends Zip
 
     /**
      * @deprecated
-     * Use Phpr\Zip
+     * Use FileSystem\Zip
      */
     public static function unzip($path, $archivePath, $no_set_permissions = false, $replace_files = true)
     {

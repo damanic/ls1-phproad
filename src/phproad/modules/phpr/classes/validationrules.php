@@ -429,6 +429,49 @@ class ValidationRules
         return $result;
     }
 
+
+    /*
+ * ====================== Max words rule ======================
+ */
+
+    /**
+     * Checks whether a value contains no more than the maximum allowed number of words
+     *
+     * @documentable
+     * @param        int    $length         Specifies the maximum word count.
+     * @param        string $custom_message Specifies an error message to display if the validation fails.
+     *  Can contain <em>%s</em> placeholder which is replaced with the actual field name.
+     * @return       ValidationRules Returns the updated rule set.
+     */
+    public function maxWords(int $count, $CustomMessage = null)
+    {
+        $this->registerInternal(__METHOD__, array($count), $CustomMessage);
+        return $this;
+    }
+
+    /**
+     * Determines whether a value is not longer than a specified length.
+     *
+     * @param  string $Name    Specifies a field name
+     * @param  $Value   Specifies a value to validate.
+     * @param  array  &$Params A list of parameters passed to the MaxLength method.
+     * @return boolean.
+     */
+    protected function evalMaxWords($Name, $Value, &$Params, $CustomMessage)
+    {
+        $result = str_word_count($Value)<=$Params[0] ? true : false;
+
+        if (!$result) {
+            $Message = strlen($CustomMessage) ? $CustomMessage : sprintf(
+                Phpr::$lang->getString('phpr.validation', 'maxwords'),
+                $this->fieldName,
+                $Params[0]
+            );
+            $this->validation->setError($Message, $Name);
+        }
+        return $result;
+    }
+
     /*
      * ====================== Unique rule ======================
      */
@@ -627,6 +670,47 @@ class ValidationRules
     }
 
     /*
+   * ====================== AlphaLang rule ======================
+   */
+
+    /**
+     * Checks whether the value contains only letters of the alphabet.
+     * Considers alphabets in all supported languages.
+     *
+     * @documentable
+     * @param        string $custom_message Specifies an error message to display if the validation fails.
+     *   Can contain <em>%s</em> placeholder which is replaced with the actual field name.
+     * @return       ValidationRules Returns the updated rule set.
+     */
+    public function alphaLang($CustomMessage = null)
+    {
+        $this->registerInternal(__METHOD__, array(), $CustomMessage);
+        return $this;
+    }
+
+    /**
+     * Determines whether a value contains only alphabetical characters.
+     *
+     * @param  string $Name  Specifies a field name
+     * @param  $Value Specifies a value to validate.
+     * @return boolean.
+     */
+    protected function evalAlphaLang($Name, $Value, &$Params, $CustomMessage)
+    {
+        $result = preg_match("/([\p{L}]+)/u", $Value) ? true : false;
+
+        if (!$result) {
+            $Message = strlen($CustomMessage) ? $CustomMessage : sprintf(
+                Phpr::$lang->getString('phpr.validation', 'alpha'),
+                $this->fieldName
+            );
+            $this->validation->setError($Message, $Name);
+        }
+
+        return $result;
+    }
+
+    /*
      * ====================== Alphanumeric rule ======================
      */
 
@@ -733,7 +817,7 @@ class ValidationRules
     }
 
     /**
-     * Determines whether a value is a valid email address.
+     * Determines whether a value is a valid URL.
      *
      * @param  string $Name    Specifies a field name
      * @param  $Value   Specifies a value to validate.

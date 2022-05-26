@@ -696,7 +696,7 @@ class Template extends CmsObject
      * <div class="separator">&nbsp;</div>
      * <?= backend_ctr_button('Some button', 'new_document', '#') ?>
      * </pre>
-     * @triggered /modules/cms/controllers/cms_templates/_control_panel.htm
+     * @triggered /modules/cms/controllers/templates/_control_panel.htm
      * @event cms:onExtendTemplatesToolbar
      * @package cms.events
      * @author LSAPP - MJMAN

@@ -2541,7 +2541,7 @@ class Page extends CmsObject
      * <div class="separator">&nbsp;</div>
      * <?= backend_ctr_button('Some button', 'new_document', '#') ?>
      * </pre>
-     * @triggered /modules/cms/controllers/cms_pages/_pages_control_pabel.htm
+     * @triggered /modules/cms/controllers/pages/_pages_control_pabel.htm
      * @event cms:onExtendPagesToolbar
      * @param Backend\Controller $controller The back-end controller object.
      * @author LSAPP - MJMAN
@@ -2555,7 +2555,7 @@ class Page extends CmsObject
      * Allows to configure the Administration Area CMS Pages pages before they are displayed.
      * In the event handler you can update the back-end controller properties.
      * @event cms:onConfigurePagesPage
-     * @triggered /modules/cms/controllers/cms_pages.php
+     * @triggered /modules/cms/controllers/pages.php
      * @param Pages $controller Specifies the controller object.
      * @author LSAPP - MJMAN
      * @package cms.events
@@ -2582,7 +2582,7 @@ class Page extends CmsObject
      * }
      * </pre>
      * @event cms:onDisplayPageForm
-     * @triggered /modules/cms/controllers/cms_pages.php
+     * @triggered /modules/cms/controllers/pages.php
      * @param Pages $controller Specifies the controller object.
      * @author LSAPP - MJMAN
      * @package cms.events
@@ -2606,7 +2606,7 @@ class Page extends CmsObject
      * }
      * </pre>
      * @event cms:onListPageEditorSidebarTabs
-     * @triggered /modules/cms/controllers/cms_pages/_action_doc.htm
+     * @triggered /modules/cms/controllers/pages/_action_doc.htm
      * @return array Returns an array of tab names and tab partial paths.
      * @author LSAPP - MJMAN
      * @package cms.events
@@ -2662,7 +2662,7 @@ class Page extends CmsObject
      * <?= backend_button('Some button', array('href'=>'#')) ?>
      * <?= backend_ajax_button('AJAX button', 'onSomeHandler') ?>
      * </pre>
-     * @triggered /modules/cms/controllers/cms_pages/_pages_control_pabel.htm
+     * @triggered /modules/cms/controllers/pages/_pages_control_pabel.htm
      * @event cms:onExtendPageContentToolbar
      * @param Backend\Controller $controller The back-end controller object.
      * @param Page $page Specifies the CMS page object.
@@ -2696,7 +2696,7 @@ class Page extends CmsObject
      *   <a href="#" target="_blank">New item</a>
      * </li>
      * </pre>
-     * @triggered /modules/cms/controllers/cms_pages/_pages_control_pabel.htm
+     * @triggered /modules/cms/controllers/pages/_pages_control_pabel.htm
      * @event cms:onExtendPagesContextMenu
      * @param Backend\Controller $controller The back-end controller object.
      * @param Page $page Specifies the CMS page object.

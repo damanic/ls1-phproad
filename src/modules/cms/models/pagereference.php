@@ -93,7 +93,7 @@ class PageReference
         
     /**
      * Returns information a referenced page in a current theme.
-     * @param Db\ActiveRecord $object Specifies an object.
+     * @param \Db\ActiveRecord $object Specifies an object.
      * @param string $reference_name Specifies the reference name
      * @param mixed $default Default value to be returned if Theming feature is disabled or
      * if a current theme cannot be detected.

@@ -5,7 +5,7 @@ class Number
 {
     /**
      * Returns true if the passed value is a floating point number
-     * @param number $value number
+     * @param mixed $value number
      * @return boolean Returns boolean
      */
     public static function isValidFloat($value)
@@ -15,7 +15,7 @@ class Number
 
     /**
      * Returns true if the passed value is an integer value
-     * @param number $value number
+     * @param mixed $value number
      * @return boolean Returns boolean
      */
     public static function isValidInt($value)

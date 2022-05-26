@@ -4,6 +4,7 @@ Container, Source, Destination
 
 phpr.validation, required, The %s field is required.
 phpr.validation, numeric, The %s field must contain a number.
+phpr.validation, maxwords, The %s field cannot contain more than %s words.
 phpr.validation, minlen, The %s field must be at least %s characters in length.
 phpr.validation, maxlen, The %s field can not exceed %s characters in length.
 phpr.validation, length, The %s field must be exactly %s characters in length.

@@ -10,7 +10,7 @@ class OptionMatrix
 
     /**
      * Returns product's property by the property name.
-     * @param array $options Specifies product option values or OptionMatrixRecord object.
+     * @param array|object $options Specifies product option values or OptionMatrixRecord object.
      * Option values should be specified in the following format:
      * ['Option name 1'=>'option value 1', 'Option name 2'=>'option value 2']
      * or: ['option_key_1'=>'option value 1', 'option_key_2'=>'option value 2']

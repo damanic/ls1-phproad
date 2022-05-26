@@ -21,7 +21,7 @@ class Xml
 
     /**
      * @deprecated
-     * Use Phpr\Xml::createNode
+     * Use Phpr\Xml::createCdata
      */
     public static function create_cdata($document, $parent, $value)
     {

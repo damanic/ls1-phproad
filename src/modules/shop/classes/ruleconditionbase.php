@@ -95,9 +95,9 @@ class RuleConditionBase
     {
         if (self::$condition_classes === null) {
             $class_path = PATH_APP."/modules/shop/price_rule_conditions";
-            $iterator = new DirectoryIterator($class_path);
+            $iterator = new \DirectoryIterator($class_path);
             foreach ($iterator as $file) {
-                if (!$file->isDir() && preg_match('/^shop_[^\.]*\.php$/i', $file->getFilename())) {
+                if (!$file->isDir() && $file->getExtension() == 'php') {
                     require_once($class_path.'/'.$file->getFilename());
                 }
             }
@@ -105,7 +105,7 @@ class RuleConditionBase
             $modules = ModuleManager::listModules();
             foreach ($modules as $module_id => $module_info) {
                 $class_path = PATH_APP."/modules/".$module_id."/classes";
-                $iterator = new DirectoryIterator($class_path);
+                $iterator = new \DirectoryIterator($class_path);
 
                 foreach ($iterator as $file) {
                     if (!$file->isDir() && preg_match('/^'.$module_id.'_de_[^\.]*\.php$/i', $file->getFilename())) {
