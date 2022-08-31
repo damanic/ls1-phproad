@@ -2,7 +2,7 @@
 namespace Shop;
 
 use Backend\SettingsController;
-use Users\Groups as UserGroups;
+use Users\Group as UserGroup;
 
 class Roles extends SettingsController
 {
@@ -20,7 +20,7 @@ class Roles extends SettingsController
     public $form_create_save_flash = 'Role has been successfully added';
     public $form_edit_delete_flash = 'Role has been successfully deleted';
         
-    protected $access_for_groups = array(UserGroups::admin);
+    protected $access_for_groups = array(UserGroup::ADMIN);
 
     public function __construct()
     {

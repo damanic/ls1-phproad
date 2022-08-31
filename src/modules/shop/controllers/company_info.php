@@ -3,12 +3,12 @@
 namespace Shop;
 
 use Backend\SettingsController;
-use Users\Groups as UserGroup;
+use Users\Group as UserGroup;
 use Phpr\ApplicationException;
 
 class Company_Info extends SettingsController
 {
-    protected $access_for_groups = array(UserGroup::admin);
+    protected $access_for_groups = array(UserGroup::ADMIN);
     public $implement = 'Db_FormBehavior';
 
     public $form_edit_title = 'Company Information and Settings';

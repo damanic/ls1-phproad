@@ -6,6 +6,7 @@ use Backend;
 use Cms\Exception as CmsException;
 use Cms\Controller as Controller;
 use Phpr\Validation as Validation;
+use Phpr\ApplicationException;
 use Db\Helper as DbHelper;
 
     /**
@@ -470,10 +471,10 @@ class CheckoutData
         self::save($checkout_data);
     }
 
-    protected static function update_shipping_method($option = null, $method = null, $cart_name = 'main')
+    protected static function update_shipping_method( $option = null, $method = null, $cart_name = 'main')
     {
         $method = is_object($method) ? $method : self::get_shipping_method();
-        $option = is_a($option, 'ShippingOption') ? $option : self::get_shipping_method_option();
+        $option = is_a($option, 'Shop\ShippingOption') ? $option : self::get_shipping_method_option();
 
         try {
             if (!$option) {

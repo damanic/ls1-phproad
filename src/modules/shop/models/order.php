@@ -1869,7 +1869,7 @@ class Order extends ActiveRecord
         DbHelper::query('delete from shop_orders where id=:order_id', $bind);
         DbHelper::query('delete from shop_order_items where shop_order_id=:order_id', $bind);
         DbHelper::query('delete from shop_order_notes where order_id=:order_id', $bind);
-        DbHelper::query('delete from shop_order_notifications where order_id=:order_id', $bind);
+        DbHelper::query('delete from shop_customer_notifications where order_id=:order_id', $bind);
         DbHelper::query('delete from shop_order_payment_log where order_id=:order_id', $bind);
         DbHelper::query('delete from shop_order_status_log_records where order_id=:order_id', $bind);
         DbHelper::query('delete from shop_order_applied_rules where shop_order_id=:order_id', $bind);
@@ -3138,7 +3138,12 @@ class Order extends ActiveRecord
 
     public function get_shipping_quote_no_discount()
     {
-        return max(($this->get_shipping_quote() + $this->get_shipping_discount(false)), 0);
+        $quote = $this->get_shipping_quote();
+        $discount = $this->get_shipping_discount(false);
+        if($quote && $discount){
+            return max(($this->get_shipping_quote() + $this->get_shipping_discount(false)), 0);
+        }
+        return $quote;
     }
 
     public function eval_shipping_quote_discounted()
@@ -3148,7 +3153,12 @@ class Order extends ActiveRecord
 
     public function get_shipping_quote_discounted()
     {
-        return max(($this->get_shipping_quote_no_discount() - $this->get_shipping_discount()), 0);
+        $quote_no_discount = $this->get_shipping_quote_no_discount();
+        $discount = $this->get_shipping_discount();
+        if($quote_no_discount && $discount) {
+            return max(($this->get_shipping_quote_no_discount() - $this->get_shipping_discount()), 0);
+        }
+        return $quote_no_discount;
     }
 
     public function eval_total_shipping_discount()
@@ -3821,7 +3831,7 @@ class Order extends ActiveRecord
      * Triggered before orders RSS feed is generated.
      * The event handler can output another implementation of the feed and stop the script execution.
      * @event shop:onBeforeOrdersRssExport
-     * @triggered /modules/shop/controllers/shop_orders.php
+     * @triggered /modules/shop/controllers/orders.php
      * @package shop.events
      * @author LSAPP - MJMAN
      */
@@ -3851,7 +3861,7 @@ class Order extends ActiveRecord
      * }
      * </pre>
      * @event shop:onConfigureOrdersPage
-     * @triggered /modules/shop/controllers/shop_orders.php
+     * @triggered /modules/shop/controllers/orders.php
      * @param Orders $controller Specifies the controller object.
      * @see shop:onDisplayOrdersPages
      * @package shop.events
@@ -3882,7 +3892,7 @@ class Order extends ActiveRecord
      * }
      * </pre>
      * @event shop:onDisplayOrdersPage
-     * @triggered /modules/shop/controllers/shop_orders.php
+     * @triggered /modules/shop/controllers/orders.php
      * @param Orders $controller Specifies the controller object.
      * @see shop:onConfigureOrdersPage
      * @see shop:onExtendOrdersToolbar
@@ -3926,7 +3936,7 @@ class Order extends ActiveRecord
      * <? endif ?>
      * </pre>
      * @event shop:onExtendOrderPreviewToolbar
-     * @triggered /modules/shop/controllers/shop_orders/preview.htm
+     * @triggered /modules/shop/controllers/orders/preview.htm
      * @param Orders $controller Specifies the controller object.
      * @param Order $order Specifies the order object.
      * @see shop:onExtendOrderPreviewTabs
@@ -3959,7 +3969,7 @@ class Order extends ActiveRecord
      * }
      * </pre>
      * @event shop:onExtendOrderPreviewTabs
-     * @triggered /modules/shop/controllers/shop_orders/preview.htm
+     * @triggered /modules/shop/controllers/orders/preview.htm
      * @param Orders $controller Specifies the controller object.
      * @param Order $order Specifies the order object.
      * @return array Returns an array of tab names and tab partial paths.
@@ -3995,7 +4005,7 @@ class Order extends ActiveRecord
      * <?= backend_ctr_button('My button', 'my_button_css_class', url('mymodule/manage/')) ?>
      * </pre>
      * @event shop:onExtendOrdersToolbar
-     * @triggered /modules/shop/controllers/shop_orders/_orders_control_panel.htm
+     * @triggered /modules/shop/controllers/orders/_orders_control_panel.htm
      * @param Orders $controller Specifies the controller object.
      * @see shop:onConfigureOrdersPage
      * @package shop.events
@@ -4032,7 +4042,7 @@ class Order extends ActiveRecord
      * <?= backend_ctr_button('My button', 'my_button_css_class', url('mymodule/manage/')) ?>
      * </pre>
      * @event shop:onExtendOrderPaymentTransactionsToolbar
-     * @triggered /modules/shop/controllers/shop_orders/_form_area_preview_payment_transactions.htm
+     * @triggered /modules/shop/controllers/orders/_form_area_preview_payment_transactions.htm
      * @param Orders $controller Specifies the controller object.
      * @param Order $order Specifies the order object.
      * @package shop.events
@@ -4059,7 +4069,7 @@ class Order extends ActiveRecord
      * }
      * </pre>
      * @event shop:onExtendOrderPreviewHeader
-     * @triggered /modules/shop/controllers/shop_orders/preview.htm
+     * @triggered /modules/shop/controllers/orders/preview.htm
      * @param Orders $controller Specifies the controller object.
      * @param Order $order Specifies the order object.
      * @see shop:onExtendOrderPreviewToolbar
@@ -4107,7 +4117,7 @@ class Order extends ActiveRecord
      * ")) ?>
      * </pre>
      * @event shop:onExtendOrderInvoicesToolbar
-     * @triggered /modules/shop/controllers/shop_orders/_form_area_preview_invoices.htm
+     * @triggered /modules/shop/controllers/orders/_form_area_preview_invoices.htm
      * @param Orders $controller Specifies the controller object.
      * @see shop:onConfigureOrdersPage
      * @package shop.events
@@ -4123,7 +4133,7 @@ class Order extends ActiveRecord
      * The event handler should accept two parameters
      * - the order identifier and the OrderTrackingCode object, representing the tracking code.
      * @event shop:onBeforeDeleteShippingTrackingCode
-     * @triggered /modules/shop/controllers/shop_orders.php
+     * @triggered /modules/shop/controllers/orders.php
      * @param int $order_id Specifies the order identifier
      * @param OrderTrackingCode $code Specifies the tracking code
      * @package shop.events

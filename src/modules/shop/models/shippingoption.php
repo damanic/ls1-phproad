@@ -1222,7 +1222,13 @@ class ShippingOption extends ActiveRecord
             }
         }
 
-        uasort($result, 'phpr_sort_order_shipping_options');
+        uasort($result, function ($a, $b) {
+            if ($a->error_hint) {
+                return -1;
+            }
+
+            return 1;
+        });
 
         /*
              * Trigger api events
@@ -2109,13 +2115,7 @@ class ShippingOption extends ActiveRecord
     private function event_onAfterShippingQuoteApplied($shipping_option, $event_params)
     {
     }
+
 }
 
-function phpr_sort_order_shipping_options($a, $b)
-{
-    if ($a->error_hint) {
-        return -1;
-    }
 
-    return 1;
-}

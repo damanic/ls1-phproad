@@ -4,13 +4,13 @@ namespace Shop;
 use Phpr;
 use Phpr\ApplicationException;
 use Backend\SettingsController;
-use Users\Groups as UserGroup;
+use Users\Group as UserGroup;
 
 class Order_Numbering extends SettingsController
 {
     public $implement = 'Db_FormBehavior';
         
-    protected $access_for_groups = array(UserGroup::admin);
+    protected $access_for_groups = array(UserGroup::ADMIN);
 
     public function __construct()
     {

@@ -17,7 +17,7 @@ class TaxClass extends ActiveRecord
 
     protected static array $taxClassCache = [];
     protected static $customerContext = null;
-    protected static bool $taxExempt = false;
+    protected static $taxExempt = false;
     protected static $shippingTaxClass = null;
 
     public static function create()
@@ -250,7 +250,6 @@ class TaxClass extends ActiveRecord
         }
 
         $shippingCountryCode = trim(mb_strtoupper($shippingCountry->code));
-        $shippingState = $shipping_info->get;
         $shippingStateCode = null;
         if (strlen($shipping_info->state)) {
             $shippingState = CountryState::find_by_id($shipping_info->state);

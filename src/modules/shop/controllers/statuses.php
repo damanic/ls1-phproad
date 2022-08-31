@@ -5,7 +5,7 @@ namespace Shop;
 use Phpr;
 use Phpr\ApplicationException;
 use Backend\SettingsController;
-use Users\Groups as UserGroups;
+use Users\Group as UserGroup;
 
 class Statuses extends SettingsController
 {
@@ -30,7 +30,7 @@ class Statuses extends SettingsController
         'onDeleteTransition'
     ];
 
-    protected $access_for_groups = [UserGroups::admin];
+    protected $access_for_groups = [UserGroup::ADMIN];
 
 
     public function __construct()

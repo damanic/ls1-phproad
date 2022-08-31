@@ -468,7 +468,7 @@ class PaymentMethod extends ActiveRecord
             }
         } else {
             $this->load_xml_data();
-            $this->add_form_partial(PATH_APP . '/modules/shop/controllers/shop_orders/_pay_hidden_fields.htm')
+            $this->add_form_partial(PATH_APP . '/modules/shop/controllers/orders/_pay_hidden_fields.htm')
                 ->tab('Payment Information');
             $this->get_paymenttype_object()->build_payment_form($this, $context);
         }

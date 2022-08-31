@@ -76,7 +76,7 @@ class Categories extends Controller
             $this->list_cell_partial = $partialDir . '/_category_row_controls.htm';
             $partialDir = PATH_APP . '/phproad/modules/db/behaviors/db_listbehavior/partials';
             $this->list_custom_body_cells = $partialDir . '/_list_body_cb.htm';
-            $this->list_custom_head_cells = $partialDir . '_list_head_cb.htm';
+            $this->list_custom_head_cells = $partialDir . '/_list_head_cb.htm';
         }
 
         if (Phpr::$router->action == 'manage_top_products') {

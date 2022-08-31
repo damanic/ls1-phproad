@@ -1564,7 +1564,7 @@ class Customer extends ActiveRecord
      * <? endif ?>
      * </pre>
      * @event shop:onExtendCustomerPreviewToolbar
-     * @triggered /modules/shop/controllers/shop_customers/preview.htm
+     * @triggered /modules/shop/controllers/customers/preview.htm
      * @param Backend\Controller $controller Specifies the controller object.
      * Use this object to render custom partials.
      * @param Customer $customer Specifies the customer object.
@@ -1596,7 +1596,7 @@ class Customer extends ActiveRecord
      * <?= backend_ctr_button('My button', 'my_button_css_class', url('mymodule/manage/')) ?>
      * </pre>
      * @event shop:onExtendCustomersToolbar
-     * @triggered /modules/shop/controllers/shop_customers/_customers_control_panel.htm
+     * @triggered /modules/shop/controllers/customers/_customers_control_panel.htm
      * @param Backend\Controller $controller Specifies the controller object.
      * Use this object to render custom partials.
      * @author LSAPP - MJMAN
@@ -1625,7 +1625,7 @@ class Customer extends ActiveRecord
      * }
      * </pre>
      * @event shop:onDisplayCustomersPage
-     * @triggered /modules/shop/controllers/shop_customers.php
+     * @triggered /modules/shop/controllers/customers.php
      * @param Backend\Controller $controller Specifies the controller object.
      * @author LSAPP - MJMAN
      * @package shop.events
@@ -1650,7 +1650,7 @@ class Customer extends ActiveRecord
      * }
      * </pre>
      * @event shop:onExtendCustomerPreviewTabs
-     * @triggered /modules/shop/controllers/shop_customers/preview.htm
+     * @triggered /modules/shop/controllers/customers/preview.htm
      * @param Backend\Controller $controller Specifies the controller object.
      * @param Customer $customer Specifies a customer object.
      * @return array Returns an array of tab names and tab partial paths.
@@ -1795,7 +1795,7 @@ class Customer extends ActiveRecord
      * }
      * </pre>
      * @event shop:onConfigureCustomersPage
-     * @triggered /modules/shop/controllers/shop_customers.php
+     * @triggered /modules/shop/controllers/customers.php
      * @param Customers $controller Specifies the controller object.
      * @author LSAPP - MJMAN
      * @package shop.events
