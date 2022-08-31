@@ -202,7 +202,7 @@ class DateTimeFormat
      */
     private static function init()
     {
-        $Lang = Phpr::$lang->getlanguage();
+        $Lang = Phpr::$lang->getLocaleCode();
         if ($Lang != self::$language) {
             self::$language = $Lang;
             self::$parsedFormats = array();

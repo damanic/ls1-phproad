@@ -24,3 +24,11 @@ CREATE TABLE `phpr_module_applied_updates` (
   `created_at` datetime default NULL,
   PRIMARY KEY  (`id`)
 ) DEFAULT CHARSET=utf8;
+
+CREATE TABLE `phpr_module_params` (
+    `module_id` varchar(30) NOT NULL DEFAULT '0',
+    `name` varchar(100) NOT NULL DEFAULT '',
+    `value` text,
+    PRIMARY KEY (`module_id`,`name`)
+) DEFAULT CHARSET=utf8;
+

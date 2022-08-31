@@ -66,7 +66,7 @@ class Controller extends ControllerBase
      */
     public function getViewsDirPath()
     {
-        $classFolder = strtolower(str_replace('\\', '_', get_class($this)));
+        $classFolder = strtolower(str_replace('\\', '_', get_class_id($this)));
         return $this->viewPath === null ? PATH_APP . "/views/" . $classFolder : $this->viewPath;
     }
 

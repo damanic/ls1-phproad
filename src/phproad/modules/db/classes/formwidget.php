@@ -30,7 +30,7 @@ class FormWidget
     {
         $ref_object = new \ReflectionObject($this);
         $widget_root_dir = str_replace("\\", "/", dirname($ref_object->getFileName())) . '/' . strtolower(
-                get_class($this)
+                get_class_id($this)
             );
 
         $this->view_path = $widget_root_dir.DS.'partials';

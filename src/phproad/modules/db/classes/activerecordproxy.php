@@ -117,7 +117,7 @@ class ActiverecordProxy
             return true;
         }
         if (is_a($obj, 'Db\ActiveRecordProxy')) {
-            if ($class_name == $obj->get_proxied_model_class()) {
+            if (get_class_id($class_name) == get_class_id($obj->get_proxied_model_class())) {
                 return true;
             }
         }

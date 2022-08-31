@@ -25,17 +25,16 @@ if (in_array('core_applied_updates', $tables) && in_array('phpr_module_applied_u
     }
 }
 
+//@moduleparams -> phpr_module_params
+if (in_array('moduleparams', $tables) && in_array('phpr_module_params', $tables)) {
+    if(Db\Helper::scalar('SELECT COUNT(*) FROM `phpr_module_params`') == 0){
+        Db\Helper::query('INSERT INTO `phpr_module_params` SELECT * FROM `moduleparams`');
+    }
+}
 
 //userparams -> phpr_user_params
 if (in_array('userparams', $tables) && in_array('phpr_user_params', $tables)) {
     if(Db\Helper::scalar('SELECT COUNT(*) FROM `phpr_user_params`') == 0){
         Db\Helper::query('INSERT INTO `phpr_user_params` SELECT * FROM `userparams`');
-    }
-}
-
-//@moduleparams -> phpr_module_params
-if (in_array('moduleparams', $tables) && in_array('phpr_module_params', $tables)) {
-    if(Db\Helper::scalar('SELECT COUNT(*) FROM `phpr_module_params`') == 0){
-        Db\Helper::query('INSERT INTO `phpr_module_params` SELECT * FROM `moduleparams`');
     }
 }

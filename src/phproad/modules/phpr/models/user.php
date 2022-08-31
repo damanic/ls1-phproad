@@ -8,12 +8,9 @@ use Db\ActiveRecord;
  *
  * Use this class to manage the application user list.
  */
-class User extends ActiveRecord
+abstract class User extends ActiveRecord
 {
-    public $table_name = "users";
     public $primary_key = 'id';
-    public $has_and_belongs_to_many = array("groups" => array('class_name' => 'Phpr_Group'));
-
     private $AuthorizationCache = array();
 
     /**
@@ -44,13 +41,13 @@ class User extends ActiveRecord
      *
      * @param string $Module   Specifies the name of a module that owns the resource ("blog").
      *
-     * @param string $Resource Specifies the name of a recource ("post").
+     * @param string $Resource Specifies the name of a resource ("post").
      *                         You may omit this parameter to determine if user has
      *                         access rights to any module resource.
      *
      * @param string $Object   Specifies the resource object ("1").
      *                         You may omit this parameter to
-     *                         determine if user has accssess
+     *                         determine if user has access
      *                         rights to any object in context of
      *                         specified module resource.
      *

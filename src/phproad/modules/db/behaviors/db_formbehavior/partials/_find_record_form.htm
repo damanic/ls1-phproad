@@ -12,10 +12,11 @@
 						<?= $this->listRender($listOptions) ?>
 					</div>
 
+
 					<input type="hidden" name="record_finder_flag" id="record_finder_flag" value="1"/>
 					<input type="hidden" name="db_name" value="<?= $db_name ?>"/>
 
-					<input type="hidden" name="phpr_recordfinder_model_class" value="<?= post('phpr_recordfinder_model_class') ?>"/>
+					<input type="hidden" name="phpr_recordfinder_model_class_id" value="<?= post('phpr_recordfinder_model_class_id') ?>"/>
 					<input type="hidden" name="phpr_recordfinder_model_id" value="<?= post('phpr_recordfinder_model_id') ?>"/>
 				
 					<?= backend_button('Cancel', array('onclick'=>'return cancelPopup()')) ?>

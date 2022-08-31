@@ -396,9 +396,9 @@ class Form
      * @param $object
      * @return array|string|string[]
      */
-    public static function formModelClass($object)
+    public static function formModelClassId($object)
     {
-        return str_replace('\\', '_', get_class($object));
+        return get_class_id($object);
     }
 
 

@@ -1,6 +1,9 @@
 <?php
+namespace Db;
 
-abstract class Db_GridEditor
+use Phpr\SystemException;
+
+abstract class GridEditor
 {
     protected $model;
 
@@ -18,11 +21,11 @@ abstract class Db_GridEditor
     public function handle_event($event, $model, $field_name, $column_info, $controller, $column_name)
     {
         if (substr($event, 0, 2) != 'on') {
-            throw new Phpr_SystemException('Invalid grid editor event name: ' . $event);
+            throw new SystemException('Invalid grid editor event name: ' . $event);
         }
 
         if (!method_exists($this, $event)) {
-            throw new Phpr_SystemException(
+            throw new SystemException(
                 sprintf('Event handler %s not found in grid editor %s.', $event, get_class($this))
             );
         }

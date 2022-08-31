@@ -1372,7 +1372,7 @@ class PHPMailer
                  *  * comments: `1234 @ local(blah) .machine .example`
                  *  * quoted elements: `'"test blah"@example.org'`
                  *  * numeric TLDs: `a@b.123`
-                 *  * unbracketed IPv4 literals: `a@192.168.0.1`
+                 *  * unbracketed IPv4 literals: `a@127.0.0.1`
                  *  * IPv6 literals: 'first.last@[IPv6:a1::]'
                  * Not all of these will necessarily work for sending!
                  *

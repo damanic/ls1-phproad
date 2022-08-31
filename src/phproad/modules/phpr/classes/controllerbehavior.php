@@ -23,7 +23,7 @@ class ControllerBehavior extends Extension
         $this->_controller = $controller;
 
         $refObj = new \ReflectionObject($this);
-        $this->_viewPath = dirname($refObj->getFileName()) . '/' . strtolower(get_class($this)) . '/partials';
+        $this->_viewPath = dirname($refObj->getFileName()) . '/' . strtolower(get_class_id($this)) . '/partials';
         $this->extHideMethod('getBehaviorEventHandler');
     }
 

@@ -1898,10 +1898,10 @@ class ActiveRecord extends Sql implements IteratorAggregate
      */
     protected function load_relations()
     {
-        $this->has_one = Util::splat_keys($this->has_one);
-        $this->has_many = Util::splat_keys($this->has_many);
-        $this->has_and_belongs_to_many = Util::splat_keys($this->has_and_belongs_to_many);
-        $this->belongs_to = Util::splat_keys($this->belongs_to);
+        $this->has_one = Util::splatKeys($this->has_one);
+        $this->has_many = Util::splatKeys($this->has_many);
+        $this->has_and_belongs_to_many = Util::splatKeys($this->has_and_belongs_to_many);
+        $this->belongs_to = Util::splatKeys($this->belongs_to);
 
         if (array_key_exists($this->className, self::$relations_cache)) {
             $this->has_models = self::$relations_cache[$this->className];

@@ -80,7 +80,7 @@ class Structure
     public static ?string $moduleId = null; // Module identifier
     public static array $modules = array(); // Module tables
     public bool $captureOnly = false; // Perform a dry run
-    public bool $safeMode = false; // Only create, don't delete
+    public bool $safeMode = true; // Don't delete unknown columns
 
     protected array $keys = array();
     protected array $columns = array();

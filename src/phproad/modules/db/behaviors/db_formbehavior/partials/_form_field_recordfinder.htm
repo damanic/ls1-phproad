@@ -1,8 +1,18 @@
 <?
 	$dbName = $this->formGetFieldDbName($form_field->dbName, $this->viewData['form_model']);
+    $formModelClassId = get_class_id($this->viewData['form_model']);
 ?>
 <div class="button">
-	<a href="#" onclick="new PopupForm('<?= $this->getEventHandler('onFindFormRecord') ?>', {ajaxFields: {db_name: '<?= $form_field->dbName ?>', 'phpr_recordfinder_model_class': '<?= $form_model_class_id ?>', 'phpr_recordfinder_model_id': '<?= $form_model->id ?>'}}); return false;">Find</a>
+	<a href="#" onclick="new PopupForm('<?= $this->getEventHandler('onFindFormRecord') ?>', {
+        ajaxFields: {
+            db_name: '<?= $form_field->dbName ?>',
+            'phpr_recordfinder_model_class_id': '<?= $formModelClassId ?>',
+            'phpr_recordfinder_model_id': '<?= $form_model->id ?>',
+            'record_finder_flag': 1
+        }
+    }); return false;">Find</a>
 </div>
 
-<div id="<?= $this->formGetRecordFinderContainerId($form_model_class_id, $form_field->dbName) ?>"><? $this->formRenderPartial('record_finder_record', array('form_model_class'=>$form_model_class_id)) ?></div>
+<div id="<?= $this->formGetRecordFinderContainerId($formModelClassId, $form_field->dbName) ?>">
+    <? $this->formRenderPartial('record_finder_record', array('form_model_class'=>$formModelClassId)) ?>
+</div>

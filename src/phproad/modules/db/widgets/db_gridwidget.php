@@ -192,7 +192,7 @@ class Db_GridWidget extends Db_FormWidget
     ) {
         return array(
             'widget' => 'grid',
-            'name' => get_class($model) . '[' . $db_column_name . ']',
+            'name' => get_class_id($model) . '[' . $db_column_name . ']',
             'column' => $grid_field_name,
             'row' => $row_index,
             'page_index' => $page_index
@@ -204,7 +204,7 @@ class Db_GridWidget extends Db_FormWidget
         $options = array();
         $options['sortable'] = $this->sortable && !$this->use_data_source;
         $options['scrollable'] = $this->scrollable && !$this->use_data_source;
-        $options['name'] = get_class($this->model) . '[' . $this->column_name . ']';
+        $options['name'] = get_class_id($this->model) . '[' . $this->column_name . ']';
         $options['dataFieldName'] = $this->column_name;
         $options['focusFirst'] = $this->focus_first;
 
@@ -412,7 +412,7 @@ class Db_GridWidget extends Db_FormWidget
     {
         try {
             $this->cleanup_grid_export();
-            $model_class = get_class($model);
+            $model_class = get_class_id($model);
 
             $data = Phpr::$request->postArray($model_class, $field, array());
 
@@ -458,7 +458,7 @@ class Db_GridWidget extends Db_FormWidget
                 throw new Phpr_ApplicationException('File not found');
             }
 
-            $tmp_obj_name = 'csvexp_' . mb_strtolower(get_class($this->model)) . '_' . $key . '.exp';
+            $tmp_obj_name = 'csvexp_' . mb_strtolower(get_class_id($this->model)) . '_' . $key . '.exp';
             $path = PATH_APP . '/temp/' . $tmp_obj_name;
 
             if (!file_exists($path)) {
@@ -524,7 +524,7 @@ class Db_GridWidget extends Db_FormWidget
 
     protected function on_display_csv_import_popup($field, $model)
     {
-        $container_id = $this->controller->formGetElementId('grid_container_' . $this->column_name, get_class($model));
+        $container_id = $this->controller->formGetElementId('grid_container_' . $this->column_name, get_class_id($model));
 
         $this->controller->form_unique_prefix = 'csv_grid_import';
         $this->controller->form_model_class = 'Db_CsvFileImport';
@@ -690,8 +690,8 @@ class Db_GridWidget extends Db_FormWidget
 
     protected function on_navigate_to_page($field, $model)
     {
-        $model_class = get_class($model);
-        $data = Phpr::$request->postArray($model_class, $field, array());
+        $model_class_id = get_class_id($model);
+        $data = Phpr::$request->postArray($model_class_id, $field, array());
         $data_source = $this->get_data_source();
 
         $data_source->commit($data);

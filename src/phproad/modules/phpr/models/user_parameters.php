@@ -2,7 +2,7 @@
 namespace Phpr;
 
 use Phpr;
-use Db\Helper as Db_Helper;
+use Db\Helper as DbHelper;
 
 class User_Parameters
 {
@@ -66,8 +66,8 @@ class User_Parameters
             'value' => $value
         );
 
-        Db_Helper::query('delete from phpr_user_params where user_id=:user_id and name=:name', $bind);
-        Db_Helper::query('insert into phpr_user_params(user_id, name, value) values (:user_id,:name,:value)', $bind);
+        DbHelper::query('delete from phpr_user_params where user_id=:user_id and name=:name', $bind);
+        DbHelper::query('insert into phpr_user_params(user_id, name, value) values (:user_id,:name,:value)', $bind);
     }
 
     public static function reset($user_id)
@@ -77,7 +77,7 @@ class User_Parameters
         }
 
         $bind = array('user_id' => $user_id);
-        Db_Helper::query('delete from phpr_user_params where user_id=:user_id', $bind);
+        DbHelper::query('delete from phpr_user_params where user_id=:user_id', $bind);
     }
 
     private static function initCache()
@@ -88,7 +88,7 @@ class User_Parameters
 
         self::$cache = array();
 
-        $records = Db_Helper::objectArray('select * from phpr_user_params');
+        $records = DbHelper::objectArray('select * from phpr_user_params');
         foreach ($records as $param) {
             $name = $param->name;
             $user_id = $param->user_id;

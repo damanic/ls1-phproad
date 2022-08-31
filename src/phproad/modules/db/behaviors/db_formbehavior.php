@@ -535,7 +535,7 @@ class Db_FormBehavior extends Phpr\ControllerBehavior
 
     public function formGetElementId($prefix, $form_class = null)
     {
-        return $this->formGetUniquePrefix() . $prefix . $form_class;
+        return $this->formGetUniquePrefix() . $prefix . get_class_id($form_class);
     }
 
     public function formGetUniquePrefix()
@@ -1396,11 +1396,11 @@ class Db_FormBehavior extends Phpr\ControllerBehavior
     {
         $title = 'Find Record';
 
-        $custom_model_class = post('phpr_recordfinder_model_class');
-        if (!$custom_model_class) {
+        $custom_model_class_id = post('phpr_recordfinder_model_class_id');
+        if (!$custom_model_class_id) {
             $model = $this->_controller->formCreateModelObject();
         } else {
-            $model = $this->create_custom_model($custom_model_class, post('phpr_recordfinder_model_id'));
+            $model = $this->create_custom_model($custom_model_class_id, post('phpr_recordfinder_model_id'));
         }
 
         $field_definition = null;
@@ -1434,11 +1434,11 @@ class Db_FormBehavior extends Phpr\ControllerBehavior
 
     public function onSetRecordFinderRecord($recordId)
     {
-        $custom_model_class = post('phpr_recordfinder_model_class');
-        if (!$custom_model_class) {
+        $custom_model_class_id = post('phpr_recordfinder_model_class_id');
+        if (!$custom_model_class_id) {
             $model = $this->_controller->formCreateModelObject();
         } else {
-            $model = $this->create_custom_model($custom_model_class, post('phpr_recordfinder_model_id'));
+            $model = $this->create_custom_model($custom_model_class_id, post('phpr_recordfinder_model_id'));
         }
 
         $db_name = post('db_name');
@@ -1470,12 +1470,12 @@ class Db_FormBehavior extends Phpr\ControllerBehavior
         try {
             $this->cleanupGridExport();
 
-            $custom_model_class = post('phpr_grid_model_class');
+            $custom_model_class_id = post('phpr_grid_model_class');
 
-            if (!$custom_model_class) {
+            if (!$custom_model_class_id) {
                 $model_class = $this->_controller->form_model_class;
             } else {
-                $model_class = $custom_model_class;
+                $model_class = $custom_model_class_id;
             }
 
             $model_data = post($model_class, array());
@@ -1491,7 +1491,7 @@ class Db_FormBehavior extends Phpr\ControllerBehavior
                 $data = unserialize($data['serialized']);
             }
 
-            if (!$custom_model_class) {
+            if (!$custom_model_class_id) {
                 $model = Phpr::$router->action == 'create' ? $this->_controller->formCreateModelObject() : $this->_controller->formFindModelObject($record_id);
             } else {
                 $model = $this->create_custom_model($model_class, null);
@@ -1589,15 +1589,15 @@ class Db_FormBehavior extends Phpr\ControllerBehavior
                     }
                 }
 
-                $custom_model_class = post('phpr_grid_model_class');
+                $custom_model_class_id = post('phpr_grid_model_class');
 
-                if (!$custom_model_class) {
+                if (!$custom_model_class_id) {
                     $model_class = $this->_controller->form_model_class;
                 } else {
-                    $model_class = $custom_model_class;
+                    $model_class = $custom_model_class_id;
                 }
 
-                if (!$custom_model_class) {
+                if (!$custom_model_class_id) {
                     $data_model = Phpr::$router->action == 'create' ? $this->_controller->formCreateModelObject() : $this->_controller->formFindModelObject($record_id);
                 } else {
                     $data_model = $this->create_custom_model($model_class, null);
@@ -1691,15 +1691,15 @@ class Db_FormBehavior extends Phpr\ControllerBehavior
     public function onFormWidgetEvent($record_id = null)
     {
         try {
-            $custom_model_class = post('widget_model_class');
+            $custom_model_class_id = post('widget_model_class');
 
-            if (!$custom_model_class) {
+            if (!$custom_model_class_id) {
                 $model_class = $this->_controller->form_model_class;
             } else {
-                $model_class = $custom_model_class;
+                $model_class = $custom_model_class_id;
             }
 
-            if (!$custom_model_class) {
+            if (!$custom_model_class_id) {
                 $data_model = Phpr::$router->action == 'create' ? $this->_controller->formCreateModelObject() : $this->_controller->formFindModelObject($record_id);
             } else {
                 $data_model = $this->create_custom_model($model_class, null);
@@ -1909,7 +1909,7 @@ class Db_FormBehavior extends Phpr\ControllerBehavior
 
     public function formGetRecordFinderListName($model)
     {
-        return get_class($this->_controller) . '_rflist_' . get_class($model);
+        return get_class_id($this->_controller) . '_rflist_' . get_class_id($model);
     }
 
     public function formGetRecordFinderModel($masterModel, $fieldDefinition)
@@ -1936,11 +1936,11 @@ class Db_FormBehavior extends Phpr\ControllerBehavior
 
     public function formPrepareRecordFinderData()
     {
-        $custom_model_class = post('phpr_recordfinder_model_class');
-        if (!$custom_model_class) {
+        $custom_model_class_id = post('phpr_recordfinder_model_class_id');
+        if (!$custom_model_class_id) {
             $model = $this->_controller->formCreateModelObject();
         } else {
-            $model = $this->create_custom_model($custom_model_class, post('phpr_recordfinder_model_id'));
+            $model = $this->create_custom_model($custom_model_class_id, post('phpr_recordfinder_model_id'));
         }
 
         $field_definition = null;
@@ -1956,11 +1956,11 @@ class Db_FormBehavior extends Phpr\ControllerBehavior
     public function formPrepareRecordFinderList($model = null, $field_definition = null)
     {
         if (!$model) {
-            $custom_model_class = post('phpr_recordfinder_model_class');
-            if (!$custom_model_class) {
+            $custom_model_class_id = post('phpr_recordfinder_model_class_id');
+            if (!$custom_model_class_id) {
                 $model = $this->formCreateModelObject();
             } else {
-                $model = $this->create_custom_model($custom_model_class, post('phpr_recordfinder_model_id'));
+                $model = $this->create_custom_model($custom_model_class_id, post('phpr_recordfinder_model_id'));
             }
         }
 
@@ -2013,7 +2013,7 @@ class Db_FormBehavior extends Phpr\ControllerBehavior
 
     public function formGetRecordFinderContainerId($modelClass, $dbName)
     {
-        return 'recordfinderRecord' . $modelClass . $dbName;
+        return 'recordfinderRecord' . get_class_id($modelClass) . $dbName;
     }
 
     public function formListCollapsableElements($elements)

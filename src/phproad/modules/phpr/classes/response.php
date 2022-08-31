@@ -161,7 +161,7 @@ class Response
         $_COOKIE[$Name] = $Value;
 
         if ($Secure === null) {
-            if (Phpr::$request->protocol() === 'https' && Phpr::$config->get('SECURE_COOKIES', true)) {
+            if (Phpr::$request->getProtocol() === 'https' && Phpr::$config->get('SECURE_COOKIES', true)) {
                 $Secure = true;
             } else {
                 $Secure = false;
@@ -268,6 +268,7 @@ class Response
      */
     public function ajaxReportException($Exception, $Html = false, $Focus = false)
     {
+
         /*
          * Prepare the message
          */
