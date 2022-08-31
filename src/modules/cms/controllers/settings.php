@@ -3,13 +3,13 @@ namespace Cms;
 
 use Phpr;
 use Backend\SettingsController;
-use Users\Groups as UserGroups;
+use Users\Group as UserGroup;
 
 class Settings extends SettingsController
 {
     public $implement = 'Db_ListBehavior, Db_FormBehavior';
     public $form_model_class = '';
-    protected $access_for_groups = array(UserGroups::admin);
+    protected $access_for_groups = array(UserGroup::ADMIN);
 
     public function __construct()
     {

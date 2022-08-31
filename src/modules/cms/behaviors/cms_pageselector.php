@@ -48,12 +48,12 @@
 		
 		public function cms_page_selector_hidden_container_id($model, $session_key, $db_name)
 		{
-			return 'page_selector_data_'.$db_name.get_class($model).'-'.str_replace('.', '-', $session_key);
+			return 'page_selector_data_'.$db_name.get_class_id($model).'-'.str_replace('.', '-', $session_key);
 		}
 		
 		public function cms_page_selector_hidden_label_id($model, $session_key, $db_name)
 		{
-			return 'page_selector_label_'.$db_name.get_class($model).'-'.str_replace('.', '-', $session_key);
+			return 'page_selector_label_'.$db_name.get_class_id($model).'-'.str_replace('.', '-', $session_key);
 		}
 		
 		public function cms_page_selector_render_data($model, $db_name)
@@ -126,7 +126,7 @@
 		
 		public function cms_page_selector_save_model_data($controller, $model)
 		{
-			$posted_data = post(get_class($model), array());
+			$posted_data = post(get_class_id($model), array());
 			if (!$posted_data)
 				return;
 

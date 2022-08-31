@@ -10,6 +10,7 @@ use Phpr\Util;
 use Backend;
 use Db\ActiveRecord;
 use Shop\CustomerGroup;
+use Shop\CheckoutData;
 use Twig\Error\Error as TwigError;
 use Core\CacheBase;
 use Core\Configuration;
@@ -829,7 +830,7 @@ class Controller
     protected function apply_security($page, $request_params)
     {
         if ($page->protocol != 'any' && $page->protocol != 'none') {
-            $protocol = Phpr::$request->protocol();
+            $protocol = Phpr::$request->getProtocol();
             if ($page->protocol != $protocol) {
                 $ticket_id = Phpr::$frontend_security->storeTicket();
                 $session_id = session_id();

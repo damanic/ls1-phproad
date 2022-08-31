@@ -3,7 +3,7 @@ namespace Cms;
 
 use Phpr;
 use Backend\SettingsController;
-use Users\Groups as UserGroups;
+use Users\Group as UserGroup;
 
 class Maintenance extends SettingsController
 {
@@ -13,7 +13,7 @@ class Maintenance extends SettingsController
     public $form_model_class = 'Cms\MaintenanceParams';
     public $form_redirect = null;
 
-    protected $access_for_groups = array(UserGroups::admin);
+    protected $access_for_groups = array(UserGroup::ADMIN);
 
     public function __construct()
     {
