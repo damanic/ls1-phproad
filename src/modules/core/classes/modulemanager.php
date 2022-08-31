@@ -3,7 +3,7 @@ namespace Core;
 
 use Phpr\SystemException;
 use Phpr\ModuleManager as PhprModuleManager;
-use Users\Groups as UserGroups;
+use Users\Group as UserGroup;
 use System\CompoundEmailVar;
 use Backend\TabCollection;
 
@@ -53,7 +53,7 @@ class ModuleManager
     public static function listSettingsItemsPermissible($user, $group_by_sections = false)
     {
 
-        if ($user->belongsToGroups(UserGroups::admin)) {
+        if ($user->belongsToGroups(UserGroup::ADMIN)) {
             return self::listSettingsItems($group_by_sections);
         }
 

@@ -2,11 +2,11 @@
 namespace System;
 
 use Backend\Controller;
-use Users\Groups as UserGroups;
+use Users\Group as UserGroup;
 
 class Security extends Controller
 {
-    protected $access_for_groups = array(UserGroups::admin);
+    protected $access_for_groups = array(UserGroup::ADMIN);
         
     public function __construct()
     {

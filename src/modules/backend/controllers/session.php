@@ -4,7 +4,7 @@ namespace Backend;
 use Backend;
 use Phpr;
 use Phpr\Validation;
-use Phpr\User as User;
+use Users\User as User;
 use Phpr\ApplicationException;
 use Db\UpdateManager as DbUpdateManager;
 use Core\Email;

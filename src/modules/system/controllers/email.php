@@ -4,13 +4,13 @@ namespace System;
 use Phpr;
 use Phpr\ApplicationException;
 use Backend\SettingsController;
-use Users\Groups as UserGroups;
+use Users\Group as UserGroup;
 use Core\Email as CoreEmail;
 use Backend\Html;
 
 class Email extends SettingsController
 {
-    protected $access_for_groups = array(UserGroups::admin);
+    protected $access_for_groups = array(UserGroup::ADMIN);
     public $implement = 'Db_FormBehavior';
 
     public $form_edit_title = 'Email Settings';

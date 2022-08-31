@@ -48,7 +48,7 @@ class ReportingController extends Controller
         
     public function __construct()
     {
-        $this->check_report_dates();
+//        $this->check_report_dates();
         $this->addJavaScript('/modules/backend/resources/javascript/datepicker.js?'.module_build('backend'));
         $this->addCss('/modules/backend/resources/css/datepicker.css?'.module_build('backend'));
         $this->addCss('/modules/backend/resources/css/reports.css?'.module_build('backend'));

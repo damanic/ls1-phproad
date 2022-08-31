@@ -12,7 +12,7 @@
 			<?= Phpr_Form::openTag(array('id'=>'hint_form')) ?>
 				<div class="hint">
 					<p class="last">
-						<? if ($this->currentUser->belongsToGroups(Users_Groups::admin)): ?>
+						<? if ($this->currentUser->belongsToGroups(Users\Groups::admin)): ?>
 							You can configure Google Analytics integration on the <a href="<?= url('cms/settings/stats/') ?>">System/Settings/Statistics and Dashboard</a> page. 
 						<? endif ?>
 						To add more dashboard indicators please click the <strong>Organize</strong> button. To manage indicator and report positions, drag them with the mouse.</p>

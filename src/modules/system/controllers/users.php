@@ -3,7 +3,7 @@ namespace System;
 
 use Phpr;
 use Backend\Controller;
-use Users\Groups as UserGroups;
+use Users\Group as UserGroup;
 
 class Users extends Controller
 {
@@ -26,7 +26,7 @@ class Users extends Controller
     public $list_search_fields = array('@firstName', '@lastName', '@email', '@login');
     public $list_search_prompt = 'find users by name, login or email';
         
-    protected $access_for_groups = array(UserGroups::admin);
+    protected $access_for_groups = array(UserGroup::ADMIN);
     protected $access_exceptions = array('mysettings');
 
     public function __construct()

@@ -6,7 +6,7 @@ use Phpr\ApplicationException;
 use FileSystem\File;
 use FileSystem\Upload;
 use Backend\Controller;
-use Users\Groups as UserGroups;
+use Users\Group as UserGroup;
 use Core\CronManager;
 
 class Backup extends Controller
@@ -25,7 +25,7 @@ class Backup extends Controller
     public $list_custom_body_cells = null;
     public $list_custom_head_cells = null;
 
-    protected $access_for_groups = array(UserGroups::admin);
+    protected $access_for_groups = array(UserGroup::ADMIN);
     protected $public_actions = array('cron');
 
     public function __construct()

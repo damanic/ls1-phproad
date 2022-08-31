@@ -40,9 +40,9 @@
 #40 Minor improvements in the base classes
 #41 Fixed the "Invalid characters in the input data key" error
 #42 Fixed the port detection in some server environments
-#43 Fixed the routing issue which was causing bugs with some LemonStand installation locations
+#43 Fixed the routing issue which was causing bugs with some LSAPP installation locations
 #44 Improved the proxy servers compatibility
-#45 Fixed some bugs in the LemonStand update feature
+#45 Fixed some bugs in the LSAPP update feature
 #46 Fixed the magic quotes problem
 #47 Minor improvements in the front-end JavaScript framework
 #48 Fixed bug with deleting the ZLIB output handler
@@ -254,7 +254,7 @@
 #257|1.2.57 Minor update in the base classes
 #258|1.2.58 Minor fix in the base classes
 #259|1.2.59 Minor fix in the automatic customer login function (fixes the empty_cart feature behavior during the checkout).
-#260|1.2.60 Fixed the HTTP sub-request function for LemonStand copies installed into subdirectories
+#260|1.2.60 Fixed the HTTP sub-request function for LSAPP copies installed into subdirectories
 #261|1.2.61 Minor update in the application controller
 #262|1.2.62 Minor update in the base classes
 #263|1.2.63 Minor fix in the ActiveRecord class
@@ -451,7 +451,7 @@
 #1.11.89 Minor improvement in the error handling
 #1.11.90 Fixed the image uploader widget in Windows Chrome
 #1.11.91 Minor fix in the Grid widget
-#1.11.92 Updated LemonStand service URLs
+#1.11.92 Updated LSAPP service URLs
 #1.11.93 Added support for MySQLi driver
 #1.11.94 Minor update in the MySQLi driver
 #1.11.95 Minor update in the core classes

@@ -2,12 +2,12 @@
 namespace System;
 
 use Backend\SettingsController;
-use Users\Groups as UserGroups;
+use Users\Group as UserGroup;
 use Phpr\ApplicationException;
 
 class ColorTheme extends SettingsController
 {
-    protected $access_for_groups = array(UserGroups::admin);
+    protected $access_for_groups = array(UserGroup::ADMIN);
     public $implement = 'Db_FormBehavior';
 
     public $form_edit_title = 'Customize';

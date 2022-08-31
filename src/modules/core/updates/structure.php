@@ -1,5 +1,4 @@
 <?php
-
 $table = Db\Structure::table('core_configuration_records');
 $table->primaryKey('id');
 $table->column('record_code', db_varchar)->index();
@@ -7,7 +6,7 @@ $table->column('config_data', db_text);
 
 $table = Db\Structure::table('core_metrics');
 $table->primaryKey('id');
-$table->column('total_amount', db_float, [17,8]);
+$table->column('total_amount', db_float, [21,8]);
 $table->column('total_order_num', db_number);
 $table->column('page_views', db_number);
 $table->column('updated', db_date);

@@ -2,11 +2,11 @@
 namespace System;
 
 use Backend\SettingsController;
-use Users\Groups as UserGroups;
+use Users\Group as UserGroup;
 
 class Access_Log extends SettingsController
 {
-    protected $access_for_groups = array(UserGroups::admin);
+    protected $access_for_groups = array(UserGroup::ADMIN);
 
     public $implement = 'Db_ListBehavior, Db_FormBehavior';
     public $list_model_class = 'System\LoginLogRecord';

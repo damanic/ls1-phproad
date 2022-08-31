@@ -2,7 +2,7 @@
 namespace System;
 
 use Backend\SettingsController;
-use Users\Groups as UserGroups;
+use Users\Group as UserGroup;
 
 class Editor_Config extends SettingsController
 {
@@ -15,7 +15,7 @@ class Editor_Config extends SettingsController
     public $form_redirect = null;
     public $form_edit_title = 'HTML Editor Settings';
 
-    protected $access_for_groups = array(UserGroups::admin);
+    protected $access_for_groups = array(UserGroup::ADMIN);
 
     public function __construct()
     {

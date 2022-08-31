@@ -5,7 +5,7 @@ use Phpr;
 use Phpr\ErrorLog as PhprErrorLog;
 use Db\Helper as DbHelper;
 use Backend\SettingsController;
-use Users\Groups as UserGroups;
+use Users\Group as UserGroup;
 
 class Error_Log extends SettingsController
 {
@@ -18,7 +18,7 @@ class Error_Log extends SettingsController
     public $form_not_found_message = 'Record not found';
     public $form_redirect = null;
 
-    protected $access_for_groups = array(UserGroups::admin);
+    protected $access_for_groups = array(UserGroup::ADMIN);
     protected $public_actions = array('cron');
 
     public function __construct()

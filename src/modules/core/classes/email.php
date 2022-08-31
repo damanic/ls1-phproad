@@ -5,7 +5,7 @@ use Phpr;
 use Phpr\SystemException;
 use Net\Email as NetEmail;
 use System\EmailParams;
-use Phpr\User as User;
+use Users\User as User;
 
 /**
 * Sends email messages.

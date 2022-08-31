@@ -3,7 +3,7 @@ namespace System;
 
 use Phpr;
 use Backend\Controller;
-use Users\Groups as UserGroups;
+use Users\Group as UserGroup;
 use Core\ModuleManager;
 use Core\UpdateManager;
 use Core\EulaManager;
@@ -12,7 +12,7 @@ class Modules extends Controller
 {
     public $implement = 'Db_ListBehavior, Db_FormBehavior';
         
-    protected $access_for_groups = array(UserGroups::admin);
+    protected $access_for_groups = array(UserGroup::ADMIN);
 
     public function __construct()
     {

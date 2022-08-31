@@ -110,7 +110,7 @@
 			if ($this->_controller->report_name !== null)
 				return $this->_controller->report_name;
 
-			return get_class($this->_controller).'_'.Phpr::$router->action.'_report';
+			return get_class_id($this->_controller).'_'.Phpr::$router->action.'_report';
 		}
 
 

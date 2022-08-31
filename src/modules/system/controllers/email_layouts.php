@@ -3,7 +3,7 @@ namespace System;
 
 use Phpr;
 use Backend\SettingsController;
-use Users\Groups as UserGroups;
+use Users\Group as UserGroup;
 
 class Email_Layouts extends SettingsController
 {
@@ -18,7 +18,7 @@ class Email_Layouts extends SettingsController
     public $form_create_save_flash = 'Email layout has been successfully added';
     public $form_edit_delete_flash = 'Email template has been successfully deleted';
         
-    protected $access_for_groups = array(UserGroups::admin);
+    protected $access_for_groups = array(UserGroup::ADMIN);
 
     public function __construct()
     {

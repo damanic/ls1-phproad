@@ -2,7 +2,7 @@
 namespace System;
 
 use Backend\SettingsController;
-use Users\Groups as UserGroups;
+use Users\Group as UserGroup;
 
 class CompoundEmailVars extends SettingsController
 {
@@ -25,7 +25,7 @@ class CompoundEmailVars extends SettingsController
     public $form_create_save_flash = 'Email variable has been successfully added';
     public $form_edit_delete_flash = 'Email variable has been successfully deleted';
         
-    protected $access_for_groups = array(UserGroups::admin);
+    protected $access_for_groups = array(UserGroup::ADMIN);
 
     public function __construct()
     {

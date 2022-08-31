@@ -15,7 +15,7 @@ use Phpr\Module_Parameters as ModuleParameters;
 
 			$this->layoutsPath = PATH_APP.'/modules/core/layouts';
 			$this->layout = 'config';
-			$this->viewPath = PATH_APP.'/modules/core/controllers/'.strtolower(get_class($this));
+			$this->viewPath = PATH_APP.'/modules/core/controllers/'.strtolower(get_class_id($this));
 			$this->addCss('/modules/core/resources/css/config.css');
 			$this->addCss('/modules/backend/themes/blue/css/theme.css');
 

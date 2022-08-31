@@ -350,7 +350,7 @@
 
 		private function browserGetName()
 		{
-			return get_class($this->_controller).'_'.Phpr::$router->action.'_filebrowser';
+			return get_class_id($this->_controller).'_'.Phpr::$router->action.'_filebrowser';
 		}
 
 		private function setFolderViewMode($path, $mode)
