@@ -68,7 +68,7 @@ class Db_SqlBase extends Db_WhereBase
         if (!$replace_columns) {
             $this->set_part('fields', $columns);
         } else {
-            $this->parts['fields'] = Util::splat($columns);
+            $this->parts['fields'] = Phpr_Util::splat($columns);
         }
 
         return $this;
