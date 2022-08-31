@@ -165,7 +165,7 @@ if (! isset($APP_CONF) ) {
     $APP_CONF = array();
 }
 
-$APP_CONF['UPDATE_SEQUENCE'] = array( 'core', 'system', 'users', 'cms', 'shop' );
+$APP_CONF['UPDATE_SEQUENCE'] = array( 'net','filesystem','db','phpr','core', 'system', 'users', 'cms', 'shop' );
 $APP_CONF['DB_CONFIG_MODE']  = 'secure';
 $APP_CONF['UPDATE_CENTER']   = 'v1.lsdomainexpired.mjman.net/lsapp_update_gateway';
 
