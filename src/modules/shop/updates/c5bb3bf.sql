@@ -1,1 +1,0 @@
-alter table shop_orders add column stock_updated tinyint(4);

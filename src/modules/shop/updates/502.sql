@@ -1,1 +1,0 @@
-alter table shop_products add allow_negative_stock_values tinyint;

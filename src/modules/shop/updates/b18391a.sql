@@ -1,1 +1,0 @@
-update shop_country_lookup set usps_name = 'Serbia, Republic of' where iso_code = 'RS';

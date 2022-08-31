@@ -1,1 +1,0 @@
-alter table shop_order_items add column extras_price decimal(15,2);

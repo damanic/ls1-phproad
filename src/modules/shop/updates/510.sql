@@ -1,1 +1,0 @@
-alter table shop_tax_classes change column rates rates mediumtext;

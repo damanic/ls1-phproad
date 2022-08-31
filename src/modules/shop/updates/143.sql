@@ -1,1 +1,0 @@
-alter table shop_shipping_options add column handling_fee decimal(15,2) default 0;

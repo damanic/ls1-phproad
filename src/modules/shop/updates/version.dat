@@ -669,12 +669,12 @@
 #1.17.5 Added new API events: shop:onAuthenticateCustomer, shop:onProductOutOfStock.
 #1.17.6 Fixed support of ZIP+4 codes in USPS module.
 #1.17.7 Minor fix in WorldPay Redirect payment module
-#1.17.8|@aa41b97 Added min/max weight filter to all shipping options. Updated test server URL in USPS shipping module. Fixed rate request for business addresses in UPS shipping module.
-#1.18.0|@c75b54e Added custom shipping label printing feature.
+#1.17.8 Added min/max weight filter to all shipping options. Updated test server URL in USPS shipping module. Fixed rate request for business addresses in UPS shipping module.
+#1.18.0 Added custom shipping label printing feature.
 #1.18.1 Minor fix in the tax engine.
 #1.18.2 Added new API event: shop:onConfigureProductsPage
-#1.19.0|@b18391a Added new API events: shop:onExtendCustomGroupModel, shop:onExtendCustomGroupForm and shop:onGetCustomGroupFieldOptions. Minor fix in the Shop_Cart::add_item() API function. Minor fix in the product attribute search function. Improved error processing in FedEx and Purolator shipping modules. Added product filter to the "Buy M get N free" discount action. Fixed USPS country name for Serbia.
-#1.19.1|@2b0e00b Added Montenegro to USPS country list. Added new API event: shop:onConfigureCategoriesPage.
+#1.19.0| Added new API events: shop:onExtendCustomGroupModel, shop:onExtendCustomGroupForm and shop:onGetCustomGroupFieldOptions. Minor fix in the Shop_Cart::add_item() API function. Minor fix in the product attribute search function. Improved error processing in FedEx and Purolator shipping modules. Added product filter to the "Buy M get N free" discount action. Fixed USPS country name for Serbia.
+#1.19.1 Added Montenegro to USPS country list. Added new API event: shop:onConfigureCategoriesPage.
 #1.19.2|@de8dee1 Added On Sale and Sale Price fields for products.
 #1.19.3 Minor fix in the API.
 #1.19.4 Added Has Notes column to the Order List.
@@ -696,7 +696,7 @@
 #1.19.20 Minor improvement in the Discount Engine
 #1.19.21 Improved UI of the Create/Edit Product page
 #1.20.0 Minor fix in the product grouping feature. Added Override Address option to PayPal Standard payment method.
-#1.21.0|@5840731 Optimized user interface on the Categories page. Implemented multiple user interface improvements in the Shop area. Improved memory and CPU usage by categories.
+#1.21.0 Optimized user interface on the Categories page. Implemented multiple user interface improvements in the Shop area. Improved memory and CPU usage by categories.
 #1.21.1 Minor update in PayPal Standard payment module. Update in the API: Shop_Product::find_products() method now supports wildcard character for option and attribute values.
 #1.21.2 Fixed front-end HTML partial for Beanstream Server-To-Server payment module.
 #1.21.3 Minor fix on the Create/Edit Product page. Added "Do not submit itemized order information" checkbox to Authorize.Net payment method. Minor fix in the email variables.
@@ -704,7 +704,7 @@
 #1.21.5 Minor fix in FedEx shipping module
 #1.21.6 Minor fix in eWAY Merchant Hosted Payment payment module
 #1.21.7 Minor improvement on the Payment Attempts tab (Order Preview page) - the attempt time is now displayed with seconds.
-#1.21.8|@82043c2 Minor fix in the Stock report. Minor fix on the Create/Edit Customer page. Added new API events: shop:onGetOrderStatusFieldState, shop:onGetOrderStatusFieldOptions.
+#1.21.8 Minor fix in the Stock report. Minor fix on the Create/Edit Customer page. Added new API events: shop:onGetOrderStatusFieldState, shop:onGetOrderStatusFieldOptions.
 #1.21.9 Minor fix in the internal classes. Minor fix on the Create/Edit Order in the Administration Area. Added "Use Shipping Address" option for PayPal Standard.
 #1.21.10 Minor fix on the Create/Edit Product page.
 #1.21.11 Minor fix in Beanstream server-to-server payment method. Minor fix in the API.
@@ -713,8 +713,8 @@
 #1.21.14 Minor fix in FedEx shipping method. Improvement in the API - added Customer email variable scope.
 #1.21.15 Fixed PayPal Standard endpoint URL
 #1.21.16 Fixed a bug where ungrouping a product results in duplicate category binding records.
-#1.21.17|@88e0f75 Minor fix in eWAY Merchant Hosted payment method. Minor improvement in the bundle product implementation. Optimized shop:on_addToCart event handler.
-#1.21.18|@ba7fcdf Minor database optimization.
+#1.21.17 Minor fix in eWAY Merchant Hosted payment method. Minor improvement in the bundle product implementation. Optimized shop:on_addToCart event handler.
+#1.21.18 Minor database optimization.
 #1.21.19 Minor fix in the categories API. Minor fix in eSELECTplus payment method. Improvements in USPS shipping method (domestic) - use API V4, added configuration option to use commercial rates, added 3 new shipping options.
 #1.22.0 Added new API event: shop:onAfterOrderRecordFetch. Implemented a feature for importing shipping tracking codes from CSV files.
 #1.22.2 Authorize.Net AIM and SIM requests now fallback to product ID in case if SKU is empty.
@@ -732,43 +732,43 @@
 #1.23.8 Minor fix in product CSV import feature. Minor fix in the internal classes.
 #1.23.9 Minor update in the API.
 #1.23.10 Minor fix in product CSV export feature. Minor improvement in the base classes.
-#1.23.11|@c46bf38|@9feebad Multiple performance improvements in the Administration Area 
+#1.23.11|@9feebad Multiple performance improvements in the Administration Area 
 #1.23.12 Fixed a bug in the internal class
 #1.23.13 Minor extension in the products API
-#1.23.14|@36cff65 Performance update
+#1.23.14 Performance update
 #1.23.15 Minor improvement in the search API
 #1.23.16 Added new API event: shop:onExtendCustomersToolbar
 #1.23.17 Minor fix in PayPal Standard payment method
-#1.24.0|@0e6b2d6|@7f879e7|@1db5c14|@d201424|@07660fb|@f079363|@5353a66 Implemented Option Matrix feature.
+#1.24.0|@5353a66 Implemented Option Matrix feature.
 #1.24.1 Minor update in eWay payment methods
 #1.24.2 Minor fix in PayPal Standard payment method
 #1.24.3 Improvement in the bundle products API - added Shop_BundleItemProduct::get_sale_price() method
 #1.24.4 Minor improvement in the internal classes
 #1.24.5 Minor fix in the product CSV import feature
-#1.24.6|@2e6fad8 Performance update in the Discount Engine
+#1.24.6 Performance update in the Discount Engine
 #1.24.7 Performance update in the category class
 #1.24.8 Minor fix in the Duplicate Product feature
 #1.24.9 Minor fix in the product CSV import feature
 #1.24.10 Added Option Matrix support in the Duplicate Product feature. Added base product information to the Option Matrix popup form.
 #1.24.11 Minor fix in Authorize.Net AIM payment profile support, minor improvement in the invoice generating.
 #1.24.12 Implemented "Save the credit card" checkbox in Authorize.Net AIM payment form in the Administration Area.
-#1.24.13|@b0c5317 Imrpovements in the customer payment profiles implementation
+#1.24.13 Improvements in the customer payment profiles implementation
 #1.24.14 Added inline code documentation
 #1.24.15 Minor update in the internal classes
-#1.24.16 Imporvements in the downloadable products implementation
+#1.24.16 Improvements in the downloadable products implementation
 #1.24.17 Minor fix in the Discount Engine. 
 #1.24.18 Minor fix in the Reports. Minor improvement in SecureTrading Payment Pages payment method.
 #1.24.19 Technology update
 #1.24.20 Added new configuration parameter - DISABLE_GROUPED_PRODUCTS. Option Matrix feature is now out of beta.
-#1.24.21 Minor usability imrpovements in the Administration Area
+#1.24.21 Minor usability improvements in the Administration Area
 #1.24.22 Technology update
-#1.24.23 Minor imrpovement in the API
+#1.24.23 Minor improvements in the API
 #1.24.24 Minor fix in Authorize.Net AIM payment method
-#1.24.25 Minor imrpovement in the API
-#1.24.26 Performance imrpovement in the Option Matrix popup form
+#1.24.25 Minor improvements in the API
+#1.24.26 Performance improvements in the Option Matrix popup form
 #1.24.27 Minor fix on the Import Customers page
 #1.24.28 Minor update in the API
-#1.24.29|@94e1ea0|@382c00e Performance improvements in the Discount Engine
+#1.24.29 Performance improvements in the Discount Engine
 #1.24.30 Minor update in the API
 #1.24.31 Fixed some typos in the Administration Area
 #1.24.32 Minor fix in PayPal Standard payment method. Minor fix in E-xact Web Service payment method. 
@@ -776,7 +776,7 @@
 #1.24.34 Added Gift Aid support for Sage Pay payment methods. Added new API events: shop:onExtendAttributeModel, shop:onExtendAttributeForm, shop:onGetAttributeFieldOptions
 #1.24.35 Added new option to the product CSV import: "The Short Description field in the CSV file contains HTML tags"
 #1.24.36|@d2f4cea Added the ability to assign email templates for internal order status update notifications
-#1.24.37|@520cb74 Minor improvement in the database structure
+#1.24.37 Minor improvement in the database structure
 #1.24.38 Added new API event: shop:onExtendOptionMatrixRecordModel. Added the ability to extend Option Matrix with image columns. Added the "Hide disabled products" filter to the Product List.
 #1.24.39 Completely disabled products are not displayed in the Create Order and Discounts user interface now. Added Add Row/Delete Row buttons to the Option Matrix form.
 #1.24.40 Minor fix in the Discount Engine
@@ -786,12 +786,12 @@
 #1.25.0 Orders can now be created from the Customer Preview page. Create Order page now allows to create both guest and registered customers. 
 #1.25.1 Minor improvements in SagePay payment methods. Added new API event: shop:onConfigureCustomersPage
 #1.25.2 Minor update in the API
-#1.25.3|@d786fef Added customer group visibility filters for payment methods
+#1.25.3 Added customer group visibility filters for payment methods
 #1.25.4 Minor improvement in the internal classes
 #1.25.5 Fixed SagePay Direct payment method
 #1.25.6 Minor fix in PayPal Pro payment method
-#1.25.7|@b193df9 Added the "Allow pre-order" feature for Option Matrix products. Added the search by full name feature to the customer list in the Administration Area.
-#1.25.8 Fixed some typos. Minor imrpovement in Beanstream Basic Integration payment method.
+#1.25.7 Added the "Allow pre-order" feature for Option Matrix products. Added the search by full name feature to the customer list in the Administration Area.
+#1.25.8 Fixed some typos. Minor improvements in Beanstream Basic Integration payment method.
 #1.25.9 Minor fix in PayPal Pro payment method
 #1.25.10 Product search function in the Administration Area now searches in grouped products and Option Matrix records. Minor fix in the Option Matrix implementation. Optimized the "Generate Option Matrix records" feature. The Add Product form on the Create/Edit Order page now displays a warning if a product is out of stock.
 #1.25.11 Added new configuration options for PayPal Pro payment method: "Adjust tax value" and "Do not submit order details".
@@ -803,15 +803,15 @@
 #1.25.17 Minor fix in the product search function. Minor fix on the Product List page in the Administration Area.
 #1.25.18 Minor fix in PayPal Pro payment method
 #1.25.19 Minor fix in BrainTree payment partials
-#1.25.20 Minor imrpovement in the payment methods API
+#1.25.20 Minor improvements in the payment methods API
 #1.25.21 Minor fix in the payment API
 #1.25.22 Minor fix in Braintree payment method
 #1.25.23|@cb0fb06 Minor fix in the product search feature. Added Low Stock Threshold field to the Edit Product form. Added low stock email notification.
 #1.25.24 Added new API events: shop:onBeforeOrderCustomerStatusMessageSent, shop:onFilterPaymentMethods
-#1.25.25 Minor imrpovement in the payment methods API
+#1.25.25 Minor improvements in the payment methods API
 #1.25.26 Minor fix in Authorize.Net AIM payment method. Minor improvement in the Google Checkout payment method documentation.
 #1.25.27 Implemented AVS for E-xact Web Service
-#1.25.28|@4b7a9f8 Added transaction management for eSelectPlus
+#1.25.28Added transaction management for eSelectPlus
 #1.25.29 Minor improvement in the back-end product search feature
 #1.25.30 Minor update in the WorldPay Redirect payment method
 #1.25.31 Added new API event: shop:onGetCustomerFieldState
@@ -830,8 +830,8 @@
 #1.25.44 Added new API event: shop:onGetProductSalePrice
 #1.25.45 Minor fix on the Create Order page
 #1.25.46 Added new API event: shop:onGetShippingParams
-#1.25.47|@4dacc23|@c5bb3bf Added "Update stock" option to order statuses. Now any order status can affect product stock values. Minor fix in the Add Order Item form in the Administration Area. Implemented the product availability check before a front-end order is placed.
-#1.25.48|@da80b2a|@99b10e7 Performance imrpovement in Option Matrix API
+#1.25.47|@4dacc23 Added "Update stock" option to order statuses. Now any order status can affect product stock values. Minor fix in the Add Order Item form in the Administration Area. Implemented the product availability check before a front-end order is placed.
+#1.25.48|@99b10e7 Performance improvements in Option Matrix API
 #1.25.49 Minor fix in the order route management
 #1.25.50 Minor fix in the PayPal Standard payment method
 #1.25.51 Minor fix in the USPS shipping method
@@ -858,7 +858,7 @@
 #1.25.72 Added new parameters to the shop:onAfterCsvOptionMatrixImport API event. Minor fix in the Order Totals dashboard indicator.
 #1.25.73 Minor fix in the Option Matrix
 #1.25.74 Minor fix in product CSV import feature.
-#1.25.75 Minor imrpovement in the API. Added new API event: shop:onBeforeGenerateCustomerPassword. Added the "Do not submit itemized order information" feature to the PayPal Standard payment module.
+#1.25.75 Minor improvement in the API. Added new API event: shop:onBeforeGenerateCustomerPassword. Added the "Do not submit itemized order information" feature to the PayPal Standard payment module.
 #1.25.76 Minor fix in the API.
 #1.25.77 Added billing and shipping state filters to the Tax report
 #1.25.78 Added the shop:customer_profile CMS action. Added new Twig extensions.
@@ -879,8 +879,8 @@
 #1.25.93 Minor update in the default PayPal Pro payment partial templates
 #1.25.94 Minor update in the API
 #1.25.95 Minor fix in the Discount Engine
-#1.25.96|@a290354 Fixed the Philippines 3 digit ISO country code. Minor update in the API.
-#1.25.97|@b14285d Added new eCommerce Configuration Option (System/Settings/eCommerce Settings): "Strict option values for Option Matrix products". Updated the USPS shipping module.
+#1.25.96 Fixed the Philippines 3 digit ISO country code. Minor update in the API.
+#1.25.97 Added new eCommerce Configuration Option (System/Settings/eCommerce Settings): "Strict option values for Option Matrix products". Updated the USPS shipping module.
 #1.25.98 Minor fix in the Option Matrix API
 #1.25.99 Minor fix in the USPS shipping module
 #1.25.100 Added new API event: shop:onOrderAfterUpdateCustomer
@@ -897,7 +897,7 @@
 #1.25.111 Minor fix in the internal classes.
 #1.25.112 Updated the European Central Bank currency converter feed URL.
 #1.25.113 Minor improvement in the back-end
-#1.25.114|@ad604de Added new API events: shop:onBeforeCsvCustomerUpdated, shop:onBeforeCsvCustomerCreated, shop:onExtendCompanyInformationModel, shop:onExtendCompanyInformationForm, shop:onGetCompanyInformationFieldOptions, shop:onGetCompanyInformationFieldState. Added the Disabled property to Manufacturers.
+#1.25.114 Added new API events: shop:onBeforeCsvCustomerUpdated, shop:onBeforeCsvCustomerCreated, shop:onExtendCompanyInformationModel, shop:onExtendCompanyInformationForm, shop:onGetCompanyInformationFieldOptions, shop:onGetCompanyInformationFieldState. Added the Disabled property to Manufacturers.
 #1.25.115 Added new API event: shop:onBeforeAutobillingOrderFind
 #1.25.116 Minor update in the First Data/LinkPoint API payment method
 #1.25.117 Added new configuration parameter: OM_SALE_PRICE_FALLBACK
@@ -955,7 +955,7 @@
 #1.31.3 Minor improvement. DB Indexes, extends format_currency(), adds new function to Shop_PaymentTypes
 #1.31.4 Minor improvement to payment transaction status logs
 #1.31.5 Improved payment transaction totals
-#1.31.6|@phpr-patch_1.31.6 Improve order currency field display, New event shop:onCustomerDisplayField.
+#1.31.6 Improve order currency field display, New event shop:onCustomerDisplayField.
 #1.31.7 Adds order locks. New user permissions for order lock and permanent delete.
 #1.31.8 Adds shipping boxes to shipping settings and a box packer helper to help with shipping cost calculations
 #1.31.9 New event `shop:onOrderAfterModify` is triggered after order is created, updated or deleted
@@ -996,7 +996,7 @@
 #1.33.26 Adds new variable to email templates
 #1.33.27 Improvements to shipping box calculations
 #1.33.28 Improvements and bugfixes
-#1.33.29|@1.33.29 New customer report view. Applied discounts shown on order preview
+#1.33.29 New customer report view. Applied discounts shown on order preview
 #1.33.30 New methods for fetching customer reference
 #1.33.31 Minor improvements and fixes
 #1.33.32 Allows locked orders to be copied to new orders

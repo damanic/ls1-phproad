@@ -1,1 +1,0 @@
-alter table shop_products_categories add column product_category_sort_order int;

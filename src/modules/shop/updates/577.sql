@@ -1,1 +1,0 @@
-alter table shop_orders add column override_shipping_quote tinyint(4);

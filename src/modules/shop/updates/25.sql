@@ -1,1 +1,0 @@
-insert into shop_tax_classes(name, description, code) values ('Shipping', 'Use this tax class to apply tax rules to shipping services.', 'shipping');

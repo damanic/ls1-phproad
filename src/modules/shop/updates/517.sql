@@ -1,1 +1,0 @@
-alter table shop_shipping_params add column display_shipping_service_errors tinyint(4);

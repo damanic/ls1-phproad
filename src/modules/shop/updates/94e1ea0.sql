@@ -1,1 +1,0 @@
-create index rule_parent_id_index on shop_price_rule_conditions(rule_parent_id);

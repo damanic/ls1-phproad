@@ -1,1 +1,0 @@
-alter table shop_products add column expected_availability_date date;

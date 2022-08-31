@@ -1,1 +1,0 @@
-alter table shop_orders add column customer_ip varchar(15);

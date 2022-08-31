@@ -1,1 +1,0 @@
-alter table shop_shipping_options change column config_data config_data mediumtext;

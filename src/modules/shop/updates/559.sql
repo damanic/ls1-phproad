@@ -1,13 +1,3 @@
-CREATE TABLE `shop_automated_billing_settings` (
-  `id` int(11) NOT NULL auto_increment,
-  `payment_method_id` int(11) default NULL,
-  `billing_period` int(11) default NULL,
-  `success_notification_id` int(11) default NULL,
-  `failed_notification_id` int(11) default NULL,
-  `enabled` tinyint(4) default NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
 insert into shop_automated_billing_settings(id, billing_period, enabled) values (1, 5, 0);
 
 alter table shop_orders add column automated_billing_fail datetime;

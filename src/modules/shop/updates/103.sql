@@ -1,1 +1,0 @@
-alter table shop_products_customgroups add column product_group_sort_order int;

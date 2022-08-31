@@ -1,1 +1,0 @@
-alter table shop_products add column price_rules_compiled text;

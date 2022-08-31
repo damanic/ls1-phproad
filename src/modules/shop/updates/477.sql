@@ -1,1 +1,0 @@
-alter table shop_products modify url_name varchar(255);

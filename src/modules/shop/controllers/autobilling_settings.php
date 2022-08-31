@@ -2,12 +2,12 @@
 namespace Shop;
 
 use Backend\SettingsController;
-use Users\Groups as UserGroup;
+use Users\Group as UserGroup;
 use Phpr\ApplicationException;
 
 class AutoBilling_Settings extends SettingsController
 {
-    protected $access_for_groups = [UserGroup::admin];
+    protected $access_for_groups = [UserGroup::ADMIN];
     public $implement = 'Db_FormBehavior';
 
     public $form_edit_title = 'Automated Billing Settings';

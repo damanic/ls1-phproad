@@ -1,1 +1,0 @@
-alter table shop_products add tax_class_id int;

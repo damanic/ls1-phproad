@@ -1,1 +1,0 @@
-update shop_countries set name='Reunion' where code_3='REU';

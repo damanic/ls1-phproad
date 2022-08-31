@@ -1,1 +1,0 @@
-alter table shop_categories add column category_is_hidden tinyint;

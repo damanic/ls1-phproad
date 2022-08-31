@@ -1,1 +1,0 @@
-alter table shop_cart_rules add column free_shipping tinyint;

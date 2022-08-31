@@ -1,1 +1,0 @@
-alter table shop_payment_transactions add column fetched_from_gateway tinyint;

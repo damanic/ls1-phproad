@@ -1,1 +1,0 @@
-alter table shop_configuration add column search_in_keywords tinyint;

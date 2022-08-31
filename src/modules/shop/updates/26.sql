@@ -1,2 +1,0 @@
-insert into shop_tax_classes(name, description) values ('Product', 'Default product tax class.');
-insert into shop_tax_classes(name, description) values ('Downloadable product', 'Default downloadable product tax class.');
