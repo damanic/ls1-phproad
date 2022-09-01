@@ -245,7 +245,7 @@ class Products extends Controller
         }
 
         if (Phpr::$router->action == 'index') {
-            $this->list_cell_partial = PATH_APP . '/modules/shop/controllers/shop_products/_product_row_controls.htm';
+            $this->list_cell_partial = PATH_APP . '/modules/shop/controllers/products/_product_row_controls.htm';
             $this->list_handle_row_click = false;
         }
 
