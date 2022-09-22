@@ -987,7 +987,7 @@ class Controller
      * <pre>$this->render_partial('product_list', array('products'=>$category->products));</pre>
      * The $options parameter supports the following elements:
      * <ul>
-     *   <li><em>return_output</em> - determines whether the method should return the partial content instead of displaying it.</li>
+     *   <li><em>return_output</em> - determines whether the method should return the partial content instead of printing it.</li>
      *   <li><em>cache</em> - enables the {@link https://lsdomainexpired.mjman.net/docs/caching_pages_and_partials/ caching}.</li>
      *   <li><em>cache_vary_by</em> - array or string (for a single value parameter). Specifies parameters the cache
      *        should depend on. For example, you can create different versions of a partial cache for different pages
@@ -1022,15 +1022,27 @@ class Controller
      * @return mixed Returns NULL by default. Returns the partial content if the $options parameters has
      * <em>return_output</em> element with value TRUE.
      */
-    public function render_partial($name, $params = array(), $options = array('return_output' => false))
+    public function render_partial(string $name, array $params = [], array $options = [])
     {
-        $result = null;
+        $default_options = [
+            'return_output' => false,
+            'cache'=>false,
+            'cache_vary_by'=>[],
+            'cache_versions'=>[],
+            'cache_ttl'=> null
+        ];
+        $options = array_merge($default_options, $options);
         $name = str_replace(';', ':', $name);
+        $partial_content = false;
+        $rendered_content = null;
 
-        $return_output = array_key_exists('return_output', $options) && $options['return_output'];
-        if ($return_output) {
-            ob_start();
-        }
+        $cache_vary_by = is_array($options['cache_vary_by']) ? $options['cache_vary_by'] : [];
+        $cache_versions = is_array('cache_versions') ? $options['cache_versions'] : [];
+        $cache_ttl = is_numeric($options['cache_ttl']) ? $options['cache_ttl'] : null;
+        $cache_key_prefix = 'partial_'.str_replace(':', '-', $name);
+        $cache_key = null;
+
+        ob_start();
 
         if (in_array('show_page_structure', $this->_special_query_flags)) {
             echo '<div class="cms_partial_wrapper" title="'.h($name).'">';
@@ -1039,60 +1051,51 @@ class Controller
 
         Backend::$events->fireEvent('cms:onBeforeRenderPartial', $name, $params, $options);
 
-        $loaded_from_cache = false;
-        $cache_result = false;
-
-        if (array_key_exists('cache', $options) && $options['cache']) {
-            $key_prefix= 'partial_'.str_replace(':', '-', $name);
+        if ($options['cache']) { //attempt to render partial from cache
+            $recache = false;
+            $cache_key = CacheBase::create_key($cache_key_prefix, $recache, $cache_vary_by, $cache_versions);
 
             if (Theme::is_theming_enabled()) {
                 $theme = Theme::get_active_theme();
                 if ($theme) {
-                    $key_prefix = $theme->code.'-'.$key_prefix;
+                    $cache_key_prefix  = $theme->code.'-'.$cache_key_prefix ;
                 }
             }
 
-            $vary_by = array_key_exists('cache_vary_by', $options) ? $options['cache_vary_by'] : array();
-            $cache_versions = array_key_exists('cache_versions', $options) ? $options['cache_versions'] : array();
-
-            $cache_ttl = array_key_exists('cache_ttl', $options) ? $options['cache_ttl'] : null;
-            $recache = false;
-            $cache_key = CacheBase::create_key($key_prefix, $recache, $vary_by, $cache_versions);
             if ($this->reset_cache_request()) {
                 $recache = true;
             }
+            $partial_content = !$recache ? CacheBase::create()->get($cache_key) : false;
 
-            $cache = CacheBase::create();
-            $partial_contents = !$recache ? $cache->get($cache_key) : false;
-
-            if ($partial_contents !== false) {
-                $loaded_from_cache = true;
-                echo $partial_contents;
-            } else {
-                $cache_result = true;
+            if ($partial_content !== false) {
+                echo $partial_content;
             }
         }
 
-        if (!$loaded_from_cache) {
-            if ($cache_result) {
+        if ($partial_content === false) { //render partial
+            if ($options['cache']) {
                 ob_start();
             }
 
             $partial = Partial::find_by_name($name);
             if ($partial) {
-                $result = $this->evalWithException('?>'.Partial::get_content($name, $partial->html_code, $partial->file_name), Controller::cms_type_partial, $partial->name, $params);
+                $rendered_content = $this->evalWithException(
+                    '?>'.Partial::get_content($name, $partial->html_code, $partial->file_name),
+                    Controller::cms_type_partial,
+                    $partial->name,
+                    $params
+                );
             } elseif ($this->_cms_call_stack) {
                 throw new ExecutionException("Partial \"$name\" not found", $this->_cms_call_stack, null, true);
             } else {
                 throw new ApplicationException("Partial " . $name . " not found");
             }
 
-            if ($cache_result) {
-                $partial_contents = ob_get_contents();
+            if ($options['cache']) {
+                $partial_content = ob_get_contents();
                 ob_end_clean();
-
-                $cache->set($cache_key, $partial_contents, $cache_ttl);
-                echo $partial_contents;
+                CacheBase::create()->set($cache_key, $partial_content, $cache_ttl);
+                echo $partial_content;
             }
         }
 
@@ -1102,12 +1105,13 @@ class Controller
 
         Backend::$events->fireEvent('cms:onAfterRenderPartial', $name, $params, $options);
 
-        if ($return_output) {
-            $result = ob_get_contents();
-            ob_end_clean();
-        }
+        $rendered_content = ob_get_contents();
+        ob_end_clean();
 
-        return $result;
+        if($options['return_output']){
+            return $rendered_content;
+        }
+        echo $rendered_content;
     }
 
     /**
