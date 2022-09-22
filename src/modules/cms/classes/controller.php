@@ -1042,7 +1042,7 @@ class Controller
         $loaded_from_cache = false;
         $cache_result = false;
 
-        if (array_key_exists('cache', $options)) {
+        if (array_key_exists('cache', $options) && $options['cache']) {
             $key_prefix= 'partial_'.str_replace(':', '-', $name);
 
             if (Theme::is_theming_enabled()) {
