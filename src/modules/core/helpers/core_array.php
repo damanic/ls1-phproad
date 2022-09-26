@@ -1,5 +1,4 @@
 <?php
-namespace Core;
 
 use Phpr\Arr as PhprArray;
 
@@ -14,7 +13,8 @@ class Core_Array
      */
     public static function merge_recursive_distinct()
     {
-        return PhprArray::mergeRecursiveDistinct();
+        $args = func_get_args();
+        return call_user_func_array('\Phpr\Arr::mergeRecursiveDistinct', $args);
     }
 
     /**
