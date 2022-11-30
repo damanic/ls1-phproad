@@ -1,4 +1,5 @@
 <?php
+
 namespace Core;
 
 use Phpr;
@@ -10,12 +11,13 @@ use Db\DeferredBinding;
 use Db\RecordLock;
 use System\LoginLogRecord;
 use System\Backup_Archive;
+use System\Backup_Params;
 
-    /**
-     * Core security class.
-     * This class extends the standard PHP Road Security class.
-     * @has_documentable_methods
-     */
+/**
+ * Core security class.
+ * This class extends the standard PHP Road Security class.
+ * @has_documentable_methods
+ */
 class Security extends PhprSecurity
 {
     private $coreUser = null;
@@ -24,7 +26,7 @@ class Security extends PhprSecurity
     {
         $this->userClassName = "Users\User";
     }
-        
+
     public function login(Validation $Validation = null, $Redirect = null, $Login = null, $Password = null)
     {
         if (parent::login($Validation, null)) {
@@ -32,10 +34,10 @@ class Security extends PhprSecurity
             $this->user->update_last_login();
             Phpr::$response->redirect($Redirect);
         }
-            
+
         return false;
     }
-    
+
     /**
      * Determines whether the user is allowed to access the application
      *
@@ -55,9 +57,9 @@ class Security extends PhprSecurity
                 $Uri = null;
             }
 
-            Phpr::$response->redirect(url('/session/handle/create/'.$Uri));
+            Phpr::$response->redirect(url('/session/handle/create/' . $Uri));
         }
-            
+
         $user = parent::getUser();
         if ($user->status == User::disabled) {
             $this->kickOut();
@@ -84,29 +86,34 @@ class Security extends PhprSecurity
     {
         return $this->getUser()->id;
     }
-        
+
     protected function checkUser($user)
     {
         if ($user && $user->status == User::disabled) {
             throw new ApplicationException('Your user account has been disabled.');
         }
     }
-        
+
     protected function afterLogin($user)
     {
         DeferredBinding::cleanUp(3);
         if (!Phpr::$config->get('DISABLE_BACKUP_FEATURE')) {
-            Backup_Archive::backup();
+            try {
+                Backup_Params::validateParams();
+                Backup_Archive::backup();
+            } catch (ApplicationException $e) {
+                //skip
+            }
         }
         RecordLock::cleanUp();
-            
+
         $user = $this->getUser();
         if ($user) {
             LoginLogRecord::create_record($user);
             $user->clearPasswordResetHash();
         }
     }
-        
+
     public function http_authentication($zone_name, $cancel_text = null)
     {
         $cancel_text = $cancel_text !== null ? $cancel_text : "You must enter a valid login ID and password to access this resource";
@@ -124,18 +131,18 @@ class Security extends PhprSecurity
 
         return $obj;
     }
-        
+
     private function send_auth_headers($zone, $cancel_text)
     {
-        header('WWW-Authenticate: Basic realm="'.$zone.'"');
+        header('WWW-Authenticate: Basic realm="' . $zone . '"');
         header('HTTP/1.0 401 Unauthorized');
         die($cancel_text);
     }
-        
+
     /*
      * Event descriptions
      */
-        
+
     /**
      * Triggered when a user logs into the Administration Area.
      * @event onLogin
