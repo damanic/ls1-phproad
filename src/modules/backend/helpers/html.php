@@ -419,7 +419,8 @@ class Html
     public static function calendar($fieldId, $dateFormat = '')
     {
         if (!strlen($dateFormat)) {
-            $dateFormat = str_replace('%', null, Phpr::$lang->mod('phpr', 'short_date_format', 'dates'));
+            $sdf = Phpr::$lang->getString('phpr.dates', 'short_date_format');
+            $dateFormat = str_replace('%', null, $sdf);
         } else {
             $dateFormat = str_replace('%', null, $dateFormat);
         }
@@ -453,7 +454,7 @@ class Html
         $index = $offset;
         $cnt = 1;
         while ($cnt <= $num) {
-            $result[] = "'".Phpr::$lang->mod('phpr', $modifier.$index, 'dates')."'";
+            $result[] = "'".Phpr::$lang->getString('phpr.dates', $modifier.$index)."'";
             $index++;
             $cnt++;
 
