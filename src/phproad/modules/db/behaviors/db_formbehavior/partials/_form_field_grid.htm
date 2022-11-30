@@ -58,7 +58,8 @@
 	
 	<div class="backend_scroller" id="<?= $table_container_id ?>">
 		<? $this->formRenderPartial('form_grid_table', array(
-			'form_model_class'=>$form_model_class_id,
+			'form_model_class'=>$form_model_class,
+            'form_model_class_id'=>$form_model_class_id,
 			'dbName'=>$dbName,
 		)) ?>
 	</div>
