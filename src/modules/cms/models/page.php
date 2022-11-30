@@ -507,7 +507,7 @@ class Page extends CmsObject
                     'above'
                 );
         } else {
-            $user = Backend::$security->getUser();
+            $user = Phpr::$security->getUser();
             $can_edit_pages = $user->get_permission('cms', 'manage_pages');
             $can_manage_static_pages = $user->get_permission('cms', 'manage_static_pages');
 
