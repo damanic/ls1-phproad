@@ -10,9 +10,10 @@ use Db\Structure;
 
 $existingTables = DbHelper::listTables();
 $tableMigrations = [
+//    'users' => 'users_user', @todo direct references to the user table need to be removed (eg. db footprints)!
     'groups' => 'users_groups',
-    'groups_users' => 'users_users_groups',
-    'user_permissions' => 'users_permissions',
+    'groups_users' => 'users_user_groups',
+    'user_permissions' => 'users_user_permissions',
 ];
 $migrationsPerformed = false;
 

@@ -54,8 +54,8 @@ class User extends PhprUser
     );
 
     public $has_and_belongs_to_many = array(
-        'rights' => array('class_name' => 'Users\Group'), //deprecated
-        'groups' => array('class_name' => 'Users\Group')
+        'rights' => array('class_name' => 'Users\Group', 'join_table' => 'users_user_groups'), //deprecated
+        'groups' => array('class_name' => 'Users\Group', 'join_table' => 'users_user_groups')
     );
 
     public $has_many = array(
@@ -335,10 +335,10 @@ class User extends PhprUser
     public static function listAdministrators()
     {
         $sql = self::create()
-            ->join('groups', "users_groups.code = 'administrator'")
-            ->join('groups_users', "groups_users.group_id = users_groups.id")
-            ->where('status <> ?', self::disabled)
-            ->where('users.id = groups_users.user_id')->find_all();
+            ->join('users_groups', "users_groups.code = ?", Groups::admin)
+            ->join('users_user_groups', "users_user_groups.group_id = users_groups.id")
+            ->where('users.status <> ?', self::disabled)
+            ->where('users.id = users_user_groups.user_id')->find_all();
     }
 
     public function add_field($module, $code, $title, $side = 'full', $type = db_text)

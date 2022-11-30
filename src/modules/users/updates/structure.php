@@ -15,7 +15,7 @@ $table->column('last_login', db_datetime);
 $table->column('password_restore_hash', db_varchar, 150)->index();
 $table->footprints();
 
-$table = Db\Structure::table('users_permissions');
+$table = Db\Structure::table('users_user_permissions');
 $table->primaryKey('id');
 $table->column('user_id', db_number, 11)->index();
 $table->column('module_id', db_varchar, 50);
@@ -29,7 +29,7 @@ $table->column('name', db_varchar, 255);
 $table->column('description', db_varchar, 255);
 $table->column('code', db_varchar, 100)->index();
 
-$table = Db\Structure::table('users_users_groups');
+$table = Db\Structure::table('users_user_groups');
 $table->primaryKey('id');
 $table->column('user_id', db_number, 11)->index();
 $table->column('users_group_id', db_number, 11)->index();

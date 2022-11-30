@@ -6,7 +6,7 @@ use Db\Helper as DbHelper;
 
 class Permissions
 {
-    public $table_name = 'users_permissions';
+    public $table_name = 'users_user_permissions';
     protected static $permission_cache = array();
 
     public static function save_user_permissions($user_id, $module_id, $permission_name, $value)
@@ -19,7 +19,7 @@ class Permissions
         ];
 
         DbHelper::query(
-            'delete from users_permissions 
+            'delete from users_user_permissions 
                   where user_id=:user_id 
                   and module_id=:module_id 
                   and permission_name=:permission_name',
@@ -27,7 +27,7 @@ class Permissions
         );
 
         DbHelper::query(
-            'insert into users_permissions (user_id, module_id, permission_name, value) 
+            'insert into users_user_permissions (user_id, module_id, permission_name, value) 
                   values(:user_id, :module_id, :permission_name, :value)',
             $bind
         );
@@ -37,7 +37,7 @@ class Permissions
     {
         if (!array_key_exists($user_id, self::$permission_cache)) {
             $permissions = DbHelper::objectArray(
-                'select * from users_permissions where user_id=:user_id',
+                'select * from users_user_permissions where user_id=:user_id',
                 ['user_id' => $user_id]
             );
 
@@ -71,7 +71,7 @@ class Permissions
     public static function get_user_permissions($user_id)
     {
         return DbHelper::objectArray(
-            'select * from users_permissions where user_id=:user_id',
+            'select * from users_user_permissions where user_id=:user_id',
             ['user_id' => $user_id]
         );
     }
