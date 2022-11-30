@@ -262,10 +262,52 @@ $table->column('receipt_page_id', db_number);
 $table->column('ls_api_code', db_varchar, 50)->index();
 $table->column('backend_enabled', db_bool)->index();
 
+$table = Db\Structure::table('shop_payment_transactions');
+$table->primaryKey('id');
+$table->column('order_id', db_number)->index();
+$table->column('transaction_id', db_varchar, 100)->index();
+$table->column('transaction_status_name', db_varchar, 255);
+$table->column('transaction_status_code', db_varchar, 100)->index();
+$table->column('created_at', db_datetime)->index();
+$table->column('created_user_id', db_number);
+$table->column('payment_method_id', db_number)->index();
+$table->column('user_note', db_text);
+$table->column('fetched_from_gateway', db_bool);
+$table->column('data_1', db_text);
+$table->column('transaction_value', db_float, [21, 8])->index();
+$table->column('transaction_value_currency_code', db_varchar, 4);
+$table->column('transaction_complete', db_bool);
+$table->column('transaction_refund', db_bool);
+$table->column('transaction_void', db_bool);
+$table->column('has_disputes', db_bool);
+$table->column('liability_shifted', db_bool);
+$table->column('settlement_value', db_float, [21, 8]);
+$table->column('settlement_value_currency_code', db_varchar, 4);
+
+$table = Db\Structure::table('shop_payment_transaction_disputes');
+$table->primaryKey('id');
+$table->column('api_transaction_id', db_varchar, 100)->index();
+$table->column('case_id', db_varchar, 255);
+$table->column('amount_disputed', db_float, [21, 8]);
+$table->column('amount_lost', db_float, [21, 8]);
+$table->column('status_description', db_varchar);
+$table->column('reason_description', db_varchar);
+$table->column('case_closed', db_bool);
+$table->column('notes', db_text);
+$table->column('gateway_api_data', db_text);
+$table->column('shop_payment_transaction_id', db_number)->index();
+$table->footprints();
+
 $table = Db\Structure::table('shop_paymentmethods_countries');
-$table->column('shop_payment_method_id', db_number);
-$table->column('shop_country_id', db_number);
+$table->column('shop_payment_method_id', db_number)->index();
+$table->column('shop_country_id', db_number)->index();
 $table->addKey('PRIMARY', ['shop_payment_method_id', 'shop_country_id'])->primary();
+
+$table = Db\Structure::table('shop_paymentmethods_customer_groups');
+$table->column('shop_payment_method_id', db_number)->index();
+$table->column('customer_group_id', db_number)->index();
+$table->addKey('PRIMARY', ['shop_payment_method_id', 'customer_group_id'])->primary();
+
 
 $table = Db\Structure::table('shop_orders');
 $table->primaryKey('id');

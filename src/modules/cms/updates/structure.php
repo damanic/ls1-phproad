@@ -109,7 +109,7 @@ $table->column('description', db_varchar);
 
 //content_blocks -> cms_content_blocks
 $table = Db\Structure::table('cms_content_blocks');
-$table->primaryKey('id');
+$table->primaryKey('id', db_varchar, 15);
 $table->column('code', db_varchar, 100);
 $table->column('page_id', db_number);
 $table->column('description', db_text);
