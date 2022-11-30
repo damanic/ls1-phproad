@@ -15,6 +15,7 @@ class UpdateManager
 {
     private static $versions = null;
     private static $updates = null;
+    public static $ignoreSqlFileErrors = false;
 
     // Updates all modules
     public static function update()
@@ -252,7 +253,15 @@ class UpdateManager
         $update_path = $basePath . DS . PHPR_MODULES . DS . $moduleId . DS . 'updates' . DS . $updateId . '.sql';
         if (file_exists($update_path)) {
             $result = true;
-            DbHelper::executeSqlFromFile($update_path);
+            try {
+                DbHelper::executeSqlFromFile($update_path);
+            } catch (\Exception $e ){
+                if(self::$ignoreSqlFileErrors){
+                    traceLog('Failed DB update '.$update_path.' : '. $e->getMessage());
+                } else {
+                    throw $e;
+                }
+            }
         }
 
         // Register the applied update in the database and in the internal cache
