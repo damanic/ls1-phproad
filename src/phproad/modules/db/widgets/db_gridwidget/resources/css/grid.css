@@ -61,7 +61,8 @@
   display: block;
 }
 /* End hide from IE-mac */
-/* @end */.ui-grid {
+/* @end */
+.ui-grid {
   border-bottom: 1px solid #CCC;
   border-left: 1px solid #CCC;
   border-right: 1px solid #CCC;
@@ -208,7 +209,7 @@
 }
 .ui-grid table.ui-grid-head tr th.key,
 .ui-grid table.ui-grid-body thead tr th.key {
-  background-color: #DFF0D8!important;
+  background-color: #DFF0D8 !important;
   border-bottom-color: #468847;
 }
 .ui-grid table.ui-grid-head tr th.ui-column-group,
@@ -240,7 +241,6 @@
   /*
 			 * Row statuss
 			 */
-
 }
 .ui-grid table.ui-grid-body tr td {
   background-color: white;
@@ -250,15 +250,12 @@
   /*
 				 * Editors - text
 				 */
-
   /*
 				 * Editors - drop-down
 				 */
-
   /*
 				 * Editors - checkbox
 				 */
-
 }
 .ui-grid table.ui-grid-body tr td span.cell-content {
   padding: 8px;
@@ -284,7 +281,7 @@
   text-align: right;
 }
 .ui-grid table.ui-grid-body tr td.popup-focused {
-  background-color: #6699cc!important;
+  background-color: #6699cc !important;
   color: white;
 }
 .ui-grid table.ui-grid-body tr td .cell-content-container {
@@ -336,7 +333,7 @@
 }
 .ui-grid table.ui-grid-body tr td .chosen-container-single .chosen-drop .chosen-search input {
   padding: 5px!important;
-  border: 1px solid #333!important;
+  border: 1px solid #333 !important;
 }
 .ui-grid table.ui-grid-body tr td .chosen-container-single .chosen-single {
   border: none;
@@ -370,14 +367,14 @@
 .ui-grid table.ui-grid-body tr.ui-current td.grid-error,
 .ui-grid table.ui-grid-body tr.ui-selected td.grid-error,
 .ui-grid table.ui-grid-body tr.grid-error:hover td.grid-error {
-  background-color: #3a74af!important;
+  background-color: #3a74af !important;
   color: white!important;
 }
 .ui-grid table.ui-grid-body tr.grid-error td {
-  background-color: #ff9999!important;
+  background-color: #ff9999 !important;
 }
 .ui-grid table.ui-grid-body tr.grid-error td.grid-error {
-  background-color: #990000!important;
+  background-color: #990000 !important;
   color: white!important;
 }
 .ui-grid table.ui-grid-body tr:last-child td {
@@ -422,9 +419,9 @@
   width: 18px;
   background-color: #eee;
   border-left: 1px solid #CCCCCC;
-  background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #cccccc), color-stop(0.92, #eeeeee));
-  background: -moz-linear-gradient(center bottom, #cccccc 0%, #eeeeee 92%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#eeeeee, endColorstr=#cccccc);
+  background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #ccc), color-stop(0.92, #eee));
+  background: -moz-linear-gradient(center bottom, #ccc 0%, #eee 92%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#eee, endColorstr=#ccc);
 }
 .ui-grid .ui-grid-cell-button span {
   display: block;
@@ -617,3 +614,4 @@
 .ie .ui-grid-h-scroll {
   overflow-x: scroll!important;
 }
+/*# sourceMappingURL=grid.css.map */

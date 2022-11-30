@@ -61,7 +61,8 @@
   display: block;
 }
 /* End hide from IE-mac */
-/* @end */div.license-agreement {
+/* @end */
+div.license-agreement {
   max-width: 800px;
   margin: 10px auto;
 }
@@ -83,3 +84,4 @@ div.license-agreement .agreement-content {
 .popup_content div.license-agreement .agreement-content {
   max-height: 300px;
 }
+/*# sourceMappingURL=core.css.map */
