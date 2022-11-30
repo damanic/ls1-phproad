@@ -128,7 +128,18 @@ class PaymentTransaction extends ActiveRecord
         $transaction_currency_code = $transaction_data->transaction_value_currency_code ?: $order->get_currency_code();
         $settlement_currency_code = $transaction_data->settlement_value_currency_code ?: $order->get_currency_code();
 
-        $payment_transaction = new self();
+
+        //If the transaction status event has already been logged (with same created_at datetime)
+        //we update instead of duplicate.
+        $existing_transaction_log = new self();
+        $existing_transaction_log->where('order_id = ?', $order->id);
+        $existing_transaction_log->where('payment_method_id = ?', $payment_method_id);
+        $existing_transaction_log->where('transaction_id = ?', $transaction_id);
+        $existing_transaction_log->where('transaction_status_code = ?', $transaction_data->transaction_status_code);
+        $existing_transaction_log->where('created_at = ?', $transaction_data->created_at);
+        $existing_transaction_log = $existing_transaction_log->find();
+
+        $payment_transaction = $existing_transaction_log ? $existing_transaction_log : new self();
         $payment_transaction->order_id = $order->id;
         $payment_transaction->payment_method_id = $payment_method_id;
         $payment_transaction->user_note = $user_note;
@@ -430,10 +441,17 @@ class PaymentTransaction extends ActiveRecord
          */
 
         try {
+            //The gateway may have created a new transaction ID (eg. refund)
+            //Use the updated transaction id when returned.
+            $transaction_id = $this->transaction_id;
+            if ($transaction_update_result->transaction_id) {
+                $transaction_id = $transaction_update_result->transaction_id;
+            }
+
             self::add_transaction(
                 $order,
                 $this->payment_method_id,
-                $this->transaction_id,
+                $transaction_id,
                 $transaction_update_result,
                 $comment
             );
