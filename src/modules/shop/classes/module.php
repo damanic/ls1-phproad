@@ -12,6 +12,7 @@ use Phpr\DateTime as PhprDateTime;
 use Phpr\ApplicationException;
 use Db\Helper as DbHelper;
 use Twig\TwigFunction;
+use Cms\Page as Page;
 
 class Module extends ModuleBase
 {
@@ -691,10 +692,10 @@ class Module extends ModuleBase
         $demo_items = file_get_contents(PATH_APP.'/modules/shop/mailviews/_demo_items_value.htm');
         $demo_items = str_replace('%PRICE%', format_currency(99.99), $demo_items);
 
-        $pay_page = Cms_Page::create()->find_by_action_reference('shop:pay');
+        $pay_page = Page::create()->find_by_action_reference('shop:pay');
         $pay_page_url = $pay_page ? root_url($pay_page->url, true).'/' : root_url('pay_page_url', true);
 
-        $passwordRestorePage = Cms_Page::create()->find_by_action_reference('shop:password_restore_request');
+        $passwordRestorePage = Page::create()->find_by_action_reference('shop:password_restore_request');
         $passwordRestoreUrl = root_url('password_restore_page_url', true);
         if ($passwordRestorePage) {
             $passwordRestoreUrl = root_url($passwordRestorePage->url, true);

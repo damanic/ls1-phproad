@@ -9,6 +9,7 @@ use Phpr\ApplicationException;
 use Phpr\SecurityFramework;
 use System\EmailTemplate;
 use System\CompoundEmailVar;
+use Cms\Page as Page;
 
 /**
  * Represents a customer.
@@ -972,7 +973,7 @@ class Customer extends ActiveRecord
         $message_text = str_replace('{customer_email}', $this->email, $message_text);
         $message_text = str_replace('{customer_password}', h($this->plain_password), $message_text);
         $message_text = str_replace('{customer_password_restore_hash}', h($this->password_restore_hash), $message_text);
-        $password_restore_page = Cms_Page::create()->find_by_action_reference('shop:password_restore_request');
+        $password_restore_page = Page::create()->find_by_action_reference('shop:password_restore_request');
         if ($password_restore_page) {
             $protocol = null;
             if ($password_restore_page->protocol != 'any') {

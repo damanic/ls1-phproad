@@ -23,6 +23,8 @@ abstract class GenericReport extends ChartController
 
     public function __construct()
     {
+        Backend::$events->fireEvent('shop:onExtendReportFilters', $this);
+
         parent::__construct();
 
         $user = Phpr::$security->getUser();
@@ -32,7 +34,6 @@ abstract class GenericReport extends ChartController
 
         $this->list_control_panel_partial = PATH_APP . '/modules/shop/controllers/partials/_reports_export_buttons.htm';
 
-        Backend::$events->fireEvent('shop:onExtendReportFilters', $this);
     }
 
     public function refererUrl()
