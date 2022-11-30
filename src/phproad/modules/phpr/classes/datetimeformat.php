@@ -249,10 +249,9 @@ class DateTimeFormat
                 if ($specifierDesc[self::spType] == self::spTypeLocLink) {
                     // Load specifier value from the localization resources
                     //
-                    $specifierValue = Phpr::$lang->mod(
-                        'phpr',
-                        $specifierDesc[self::spLocLinkKey],
-                        self::localizationPrefix
+                    $specifierValue = Phpr::$lang->getString(
+                        'phpr.'.self::localizationPrefix,
+                        $specifierDesc[self::spLocLinkKey]
                     );
 
                     $cnt++;

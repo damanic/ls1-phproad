@@ -241,19 +241,19 @@ class Db_GridWidget extends Db_FormWidget
         $this->view_data['columns'] = $this->columns;
         $this->view_data['container_id'] = $this->controller->formGetElementId(
             'grid_container_' . $this->column_name,
-            get_class($this->model)
+            get_class_id($this->model)
         );
         $this->view_data['pagination_container_id'] = $this->controller->formGetElementId(
             'grid_pagination_container_' . $this->column_name,
-            get_class($this->model)
+            get_class_id($this->model)
         );
         $this->view_data['message_container_id'] = $this->controller->formGetElementId(
             'grid_message_container_' . $this->column_name,
-            get_class($this->model)
+            get_class_id($this->model)
         );
         $this->view_data['tbody_id'] = $this->controller->formGetElementId(
             'grid_body_' . $this->column_name,
-            get_class($this->model)
+            get_class_id($this->model)
         );
 
         if (!$this->use_data_source) {
@@ -552,7 +552,7 @@ class Db_GridWidget extends Db_FormWidget
             $_POST['form_unique_prefix'] = '';
             $container_id = $this->controller->formGetElementId(
                 'grid_container_' . $this->column_name,
-                get_class($model)
+                get_class_id($model)
             );
 
             $model = new Db_CsvFileImport();
