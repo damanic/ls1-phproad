@@ -335,7 +335,7 @@ class User extends PhprUser
     public static function listAdministrators()
     {
         $sql = self::create()
-            ->join('users_groups', "users_groups.code = ?", Groups::admin)
+            ->join('users_groups', "users_groups.code = ?", Group::ADMIN)
             ->join('users_user_groups', "users_user_groups.group_id = users_groups.id")
             ->where('users.status <> ?', self::disabled)
             ->where('users.id = users_user_groups.user_id')->find_all();
@@ -425,7 +425,7 @@ class User extends PhprUser
             return $this->is_administrator_cache;
         }
 
-        return $this->is_administrator_cache = $this->belongsToGroups(Groups::admin);
+        return $this->is_administrator_cache = $this->belongsToGroups(Group::ADMIN);
     }
 
     public function isAdministrator()
