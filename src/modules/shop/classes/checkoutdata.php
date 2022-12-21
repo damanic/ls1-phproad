@@ -1,4 +1,5 @@
 <?php
+
 namespace Shop;
 
 use Phpr;
@@ -9,22 +10,22 @@ use Phpr\Validation as Validation;
 use Phpr\ApplicationException;
 use Db\Helper as DbHelper;
 
-    /**
-     * Contains information collected during the checkout process.
-     * The class acts as an internal checkout data storage.
-     * It has methods for setting and loading the checkout information,
-     * along with a method for placing a new order.
-     * It allows to implement custom checkout scenarios. The default {@link action@shop:checkout actions}
-     * use this class internally.
-     * @documentable
-     * @see action@shop:checkout
-     * @author LSAPP - MJMAN
-     * @package shop.classes
-     */
+/**
+ * Contains information collected during the checkout process.
+ * The class acts as an internal checkout data storage.
+ * It has methods for setting and loading the checkout information,
+ * along with a method for placing a new order.
+ * It allows to implement custom checkout scenarios. The default {@link action@shop:checkout actions}
+ * use this class internally.
+ * @documentable
+ * @see action@shop:checkout
+ * @author LSAPP - MJMAN
+ * @package shop.classes
+ */
 class CheckoutData
 {
     protected static $customerOverride = null;
-        
+
     /**
      * Loads shipping and billing address information from a customer object.
      * By default this method doesn't update the address information if it
@@ -40,7 +41,7 @@ class CheckoutData
         if (array_key_exists('billing_info', $checkout_data) && !$force) {
             return;
         }
-                
+
         /*
              * Load billing info
          */
@@ -60,11 +61,11 @@ class CheckoutData
 
         self::save($checkout_data);
     }
-        
+
     /*
          * Billing info
      */
-        
+
     /**
      * Sets billing address information from POST fields or from {@link CheckoutAddressInfo} object.
      * If the <em>$info</em> parameter is empty, the address information is
@@ -86,13 +87,13 @@ class CheckoutData
 
         $checkout_data = self::load();
         $checkout_data['billing_info'] = $info;
-            
+
         self::save($checkout_data);
         self::save_custom_fields();
-            
+
         self::set_customer_password();
     }
-        
+
     public static function set_customer_password()
     {
         if (!post('register_customer')) {
@@ -102,7 +103,7 @@ class CheckoutData
             self::save($checkout_data);
             return;
         }
-                
+
         $validation = new Validation();
         $validation->add('customer_password');
         $validation->add('email');
@@ -135,7 +136,7 @@ class CheckoutData
                     true
                 );
             }
-                
+
             if ($customer_password != $confirmation) {
                 $validation->setError(
                     post(
@@ -186,10 +187,10 @@ class CheckoutData
                 return $obj;
             }
         }
-                
+
         return $checkout_data['billing_info'];
     }
-        
+
     /**
      * Copies the billing address information into the shipping address information.
      * @documentable
@@ -198,7 +199,7 @@ class CheckoutData
     {
         $billing_info = CheckoutData::get_billing_info();
         $shipping_info = CheckoutData::get_shipping_info();
-            
+
         $shipping_info->copy_from($billing_info);
         CheckoutData::set_shipping_info($shipping_info);
     }
@@ -206,7 +207,7 @@ class CheckoutData
     /*
          * Payment method
      */
-        
+
     /**
      * Returns a payment method information previously set with
      * {@link CheckoutData::set_payment_method() set_payment_method()} method.
@@ -226,13 +227,13 @@ class CheckoutData
 
         if (!array_key_exists('payment_method_obj', $checkout_data)) {
             $method = array(
-                'id'=>null,
-                'name'=>null,
-                'ls_api_code'=>null
+                'id' => null,
+                'name' => null,
+                'ls_api_code' => null
             );
             return (object)$method;
         }
-                
+
         return $checkout_data['payment_method_obj'];
     }
 
@@ -249,21 +250,21 @@ class CheckoutData
         $specific_option_id = $payment_method_id;
 
         $payment_method_id = $payment_method_id ? $payment_method_id : post('payment_method');
-            
+
         if (!$payment_method_id) {
             throw new CmsException('Please select payment method.');
         }
-            
+
         $db_method = PaymentMethod::create();
         if (!$specific_option_id) {
             $db_method->where('enabled=1');
         }
-            
+
         $db_method = $db_method->find($payment_method_id);
         if (!$db_method) {
             throw new CmsException('Payment method not found.');
         }
-            
+
         $db_method->define_form_fields();
         $method->id = $db_method->id;
         $method->name = $db_method->name;
@@ -301,16 +302,16 @@ class CheckoutData
         self::save($checkout_data);
         self::save_custom_fields();
     }
-        
+
     /**
      * Sets shipping country, state and ZIP/postal code.
      * This method allows to override the shipping
      * country, state and ZIP/postal code components of the shipping address.
      * @documentable
-     * @see CheckoutAddressInfo::set_location()
      * @param integer $country_id Specifies the country identifier.
      * @param integer $state_id Specifies the state identifier.
      * @param string $zip Specifies the ZIP/postal code.
+     * @see CheckoutAddressInfo::set_location()
      */
     public static function set_shipping_location($country_id, $state_id, $zip)
     {
@@ -346,7 +347,7 @@ class CheckoutData
 
         return $checkout_data['shipping_info'];
     }
-        
+
     /*
          * Shipping method
      */
@@ -379,16 +380,16 @@ class CheckoutData
 
         if (!array_key_exists('shipping_method_obj', $checkout_data)) {
             $method = array(
-                'id'=>null,
-                'sub_option_id'=>null,
-                'quote'=>0,
-                'quote_no_tax'=>0,
-                'quote_tax_incl'=>0,
-                'name'=>null,
-                'sub_option_name'=>null,
-                'is_free'=>false,
-                'internal_id'=>null,
-                'ls_api_code'=>null,
+                'id' => null,
+                'sub_option_id' => null,
+                'quote' => 0,
+                'quote_no_tax' => 0,
+                'quote_tax_incl' => 0,
+                'name' => null,
+                'sub_option_name' => null,
+                'is_free' => false,
+                'internal_id' => null,
+                'ls_api_code' => null,
                 'quote_data' => array()
             );
             return (object)$method;
@@ -415,7 +416,7 @@ class CheckoutData
         $method = self::get_shipping_method();
 
         $specific_option_id = $shipping_option_id;
-            
+
         $selected_shipping_option_id = $shipping_option_id ? $shipping_option_id : post('shipping_option');
         if (!$selected_shipping_option_id) {
             throw new CmsException('Please select shipping method.');
@@ -439,7 +440,7 @@ class CheckoutData
         }
 
         if (!$option->multi_option) {
-            $method->sub_option_id = $option->id.'_'.$sub_option_id;
+            $method->sub_option_id = $option->id . '_' . $sub_option_id;
         }
 
         self::update_shipping_method($option, $method, $cart_name);
@@ -471,7 +472,7 @@ class CheckoutData
         self::save($checkout_data);
     }
 
-    protected static function update_shipping_method( $option = null, $method = null, $cart_name = 'main')
+    protected static function update_shipping_method($option = null, $method = null, $cart_name = 'main')
     {
         $method = is_object($method) ? $method : self::get_shipping_method();
         $option = is_a($option, 'Shop\ShippingOption') ? $option : self::get_shipping_method_option();
@@ -509,8 +510,8 @@ class CheckoutData
                     $method->quote_no_tax = $rate_obj->quote_no_tax;
                     $method->sub_option_id = $sub_option_id;
                     $method->sub_option_name = $rate_obj->name;
-                    $method->internal_id = $option->id.'_'.$rate_obj->id;
-                    $method->discount  = $rate_obj->discount;
+                    $method->internal_id = $option->id . '_' . $rate_obj->id;
+                    $method->discount = $rate_obj->discount;
                     $method->is_free = $rate_obj->is_free;
                     $method->quote_data = $rate_obj->quote_data;
                     break;
@@ -566,7 +567,7 @@ class CheckoutData
                     $shipping_info->state,
                     $shipping_info->zip
                 );
-                $total_per_product_cost += ($shipping_cost*$item->quantity);
+                $total_per_product_cost += ($shipping_cost * $item->quantity);
             }
         }
 
@@ -610,7 +611,7 @@ class CheckoutData
 
         $default_options = array(
             'cart_name' => $cart_name,
-            'include_tax'=>1,
+            'include_tax' => 1,
             'customer_group_id' => Controller::get_customer_group_id(),
         );
 
@@ -626,15 +627,15 @@ class CheckoutData
         $params = array(
             'display_prices_including_tax' => $incTax,
             'shipping_info' => $shipping_info,
-            'total_price'=>Cart::total_price_no_tax($cart_name, false),
-            'total_volume'=>Cart::total_items_volume($cart_items),
-            'total_weight'=>Cart::total_items_weight($cart_items),
-            'total_item_num'=>Cart::get_item_total_num($cart_name),
-            'cart_items'=>$cart_items,
+            'total_price' => Cart::total_price_no_tax($cart_name, false),
+            'total_volume' => Cart::total_items_volume($cart_items),
+            'total_weight' => Cart::total_items_weight($cart_items),
+            'total_item_num' => Cart::get_item_total_num($cart_name),
+            'cart_items' => $cart_items,
             'customer' => is_object($customer) ? $customer : null,
             'customer_id' => is_object($customer) ? $customer->id : $customer,
             'customer_group_id' => Controller::get_customer_group_id(),
-            'currency_code'=> self::get_currency($as_object=false),
+            'currency_code' => self::get_currency($as_object = false),
             'payment_method' => CheckoutData::get_payment_method(),
             'coupon_code' => CheckoutData::get_coupon_code(),
         );
@@ -651,7 +652,7 @@ class CheckoutData
                     $options[$key] = $option;
                 }
             }
-                
+
             $available_options = $options;
         }
 
@@ -670,17 +671,16 @@ class CheckoutData
 
     /**
      * Allows discount rules to expose hidden shipping options
-     * @ignore
      * @param array $shipping_options Specifies the shipping option list to flatten.
      * @param array $params Specifies the shipping calculation parameters.
      * @return array Returns an updated array of shipping options.
+     * @ignore
      */
     protected static function add_discount_applied_shipping_options($shipping_options, $params = array())
     {
-
         $payment_method = is_object($params['payment_method']) ? $params['payment_method'] : null;
         $payment_method_obj = $payment_method ? PaymentMethod::find_by_id($payment_method->id) : null;
-        $cart_name = isset($params['cart_name'])? $params['cart_name'] : 'main';
+        $cart_name = isset($params['cart_name']) ? $params['cart_name'] : 'main';
         $customer_id = isset($params['customer_id']) ? $params['customer_id'] : Controller::get_customer();
 
         $discount_info = CartPriceRule::evaluate_discount(
@@ -712,7 +712,7 @@ class CheckoutData
         $params = array(
             'cart_name' => $cart_name,
             'cart_items' => $cart_items,
-            'payment_method' =>CheckoutData::get_payment_method(),
+            'payment_method' => CheckoutData::get_payment_method(),
         );
         return self::add_discount_applied_shipping_options($options, $params);
     }
@@ -727,7 +727,7 @@ class CheckoutData
     public static function flatten_shipping_options($shipping_options)
     {
         $result = array();
-            
+
         foreach ($shipping_options as $key => $option) {
             if ($option->multi_option) {
                 foreach ($option->sub_options as $sub_option) {
@@ -742,16 +742,15 @@ class CheckoutData
                 $result[$key] = $option;
             }
         }
-            
+
         return $result;
     }
 
 
-        
     /*
          * Coupon codes
      */
-         
+
     public static function get_changed_coupon_code()
     {
         $coupon_code = self::get_coupon_code();
@@ -776,10 +775,10 @@ class CheckoutData
         if (!array_key_exists('coupon_code', $checkout_data)) {
             return null;
         }
-                
+
         return $checkout_data['coupon_code'];
     }
-        
+
     /**
      * Sets a specific coupon code.
      * This method doesn't checks whether the coupon code exists or valid.
@@ -793,11 +792,11 @@ class CheckoutData
         self::save($checkout_data);
         self::save_custom_fields();
     }
-        
+
     /*
          * Totals and discount calculations
      */
-        
+
     /**
      * Returns checkout totals information.
      * The information is calculated basing on the checkout data set with
@@ -880,23 +879,23 @@ class CheckoutData
         }
 
         $result = array(
-            'goods_tax'=>$goods_tax,
-            'subtotal'=>$subtotal_no_discounts,
-            'subtotal_discounts'=>$subtotal,
-            'subtotal_tax_incl'=>$subtotal_tax_incl,
-            'discount'=>$discount_info->cart_discount,
-            'discount_tax_incl'=>$discount_info->cart_discount_incl_tax,
-            'discount_info'=>$discount_info,
-            'shipping_tax'=>$shipping_tax,
-            'shipping_quote'=>$shipping_quote,
-            'shipping_quote_tax_incl'=>$shipping_quote + $shipping_tax,
-            'free_shipping'=>$discount_info->free_shipping,
-            'total'=>$total,
-            'product_taxes'=>$tax_info->taxes,
-            'shipping_taxes'=>$shipping_taxes,
-            'all_taxes'=>TaxClass::combine_taxes_by_name($tax_info->taxes, $shipping_taxes)
+            'goods_tax' => $goods_tax,
+            'subtotal' => $subtotal_no_discounts,
+            'subtotal_discounts' => $subtotal,
+            'subtotal_tax_incl' => $subtotal_tax_incl,
+            'discount' => $discount_info->cart_discount,
+            'discount_tax_incl' => $discount_info->cart_discount_incl_tax,
+            'discount_info' => $discount_info,
+            'shipping_tax' => $shipping_tax,
+            'shipping_quote' => $shipping_quote,
+            'shipping_quote_tax_incl' => $shipping_quote + $shipping_tax,
+            'free_shipping' => $discount_info->free_shipping,
+            'total' => $total,
+            'product_taxes' => $tax_info->taxes,
+            'shipping_taxes' => $shipping_taxes,
+            'all_taxes' => TaxClass::combine_taxes_by_name($tax_info->taxes, $shipping_taxes)
         );
-            
+
         return (object)$result;
     }
 
@@ -932,21 +931,21 @@ class CheckoutData
     /*
          * Cart identifier
      */
-        
+
     public static function set_cart_id($value)
     {
         $checkout_data = self::load();
         $checkout_data['cart_id'] = $value;
         self::save($checkout_data);
     }
-        
+
     /**
      * Returns the shopping cart content identifier saved in the beginning of the checkout process.
      * Comparing the result of this method with the result of the Cart::get_content_id() allows
      * to recognize whether the shopping cart content was changed during the checkout process.
      * @documentable
-     * @see Cart::get_content_id()
      * @return string Returns the cart content identifier.
+     * @see Cart::get_content_id()
      */
     public static function get_cart_id()
     {
@@ -957,7 +956,7 @@ class CheckoutData
     /*
          * Customer notes
      */
-        
+
     /**
      * Sets customer notes string.
      * Customer notes are saved to the {@link Order order} record.
@@ -971,7 +970,7 @@ class CheckoutData
         self::save($checkout_data);
         self::save_custom_fields();
     }
-        
+
     /**
      * Returns the customer notes string previously set with
      * {@link CheckoutData::set_customer_notes() set_customer_notes()} method.
@@ -994,7 +993,7 @@ class CheckoutData
         if ($data === null) {
             $data = $_POST;
         }
-                
+
         $checkout_data = self::load();
 
         if (!array_key_exists('custom_fields', $checkout_data)) {
@@ -1007,27 +1006,27 @@ class CheckoutData
 
         self::save($checkout_data);
     }
-        
+
     public static function get_custom_fields()
     {
         $checkout_data = self::load();
         if (!array_key_exists('custom_fields', $checkout_data)) {
             return array();
         }
-                
+
         return $checkout_data['custom_fields'];
     }
-        
+
     public static function get_custom_field($name)
     {
         $fields = self::get_custom_fields();
         if (array_key_exists($name, $fields)) {
             return $fields[$name];
         }
-                
+
         return null;
     }
-        
+
     /*
          * Order registration
      */
@@ -1057,7 +1056,7 @@ class CheckoutData
         }
 
         $payment_method->define_form_fields();
-            
+
         $checkout_data = self::load();
         $customer_password = $checkout_data['customer_password'] ?? null;
         $register_customer_opt = $checkout_data['register_customer'] ?? null;
@@ -1076,7 +1075,7 @@ class CheckoutData
             CheckoutData::set_customer_notes('');
             CheckoutData::set_coupon_code('');
         }
-            
+
         if ($order && $register_customer && !$customer) {
             if (post('customer_auto_login')) {
                 Phpr::$frontend_security->customerLogin($order->customer_id);
@@ -1086,14 +1085,14 @@ class CheckoutData
                 $order->customer->send_registration_confirmation();
             }
         }
-            
+
         return $order;
     }
-        
+
     /*
          * Include tax to price rule
      */
-        
+
     /**
      * Determines whether prices should be displayed with taxes included.
      * Use this method to determine whether prices should be displayed with tax included
@@ -1143,16 +1142,16 @@ class CheckoutData
         //use default store config
         return ConfigurationRecord::get()->display_prices_incl_tax;
     }
-        
+
     /*
          * The following method is used by LSAPP internally
      */
-        
+
     public static function override_customer($customer)
     {
         self::$customerOverride = $customer;
     }
-        
+
     /*
          * Auto shipping required detection
      */
@@ -1162,11 +1161,11 @@ class CheckoutData
      * By default shippable items are those items which belong to the Goods product type.
      * If the cart contains only downloadable or service-type products the method returns FALSE.
      * @documentable
+     * @param string $cart_name Specifies the shopping cart name
+     * @return boolean Returns TRUE if the cart contains any shippable items. Returns FALSE otherwise.
      * @see
      *  https://lsdomainexpired.mjman.net/docs/skipping_the_shipping_method_step_for_downloadable_products_or_services/
      *  Skipping the Shipping Method step for downloadable products or services
-     * @param string $cart_name Specifies the shopping cart name
-     * @return boolean Returns TRUE if the cart contains any shippable items. Returns FALSE otherwise.
      */
     public static function shipping_required($cart_name = 'main')
     {
@@ -1176,7 +1175,7 @@ class CheckoutData
                 return true;
             }
         }
-            
+
         return false;
     }
 
@@ -1214,8 +1213,7 @@ class CheckoutData
     {
         $checkout_data = self::load();
         if (!self::is_currency_set()) {
-            $currency = CurrencySettings::get();
-            return $object ? $currency : $currency->code;
+            $checkout_data['currency_code'] = self::get_default_currency_code();
         }
         if ($object) {
             $currency = CurrencyHelper::get_currency_setting($checkout_data['currency_code']);
@@ -1224,6 +1222,12 @@ class CheckoutData
             }
         }
         return $checkout_data['currency_code'];
+    }
+
+
+    protected static function get_default_currency_code()
+    {
+        return CurrencySettings::get()->code;
     }
 
     /*
@@ -1236,7 +1240,7 @@ class CheckoutData
         if (array_key_exists('register_customer', $checkout_data)) {
             unset($checkout_data['register_customer']);
         }
-            
+
         if (array_key_exists('customer_password', $checkout_data)) {
             unset($checkout_data['customer_password']);
         }
@@ -1251,7 +1255,7 @@ class CheckoutData
 
         self::save($checkout_data);
     }
-        
+
     /**
      * Removes any checkout data from the session.
      * @documentable
@@ -1297,7 +1301,7 @@ class CheckoutData
     {
         return Phpr::$session->get('shop_checkout_data', array());
     }
-        
+
     protected static function save(&$data)
     {
         Phpr::$session['shop_checkout_data'] = $data;
