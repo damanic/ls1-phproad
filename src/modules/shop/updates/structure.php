@@ -205,6 +205,7 @@ $table->column('code_iso_numeric', db_varchar, 10);
 $table->column('enabled_in_backend', db_bool)->index();
 $table->column('shipping_zone_id', db_number, 100)->index();
 $table->column('disabled', db_bool)->index();
+$table->column('currency_code', db_varchar, 3)->index();
 
 $table = Db\Structure::table('shop_states');
 $table->primaryKey('id');
