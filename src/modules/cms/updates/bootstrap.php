@@ -3,9 +3,10 @@
 use Db\Helper as DbHelper;
 use Db\UpdateManager;
 use Db\Structure;
+use Cms\SecurityMode;
 
 /**
- * Migrate Legacy Tables If Found
+ * LS1 Migration: Migrate Legacy Tables If Found
  */
 
 $tables = DbHelper::listTables();
@@ -70,6 +71,40 @@ foreach ($tableMigrations as $legacyTable => $table) {
 }
 
 if ($migrationsPerformed) {
+    //LS1 Migration: Update legacy CMS page security MODE ids
+    $securityModes = SecurityMode::create()->find_all();
+    foreach ($securityModes as $securityMode) {
+        if ($securityMode->code) {
+            continue;
+        }
+        $modeCode = null;
+        if (stristr($securityMode->name, 'All')) {
+            $modeCode = SecurityMode::EVERYONE;
+        }
+        if (stristr($securityMode->name, 'Guests')) {
+            $modeCode = SecurityMode::GUESTS;
+        }
+        if (stristr($securityMode->name, 'Customers')) {
+            $modeCode = SecurityMode::CUSTOMERS;
+        }
+        if ($modeCode) {
+            $securityMode->code = $modeCode;
+            DbHelper::query(
+                'UPDATE cms_pages SET security_mode_id = :mode_id WHERE security_mode_id = :mode_code',
+                [
+                    'mode_id' => $securityMode->id,
+                    'mode_code' => $modeCode
+                ]
+            );
+        }
+    }
+
+    //Update to LS2 structure
     UpdateManager::applyDbStructure(PATH_APP, 'cms');
     Structure::saveAll();
+
+    //LS1 Migration: Save security mode codes to security mode records
+    foreach ($securityModes as $securityMode) {
+            $securityMode->save(['code' => $securityMode->code]);
+    }
 }
