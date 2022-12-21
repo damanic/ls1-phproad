@@ -17,7 +17,7 @@ $table->column('template_id', db_number);
 $table->column('action_reference', db_varchar, 100)->index();
 $table->column('action_code', db_text);
 $table->column('ajax_handlers_code', db_text);
-$table->column('security_mode_id', db_varchar, 15)->defaults('everyone');
+$table->column('security_mode_id', db_number);
 $table->column('security_redirect_page_id', db_number);
 $table->column('protocol', db_varchar, 10);
 $table->column('has_contentblocks', db_bool);
@@ -106,6 +106,7 @@ $table = Db\Structure::table('cms_page_security_modes');
 $table->primaryKey('id');
 $table->column('name', db_varchar);
 $table->column('description', db_varchar);
+$table->column('code', db_varchar);
 
 //content_blocks -> cms_content_blocks
 $table = Db\Structure::table('cms_content_blocks');

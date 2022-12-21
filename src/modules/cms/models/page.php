@@ -737,7 +737,7 @@ class Page extends CmsObject
 
     public function validate_redirect($name, $value)
     {
-        if ($this->security_mode && $this->security_mode->id != SecurityMode::everyone && !$value) {
+        if ($this->security_mode && $this->security_mode->code != SecurityMode::EVERYONE && !$value) {
             $this->validation->setError('Please select security redirect page.', $name, true);
         }
 
@@ -1076,6 +1076,7 @@ class Page extends CmsObject
 
     public static function eval_page_statistics()
     {
+        $securityMode = SecurityMode::create()->find_by_code(SecurityMode::CUSTOMERS);
         $theme_filter = null;
         $theme_id = null;
 
@@ -1090,9 +1091,12 @@ class Page extends CmsObject
         return DbHelper::object(
             "select
 					(select count(*) from cms_pages where id=id $theme_filter) as page_num,
-					(select count(*) from cms_pages where security_mode_id='customers' $theme_filter) as protected_page_num
+					(select count(*) from cms_pages where security_mode_id=:security_mode_id $theme_filter) as protected_page_num
 				",
-            array('theme_id' => $theme_id)
+            array(
+                'theme_id' => $theme_id,
+                'security_mode_id' => $securityMode->id
+            )
         );
     }
 
@@ -1296,12 +1300,12 @@ class Page extends CmsObject
             $full_reference_list = array();
             $id_cache = array();
             foreach ($pages as $page) {
-                if (!$controller || $page->security_mode_id != 'everyone') {
-                    if ($page->security_mode_id == 'guests' && $controller->customer) {
+                if (!$controller || $page->security_mode->code != SecurityMode::EVERYONE) {
+                    if ($page->security_mode->code == SecurityMode::GUESTS && $controller->customer) {
                         continue;
                     }
 
-                    if ($page->security_mode_id == 'customers' && !$controller->customer) {
+                    if ($page->security_mode->code == SecurityMode::CUSTOMERS && !$controller->customer) {
                         continue;
                     }
                 }

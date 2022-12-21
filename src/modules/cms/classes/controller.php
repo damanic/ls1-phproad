@@ -66,7 +66,7 @@ class Controller
     public $request_params;
 
     /**
-     * @var Shop\Customer A reference to the current customer.
+     * @var \Shop\Customer A reference to the current customer.
      * This variable is NULL if there is no customer logged in.
      * @documentable
      */
@@ -159,7 +159,7 @@ class Controller
      * If a customer is not logged in, or the script is working out of the context
      * of a front-end page request, returns NULL.
      * @documentable
-     * @return Shop\Customer Returns the customer object or NULL.
+     * @return \Shop\Customer Returns the customer object or NULL.
      */
     public static function get_customer()
     {
@@ -881,8 +881,8 @@ class Controller
             }
         }
 
-        if (($page->security_mode_id == SecurityMode::customers && $this->customer == null) ||
-            ($page->security_mode_id == SecurityMode::guests && $this->customer != null) ||
+        if (($page->security_mode->code == SecurityMode::CUSTOMERS && $this->customer == null) ||
+            ($page->security_mode->code == SecurityMode::GUESTS && $this->customer != null) ||
             $page->protocol == 'none') {
             $redir_page = $page->security_redirect;
             if ($redir_page) {
