@@ -1,5 +1,5 @@
 <td class="iconCell">
-	<? if ($model->security_mode_id == Cms_SecurityMode::customers): ?>
+	<? if ($model->security_mode->code == \Cms\SecurityMode::CUSTOMERS): ?>
 		<img src="modules/cms/resources/images/lock.gif" alt="This page is protected" title="This page is protected" width="16" height="16"/>
 	<? endif ?>
 	<div class="row_controls hidden">
