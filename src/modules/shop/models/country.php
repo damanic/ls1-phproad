@@ -1,4 +1,5 @@
 <?php
+
 namespace Shop;
 
 use Db\ActiveRecord;
@@ -24,29 +25,29 @@ use Phpr\ApplicationException;
 class Country extends ActiveRecord
 {
     public $table_name = 'shop_countries';
-        
+
     public $enabled = 1;
     public $enabled_in_backend = 1;
-        
+
     protected static $simple_object_list = null;
     protected static $simple_name_list = null;
     protected static $id_cache = array();
 
     public $has_many = array(
-        'states'=>array(
-            'class_name'=>'Shop\CountryState',
-            'foreign_key'=>'country_id',
-            'conditions'=>'(shop_states.disabled IS NULL)',
-            'order'=>'shop_states.name',
-            'delete'=>true
+        'states' => array(
+            'class_name' => 'Shop\CountryState',
+            'foreign_key' => 'country_id',
+            'conditions' => '(shop_states.disabled IS NULL)',
+            'order' => 'shop_states.name',
+            'delete' => true
         )
     );
 
     public $belongs_to = array(
-        'shipping_zone'=>array(
-            'class_name'=>'Shop\ShippingZone', '
-				foreign_key'=>'shipping_zone_id',
-            'conditions'=>'(shop_shipping_zones.params_id IS NOT NULL)'
+        'shipping_zone' => array(
+            'class_name' => 'Shop\ShippingZone',
+            'foreign_key' => 'shipping_zone_id',
+            'conditions' => '(shop_shipping_zones.params_id IS NOT NULL)'
         ),
     );
 
@@ -64,7 +65,7 @@ class Country extends ActiveRecord
         if (!$no_column_info) {
             return new self();
         } else {
-            return new self(null, array('no_column_init'=>true, 'no_validation'=>true));
+            return new self(null, array('no_column_init' => true, 'no_validation' => true));
         }
     }
 
@@ -98,27 +99,34 @@ class Country extends ActiveRecord
             ->maxLength(3, 'Numeric ISO country code must contain exactly 3 digits.')
             ->regexp('/^[0-9]{3}$/i', 'Country code must contain 3 digits')
             ->fn('mb_strtoupper');
-            
+
         $this->define_column('enabled', 'Enabled')
             ->validation();
 
         $this->define_column('enabled_in_backend', 'Enabled in the Administration Area')
             ->listTitle('Enabled in AA')
             ->validation();
-            
+
+        $this->define_column('currency_code', 'Currency')
+            ->defaultInvisible()
+            ->validation()
+            ->fn('trim')
+            ->maxLength(3, 'ISO currency code must contain exactly 3 letters.')
+            ->fn('mb_strtoupper');
+
         $front_end = ActiveRecord::$execution_context == 'front-end';
         if (!$front_end) {
             $this->define_multi_relation_column('states', 'states', 'States', "@name")->invisible();
         }
-            $this->define_relation_column(
-                'shipping_zone',
-                'shipping_zone',
-                'Shipping Zone ',
-                db_varchar,
-                '@name'
-            )
-                ->listTitle('Shipping Zone')
-                ->defaultInvisible();
+        $this->define_relation_column(
+            'shipping_zone',
+            'shipping_zone',
+            'Shipping Zone ',
+            db_varchar,
+            '@name'
+        )
+            ->listTitle('Shipping Zone')
+            ->defaultInvisible();
     }
 
     public function define_form_fields($context = null)
@@ -158,7 +166,7 @@ class Country extends ActiveRecord
         } else {
             $field->comment('3-digit numeric country code.', 'above');
         }
-                
+
         $this->add_form_field('enabled')
             ->tab('Country')
             ->comment('Disabled countries are not shown on the front-end store.', 'above');
@@ -169,11 +177,17 @@ class Country extends ActiveRecord
         if ($this->enabled) {
             $field->disabled();
         }
-            
+
         $this->add_form_field('states')->tab('States');
+
         $this->add_form_field('shipping_zone')
             ->tab('Shipping Zone')
             ->comment("You can manage shipping zones from the 'Settings -> Shipping Settings' page.", 'above');
+
+        $this->add_form_field('currency_code')
+            ->renderAs(frm_dropdown)
+            ->tab('Currency')
+            ->comment("Assign a currency code for this country.", 'above');
     }
 
     public function get_shipping_zone_options($key_value = -1)
@@ -187,7 +201,7 @@ class Country extends ActiveRecord
             return $obj ? $obj->name : null;
         }
 
-        $options = array(null=>'<please select>');
+        $options = array(null => '<please select>');
         $zones = ShippingZone::create()->where('(shop_shipping_zones.params_id IS NOT NULL)')->find_all();
         $zones_array = $zones->as_array('name', 'id');
         foreach ($zones_array as $id => $name) {
@@ -195,37 +209,58 @@ class Country extends ActiveRecord
         }
         return $options;
     }
-        
+
+    public function get_currency_code_options($key_value = -1)
+    {
+        if ($key_value != -1) {
+            if (!strlen($key_value)) {
+                return null;
+            }
+
+            $obj = CurrencySettings::create()->find_by_code($key_value);
+            return $obj ? $obj->name : null;
+        }
+
+        $options = array(null => '<optional select>');
+        $currencySettings = new CurrencySettings();
+        $currencies = $currencySettings->find_all();
+        $currencies_array = $currencies->as_array('name', 'code');
+        foreach ($currencies_array as $id => $name) {
+            $options[$id] = $name;
+        }
+        return $options;
+    }
+
     public function before_delete($id = null)
     {
-        $bind = array('id'=>$this->id);
+        $bind = array('id' => $this->id);
         $in_use = DbHelper::scalar(
             'select count(*) from shop_customers where shipping_country_id=:id or billing_country_id=:id',
             $bind
         );
-            
+
         if ($in_use) {
             throw new ApplicationException("Cannot delete country because it is in use.");
         }
-                
+
         $in_use = DbHelper::scalar(
             'select count(*) from shop_orders where shipping_country_id=:id or billing_country_id=:id',
             $bind
         );
-            
+
         if ($in_use) {
             throw new ApplicationException("Cannot delete country because it is in use.");
         }
     }
-        
+
     public static function get_list($country_id = null)
     {
-        $obj = new self(null, array('no_column_init'=>true, 'no_validation'=>true));
+        $obj = new self(null, array('no_column_init' => true, 'no_validation' => true));
         $obj->order('name')->where('enabled = 1');
         if (strlen($country_id)) {
             $obj->orWhere('id=?', $country_id);
         }
-                
+
         return $obj->find_all();
     }
 
@@ -241,19 +276,19 @@ class Country extends ActiveRecord
      */
     public function list_states($include_state_id = null)
     {
-        $result          = null;
+        $result = null;
         $state_conditional = $include_state_id ? "OR id = :state_id" : null;
         if ($this->id) {
             $sql = 'SELECT * FROM shop_states 
                     WHERE country_id=:country_id 
-                    AND (disabled IS NULL '.$state_conditional.') 
+                    AND (disabled IS NULL ' . $state_conditional . ') 
                     ORDER BY `name`';
-            
+
             $states = DbHelper::objectArray($sql, [
-                    'country_id' => $this->id,
-                    'state_id'   => $include_state_id
+                'country_id' => $this->id,
+                'state_id' => $include_state_id
             ]);
-            
+
             if (count($states)) {
                 $result = $states;
             }
@@ -272,7 +307,7 @@ class Country extends ActiveRecord
      */
     public function get_state_options($include_state_id = null)
     {
-        $result          = array( null => '<no states available>' );
+        $result = array(null => '<no states available>');
         $states = $this->list_states($include_state_id);
 
         if (is_array($states) && count($states)) {
@@ -302,7 +337,7 @@ class Country extends ActiveRecord
 
         $records = DbHelper::objectArray(
             'select * from shop_countries where enabled_in_backend=1 or id=:id order by name',
-            ['id'=>$default]
+            ['id' => $default]
         );
         $result = array();
         foreach ($records as $country) {
@@ -321,13 +356,13 @@ class Country extends ActiveRecord
         if (self::$simple_name_list) {
             return self::$simple_name_list;
         }
-            
+
         $countries = self::get_object_list();
         $result = array();
         foreach ($countries as $id => $country) {
             $result[$id] = $country->name;
         }
-                
+
         return self::$simple_name_list = $result;
     }
 
@@ -344,7 +379,7 @@ class Country extends ActiveRecord
         if (array_key_exists($id, self::$id_cache)) {
             return self::$id_cache[$id];
         }
-                
+
         return self::$id_cache[$id] = self::create(true)->find($id);
     }
 
@@ -356,9 +391,9 @@ class Country extends ActiveRecord
     }
 
     /**
-     * @deprecated
      * @param $enabled
      * @param $enabled_in_backend
+     * @deprecated
      */
     public function update_states($enabled, $enabled_in_backend)
     {
