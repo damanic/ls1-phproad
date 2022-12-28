@@ -31,9 +31,10 @@
             if (Phpr::$errorLog !== null) {
                 try {
                     $result = Phpr::$errorLog->logException($this);
-                    
-                    $this->log_id = $result['id'];
-                    $this->log_status = $result['status'];
+                    if ($result) {
+                        $this->log_id = $result['id'];
+                        $this->log_status = $result['status'];
+                    }
                 } catch (Exception $ex) {
                     // Prevent the looping
                 }
