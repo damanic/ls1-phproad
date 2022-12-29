@@ -2,6 +2,8 @@
 
 namespace Shop;
 
+use \Phpr\DateTime as PhprDateTime;
+
 /**
  * Represents a payment transaction update information.
  * Objects of this class are returned by some methods of {@link PaymentMethod} class.
@@ -105,6 +107,13 @@ class TransactionUpdate
      */
     public $liability_shifted;
 
+    /**
+     * @var PhprDateTime The datetime the transaction update was recorded by the payment gateway.
+     * Allows the payment gateway to set the datetime created for this transaction update.
+     * If set this value is used as the datetime stamp in payment transaction logs.
+     * @documentable
+     */
+    public $created_at;
 
     public function __construct(
         $transaction_status_code = null,
@@ -167,5 +176,14 @@ class TransactionUpdate
             }
         }
         return true;
+    }
+
+
+    public function get_created_at()
+    {
+        if ($this->created_at && is_a($this->created_at, '\Phpr\Datetime')) {
+            return $this->created_at;
+        }
+        return null;
     }
 }
