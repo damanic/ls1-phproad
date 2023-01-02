@@ -613,6 +613,11 @@ class Phpr_Request
         return isset($_SERVER["SERVER_PORT"]) ? $_SERVER["SERVER_PORT"] : null;
     }
 
+    /**
+     *
+     * @param string $protocol eg. https
+     * @return string|null The root URL for this application
+     */
     public function getRootUrl($protocol = null)
     {
         if (!isset($_SERVER['SERVER_NAME'])) {

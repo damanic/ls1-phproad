@@ -8,7 +8,7 @@
 class Phpr_Url
 {
     /**
-     * Returns an URL of a specified resource relative to the LemonStand domain root
+     * Returns the URL of a specified resource relative to the LemonStand domain root
      */
     public static function root_url($resource, $add_host_name_and_protocol = false, $protocol = null)
     {
