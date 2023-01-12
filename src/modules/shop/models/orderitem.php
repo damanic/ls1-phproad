@@ -1675,3 +1675,5 @@ class OrderItem extends ActiveRecord implements RetailItemInterface, BundleItemI
         $this->get_bundle_items();
     }
 }
+
+class_alias('Shop\OrderItem', 'Shop_OrderItem');

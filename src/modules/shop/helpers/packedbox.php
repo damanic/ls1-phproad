@@ -288,3 +288,5 @@ class PackedBox
         return $packed_boxes;
     }
 }
+
+class_alias('Shop\PackedBox', 'Shop_PackedBox');

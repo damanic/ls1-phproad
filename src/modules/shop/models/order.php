@@ -4238,3 +4238,5 @@ class Order extends ActiveRecord
     {
     }
 }
+
+class_alias('Shop\Order', 'Shop_Order');

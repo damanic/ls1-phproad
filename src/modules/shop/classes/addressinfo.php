@@ -587,3 +587,5 @@ class AddressInfo
         return $info;
     }
 }
+
+class_alias('Shop\AddressInfo','Shop_AddressInfo');

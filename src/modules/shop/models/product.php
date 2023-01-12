@@ -6099,3 +6099,5 @@ class Product extends ActiveRecord
     {
     }
 }
+
+class_alias('Shop\Product', 'Shop_Product');

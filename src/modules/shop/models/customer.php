@@ -1947,3 +1947,5 @@ class Customer extends ActiveRecord
     {
     }
 }
+
+class_alias('Shop\Customer', 'Shop_Customer');
