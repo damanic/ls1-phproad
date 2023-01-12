@@ -1090,9 +1090,9 @@ class ActiveRecord extends Sql implements IteratorAggregate
                         Util::splat($relation_info)
                     );
 
-                    DB::select()->sql_delete(
+                    Db::select()->sql_delete(
                         $options['join_table'],
-                        DB::where(
+                        Db::where(
                             $options['join_table'] . '.' . $options['primary_key'] . ' = ?',
                             $this->{$this->primary_key}
                         )
@@ -2329,7 +2329,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
                                     $this->sql_update(
                                         $object->table_name,
                                         array($options['foreign_key'] => $primary_key),
-                                        DB::where($object->primary_key . ' IN (?)', $record)
+                                        Db::where($object->primary_key . ' IN (?)', $record)
                                     );
                                     $this->after_has_many_bind($record, $name);
                                     $result = true;
@@ -2339,7 +2339,7 @@ class ActiveRecord extends Sql implements IteratorAggregate
                                     $this->sql_update(
                                         $object->table_name,
                                         array($options['foreign_key'] => null),
-                                        DB::where($object->primary_key . ' IN (?)', $record)
+                                        Db::where($object->primary_key . ' IN (?)', $record)
                                     );
                                     $this->after_has_many_unbind($related_record, $name);
 
