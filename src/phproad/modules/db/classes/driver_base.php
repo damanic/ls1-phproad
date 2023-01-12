@@ -11,8 +11,9 @@ class Driver_Base
 {
     protected $config = array();
 
-    public function __construct($config=array()){
-        if(empty($config)) {
+    public function __construct($config = array())
+    {
+        if (empty($config)) {
             $config = $this->get_default_config();
         }
         $this->config = array_merge(
@@ -23,14 +24,15 @@ class Driver_Base
                 'username' => '',
                 'password' => '',
             ),
-            $config);
+            $config
+        );
     }
 
     public function connect()
     {
-        if($this->get_connection())
+        if ($this->get_connection()) {
             return;
-
+        }
     }
 
     public function reconnect()
@@ -106,16 +108,18 @@ class Driver_Base
         return null;
     }
 
-        protected function get_connection(){
+    protected function get_connection()
+    {
         return Db::getActiveConnection($this->get_driver_id());
-
     }
 
-    protected function set_connection($connection){
-        Db::setActiveConnection($connection,$this->get_driver_id());
+    protected function set_connection($connection)
+    {
+        Db::setActiveConnection($connection, $this->get_driver_id());
     }
 
-    protected function get_default_config(){
+    protected function get_default_config()
+    {
         if (Phpr::$config->get('DB_CONFIG_MODE', 'secure') != 'secure') {
             $config = Phpr::$config->get('DB_CONNECTION', array());
         } else {
@@ -132,7 +136,8 @@ class Driver_Base
         return $config;
     }
 
-    protected function get_driver_id(){
+    protected function get_driver_id()
+    {
         return get_class($this).md5(serialize($this->config));
     }
 }
