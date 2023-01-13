@@ -11,7 +11,7 @@ function setOriginalPermissionsStates()
 
 function updatePermissionsState()
 {
-	var admin_cb = $('form_field_container_rightsUsers_User').getElement('input.checkbox');
+	var admin_cb = $('form_field_container_groupsUsers_User').getElement('input.checkbox');
 	
 	if (admin_cb.checked)
 		setOriginalPermissionsStates();
@@ -41,5 +41,5 @@ function updatePermissionsState()
 
 window.addEvent('domready', function(){
 	updatePermissionsState();
-	$('form_field_container_rightsUsers_User').getElement('input.checkbox').addEvent('click', updatePermissionsState);
+	$('form_field_container_groupsUsers_User').getElement('input.checkbox').addEvent('click', updatePermissionsState);
 });
