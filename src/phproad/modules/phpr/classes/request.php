@@ -26,17 +26,24 @@ class Request
     protected $remoteEventIndicator = 'HTTP_PHPR_REMOTE_EVENT';
     protected $postbackIndicator = 'HTTP_PHPR_POSTBACK';
 
-    public $getFields = null;
+    protected $getFields = [];
 
     /**
      * Creates a new Phpr_Request instance.
-     * Do not create the Request objects directly. Use the Phpr::$request object instead.
+     * This class is intended to be used in singleton pattern and should be accessed via Phpr::$request
      *
+     * @param bool $singleton When set to TRUE the data in the $_GET global will be copied and cleared.
+     *                        $_GET data will only be accessible via this class instance.
      * @see Phpr
      */
-    public function __construct()
+    public function __construct(bool $singleton = true)
     {
-        $this->preprocessGlobals();
+        $this->getFields = $_GET;
+        if ($singleton) {
+            $this->clearGet(); //$_GET must be accessed via this class instance getField();
+        }
+        $this->cleanCookie();
+        $this->cleanPost();
     }
 
 
@@ -151,8 +158,8 @@ class Request
     public function isAjax()
     {
         return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower(
-                $_SERVER['HTTP_X_REQUESTED_WITH']
-            ) == 'xmlhttprequest';
+            $_SERVER['HTTP_X_REQUESTED_WITH']
+        ) == 'xmlhttprequest';
     }
 
     /**
@@ -211,8 +218,8 @@ class Request
         $request_param_name = Phpr::$config->get('REQUEST_PARAM_NAME', 'q');
         $admin_url = '/' . Strings::normalizeUri(Phpr::$config->get('ADMIN_URL', 'admin'));
         $current_url = '/' . Strings::normalizeUri(
-                isset($_REQUEST[$request_param_name]) ? $_REQUEST[$request_param_name] : ''
-            );
+            isset($_REQUEST[$request_param_name]) ? $_REQUEST[$request_param_name] : ''
+        );
 
         return (stristr($current_url, $admin_url) !== false);
     }
@@ -426,28 +433,21 @@ class Request
         return $URI;
     }
 
-    /**
-     * Cleans the _POST and _COOKIE data and unsets the _GET data.
-     * Replaces the new line charaters with \n.
-     */
-    private function preprocessGlobals()
+    private function cleanPost()
     {
-        // Unset the global variables
-        //
-        $this->getFields = $_GET;
+        $this->cleanupArray($_POST);
+    }
 
-        $this->unsetGlobals($_GET);
-        $this->unsetGlobals($_POST);
-        $this->unsetGlobals($_COOKIE);
+    private function cleanCookie()
+    {
+        $this->cleanupArray($_COOKIE);
+    }
 
+    private function clearGet()
+    {
         // Clear the _GET array
         //
         $_GET = array();
-
-        // Clean the POST and COOKIE data
-        //
-        $this->cleanupArray($_POST);
-        $this->cleanupArray($_COOKIE);
     }
 
     public function getValueArray($name, $default = array())

@@ -7,7 +7,8 @@ use IteratorAggregate;
 use Countable;
 
 use Phpr;
-use Phpr\Flash;
+use Phpr\Flash as Flash;
+use Phpr\Request as Request;
 use Db\Helper as DbHelper;
 
 /**
@@ -42,8 +43,7 @@ class Session implements ArrayAccess, IteratorAggregate, Countable
             $path = '/';
         }
 
-        $request = Phpr::$request ? Phpr::$request : new Phpr\Request();
-
+        $request = Phpr::$request ?? new Request(false);
         $secure = $request->getProtocol() == 'https';
 
         session_set_cookie_params(ini_get('session.cookie_lifetime'), $path, ini_get('session.cookie_domain'), $secure);
