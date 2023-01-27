@@ -72,7 +72,7 @@ class Shipping extends Controller
                 $obj = new $class_name();
                 $info = $obj->get_info();
                 if (array_key_exists('name', $info)) {
-                    $info['url'] = url('/shop/shipping/create/' . $class_name);
+                    $info['url'] = url('/shop/shipping/create/' . get_class_id($class_name));
                     $type_list[] = $info;
                 }
             }
