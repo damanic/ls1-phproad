@@ -86,28 +86,28 @@ class CompoundEmailVar extends ActiveRecord
         
     public static function apply_scope_variables($message, $scope, $parameters = array())
     {
-        extract($parameters);
         $vars = self::list_scope_variables($scope);
+        $engine = EmailParams::get_templating_engine();
         foreach ($vars as $var) {
-            $engine = null;
             $var_value = '';
-            try {
-                $engine = EmailParams::get_templating_engine();
-                if ($engine == 'php') {
-                    ob_start();
+            if ($engine == 'php') {
+                ob_start();
+                try {
                     eval('?>'.$var->content);
-                    $var_value = ob_get_clean();
-                } else {
+                    $var_value =  ob_get_clean();
+                } catch (\ParseError | \Error | \Exception $p) {
+                    $var_value = 'ERROR APPLYING COMPOUND VARIABLE ('.$var->code.'): '.h($p->getMessage());
+                }
+            } else {
+                try {
                     $var_value = Twig::get()->parse($var->content, $parameters, 'Email variable "'.$var->code.'"');
+                } catch (\Exception $ex) {
+                        $var_value = 'ERROR APPLYING COMPOUND VARIABLE ('.$var->code.'): '.h($ex->getMessage());
                 }
-            } catch (\Exception $ex) {
-                if ($engine == 'php') {
-                    ob_end_clean();
-                }
-
-                $var_value = 'ERROR: '.h($ex->getMessage());
             }
-
+            if ($engine == 'php') {
+                @ob_end_clean();
+            }
             $message = str_replace('{'.$var->code.'}', $var_value, $message);
         }
             
