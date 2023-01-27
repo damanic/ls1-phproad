@@ -42,7 +42,9 @@ class Session implements ArrayAccess, IteratorAggregate, Countable
             $path = '/';
         }
 
-        $secure = Phpr::$request->getProtocol() == 'https';
+        $request = Phpr::$request ? Phpr::$request : new Phpr\Request();
+
+        $secure = $request->getProtocol() == 'https';
 
         session_set_cookie_params(ini_get('session.cookie_lifetime'), $path, ini_get('session.cookie_domain'), $secure);
 
