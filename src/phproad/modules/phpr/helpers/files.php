@@ -20,8 +20,8 @@ class Files
      */
     public static function maxUploadSize()
     {
-        Phpr::$deprecate->setFunction('maxUploadSize', 'FileSystem\File::maxUploadSize');
-        return File::maxUploadSize();
+        Phpr::$deprecate->setFunction('maxUploadSize', 'FileSystem\Upload::maxUploadSize');
+        return Upload::maxUploadSize();
     }
 
     /**
@@ -30,7 +30,7 @@ class Files
     public static function determineCsvDelimeter($path)
     {
         Phpr::$deprecate->setFunction('determineCsvDelimeter', 'FileSystem\Csv::determineCsvDelimeter');
-        return Csv::maxUploadSize($path);
+        return Csv::determineCsvDelimeter($path);
     }
 
     /**
