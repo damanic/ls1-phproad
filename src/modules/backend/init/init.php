@@ -4,8 +4,9 @@ use Backend\Events;
 
 /*
  * Backend module events object
+ * Alias for legacy code
  */
-Backend::$events = new Events();
+Backend::$events = Phpr::$events;
 
 /*
  * Load and initialize modules
