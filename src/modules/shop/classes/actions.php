@@ -3655,6 +3655,34 @@ class Actions extends ActionScope
         $customer->init_columns_info('front_end');
         $customer->validation->focusPrefix = null;
         $customer->password = null;
+
+            $addressTypes = array(
+                'billing',
+                'shipping'
+            );
+            foreach($addressTypes as $addressType) {
+                if (isset($_POST[$addressType.'_street_addr']) ) {
+                    $addressData = array();
+                    foreach ($_POST as $key => $val) {
+                        if (stristr($key, $addressType."_")) {
+                            $compatKey = str_replace($addressType.'_', '', $key);
+                            $compatKey = ($compatKey == 'street_addr') ? 'street_address' : $compatKey;
+                            $compatKey = ($compatKey == 'state_id') ? 'state' : $compatKey;
+                            $compatKey = ($compatKey == 'country_id') ? 'country' : $compatKey;
+                            $addressData[$compatKey] = $val;
+                        }
+                    }
+                    //validate customers address data as AddressInfo
+                    if ($addressData) {
+                        $addressInfo = new CheckoutAddressInfo();
+                        if($addressType == 'billing'){
+                            $addressInfo->act_as_billing_info = true;
+                        }
+                        $addressInfo->set_from_post($customer, $addressData);
+                    }
+                }
+            }
+
         $customer->save($_POST);
 
         CheckoutData::load_from_customer($customer, true);
