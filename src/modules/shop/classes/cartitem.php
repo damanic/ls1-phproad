@@ -18,7 +18,7 @@ use Cms\Controller;
  * @package shop.classes
  */
 
-class CartItem implements RetailItemInterface, BundleItemInterface
+class CartItem implements RetailItemInterface, BundleItemInterface, ShippableItemInterface
 {
     /**
      * @var string Specifies the item key.

@@ -17,6 +17,8 @@ class BoxPacker
     protected $dimensionsInCm = false;
     protected $unpackableItems = array();
 
+    protected static $cache = array();
+
     public function __construct()
     {
         if (version_compare(phpversion(), '7.1.0', '<')) {
@@ -46,7 +48,11 @@ class BoxPacker
             'context' => null,
             'order' => null
         );
-        $data = array_merge($default_info, $info);
+		$info = array_merge($default_info,$info);
+        $box_ids = $boxes->as_array('id');
+        sort($box_ids, SORT_NUMERIC);
+        $cache_keys[] = 'boxids:'.serialize($box_ids);
+
 
         $packable_list = $this->get_packable_items_list($items);
 
@@ -67,8 +73,8 @@ class BoxPacker
         $packable_items = $packable_list['items'];
         foreach ($items as $item) {
             $item_key = (isset($item->key) && $item->key) ? $item->key : $item->id;
-            ;
             if (isset($packable_items[$item_key])) {
+                $cache_keys[] = $item_key.'-x-'.$item->quantity;
                 $quantity = $item->quantity;
                 while ($quantity > 0) {
                     $quantity--;
@@ -77,6 +83,7 @@ class BoxPacker
                 }
                 if (isset($packable_items[$item_key]['extras'])) {
                     foreach ($packable_items[$item_key]['extras'] as $extra) {
+                        $cache_keys[] = $item_key.'|'.$extra->weight.'x'.$extra->width.$extra->height.'x'.$extra->depth;
                         $packer_items[] = $extra;
                         $item_count++;
                     }
@@ -110,8 +117,13 @@ class BoxPacker
             $packer->addItem($packer_item);
         }
 
-        $packed_boxes = $packer->pack();
-        return $packed_boxes;
+
+        sort($cache_keys);
+        $cache_key = md5(serialize($cache_keys));
+        if(isset(self::$cache[$cache_key])){
+            return self::$cache[$cache_key];
+        }
+        return self::$cache[$cache_key] = $packer->pack();
     }
 
     public function get_packable_items_list($items)
@@ -303,22 +315,8 @@ class BoxPacker
     {
         $volume = 0;
         foreach ($items as $item) {
-            $shipping_enabled = $item->product->product_type->shipping;
-            if ($shipping_enabled) {
                 $volume += $item->total_volume();
             }
-            $extras = false;
-            if (isset($item->extra_options)) {
-                $extras = $item->extra_options;
-            } elseif (method_exists($item, 'get_extra_option_objects')) {
-                $extras = $item->get_extra_option_objects();
-            }
-            if ($extras) {
-                foreach ($extras as $extra_item) {
-                    $volume += $extra_item->volume();
-                }
-            }
-        }
         return $volume;
     }
 }

@@ -49,7 +49,7 @@ use Phpr\Number;
  * @package shop.models
  * @author LSAPP - MJMAN
  */
-class OrderItem extends ActiveRecord implements RetailItemInterface, BundleItemInterface
+class OrderItem extends ActiveRecord implements RetailItemInterface, BundleItemInterface, ShippableItemInterface
 {
     public $table_name = 'shop_order_items';
 
@@ -919,6 +919,56 @@ class OrderItem extends ActiveRecord implements RetailItemInterface, BundleItemI
          * Dimensions
      */
 
+        public function volume()
+        {
+            $result = $this->om('volume');
+            $extras = $this->get_extra_option_objects();
+            foreach ($extras as $option)
+                $result += $option->volume();
+
+            return $result;
+        }
+
+        public function weight()
+        {
+            $result = $this->om('weight');
+            $extras = $this->get_extra_option_objects();
+            foreach ($extras as $option)
+                $result += $option->weight;
+
+            return $result;
+        }
+
+        public function depth()
+        {
+            $result = $this->om('depth');
+            $extras = $this->get_extra_option_objects();
+            foreach ($extras as $option)
+                $result += $option->depth;
+
+            return $result;
+        }
+
+        public function width()
+        {
+            $result = $this->om('width');
+            $extras = $this->get_extra_option_objects();
+            foreach ($extras as $option)
+                $result += $option->width;
+
+            return $result;
+        }
+
+        public function height()
+        {
+            $result = $this->om('height');
+            $extras = $this->get_extra_option_objects();
+            foreach ($extras as $option)
+                $result += $option->height;
+
+            return $result;
+        }
+
     /**
      * Returns the total volume of the order item.
      * The total depth is <em>unit volume * quantity</em>.
@@ -927,14 +977,7 @@ class OrderItem extends ActiveRecord implements RetailItemInterface, BundleItemI
      */
     public function total_volume()
     {
-        $result = $this->om('volume')*$this->quantity;
-            
-        $extras = $this->get_extra_option_objects();
-        foreach ($extras as $option) {
-            $result += $option->volume()*$this->quantity;
-        }
-            
-        return $result;
+			return $this->volume() * $this->quantity;
     }
         
     /**
@@ -945,14 +988,7 @@ class OrderItem extends ActiveRecord implements RetailItemInterface, BundleItemI
      */
     public function total_weight()
     {
-        $result = $this->om('weight')*$this->quantity;
-            
-        $extras = $this->get_extra_option_objects();
-        foreach ($extras as $option) {
-            $result += $option->weight*$this->quantity;
-        }
-            
-        return $result;
+			return $this->weight() * $this->quantity;
     }
         
     /**
@@ -963,14 +999,7 @@ class OrderItem extends ActiveRecord implements RetailItemInterface, BundleItemI
      */
     public function total_depth()
     {
-        $result = $this->om('depth')*$this->quantity;
-            
-        $extras = $this->get_extra_option_objects();
-        foreach ($extras as $option) {
-            $result += $option->depth*$this->quantity;
-        }
-            
-        return $result;
+			return $this->depth() * $this->quantity;
     }
         
     /**
@@ -981,14 +1010,7 @@ class OrderItem extends ActiveRecord implements RetailItemInterface, BundleItemI
      */
     public function total_width()
     {
-        $result = $this->om('width')*$this->quantity;
-            
-        $extras = $this->get_extra_option_objects();
-        foreach ($extras as $option) {
-            $result += $option->width*$this->quantity;
-        }
-            
-        return $result;
+            return $this->width() * $this->quantity;
     }
         
     /**
@@ -999,14 +1021,7 @@ class OrderItem extends ActiveRecord implements RetailItemInterface, BundleItemI
      */
     public function total_height()
     {
-        $result = $this->om('height')*$this->quantity;
-            
-        $extras = $this->get_extra_option_objects();
-        foreach ($extras as $option) {
-            $result += $option->height*$this->quantity;
-        }
-            
-        return $result;
+            return $this->width() * $this->quantity;
     }
 
     /**

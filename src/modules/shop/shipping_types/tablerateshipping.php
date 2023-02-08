@@ -7,6 +7,9 @@ use Core\Number;
 
 class TableRateShipping extends ShippingType
 {
+
+    private $host_obj = null;
+
     /**
      * Returns information about the shipping type
      * Must return array with key 'name': array('name'=>'FedEx')
@@ -36,9 +39,13 @@ class TableRateShipping extends ShippingType
      */
     public function build_config_ui($host_obj, $context = null)
     {
+        $this->host_obj = $host_obj;
+
         if ($context == 'preview') {
             return;
         }
+
+        $host_obj->add_form_partial( PATH_APP . '/modules/shop/shipping_types/shop_tablerateshipping/_rates_description.htm' )->tab( 'Rates' );
 
         $host_obj->add_field('rates', 'Rates')->tab('Rates')->renderAs(frm_widget, array(
             'class' => 'Db_GridWidget',
@@ -64,9 +71,9 @@ class TableRateShipping extends ShippingType
                     'width' => 100
                 ],
                 'zip' => [
-                    'title' => 'ZIP',
+                    'title' => 'Postal Code (ZIP)',
                     'type' => 'text',
-                    'width' => 100
+                    'width' => 200
                 ],
                 'city' => [
                     'title' => 'City',
@@ -128,6 +135,54 @@ class TableRateShipping extends ShippingType
                 ]
             ]
         ))->noLabel();
+
+        $parcelTab = 'Shipping Boxes';
+        $host_obj->add_field('shipping_boxes', ' Compatible Shipping Boxes','left')->renderAs(frm_checkboxlist)->comment('Select carrier compatible boxes or none to allow all boxes. Shipping boxes can be configured from System -> Settings -> Shipping Settings','above')->tab($parcelTab)->validation();
+        $host_obj->add_field('enable_box_packer', 'Enable Box Packer','right')->renderAs(frm_onoffswitcher)->comment('Attempt to calculate parcel dimensions based on items shipping and shipping boxes compatible')->tab($parcelTab);
+        $host_obj->add_field('enable_box_count_multiplier', 'Multiply Rate By Box Count','right')->renderAs(frm_onoffswitcher)->comment('Switch this on if the shipping rate should be multiplied when the box packer calculates multiple shipping boxes required')->tab($parcelTab);
+        $host_obj->add_field('box_packer_failure_mode', 'Box Packer Failure Mode','right')->renderAs(frm_dropdown)->comment('Select the action to take should the box packer fail to find a packing solution','above')->tab($parcelTab);
+
+        $host_obj->add_form_section(
+            'If estimated box dimensions exceed maximum dimension limits set by the carrier, quotes will not be returned. 
+            If the box packer is not enabled a box size will be estimated from total item volume, and largest item dimensions.',
+            'Carrier Shipping Box Restrictions'
+        )->tab($parcelTab);
+
+        $host_obj->add_field('max_box_length', 'Maximum Box Length','left')->renderAs(frm_text)->comment('The shipping option will be ignored if a calculated package dimension is more than the specified value. The longest packed box dimension will be evaluated for length')->tab($parcelTab);
+        $host_obj->add_field('max_box_width', 'Maximum Box Width','left')->renderAs(frm_text)->comment('The shipping option will be ignored if a calculated package dimension is more than the specified value. The second longest packed box dimension will be evaluated for width')->tab($parcelTab);
+        $host_obj->add_field('max_box_height', 'Maximum Box Height','left')->renderAs(frm_text)->comment('The shipping option will be ignored if a calculated package dimension is more than the specified value. The third longest packed box dimension will be evaluated for height')->tab($parcelTab);
+        $host_obj->add_field('max_box_weight', 'Maximum Box Weight','left')->renderAs(frm_text)->comment('The shipping option will be ignored if a calculated package weight is more than the specified value.')->tab($parcelTab);
+
+    }
+
+
+    public function get_shipping_boxes_options($current_key_value = -1)
+    {
+        $params = ShippingParams::get();
+        $shipping_boxes = $params->shipping_boxes;
+        $options = $shipping_boxes ? $shipping_boxes->as_array('name','id') : array();
+        if ($current_key_value == -1)
+            return $options;
+
+        return array_key_exists($current_key_value, $options) ? $options[$current_key_value] : null;
+    }
+
+    public function get_shipping_boxes_option_state($value = 1)
+    {
+        return is_array($this->host_obj->shipping_boxes) && in_array($value, $this->host_obj->shipping_boxes);
+    }
+
+
+    public function get_box_packer_failure_mode_options($current_key_value = -1) {
+        $options = array(
+            'return_volume_box' => 'Estimate box size from total item volume',
+            'fail' => 'Do not provide shipping quote',
+        );
+
+        if($current_key_value == -1)
+            return $options;
+
+        return array_key_exists($current_key_value, $options) ? $options[$current_key_value] : null;
     }
 
     public function get_grid_autocomplete_values($db_name, $column, $term, $row_data)
@@ -426,26 +481,40 @@ class TableRateShipping extends ShippingType
         return true;
     }
 
+    /**
+     * Returns a price
+     * @param $parameters
+     * @return float|null Float if quote determine , otherwise NULL
+     */
     public function get_quote($parameters)
     {
-        extract($parameters);
+        $expected_params = array(
+            'country_id' => null,
+            'state_id' => null,
+            'zip' => null,
+            'city' => null,
+            'host_obj' => null,
+            'cart_items' => null,
+            'total_volume' => null,
+            'total_weight' => null,
+            'total_price' => null,
+            'total_item_num' => null
+        );
+        $p = array_merge($expected_params, $parameters);
+		//extract($parameters);
 
-        $country = Country::find_by_id($country_id);
-        if (!$country) {
+		$country = $p['country_id'] ? Country::find_by_id($p['country_id']) : null;
+		if (!$country)
             return null;
-        }
-
-        $state = null;
-        if (strlen($state_id)) {
-            $state = CountryState::find_by_id($state_id);
-        }
 
         $country_code = $country->code;
+
+        $state = strlen($p['state_id']) ? CountryState::find_by_id($p['state_id']) : null;
         $state_code = $state ? mb_strtoupper($state->code) : '*';
 
-        $zip = trim(mb_strtoupper(str_replace(' ', '', $zip)));
+        $zip = empty($p['zip']) ? '*' : $p['zip'];
 
-        $city = str_replace('-', '', str_replace(' ', '', trim(mb_strtoupper($city))));
+        $city = str_replace('-', '', str_replace(' ', '', trim(mb_strtoupper($p['city']))));
         if (!strlen($city)) {
             $city = '*';
         }
@@ -456,33 +525,16 @@ class TableRateShipping extends ShippingType
 
         $rate = null;
 
-        foreach ($host_obj->rates as $row) {
-            if ($row['country'] != $country_code && $row['country'] != '*') {
+        foreach ($p['host_obj']->rates as $row) {
+            if ($row['country'] != $country_code && $row['country'] != '*')
+                continue;
+
+            if (mb_strtoupper($row['state']) != $state_code && $row['state'] != '*')
+                continue;
+
+            if(!$this->is_zip_code_match($zip, $row['zip'])){
                 continue;
             }
-
-            if (mb_strtoupper($row['state']) != $state_code && $row['state'] != '*') {
-                continue;
-            }
-
-            if ($row['zip'] != '' && $row['zip'] != '*') {
-                $row['zip'] = str_replace(' ', '', $row['zip']);
-
-                if ($row['zip'] != $zip) {
-                    if (mb_substr($row['zip'], -1) != '*') {
-                        continue;
-                    }
-
-                    $len = mb_strlen($row['zip']) - 1;
-
-                    if (mb_substr($zip, 0, $len) != mb_substr($row['zip'], 0, $len)) {
-                        continue;
-                    }
-                }
-            }
-
-            // if ($row['zip'] != $zip && $row['zip'] != '' && $row['zip'] != '*')
-            //  continue;
 
             $row_city = isset($row['city']) && strlen($row['city']) ? str_replace(
                 '-',
@@ -494,28 +546,28 @@ class TableRateShipping extends ShippingType
             }
 
             if (strlen($row['min_weight']) && strlen($row['max_weight'])) {
-                if (!(Number::compare_float($row['min_weight'], $total_weight) <= 0
-                    && Number::compare_float($row['max_weight'], $total_weight) >= 0)) {
+                if (!(Number::compare_float($row['min_weight'], $p['total_weight']) <= 0
+                    && Number::compare_float($row['max_weight'], $p['total_weight']) >= 0)) {
                     continue;
                 }
             }
 
             if (strlen($row['min_volume']) && strlen($row['max_volume'])) {
-                if (!(Number::compare_float($row['min_volume'], $total_volume) <= 0 &&
-                    Number::compare_float($row['max_volume'], $total_volume) >= 0)) {
+                if (!(Number::compare_float($row['min_volume'], $p['total_volume']) <= 0 &&
+                    Number::compare_float($row['max_volume'], $p['total_volume']) >= 0)) {
                     continue;
                 }
             }
 
             if (strlen($row['min_subtotal']) && strlen($row['max_subtotal'])) {
-                if (!(Number::compare_float($row['min_subtotal'], $total_price) <= 0 &&
-                    Number::compare_float($row['max_subtotal'], $total_price) >= 0)) {
+                if (!(Number::compare_float($row['min_subtotal'], $p['total_price']) <= 0 &&
+                    Number::compare_float($row['max_subtotal'], $p['total_price']) >= 0)) {
                     continue;
                 }
             }
 
             if (strlen($row['min_items']) && strlen($row['max_items'])) {
-                if (!($row['min_items'] <= $total_item_num && $row['max_items'] >= $total_item_num)) {
+                if (!($row['min_items'] <= $p['total_item_num'] && $row['max_items'] >= $p['total_item_num'])) {
                     continue;
                 }
             }
@@ -524,6 +576,301 @@ class TableRateShipping extends ShippingType
             break;
         }
 
+        if($rate !== null){
+
+            /*
+             * Shipping Box Considerations
+             */
+
+            $packed_boxes = null;
+            $eval_dimensions = null;
+            $max_dimensions = array(
+                $p['host_obj']->max_box_length,
+                $p['host_obj']->max_box_width,
+                $p['host_obj']->max_box_depth
+            );
+            $carrier_has_dimension_limit = false;
+            foreach($max_dimensions as $dimension){
+                if($dimension){
+                    $carrier_has_dimension_limit = true;
+                    break;
+                }
+            }
+
+            //
+            // Run Box Packer
+            //
+            if($p['host_obj']->enable_box_packer && class_exists('Shop\BoxPacker')){
+                $boxes = null;
+                if($p['host_obj']->shipping_boxes){
+                    $shippingBoxes = ShippingBox::get_boxes();
+                    $shippingBoxes->where('id in (?)', array($p['host_obj']->shipping_boxes));
+                    $shippingBoxResult = $shippingBoxes->find_all();
+                    $boxes = $shippingBoxResult ? $shippingBoxResult : null;
+                }
+
+                $packed_boxes = PackedBox::calculate_item_packed_boxes($p['cart_items'], array(), $boxes);
+
+                if(!$packed_boxes && $p['host_obj']->box_packer_failure_mode == 'fail'){
+                    //cannot return rate
+                    return null;
+                }
+
+                if($packed_boxes){
+                    //multiply rate
+                    if($p['host_obj']->enable_box_count_multiplier){
+                        $rate = $rate * count($packed_boxes);
+                    }
+                    // add dimensions for eval
+                    foreach($packed_boxes as $packed_box){
+                        $dimensions = array(
+                            $packed_box->get_length(),
+                            $packed_box->get_width(),
+                            $packed_box->get_depth(),
+                        );
+                        rsort($dimensions, SORT_NUMERIC);
+                        $eval_dimensions[] = $dimensions;
+                    }
+                }
+
+            }
+
+            if(!$eval_dimensions){
+                // Evaluate box dimensions based on item dimensions
+                $dimensions = $this->get_box_dimensions_from_items($p['cart_items']);
+                if($dimensions){
+                    $eval_dimensions[] = $dimensions;
+                }
+            }
+
+            //
+            // Enforce Carrier Shipping Box Restrictions (Length, Width, Height)
+            //
+            if($carrier_has_dimension_limit) {
+                if (count($eval_dimensions)) {
+                    foreach ($eval_dimensions as $dimensions) {
+                        $cnt = 0;
+                        foreach ($dimensions as $key => $dimension) {
+                            if ($max_dimensions[$cnt]) {
+                                if (Number::compare_float( $dimension, $max_dimensions[$cnt]) >= 0) {
+                                    //Box too big, cannot return rate
+                                    return null;
+                                }
+                            }
+                            $cnt++;
+                        }
+                    }
+                } else {
+                    // a max dimension limit was set but no box dimension could be determined
+                    // rate cannot be returned
+                    return null;
+                }
+            }
+
+            if($p['host_obj']->max_box_weight && count($packed_boxes)){
+                foreach($packed_boxes as $packed_box){
+                    if(Number::compare_float($packed_box->get_weight(), $p['host_obj']->max_box_weight) >= 0){
+                        //too heavy, cannot return rate
+                        return null;
+                    }
+                }
+            }
+
+        }
+
         return $rate;
     }
+
+    /**
+     * Returns the largest length , width , height dimension across all items.
+     * @param $items mixed Collection of ShippableItemsInterface
+     * @return array Return an array of dimensions from largest to smallest
+     */
+    protected function get_largest_dimensions_from_items($items){
+        $db_collection = (is_object($items) && get_class($items) == 'Db\DataCollection') ? true : false;
+        $cart_items = (is_array($items) || $db_collection) ? $items : array($items) ;
+        $largest_dimensions = array(
+            'length' => 0,
+            'width'  => 0,
+            'height' => 0,
+        );
+        foreach($cart_items as $item){
+            $length = $item->depth();
+            $width = $item->width();
+            $height = $item->height();
+            if($length > $largest_dimensions['length']){
+                $largest_dimensions['length'] = $length;
+            }
+            if($width > $largest_dimensions['width']){
+                $largest_dimensions['width'] = $width;
+            }
+            if($height > $largest_dimensions['height']){
+                $largest_dimensions['height'] = $height;
+            }
+        }
+        $dimensions = array_values($largest_dimensions);
+        rsort($dimensions, SORT_NUMERIC);
+        return $dimensions;
+    }
+
+    /**
+     * A crude calculation of box dimensions required to fit item dimensions.
+     *    - Smallest carrier compatible shipping box with volume >= than total item volume and with dimensions no smaller than the largest item dimensions.
+     *    - When no compatible shipping box found dimensions are determined from total item volume and largest item dimensions.
+     *
+     * @param $items mixed Collection of ShippableItemsInterface
+     * @return array|false Return an array of dimensions from largest to smallest, or false if dimensions could not be determined
+     */
+    protected function get_box_dimensions_from_items( $items ) {
+
+        $dimensions = array();
+
+        $db_collection = (is_object($items) && get_class($items) == 'Db\DataCollection') ? true : false;
+        $items = (is_array($items) || $db_collection) ? $items : array($items) ;
+
+        $total_volume = BoxPacker::get_items_total_volume( $items );
+        $largest_item_dimensions = $this->get_largest_dimensions_from_items($items);
+        if ( $total_volume > 0 ) {
+            $boxes = ShippingBox::create()->where('volume >= ?', $total_volume)->order('volume ASC')->find_all();
+            if($boxes){
+                foreach($boxes as $box){
+                    $box_compatible = $this->host_obj->shipping_boxes ? isset($this->host_obj->shipping_boxes[$box->id]) : true;
+                    if($box_compatible){
+                        $box_dimensions = array(
+                            $box->width,
+                            $box->length,
+                            $box->depth
+                        );
+                        rsort($box_dimensions, SORT_NUMERIC);
+                        foreach($box_dimensions as $key => $dimension){
+                            if($largest_item_dimensions[$key] && $dimension < $largest_item_dimensions[$key] ){
+                                continue; // box too small
+                            }
+                            $dimensions = $box_dimensions;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+
+        if(count($dimensions) !== 3){
+            $divided_volume = pow( $total_volume, 1 / 3 );
+            $average_dimension_length = ceil( $divided_volume );
+            $dimensions = array(
+                isset($largest_item_dimensions[0]) ? max($average_dimension_length, $largest_item_dimensions[0]) :  $average_dimension_length,
+                isset($largest_item_dimensions[1]) ? max($average_dimension_length, $largest_item_dimensions[1]) :  $average_dimension_length,
+                isset($largest_item_dimensions[2]) ? max($average_dimension_length, $largest_item_dimensions[2]) :  $average_dimension_length,
+            );
+        }
+
+        $valid_dimensions_count = 0;
+        foreach($dimensions as $dimension){
+            if($dimension && $dimension > 0){
+                $valid_dimensions_count++;
+            }
+        }
+        if ( $valid_dimensions_count === 3 ) {
+            rsort($dimensions, SORT_NUMERIC);
+            return $dimensions;
+        }
+        return false;
+    }
+
+
+    /**
+     * Check to see if the shipping address ZIP matches the
+     * rate field expression.
+     *
+     * Valid Expressions:
+     *    - Wild card asterisk at end of string. Eg. `CODE-A*`
+     *    - Number range in brackets. Eg. `CODE-[1-3]`
+     *    - Comma seperated list. Eg. `CODE-[1-3], CODE-B, CODE-A`
+     *
+     * @param $addressZip string The shipping address ZIP to match
+     * @param $rateZipField string The rate zip code expression to check against
+     * @return bool True if address ZIP matches rate expression
+     */
+    protected function is_zip_code_match($addressZip, $rateZipField){
+        if(trim($rateZipField) == '*'){
+            return true;
+        }
+        if(empty($rateZipField)){
+            return false;
+        }
+
+        $addressZip = trim(mb_strtoupper(str_replace(' ', '', $addressZip)));
+        $rateZipField = trim(mb_strtoupper(str_replace(' ', '', $rateZipField)));
+
+        if($addressZip == $rateZipField){
+            return true;
+        }
+
+        //Check for expressions
+        $rateZipArray = $this->get_zip_code_array($rateZipField);
+        foreacH($rateZipArray as $zip){
+            if(!strpos($zip, '*')){
+                if($zip == $addressZip){
+                    return true;
+                }
+            } else {
+                $zip = str_replace('*', '.*', $zip);
+                if ( preg_match('/'. $zip .'/', $addressZip, $matches) === 1 ) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Takes a ZIP code or ZIP code expression from the rate table and converts into
+     * an array of ZIP codes.
+     *
+     * Multiple ZIP codes can be presented in comma delimited format
+     * - EG: `CODE-1, CODE-2, CODE-3` will return array containing three postcodes
+     *
+     * A run of numbered postcodes can be presented with a sequential number range presented in brackets
+     * - EG. `CODE-[1-3]` will return array containing three postcodes
+     *
+     * These methods can be combined
+     * - EG. `CODE-[1-3], CODE-[22-29], CODE-128`
+     *
+     * @param $zipFieldVal string A ZIP field value from the rate table
+     * @return array Array of ZIP CODES
+     */
+    protected function get_zip_code_array( $zipFieldVal ){
+        $array = array();
+        if($zipFieldVal) {
+            $rateZips = explode( ',', $zipFieldVal );
+            if ( $rateZips ) {
+                foreach ( $rateZips as $zip ) {
+                    $zip = trim(mb_strtoupper(str_replace(' ', '', $zip)));
+                    if ( preg_match( '/\[(.*?)\]/', $zip, $match ) == 1 ) {
+                        if ( isset( $match[1] ) ) {
+                            $number_range = $match[1];
+                            if ( stristr( $number_range, '-' ) ) {
+                                $numbers    = explode( '-', $number_range );
+                                $min_number = isset( $numbers[0] ) ? $numbers[0] : false;
+                                $max_number = isset( $numbers[1] ) ? $numbers[1] : false;
+                                if ( is_numeric( $min_number ) && is_numeric( $max_number ) ) {
+                                    $current_number = $min_number;
+                                    while ( $current_number <= $max_number ) {
+                                        $array[] = str_replace( "[$min_number-$max_number]", $current_number, $zip );
+                                        $current_number++;
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        $array[] = $zip;
+                    }
+                }
+            }
+        }
+        return $array;
+}
+
+
 }

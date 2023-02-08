@@ -466,7 +466,7 @@ class Order extends ActiveRecord
         $this->define_column('override_shipping_quote', 'Fixed shipping quote')
             ->invisible();
 
-        $this->define_column('manual_shipping_quote', 'Shipping quote')
+        $this->define_column('manual_shipping_quote', 'Manual Shipping quote')
             ->invisible();
 
         $this->define_column('shipping_discount', 'Internal Shipping Discount')

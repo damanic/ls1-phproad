@@ -188,10 +188,10 @@ class PackedBox
      * @param Order $order Specifies the order to calculate
      * @return array of PackedBox objects
      */
-    public static function calculate_order_packed_boxes($order)
+    public static function calculate_order_packed_boxes($order, $boxes = null )
     {
         $order_packed_boxes = array();
-        $packages = BoxPacker::pack_order($order);
+        $packages = BoxPacker::pack_order($order, $boxes);
         if (!$packages) {
             throw new ApplicationException('Could not calculate boxes');
         }
@@ -200,14 +200,14 @@ class PackedBox
 
     /**
      * This uses the BoxPacker class to place order items into packed boxes
-     * Requires PHP v5.4+
      * @documentable
      * @param array $items  Array of CartItem or OrderItem
      * @param array $info Supporting information that could influence packing constraints.
+     * @param null|array $boxes Collection of Shop_ShippingBox that can be used for packing
      *  Passed to shop:onBoxPackerPack event
      * @return array of PackedBox objects
      */
-    public static function calculate_item_packed_boxes($items, $info = array())
+    public static function calculate_item_packed_boxes($items, $info = array(), $boxes = null)
     {
         $context = null;
         $item_packed_boxes = array();
@@ -221,7 +221,7 @@ class PackedBox
         $info = array_merge($default_info, $info);
         try {
             $packer   = new BoxPacker();
-            $packages = $packer->pack($items, null, $info);
+            $packages = $packer->pack($items, $boxes, $info);
             $item_packed_boxes = self::convertBoxpackerPackages($items, $packages);
         } catch (\Exception $e) {
             traceLog($e->getMessage());
