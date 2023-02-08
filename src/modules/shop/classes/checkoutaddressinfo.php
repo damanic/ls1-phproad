@@ -1,4 +1,5 @@
 <?php
+
 namespace Shop;
 
 use Phpr\Validation;
@@ -72,16 +73,15 @@ class CheckoutAddressInfo extends AddressInfo
      */
     public function set_from_post($customer = null, $post_data = array())
     {
-
-		$data = empty($post_data) ? $_POST : $post_data;
+        $data = empty($post_data) ? $_POST : $post_data;
         if ($customer) {
             $protect_fields = array(
                 'first_name',
                 'last_name',
                 'email'
             );
-            foreach($protect_fields as $field){
-                if(!isset($data[$field]) || !$data[$field] ){
+            foreach ($protect_fields as $field) {
+                if (!isset($data[$field]) || !$data[$field]) {
                     $data[$field] = $customer->$field;
                 }
             }
@@ -92,14 +92,14 @@ class CheckoutAddressInfo extends AddressInfo
         if ($this->act_as_billing_info) {
             $this->email = $validation->fieldValues['email'];
         }
-        $this->company        = $validation->fieldValues['company'];
-        $this->phone          = $validation->fieldValues['phone'];
+        $this->company = $validation->fieldValues['company'];
+        $this->phone = $validation->fieldValues['phone'];
         $this->street_address = $validation->fieldValues['street_address'];
-        $this->city           = $validation->fieldValues['city'];
-        $this->zip            = $validation->fieldValues['zip'];
-        $this->country        = $validation->fieldValues['country'];
-		$this->is_business    = isset($post_data['is_business']) ? $post_data['is_business'] : null;
-		$this->state          = isset($post_data['state']) ? $post_data['state'] : null;
+        $this->city = $validation->fieldValues['city'];
+        $this->zip = $validation->fieldValues['zip'];
+        $this->country = $validation->fieldValues['country'];
+        $this->is_business = isset($post_data['is_business']) ? $post_data['is_business'] : null;
+        $this->state = isset($post_data['state']) ? $post_data['state'] : null;
     }
 
     public function validate($data = null)
