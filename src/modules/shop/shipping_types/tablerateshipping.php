@@ -45,7 +45,7 @@ class TableRateShipping extends ShippingType
             return;
         }
 
-        $host_obj->add_form_partial( PATH_APP . '/modules/shop/shipping_types/shop_tablerateshipping/_rates_description.htm' )->tab( 'Rates' );
+        $host_obj->add_form_partial( PATH_APP . '/modules/shop/shipping_types/tablerateshipping/_rates_description.htm' )->tab( 'Rates' );
 
         $host_obj->add_field('rates', 'Rates')->tab('Rates')->renderAs(frm_widget, array(
             'class' => 'Db_GridWidget',
