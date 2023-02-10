@@ -1,14 +1,15 @@
 <?php
+
 namespace Shop;
 
 use Phpr\Strings;
 
-    /**
-     * Represents a customer shipping or billing address.
-     * @documentable
-     * @author Matt Manning (github:damanic)
-     * @package shop.classes
-     */
+/**
+ * Represents a customer shipping or billing address.
+ * @documentable
+ * @author Matt Manning (github:damanic)
+ * @package shop.classes
+ */
 class AddressInfo
 {
     /**
@@ -116,7 +117,6 @@ class AddressInfo
     protected $loaded_relations = null;
 
     protected $serialized = null;
-
 
 
     /**
@@ -272,11 +272,11 @@ class AddressInfo
             $address_info->is_business == $this->is_business;
     }
 
-        /**
-         * @param $field string The field name to get
-         * @param $default string The default value to return if no field value found
-         * @return string|null The field or default value
-         */
+    /**
+     * @param $field string The field name to get
+     * @param $default string The default value to return if no field value found
+     * @return string|null The field or default value
+     */
     public function get($field, $default = null)
     {
         $value = null;
@@ -293,23 +293,23 @@ class AddressInfo
         }
 
         if ($this->transliterate && in_array($field, $this->transliterate_fields)) {
-            $value = $this->transliterate($value);
+            $value = Strings::transliterate($value);
         }
 
         if ($field == 'full_name') {
-            $value = $this->get('first_name').' '.$this->get('last_name');
+            $value = $this->get('first_name') . ' ' . $this->get('last_name');
         }
 
-            if($value !== null) {
-                $value = (string)$value;
-                $value = trim($value);
-            }
+        if ($value !== null) {
+            $value = (string)$value;
+            $value = trim($value);
+        }
 
-            if(!strlen($value)){
-                return (string) $default;
-            }
+        if (!strlen($value)) {
+            return (string)$default;
+        }
 
-			return $value;
+        return $value;
     }
 
     public function get_relation_obj($field)
@@ -322,13 +322,12 @@ class AddressInfo
                 $id = $this->{$field};
                 $relation_obj = $relation_class::create()->find($id);
                 if ($relation_obj) {
-                    return $this->loaded_relations[$field] =  $relation_class::create()->find($id);
+                    return $this->loaded_relations[$field] = $relation_class::create()->find($id);
                 }
             }
         }
         return null;
     }
-
 
 
     /**
@@ -344,7 +343,7 @@ class AddressInfo
 
         $parts = array();
 
-        $name = trim($this->get('first_name').' '.$this->get('last_name'));
+        $name = trim($this->get('first_name') . ' ' . $this->get('last_name'));
         if (!empty($name)) {
             $parts[] = $name;
         }
@@ -425,7 +424,7 @@ class AddressInfo
                     $address .= $options['html'] ? '<b>' . $field_name : $field_name;
                     $address .= $options['html'] ? '</b>: ' : ": ";
                 }
-                $address .=  $options['html'] ? nl2br(h($field_value)) : h($field_value);
+                $address .= $options['html'] ? nl2br(h($field_value)) : h($field_value);
                 $address .= $options['html'] ? '<br/> ' : "\r\n";
             }
         }
@@ -487,13 +486,13 @@ class AddressInfo
         $shipping_params = ShippingParams::get();
 
         $default_city = $shipping_params->default_shipping_city;
-        $this->city = in_array('city', $fields) ? $default_city : $this->city ;
+        $this->city = in_array('city', $fields) ? $default_city : $this->city;
 
         $default_zip = $shipping_params->default_shipping_zip;
-        $this->zip =  in_array('zip', $fields) ? $default_zip : $this->zip ;
+        $this->zip = in_array('zip', $fields) ? $default_zip : $this->zip;
 
         $default_country = $shipping_params->default_shipping_country_id;
-        $this->country =  in_array('country', $fields) ? $default_country : $this->country ;
+        $this->country = in_array('country', $fields) ? $default_country : $this->country;
 
         $default_state = $shipping_params->default_shipping_state_id;
         $this->state = in_array('state', $fields) ? $default_state : $this->state;
@@ -512,13 +511,20 @@ class AddressInfo
         }
         return true;
     }
-        
 
-    protected function transliterate($value)
+
+    /**
+     * Enable transliterate mode.
+     * Whilst enabled the get method will return transliterated values
+     *
+     * @param $enabled
+     * @return $this Returns a copy of self for convenience. Example: $addressInfo->enable_transliterate()->get('street_address');
+     */
+    public function enable_transliterate($enabled = true)
     {
-        return Strings::transliterate($value);
+        $this->transliterate = $enabled;
+        return $this;
     }
-
 
 
     protected function get_public_properties()
@@ -572,7 +578,8 @@ class AddressInfo
 
 
     /**
-     * @deprecated Set the $transliterate property to true, and use get() methods instead!
+     * @deprecated
+     * Use $addressInfo->enable_transliterate(true);
      *
      * Returns a new address info object with transliterated values
      * Note: The returned object will replace country/state IDs with transliterated names.
@@ -581,7 +588,6 @@ class AddressInfo
      */
     public function get_transliterated_info()
     {
-
         $this->transliterate = true;
 
         if (!method_exists('Core_String', 'transliterate')) {
@@ -589,11 +595,11 @@ class AddressInfo
             return $this;
         }
 
-        $properties = $this->get_public_properties();
-
         $info = new self();
-        foreach ($properties as $property_name) {
-            $info->{$property_name} = $this->get($property_name);
+        foreach ($info->transliterate_fields as $field_name) {
+            if (property_exists($info, $field_name)) {
+                $info->{$property_name} = $this->get($field_name);
+            }
         }
 
         $this->transliterate = false;
@@ -602,4 +608,4 @@ class AddressInfo
     }
 }
 
-class_alias('Shop\AddressInfo','Shop_AddressInfo');
+class_alias('Shop\AddressInfo', 'Shop_AddressInfo');
