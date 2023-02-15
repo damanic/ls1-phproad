@@ -3,7 +3,7 @@ namespace Shop;
 
 use Backend\Controller;
 
-	class Tracking_Providers extends Controller
+	class Shipping_Tracking_Providers extends Controller
 	{
 		public $implement = 'Db_ListBehavior, Db_FormBehavior';
 		public $list_model_class = 'Shop\ShippingTrackerProvider';
