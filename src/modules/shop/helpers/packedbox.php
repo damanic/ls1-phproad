@@ -53,16 +53,7 @@ class PackedBox
     public function get_calculated_weight()
     {
         $weight = $this->box->empty_weight ? $this->box->empty_weight : 0;
-        $weight += $this->get_item_weight();
-        return $weight;
-    }
-
-    protected function get_item_weight()
-    {
-        $weight = 0;
-        foreach ($this->items as $item) {
-            $weight += $item->total_weight();
-        }
+        $weight += $this->get_items_weight();
         return $weight;
     }
 
@@ -85,6 +76,15 @@ class PackedBox
             $count += $item->quantity;
         }
         return $count;
+    }
+
+    public function get_items_weight()
+    {
+        $weight = 0;
+        foreach ($this->items as $item) {
+            $weight += $item->total_weight();
+        }
+        return $weight;
     }
 
     public function get_box()
