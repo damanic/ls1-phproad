@@ -559,3 +559,17 @@ $table->column('created_user_id', db_number);
 $table->column('parameters_serialized', db_text);
 $table->column('condition_control_type', db_varchar, 100);
 $table->addKey('rule_host_set', ['rule_host_id', 'host_rule_set']);
+
+$table = Db\Structure::table('shop_shipping_tracker_providers');
+$table->primaryKey('id');
+$table->column('name', db_varchar, 45);
+$table->column('tracker_url_format', db_varchar, 2048);
+
+$table = Db\Structure::table('shop_order_shipping_track_codes');
+$table->primaryKey('id');
+$table->column('order_id', db_number)->index();
+$table->column('shipping_method_id', db_number)->index();
+$table->column('created_at', db_datetime);
+$table->column('code', db_varchar, 255);
+$table->column('shop_shipping_tracker_provider_id', db_number)->index();
+

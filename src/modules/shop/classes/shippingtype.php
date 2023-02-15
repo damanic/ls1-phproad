@@ -1,12 +1,13 @@
 <?php
+
 namespace Shop;
 
 use Core\XmlController;
 
-    /**
-     * Represents the generic shipping type.
-     * All other shipping types must be derived from this class
-     */
+/**
+ * Represents the generic shipping type.
+ * All other shipping types must be derived from this class
+ */
 abstract class ShippingType extends XmlController
 {
     /**
@@ -29,7 +30,7 @@ abstract class ShippingType extends XmlController
      * @param string $context Form context. In preview mode its value is 'preview'
      */
     abstract public function build_config_ui($host_obj, $context = null);
-        
+
     /**
      * Builds the user interface for printing the shipping labels.
      * Implementing this method is not required if no special parameters
@@ -41,7 +42,7 @@ abstract class ShippingType extends XmlController
     public function build_print_label_ui($host_obj, $order)
     {
     }
-        
+
     /**
      * Validates configuration data before it is saved to database
      * Use host object field_error method to report about errors in data:
@@ -49,7 +50,7 @@ abstract class ShippingType extends XmlController
      * @param $host_obj \Db\ActiveRecord object containing configuration fields values
      */
     abstract public function validate_config_on_save($host_obj);
-        
+
     /**
      * Validates configuration data after it is loaded from database
      * Use host object to access fields previously added with build_config_ui method.
@@ -68,7 +69,7 @@ abstract class ShippingType extends XmlController
     public function init_config_data($host_obj)
     {
     }
-        
+
     /**
      * Determines whether a list of countries should be displayed in the
      * configuration form. For most payment methods the country list should be displayed.
@@ -77,7 +78,7 @@ abstract class ShippingType extends XmlController
     {
         return true;
     }
-        
+
     /**
      * The Discount Engine uses this method for displaying a list of available shipping options on the
      * Free Shipping tab of the Cart Price Rule form.
@@ -96,7 +97,7 @@ abstract class ShippingType extends XmlController
     {
         return array();
     }
-        
+
     /**
      * Returns price of shipping. If shipping type if not applicable, returns null.
      * If there is only one shipping method available for this shipping option,
@@ -135,7 +136,7 @@ abstract class ShippingType extends XmlController
     {
         return false;
     }
-        
+
     /**
      * Sends request to the server and returns the shipping label data.
      * The method should also set the order shipping tracking number.
@@ -156,5 +157,15 @@ abstract class ShippingType extends XmlController
      */
     public function init_order_label_parameters($host_obj, $order)
     {
+    }
+
+    /**
+     * Return a class that implements the ShippingTrackerInterface
+     * This can be used to provide access to tracking events over API
+     * @return ShippingTrackerInterface|null
+     */
+    public function getShippingTracker()
+    {
+        return null;
     }
 }

@@ -2128,8 +2128,9 @@ class Order extends ActiveRecord
             if ($codes->count) {
                 $codes_str = '<ul>';
                 foreach ($codes as $code) {
-                    $dValue = $code->displayField('code_shipping_method');
-                    $codes_str .= '<li>' . h($dValue) . ': ' . h($code->code) . '</li>';
+                    $trackingProvider = $code->getShippingTrackerProvider();
+                    $codeLink = $trackingProvider ? '<a href="'.h($trackingProvider->getTrackerUrl($code->code, $this->id)).'">'. h($code->code).'</a>' :  h($code->code);
+                    $codes_str .= '<li>' . h($code->getShippingTrackerProviderName()). ': ' .$codeLink . '</li>';
                 }
 
                 $codes_str .= '</ul>';
