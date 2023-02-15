@@ -870,7 +870,7 @@ class ValidationRules
      */
     protected function evalIp($Name, $Value, &$Params, $CustomMessage)
     {
-        $result = preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/", $Value) ? true : false;
+        $result = filter_var($Value, FILTER_VALIDATE_IP);
 
         if (!$result) {
             $Message = strlen($CustomMessage) ? $CustomMessage : sprintf(
