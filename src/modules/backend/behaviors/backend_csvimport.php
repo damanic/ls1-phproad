@@ -377,7 +377,8 @@
 			{
 				$data_model = $this->csvImportGetDataModelObj();
 				$config_obj = $this->csvImportGetModelObj();
-				$config_obj->set_data(post($this->_controller->csv_import_config_model_class, array()));
+                $classId = get_class($this->_controller->csv_import_config_model_class);
+				$config_obj->set_data(post($classId, array()));
 				$indexed_match = $this->column_index_match();
 				$delimeter = $this->get_delimiter($this->get_file_path());
 				$first_row_titles = post('first_row_titles');

@@ -179,7 +179,8 @@ class Customer_Notifications extends Controller
             }
 
             $obj = new CustomerNotification();
-            $data = post($this->form_model_class, array());
+            $classId = get_class_id($this->form_model_class);
+            $data = post($classId, array());
             $data['order_id'] = $order ? $order->id : null;
             $data['customer_id'] = $customer ? $customer->id : null;
             $data['created_user_id'] = $this->currentUser->id;
@@ -208,7 +209,8 @@ class Customer_Notifications extends Controller
     {
         try {
             $obj = new CustomerNotification();
-            $obj->validate_data(post($this->form_model_class, array()));
+            $classId = get_class_id($this->form_model_class);
+            $obj->validate_data(post($classId, array()));
             $obj->send_test_message($this->formGetEditSessionKey());
 
             echo Html::flash_message('The test message has been successfully sent.');

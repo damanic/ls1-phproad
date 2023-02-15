@@ -1016,7 +1016,7 @@ class Db_FormBehavior extends Phpr\ControllerBehavior
                 throw new Phpr_ApplicationException('File not found');
             }
 
-            $tmp_obj_name = 'csvexp_' . mb_strtolower($this->_controller->form_model_class) . '_' . $key . '.exp';
+            $tmp_obj_name = 'csvexp_' . mb_strtolower(get_class_id($this->_controller->form_model_class)) . '_' . $key . '.exp';
             $path = PATH_APP . '/temp/' . $tmp_obj_name;
 
             if (!file_exists($path)) {
@@ -1072,7 +1072,8 @@ class Db_FormBehavior extends Phpr\ControllerBehavior
     public function formRecoverCheckboxes($model)
     {
         $modelClass = get_class($model);
-        $postData = post($modelClass, array());
+        $modelClassId = get_class_id($modelClass);
+        $postData = post($modelClassId, array());
 
         foreach ($model->form_elements as $form_element) {
             if (!($form_element instanceof \Db\FormFieldDefinition)) {
@@ -1478,7 +1479,8 @@ class Db_FormBehavior extends Phpr\ControllerBehavior
                 $model_class = $custom_model_class_id;
             }
 
-            $model_data = post($model_class, array());
+            $model_class_id = get_class_id($model_class);
+            $model_data = post($model_class_id, array());
             if (!$model_data) {
                 throw new Phpr_ApplicationException('No data found');
             }

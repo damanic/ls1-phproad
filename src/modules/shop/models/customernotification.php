@@ -160,7 +160,7 @@ class CustomerNotification extends ActiveRecord
             }
 
             $email = mb_strtolower($email);
-            if (!preg_match("/^[_a-z0-9-\.\=\+]+@[_a-z0-9-\.\=\+]+$/", $email)) {
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $this->validation->setError('Invalid email address: ' . $email, $name, true);
             }
 

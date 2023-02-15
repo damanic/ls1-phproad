@@ -41,7 +41,8 @@ class Reviews_Config extends SettingsController
             $obj = new ReviewsConfiguration();
             $obj = $obj->load();
 
-            $obj->save(post($this->form_model_class, array()), $this->formGetEditSessionKey());
+            $classId = get_class_id($this->form_model_class);
+            $obj->save(post($classId, array()), $this->formGetEditSessionKey());
                 
             Phpr::$session->flash['success'] = 'Ratings and Reviews configuration has been successfully saved.';
             Phpr::$response->redirect(url('system/settings/'));
