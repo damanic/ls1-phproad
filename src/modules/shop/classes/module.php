@@ -339,9 +339,10 @@ class Module extends ModuleBase
         }
     }
 
-    public function onFrontEndLogin()
+    public function onFrontEndLogin($customer)
     {
         Cart::move_cart();
+        CheckoutData::load_from_customer($customer);
     }
 
     public function onBackendLogin()
