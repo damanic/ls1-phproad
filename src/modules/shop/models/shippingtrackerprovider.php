@@ -24,7 +24,6 @@ class ShippingTrackerProvider extends ActiveRecord implements ShippingTrackerInt
         $this->define_column('tracker_url_format', 'Tracking URL format')
             ->validation()
             ->fn('trim')
-            ->fn('strtolower')
             ->method('validateTrackerUrlFormat')
             ->required("Please specify a name");
     }
