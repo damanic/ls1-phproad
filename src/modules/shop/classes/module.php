@@ -278,6 +278,7 @@ class Module extends ModuleBase
     {
         Backend::$events->addEvent('onLogin', $this, 'onBackendLogin');
         Backend::$events->addEvent('onFrontEndLogin', $this, 'onFrontEndLogin');
+        Backend::$events->addEvent('onAfterFrontEndLogin', $this, 'onAfterFrontEndLogin');
         Backend::$events->addEvent('onDeleteEmailTemplate', $this, 'onDeleteEmailTemplate');
         
         Backend::$events->addEvent('cms:onDeletePage', $this, 'onDeletePage');
@@ -339,9 +340,12 @@ class Module extends ModuleBase
         }
     }
 
-    public function onFrontEndLogin($customer)
-    {
+    public function onFrontEndLogin(){
         Cart::move_cart();
+    }
+
+    public function onAfterFrontEndLogin($customer)
+    {
         CheckoutData::load_from_customer($customer);
     }
 
