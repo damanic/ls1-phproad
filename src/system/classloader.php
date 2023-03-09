@@ -16,10 +16,35 @@
             $this->directory_cache = array();
             $this->application_paths = array(PATH_APP, PATH_SYSTEM);
             $this->library_paths = array('controllers', 'classes', 'models');
-            $this->module_paths = array('widgets', 'classes', 'helpers', 'models', 'behaviors', 'controllers', 'shipping_types', 'payment_types');
+            $this->module_paths = array(
+                'widgets',
+                'classes',
+                'interfaces',
+                'helpers',
+                'models',
+                'behaviors',
+                'controllers',
+                'shipping_types',
+                'payment_types');
             $this->ns_library_paths = array();
         }
-        
+
+
+        /**
+         * Checks if the class/trait/interface has been defined.
+         *
+         * @param string $name The case-insensitive name of class/trait/interface
+         * @param bool $autoload Whether to call spl_autoload()
+         * @return bool
+         */
+        private function structure_exists( $name,  $autoload = true)
+        {
+            return class_exists($name, $autoload)
+                || interface_exists($name, $autoload)
+                || trait_exists($name, $autoload);
+        }
+
+
         private function file_exists($file_path)
         {
             try {
@@ -61,7 +86,7 @@
                 if ($this->file_exists($full_path)) {
                     include($full_path);
                     
-                    if (class_exists($class_name)) {
+                    if ($this->structure_exists($class_name)) {
                         return true;
                     }
                 }
@@ -121,7 +146,7 @@
         {
             global $CONFIG;
 
-            if (class_exists($class_name)) {
+            if ($this->structure_exists($class_name)) {
                 return true;
             }
 
@@ -137,7 +162,7 @@
                     
                 include($full_path);
                 
-                if (class_exists($class_name)) {
+                if ($this->structure_exists($class_name)) {
                     return true;
                 }
             }
@@ -154,7 +179,7 @@
 
                     include($full_path);
 
-                    if (class_exists($class_name)) {
+                    if ($this->structure_exists($class_name)) {
                         return true;
                     }
                 }
@@ -197,11 +222,11 @@
                     continue;
                 }
     
-                if (!class_exists($class_name)) {
+                if (!$this->structure_exists($class_name)) {
                     require_once $controller_path;
     
                     // Return null if class is not found
-                    if (!class_exists($class_name)) {
+                    if (!$this->structure_exists($class_name)) {
                         continue;
                     }
                     
