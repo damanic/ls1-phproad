@@ -102,28 +102,46 @@ class Db_DbHelper
 
     public static function getTableDump($tableName, $fp = null, $separator = ';')
     {
-        $sql = Db_Sql::create();
-        $qr = $sql->query("SELECT * FROM `$tableName`");
-
+        $sqlInstance = Db_Sql::create();
         $result = null;
         $columnNames = null;
-        while ($row = $sql->driver()->fetch($qr)) {
-            if ($columnNames === null) {
-                $columnNames = '`' . implode('`,`', array_keys($row)) . '`';
+        $offset = 0;
+        $chunkSize = 250; // Number of rows to fetch per query and insert rows per batch
+
+        while (true) {
+            $qr = $sqlInstance->query("SELECT * FROM `$tableName` LIMIT $chunkSize OFFSET $offset");
+            if ($qr->num_rows === 0) {
+                break;
+            }
+            $batchValues = []; // Array to accumulate values for the current batch
+            foreach (self::fetchRowGenerator($sqlInstance, $qr) as $row) {
+                if ($columnNames === null) {
+                    $columnNames = '`' . implode('`,`', array_keys($row)) . '`';
+                }
+
+                // Prepare the value string for this row
+                $batchValues[] = "(" . $sqlInstance->quote(array_values($row)) . ")";
             }
 
+            // Construct and write the batch INSERT statement
+            $valuesString = implode(",\n", $batchValues);
             if (!$fp) {
-                $result .= "INSERT INTO `$tableName`(" . $columnNames . ") VALUES (";
-                $result .= $sql->quote(array_values($row));
-                $result .= ")" . $separator . "\n";
+                $result .= "INSERT INTO `$tableName`($columnNames) VALUES \n$valuesString" . $separator . "\n";
             } else {
-                fwrite($fp, "INSERT INTO `$tableName`(" . $columnNames . ") VALUES (");
-                fwrite($fp, $sql->quote(array_values($row)));
-                fwrite($fp, ")" . $separator . "\n");
+                fwrite($fp, "INSERT INTO `$tableName`($columnNames) VALUES \n$valuesString" . $separator . "\n");
             }
+
+            $offset += $chunkSize;
         }
 
         return $result;
+    }
+
+    private static function fetchRowGenerator($sqlInstance, $qr)
+    {
+        while ($row = $sqlInstance->driver()->fetch($qr)) {
+            yield $row;
+        }
     }
 
     public static function createDbDump($path, $options = array())
