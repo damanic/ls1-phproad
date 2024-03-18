@@ -83,6 +83,8 @@ ul.filter_switchers li label {
   font-size: 11px;
   color: #666666;
 }
-td.filter_icon a, a.filter_control {
+td.filter_icon a,
+a.filter_control {
   text-indent: 0!important;
 }
+/*# sourceMappingURL=filters.css.map */

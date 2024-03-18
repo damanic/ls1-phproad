@@ -61,7 +61,8 @@
   display: block;
 }
 /* End hide from IE-mac */
-/* @end *//*
+/* @end */
+/*
  * Common PHP Road classes
  */
 .dashSeparator {
@@ -98,7 +99,7 @@
   border-radius: 5px;
   width: 100px;
   height: 100px;
-  background: #dddddd url('../images/form_load_70x70.gif') no-repeat center center;
+  background: #ddd url('../images/form_load_70x70.gif') no-repeat center center;
 }
 .popupForm {
   -webkit-border-radius: 5px;
@@ -171,5 +172,6 @@ div.searchControl input {
   display: block;
 }
 div.searchControl.inactive input {
-  color: #999!important;
+  color: #999 !important;
 }
+/*# sourceMappingURL=phproad.css.map */
