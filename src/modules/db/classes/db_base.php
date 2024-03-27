@@ -62,7 +62,7 @@ class Db_Base extends Phpr_Validatable
             return $value ? '1' : '0';
         }
 
-        if (is_null($value)) {
+        if (is_null($value) || !strlen($value)) {
             return 'NULL';
         }
 
